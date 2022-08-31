@@ -14,24 +14,19 @@ return new class extends Migration
     public function up()
     {
         Schema::create('meminjams', function (Blueprint $table) {
-            // $table->id();
-            // $table->foreignId('supervisor_id');
-            // $table->foreign('supervisor_id')->references('id')->on('users');
-            // $table->foreignId('barang_id');
-            // $table->foreignId('proyek_id');
-            // $table->foreignId('surat_jalan_id')->nullable();
             $table->uuid('id')->primary();
             $table->timestamp('tgl_peminjaman')->nullable();
-            $table->integer('jumlah');
+            // $table->integer('jumlah');
+            $table->string('satuan');
             $table->timestamp('tgl_berakhir')->nullable();
-            $table->boolean('dipinjam')->default(false);
+            $table->boolean('dipinjam')->nullable();
             $table->timestamps();
         });
         Schema::table('meminjams', function (Blueprint $table) {
-            $table->foreignUuid('surat_jalan_id')->constrained()->nullable();
-            $table->foreignUuid('proyek_id')->constrained();
-            $table->foreignUuid('supervisor_id')->constrained('users');
-            $table->foreignUuid('barang_id')->constrained();
+            $table->foreignUuid('surat_jalan_id')->constrained()->nullable()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('proyek_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('supervisor_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('barang_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

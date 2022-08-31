@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('123qweasd'),
             'email' => 'pangeranwaliyullah@gmail.com',
             'email_verified_at' => now(),
+            'role' => 'admin',
             'remember_token' => Str::random(10),
             'no_hp' => fake()->phoneNumber()
         ]);

@@ -17,7 +17,8 @@ class isProjectManager
     public function handle(Request $request, Closure $next)
     {
         if(auth()->guest()||auth()->user()->role!='project manager'){
-            abort(403);
+            return redirect('/home');
+            // abort(403);
         }
         return $next($request);
     }

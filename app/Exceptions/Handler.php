@@ -45,12 +45,12 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+        // $this->reportable(function (Throwable $e) {
+        //     //
+        // });
         $this->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
-            if ($e) return ResponseFormatter::error(null,'Authentication Failed', 401);
-            return parent::render($request, $e);
+            if ($e && $request->expectsJson()) return ResponseFormatter::error(null,'Authentication Failed', 401);
+            return redirect()->route('login');
         });
     }
 }

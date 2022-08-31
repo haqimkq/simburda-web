@@ -31,9 +31,9 @@ return new class extends Migration
             $table->timestamps();
         });
         Schema::table('delivery_orders', function (Blueprint $table) {
-            $table->foreignUuid('purchasing_id')->constrained('users');
-            $table->foreignUuid('logistic_id')->constrained('users');
-            $table->foreignUuid('kendaraan_id')->constrained();
+            $table->foreignUuid('purchasing_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('logistic_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('kendaraan_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

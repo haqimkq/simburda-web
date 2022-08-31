@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Location;
+use App\Models\Barang;
+use App\Models\Proyek;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class HomeController extends Controller
@@ -29,16 +33,29 @@ class HomeController extends Controller
         
         // $role = auth()->user()->role;
         $authUser = Auth::user();
-        $allUser = User::all();
-
-        $supervisor = $allUser->where('role', '=', 'supervisor');
-        $projectmanager = $allUser->where('role', '=', 'project manager');
-        $logistic = $allUser->where('role', '=', 'logistic');
-        $admingudang = $allUser->where('role', '=', 'admin gudang');
-        $purchasing = $allUser->where('role', '=', 'purchasing');
-        $user = $allUser->where('role', '=', 'user');
         // $this->authorize('admin');
 
+
+        $userRole = User::select(DB::raw("COUNT(*) as count, role"))
+                    ->groupBy('role')
+                    ->pluck('count', 'role');
+
+        $proyek = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
+                    ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
+                    ->orderBy('created_at')
+                    ->pluck('count', 'date');
+
+        $proyekSelesai = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
+            ->where('selesai', 1)
+            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
+            ->orderBy('created_at')
+            ->pluck('count', 'date');
+        $proyekBelumSelesai = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
+            ->where('selesai', 0)
+            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
+            ->orderBy('created_at')
+            // ->get();
+            ->pluck('count', 'date');
         // if (Gate::allows('admin')) {
         //     return view('home',[
         //         'user' => $user,
@@ -48,15 +65,17 @@ class HomeController extends Controller
 
         // if ($role == 'admin') {
         // }
+        // dd($userRole);
         return view('home',[
             'authUser' => $authUser,
-            'allUser' => $allUser,
-            'supervisor' => $supervisor,
-            'projectmanager' => $projectmanager,
-            'logistic' => $logistic,
-            'admingudang' => $admingudang,
-            'purchasing' => $purchasing,
-            'user' => $user,
+            'userRoleLabels' => $userRole->keys(),
+            'proyekLabels' => $proyek->keys(),
+            'labelsProyekBS' => $proyekBelumSelesai->keys(),
+            'labelsProyekS' => $proyekSelesai->keys(),
+            'userRole' => $userRole->values(),
+            'proyek' => $proyek->values(),
+            'proyekSelesai' => $proyekSelesai,
+            'proyekBelumSelesai' => $proyekBelumSelesai,
         ]);
         // return view('home');
     }

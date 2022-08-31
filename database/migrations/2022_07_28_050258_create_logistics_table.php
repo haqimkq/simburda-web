@@ -22,7 +22,7 @@ return new class extends Migration
         });
         Schema::table('logistics', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('logistic_id')->constrained('users');
+            $table->foreignUuid('logistic_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

@@ -17,7 +17,8 @@ class isSupervisor
     public function handle(Request $request, Closure $next)
     {
         if(auth()->guest()||auth()->user()->role!='supervisor'){
-            abort(403);
+            // abort(403);
+            return redirect('/home');
         }
         return $next($request);
     }

@@ -23,8 +23,8 @@ class DeliveryOrderFactory extends Factory
             'logistic_id' => User::where('role', 'like', 'logistic')->get()->random()->id,
             'purchasing_id' => User::where('role', 'like', 'purchasing')->get()->random()->id,
             'kendaraan_id' => Kendaraan::all()->random()->id,
-            'longitude' => fake()->longitude(-106.9,-106),
-            'latitude' => fake()->latitude(-6.9,-6),
+            'latitude' => fake()->latitude(-6.2,-6.1),
+            'longitude' => fake()->longitude(106.7,106.8),
             'untuk_perusahaan' => fake()->word(),
             'untuk_perhatian' => fake()->name(),
             'perihal' => fake()->word()

@@ -31,6 +31,10 @@ class AuthServiceProvider extends ServiceProvider
         //     return $user->id == $post->user_id;
         // });
 
+        Gate::define('user', function (User $user) {
+            return $user->role === 'user';
+        });
+
         Gate::define('admin', function (User $user) {
             return $user->role === 'admin';
         });
@@ -54,5 +58,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('supervisor', function (User $user) {
             return $user->role === 'supervisor';
         });
+
+        // Gate::define('delete-user', function (User $user, Post $post) {
+        //     return $user->id === $post->user_id;
+        // });
     }
 }

@@ -14,19 +14,16 @@ return new class extends Migration
     public function up()
     {
         Schema::create('kendaraans', function (Blueprint $table) {
-            // $table->id();
-            // $table->foreignId('logistic_id');
-            // $table->foreign('logistic_id')->references('id')->on('users');
             $table->uuid('id')->primary();
             $table->string('jenis');
             $table->string('merk');
-            $table->string('kapasitas');
+            // $table->string('kapasitas');
             $table->string('plat_nomor');
-            $table->string('gambar')->nullable();
+            $table->string('gambar');
             $table->timestamps();
         });
         Schema::table('kendaraans', function (Blueprint $table) {
-            $table->foreignUuid('logistic_id')->constrained('users');
+            $table->foreignUuid('logistic_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

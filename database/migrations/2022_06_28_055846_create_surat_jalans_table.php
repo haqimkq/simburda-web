@@ -34,8 +34,8 @@ return new class extends Migration
             $table->timestamps();
         });
         Schema::table('surat_jalans', function (Blueprint $table) {
-            $table->foreignUuid('logistic_id')->constrained('users');
-            $table->foreignUuid('kendaraan_id')->constrained();
+            $table->foreignUuid('logistic_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('kendaraan_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

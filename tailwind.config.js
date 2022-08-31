@@ -10,6 +10,9 @@ module.exports = {
         "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
     ],
     theme: {
+        fontFamily: {
+            sans: ['"Poppins"', "sans-serif"],
+        },
         colors: {
             black: "#333333",
             primary: {
@@ -27,5 +30,8 @@ module.exports = {
             orange: "#EC9E42",
         },
     },
-    plugins: [require("flowbite/plugin")],
+    plugins: [
+        require("flowbite/plugin"),
+        require("@tailwindcss/line-clamp"),
+    ],
 };

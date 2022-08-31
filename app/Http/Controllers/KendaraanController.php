@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorekendaraanRequest;
 use App\Http\Requests\UpdatekendaraanRequest;
 use App\Models\kendaraan;
+use Illuminate\Support\Facades\Auth;
 
 class KendaraanController extends Controller
 {
@@ -15,7 +16,13 @@ class KendaraanController extends Controller
      */
     public function index()
     {
-        //
+        $kendaraan = Kendaraan::filter(request(['search', 'filter', 'orderBy']))->paginate(12)->withQueryString();
+        $authUser = Auth::user();
+        return view('kendaraan.index',[
+            'allKendaraan' => $kendaraan,
+            'authUser' => $authUser
+            
+        ]);
     }
 
     /**

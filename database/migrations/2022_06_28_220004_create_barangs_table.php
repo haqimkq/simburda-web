@@ -16,16 +16,19 @@ return new class extends Migration
         Schema::create('barangs', function (Blueprint $table) {
             // $table->id();
             $table->uuid('id')->primary();
-            $table->string('qrcode');
+            $table->string('qrcode')->nullable();
             $table->string('nama');
+            $table->integer('nomor_seri');
             $table->string('jenis');
             $table->string('gambar');
-            $table->integer('jumlah');
-            $table->string('alamat');
+            // $table->integer('jumlah');
+            $table->text('alamat');
             $table->double('latitude');
             $table->double('longitude');
-            $table->string('berat');
+            // $table->string('berat')->nullable();
+            $table->string('satuan');
             $table->boolean('bagus')->default(true);
+            $table->boolean('tersedia')->default(true);
             $table->string('kondisi')->nullable();
             $table->text('detail');
             $table->string('excerpt');

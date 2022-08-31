@@ -21,8 +21,8 @@ return new class extends Migration
         });
         Schema::table('menanganis', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('supervisor_id')->constrained('users');
-            $table->foreignUuid('proyek_id')->constrained();
+            $table->foreignUuid('supervisor_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('proyek_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

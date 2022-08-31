@@ -17,13 +17,17 @@ class KendaraanFactory extends Factory
      */
     public function definition()
     {
+        $randomImage = 'https://picsum.photos/640/640?random='.mt_rand(1,92392);
+        $jenis = fake()->randomElement(['motor','mobil','truck','tronton']);
         return [
             'id' => fake()->uuid(),
             'logistic_id' => User::where('role', 'like', 'logistic')->get()->random()->id,
-            'jenis' => Fake()->word(),
+            'jenis' => $jenis,
             'merk' => Fake()->word(),
-            'kapasitas' => Fake()->word(),
-            'plat_nomor' => Fake()->word()
+            'plat_nomor' => Fake()->word(),
+            // 'gambar' => fake()->imageUrl(360, 360, 'vehicle', true, $jenis, true),
+            'gambar' => $randomImage,
+
         ];
     }
 }

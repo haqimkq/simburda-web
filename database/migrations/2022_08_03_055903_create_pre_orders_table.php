@@ -26,7 +26,7 @@ return new class extends Migration
             $table->timestamps();
         });
         Schema::table('pre_orders', function (Blueprint $table) {
-            $table->foreignUuid('delivery_order_id')->constrained();
+            $table->foreignUuid('delivery_order_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

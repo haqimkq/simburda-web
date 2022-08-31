@@ -20,6 +20,8 @@ class AksesBarangFactory extends Factory
         return [
             'id' => fake()->uuid(),
             'meminjam_id' => Meminjam::all()->random()->id,
+            'disetujui_admin' => fake()->optional()->boolean(50),
+            'disetujui_pm' => fake()->optional()->boolean(50),
         ];
     }
 }

@@ -1,6 +1,15 @@
 @extends('layouts.auth')
 @section('title', 'Burda Contraco - Masuk')
 @section('content')
+@push('prepend-script')
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.0/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.13/moment-timezone-with-data.js"></script>
+  <script>
+    var timezone = moment.tz.guess();
+    $('#timezone').val(timezone);
+  </script>
+@endpush
 <!-- Page Content -->
 <div class="card">
   @if (session('registerSuccess'))
@@ -16,6 +25,7 @@
   <form method="POST" action="{{ route('authenticate') }}" class="mt-3">
     @csrf
     <div class="flex flex-col space-y-5">
+      <input type="hidden" name="timezone" id="timezone">
       <label for="email">
         <p class="font-medium text-slate-700 pb-2">Alamat email</p>
         <input id="email" name="email" type="email" class="w-full py-3 border border-primary rounded-lg px-3 focus:outline-none focus:border-green hover:shadow 

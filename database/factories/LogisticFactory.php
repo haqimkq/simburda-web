@@ -19,8 +19,8 @@ class LogisticFactory extends Factory
     {
         return [
             'logistic_id' => User::where('role', 'like', 'logistic')->get()->random()->id,
-            'longitude' => fake()->latitude(-6.9,-6),
-            'latitude' => fake()->longitude(-106.9,-106),
+            'latitude' => fake()->latitude(-6.2,-6.1),
+            'longitude' => fake()->longitude(106.7,106.8),
         ];
     }
 }

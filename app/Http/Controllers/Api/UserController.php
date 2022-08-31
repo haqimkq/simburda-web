@@ -31,7 +31,10 @@ class UserController extends Controller
                 'token' => $token,
             ],'User Registered');
         } catch (Exception $error) {
-            return ResponseFormatter::errorAuth($error);
+            return ResponseFormatter::error([
+                'message' => 'Something went wrong',
+                'error' => $error,
+            ],'Authentication Failed', 500);
         }
     }
     public function login(Request $request){
@@ -56,7 +59,10 @@ class UserController extends Controller
                 'token' => $token,
             ],'Login Successfully');
         }catch (Exception $error) {
-            return ResponseFormatter::errorAuth($error);
+            return ResponseFormatter::error([
+                'message' => 'Something went wrong',
+                'error' => $error,
+            ],'Authentication Failed', 500);
         }
     }
     public function logout(Request $request){
