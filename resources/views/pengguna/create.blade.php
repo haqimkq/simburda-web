@@ -4,7 +4,7 @@
 		@csrf
 		<div class="mb-6 grid gap-6 md:grid-cols-2 w-[80vw]">
 			<div>
-				<label for="nama" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Nama Barang</label>
+				<label for="nama" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Nama</label>
 				<input type="text" id="nama" name="nama"
 					value="{{ old('nama') }}"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
@@ -12,15 +12,34 @@
 					@error('nama') @include('shared.errorText') @enderror
 			</div>
 			<div>
-				<label for="jenis" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Jenis Barang</label>
-				<select id="countries" name="jenis"
+				<label for="role" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Role</label>
+				<select id="role" name="role"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 					required>
-					<option disabled selected value="{{ old('jenis') }}">Pilih Jenis Barang</option>
-					<option value="tidak habis pakai">Tidak Habis Pakai</option>
-					<option value="habis pakai">Habis Pakai</option>
+					<option disabled selected value="{{$user->role}}">{{$user->role}}</option>
+					@if ($user->role != 'user')
+						<option value="user">User</option>
+					@endif
+					@if ($user->role != 'admin') 
+						<option value="admin">Admin</option>
+					@endif
+					@if ($user->role != 'project manager')
+						<option value="project manager">Project Manager</option>
+					@endif
+					@if ($user->role != 'admin gudang')
+						<option value="admin gudang">Admin Gudang</option>
+					@endif
+					@if ($user->role != 'supervisor')
+						<option value="supervisor">Supervisor</option>
+					@endif
+					@if ($user->role != 'purchasing')
+						<option value="purchasing">Purchasing</option>
+					@endif
+					@if ($user->role != 'logistic')
+						<option value="logistic">Logistic</option>
+					@endif
 				</select>
-				@error('jenis') @include('shared.errorText') @enderror
+				@error('role') @include('shared.errorText') @enderror
 			</div>
 			<div>
 				<label for="jumlah" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Jumlah Barang</label>

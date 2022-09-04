@@ -51,6 +51,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('pengguna/tambah', 'create')->name('pengguna.create');
         Route::post('pengguna/store', 'store')->name('pengguna.store');
         Route::get('pengguna/edit/{id}', 'edit')->name('pengguna.edit');
+        Route::post('pengguna/update/{id}', 'update')->name('pengguna.update');
         Route::get('pengguna/detail/{id}', 'show')->name('pengguna.show');
         Route::post('pengguna/delete/{id}', 'destroy')->name('pengguna.destroy');
     });

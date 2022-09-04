@@ -64,7 +64,10 @@ class PenggunaController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = User::find($id);
+        return view('pengguna.edit', [
+            "user" => $user
+        ]);
     }
 
     /**
@@ -76,7 +79,16 @@ class PenggunaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::find($id);
+        $user->role = $request->role;
+        $user->nama = $request->nama;
+        if($request->foto){
+            $user->foto = $request->file('foto')->store('assets/pengguna', 'public');
+        }
+        $user->update();
+        return redirect('/pengguna')->with(
+            "updatePenggunaSuccess", "Berhasil Memperbarui Pengguna (".$user->nama.")"
+        );
     }
 
     /**

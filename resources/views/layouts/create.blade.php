@@ -30,7 +30,7 @@
     
   </head>
 
-  <body class="p-5 md:p-8 mx-auto grid place-items-center h-screen">
+  <body class="container-lg w-full mx-auto grid place-items-center h-screen">
     {{-- Sidebar --}}
     <div >
       @yield('content')

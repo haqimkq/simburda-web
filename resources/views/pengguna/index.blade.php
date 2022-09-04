@@ -36,6 +36,10 @@
 				@section('alertMessage', session('deletePenggunaSuccess'))
 				@include('shared.alerts.success')
 			@endif
+			@if (session('updatePenggunaSuccess'))
+				@section('alertMessage', session('updatePenggunaSuccess'))
+				@include('shared.alerts.success')
+			@endif
 			@section('headerName', 'Pengguna')
 			@section('role', $authUser->role)
 			@if ($authUser->foto)
