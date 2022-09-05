@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Proyek;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProyekController extends Controller
 {
@@ -14,6 +16,12 @@ class ProyekController extends Controller
     public function index()
     {
         //
+        $proyek = Proyek::with('proyekManager')->filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
+        $authUser = Auth::user();
+        return view('proyek.index',[
+            'proyeks' => $proyek,
+            'authUser' => $authUser,
+        ]);
     }
 
     /**

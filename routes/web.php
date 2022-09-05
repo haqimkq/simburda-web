@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PenggunaController;
+use App\Http\Controllers\ProyekController;
 use App\Http\Controllers\RegisterController;
 
 /*
@@ -62,5 +63,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('kendaraan/detail/{id}', 'show')->name('kendaraan.show');
         Route::get('kendaraan/edit/{id}', 'edit')->name('kendaraan.edit');
         Route::post('kendaraan/delete/{id}', 'destroy')->name('kendaraan.destroy');
+    });
+    Route::middleware(['admin-projectmanager'])->controller(ProyekController::class)->group(function () {
+        Route::get('proyek', 'index')->name('proyek');
+        Route::get('proyek/tambah', 'create')->name('proyek.create');
+        Route::post('proyek/store', 'store')->name('proyek.store');
+        Route::get('proyek/detail/{id}', 'show')->name('proyek.show');
+        Route::get('proyek/edit/{id}', 'edit')->name('proyek.edit');
+        Route::post('proyek/delete/{id}', 'destroy')->name('proyek.destroy');
     });
 });

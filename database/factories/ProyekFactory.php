@@ -22,16 +22,20 @@ class ProyekFactory extends Factory
         $lon = fake()->longitude(106.7,106.8);
         // $address = Location::getAddress($lat, $lon);
         $date = fake()->dateTimeBetween('-2 years', 'now');
+        $selesai = fake()->boolean();
+        $tggl_selesai = NULL;
+        if($selesai == true) $tggl_selesai = fake()->dateTimeBetween($date, '+2 month');
         return [
             'id' => fake()->uuid(),
             'proyek_manager_id' => User::where('role', 'like', 'project manager')->get()->random()->id,
-            'nama_proyek' => fake()->word(),
+            'nama_proyek' => fake()->word(3, true),
             'alamat' => fake()->streetAddress(),
             'latitude' => $lat,
             'longitude' => $lon,
-            'selesai' => fake()->boolean(50),
+            'selesai' => $selesai,
             'created_at'=> $date,
             'updated_at'=> $date,
+            'tggl_selesai'=> $tggl_selesai,
         ];
     }
 }

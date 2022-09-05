@@ -29,10 +29,10 @@ class MeminjamFactory extends Factory
         $end_date = Carbon::parse($tgl_berakhir);
         $barang_id = Barang::where('tersedia', 1)->get()->random()->id;
         $satuan = Barang::where('id', $barang_id)->first()->satuan;
-        Barang::where('id', $barang_id)->update(['tersedia' => 0]);
-
+        
         $dipinjam = false;
         if($now->between($start_date,$end_date))
+            Barang::where('id', $barang_id)->update(['tersedia' => 0]);
             $dipinjam = true;
 
         if($barang_id==NULL) return NULL;

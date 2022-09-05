@@ -17,8 +17,8 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        $role = 'user';
-        // $role = fake()->randomElement(['project manager', 'purchasing', 'logistic', 'supervisor', 'admin gudang']);
+        // $role = 'user';
+        $role = fake()->randomElement(['project manager', 'purchasing', 'logistic', 'supervisor', 'admin gudang', 'user']);
         $name = fake()->name();
         $firstName = explode(' ', $name, 2)[0];
         $randomImage = 'https://picsum.photos/640/640?random='.mt_rand(1,92392);
