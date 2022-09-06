@@ -17,10 +17,16 @@ return new class extends Migration
             // $table->id();
             $table->uuid('id')->primary();
             $table->string('nama_barang');
-            $table->string('foto');
+            $table->string('foto')->nullable();
             $table->integer('jumlah');
-            $table->string('harga');
+            $table->string('satuan');
+            $table->double('harga');
+            $table->boolean('disetujui')->nullable();
             $table->timestamps();
+        });
+        Schema::table('proyeks', function (Blueprint $table) {
+            $table->foreignUuid('proyek_manager_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('adminGudang_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

@@ -9,4 +9,14 @@ class Pengajuan extends Model
 {
     use Uuids;
     use HasFactory;
+
+    protected $guarded = ['id'];
+
+    public function adminGudang(){
+        return $this->belongsToMany(User::class,'admin_gudang_id','id');
+    }
+
+    public function projectManager(){
+        return $this->belongsToMany(User::class,'project_manager_id','id');
+    }
 }
