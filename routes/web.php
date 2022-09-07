@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\DeliveryOrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KendaraanController;
@@ -72,5 +73,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('proyek/edit/{id}', 'edit')->name('proyek.edit');
         Route::post('proyek/delete/{id}', 'destroy')->name('proyek.destroy');
         Route::get('selectProyekManager', 'selectProyekManager')->name('selectProyekManager');
+    });
+    Route::middleware(['admin-purchasing-admingudang-logistic'])->controller(DeliveryOrderController::class)->group(function () {
+        Route::get('delivery-order', 'index')->name('delivery-order');
+        Route::get('delivery-order/tambah', 'create')->name('delivery-order.create');
+        Route::post('delivery-order/store', 'store')->name('delivery-order.store');
+        Route::get('delivery-order/detail/{id}', 'show')->name('delivery-order.show');
+        Route::get('delivery-order/edit/{id}', 'edit')->name('delivery-order.edit');
+        Route::post('delivery-order/delete/{id}', 'destroy')->name('delivery-order.destroy');
     });
 });

@@ -6,10 +6,13 @@ use App\Helpers\Date;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\Uuids;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Kendaraan extends Model
 {
     use Uuids;
     use HasFactory;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 
@@ -19,13 +22,13 @@ class Kendaraan extends Model
     public function suratJalan(){
         return $this->hasMany(SuratJalan::class);
     }
-    public function logistic(){
-        return $this->hasOne(SuratJalan::class);
+    public function user(){
+        return $this->hasOne(User::class, 'id', 'logistic_id');
     }
 
     public function scopeFilter($query, array $filters){
         $query->when($filters['search'] ?? false, function($query, $search) {
-            return $query->where('nama', 'like', '%' . $search . '%');
+            return $query->where('merk', 'like', '%' . $search . '%');
         });
         $query->when($filters['filter'] ?? false, function($query, $filter) {
         //    return $query->where(function($query) use ($filter) {

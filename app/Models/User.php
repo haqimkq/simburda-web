@@ -9,6 +9,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Schema;
 
@@ -16,21 +17,13 @@ class User extends Authenticatable
 {
     use Uuids;
     use HasApiTokens, HasFactory, Notifiable;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    // protected $fillable = [
-    //     'nama',
-    //     'email',
-    //     'password',
-    //     'role',
-    //     'no_hp',
-    //     'pin',
-    //     'foto'
-    // ];
     protected $guarded = ['id'];
 
     /**
@@ -59,10 +52,14 @@ class User extends Authenticatable
         return $this->hasMany(Proyek::class, 'proyek_manager_id', 'id');
     }
 
-    public function logistic(){
+    public function deliveryOrder(){
         return $this->hasMany(DeliveryOrder::class,'logistic_id','id');
     }
     
+    public function logistic(){
+        return $this->hasOne(Logistic::class,'logistic_id','id');
+    }
+
     public function mengajukan(){
         return $this->hasMany(DeliveryOrder::class,'purchasing_id','id');
     }

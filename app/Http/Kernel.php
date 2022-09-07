@@ -70,11 +70,13 @@ class Kernel extends HttpKernel
         'admin-gudang' => \App\Http\Middleware\isAdminGudang::class,
         'supervisor' => \App\Http\Middleware\isSupervisor::class,
         'admin-admingudang' => \App\Http\Middleware\isAdminOrAdminGudang::class,
+        'admin-admingudang-logistic' => \App\Http\Middleware\isAdminOrAdminGudangOrLogistic::class,
         'admin-logistic' => \App\Http\Middleware\isAdminOrLogistic::class,
         'admin-projectmanager' => \App\Http\Middleware\isAdminOrProjectManager::class,
-        'admin-supervisor' => \App\Http\Middleware\isAdminOrSupervisor::class,
-        'admin-purchasing' => \App\Http\Middleware\isAdminOrPurchasing::class,
         'admin-projectmanager-supervisor' => \App\Http\Middleware\isAdminOrProjectManagerOrSupervisor::class,
         'admin-projectmanager-supervisor-admingudang' => \App\Http\Middleware\isAdminOrProjectManagerOrSupervisorOrAdminGudang::class,
+        'admin-supervisor' => \App\Http\Middleware\isAdminOrSupervisor::class,
+        'admin-purchasing' => \App\Http\Middleware\isAdminOrPurchasing::class,
+        'admin-purchasing-admingudang-logistic' => \App\Http\Middleware\isAdminOrPurchasingOrAdminGudangOrLogistic::class,
     ];
 }

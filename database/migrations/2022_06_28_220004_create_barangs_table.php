@@ -33,6 +33,7 @@ return new class extends Migration
             $table->text('detail');
             $table->string('excerpt');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

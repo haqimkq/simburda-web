@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
         Kendaraan::factory(20)->create();
         Logistic::factory(20)->create();
         DeliveryOrder::factory(20)->create();
-        PreOrder::factory(20)->create();
+        PreOrder::factory(50)->create();
         Proyek::factory(20)->create();
         Menangani::factory(20)->create();
         SuratJalan::factory(20)->create();

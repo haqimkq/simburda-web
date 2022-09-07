@@ -29,11 +29,12 @@ return new class extends Migration
             $table->string('untuk_perhatian');
             $table->string('perihal');
             $table->timestamps();
+            $table->softDeletes();
         });
         Schema::table('delivery_orders', function (Blueprint $table) {
             $table->foreignUuid('purchasing_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('logistic_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('kendaraan_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('logistic_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('kendaraan_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

@@ -18,6 +18,7 @@ return new class extends Migration
             // $table->foreign('supervisor_id')->references('id')->on('users');
             // $table->foreignId('projek_id');
             $table->timestamps();
+            $table->softDeletes();
         });
         Schema::table('menanganis', function (Blueprint $table) {
             $table->uuid('id')->primary();

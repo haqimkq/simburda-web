@@ -21,6 +21,7 @@ return new class extends Migration
             $table->boolean('disetujui_admin')->nullable();
             $table->boolean('disetujui_pm')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
         Schema::table('akses_barangs', function (Blueprint $table) {
             $table->foreignUuid('meminjam_id')->constrained()->onUpdate('cascade')->onDelete('cascade');

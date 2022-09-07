@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('plat_nomor');
             $table->string('gambar');
             $table->timestamps();
+            $table->softDeletes();
         });
         Schema::table('kendaraans', function (Blueprint $table) {
             $table->foreignUuid('logistic_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
