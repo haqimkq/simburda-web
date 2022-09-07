@@ -29,8 +29,8 @@
     @stack('addon-style')
     
   </head>
-
-  <body class="container-lg w-full mx-auto grid place-items-center h-screen">
+  
+  <body class="container-lg w-full mx-auto grid place-items-center mt-10">
     {{-- Sidebar --}}
     <div >
       @yield('content')

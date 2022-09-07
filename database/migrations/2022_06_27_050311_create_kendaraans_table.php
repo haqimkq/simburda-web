@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
         });
         Schema::table('kendaraans', function (Blueprint $table) {
-            $table->foreignUuid('logistic_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('logistic_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

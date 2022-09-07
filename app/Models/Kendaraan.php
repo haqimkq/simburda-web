@@ -16,6 +16,12 @@ class Kendaraan extends Model
     public function deliveryOrder(){
         return $this->hasMany(DeliveryOrder::class);
     }
+    public function suratJalan(){
+        return $this->hasMany(SuratJalan::class);
+    }
+    public function logistic(){
+        return $this->hasOne(SuratJalan::class);
+    }
 
     public function scopeFilter($query, array $filters){
         $query->when($filters['search'] ?? false, function($query, $search) {

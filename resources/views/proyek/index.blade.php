@@ -54,8 +54,10 @@
 		</div>
 		@if (!$proyeks->isEmpty())
 				@if (request('search'))
-					<button class="mb-2 text-center font-semibold text-md delete_search" onclick="">Hapus pencarian</button>
-					<h1 class="mb-2 text-center font-semibold text-md">Hasil Pencarian Proyek {{request('search')}}</h1>
+				<div class="flex items-center">
+					<button class="bg-red-600 py-1 px-2 mb-2 mr-2 text-center font-normal text-sm delete_search text-white rounded-md" onclick="">Hapus pencarian</button>
+					<h1 class="mb-2 text-center font-medium text-md">Hasil Pencarian Proyek {{request('search')}}</h1>
+				</div>
 				@endif
 				<div class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-5">
 					@foreach ($proyeks as $proyek)
@@ -67,7 +69,7 @@
 								{{ $proyek->selesai ? 'Selesai' : 'Masih Berlangsung'}}
 							</span>
 							<p class="font-medium my-1 line-clamp-2">{{ucfirst($proyek->nama_proyek)}} </p>
-							<p class="font-normal text-sm mb-2 line-clamp-1 text-gray-700"><span class="inline-block font-semibold text-[0.6em] border  text-blue-600 border-blue-600 rounded-full py-0.5 px-1.5">PM</span> {{ucfirst($proyek->proyekManager->nama)}}</p>
+							<p class="font-normal text-sm mb-2 line-clamp-1 text-gray-700"><span class="inline-block font-semibold text-[0.6em] border  text-blue-600 border-blue-600 rounded-full px-1">PM</span> {{ucfirst($proyek->proyekManager->nama)}}</p>
 							<div class="flex ">
 								<svg class="mr-1 h-4 w-4 fill-blue-600" width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
 									<path  fill-rule="evenodd" clip-rule="evenodd" d="M9.36364 0C5.29681 0 2 3.29681 2 7.36364C2 11.4305 9.36364 18 9.36364 18C9.36364 18 16.7273 11.4305 16.7273 7.36364C16.7273 3.29681 13.4305 0 9.36364 0ZM9.36364 9.81818C10.7192 9.81818 11.8182 8.71924 11.8182 7.36364C11.8182 6.00803 10.7192 4.90909 9.36364 4.90909C8.00803 4.90909 6.90909 6.00803 6.90909 7.36364C6.90909 8.71924 8.00803 9.81818 9.36364 9.81818Z"/>
@@ -94,9 +96,9 @@
 			</div>
 		@else
 			@if (request('search'))
-				<h1>Tidak ada Proyek {{request('search')}}</h1>
+				<h1 class="mb-2 text-center font-medium text-md text-red-600">Tidak ada Proyek {{request('search')}}</h1>
 			@else
-				<h1>Belum ada Proyek</h1>
+				<h1 class="mb-2 text-center font-medium text-md text-red-600">Belum ada Proyek</h1>
 			@endif
 		@endif
 	<div class="mt-5">
@@ -133,5 +135,6 @@
 			$( "#searchbox" ).val('');
 			$("#form").submit();
 		})
+		
 	</script>
 @endpush

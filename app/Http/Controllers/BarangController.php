@@ -81,7 +81,6 @@ class BarangController extends Controller
                 ->withInput();
         }
         $gambar = $request->file('gambar')->store('assets/barang', 'public');
-        // $nomor_seri = Barang::where('nama', 'like', '%bor tangan makteca%')->count()+1;
         for ($x = 1; $x <= $request->jumlah; $x++) {
             $data = [
                 'gambar' => $gambar,

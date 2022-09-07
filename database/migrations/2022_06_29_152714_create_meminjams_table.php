@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
         });
         Schema::table('meminjams', function (Blueprint $table) {
-            $table->foreignUuid('surat_jalan_id')->constrained()->nullable()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('surat_jalan_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('proyek_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('supervisor_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('barang_id')->constrained()->onUpdate('cascade')->onDelete('cascade');

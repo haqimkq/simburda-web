@@ -71,5 +71,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('proyek/detail/{id}', 'show')->name('proyek.show');
         Route::get('proyek/edit/{id}', 'edit')->name('proyek.edit');
         Route::post('proyek/delete/{id}', 'destroy')->name('proyek.destroy');
+        Route::get('selectProyekManager', 'selectProyekManager')->name('selectProyekManager');
     });
 });

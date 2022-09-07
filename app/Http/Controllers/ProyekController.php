@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Proyek;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ProyekController extends Controller
 {
@@ -16,7 +18,7 @@ class ProyekController extends Controller
     public function index()
     {
         //
-        $proyek = Proyek::with('proyekManager')->filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
+        $proyek = Proyek::with('proyekManager', 'supervisor')->filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
         $authUser = Auth::user();
         return view('proyek.index',[
             'proyeks' => $proyek,
@@ -31,7 +33,7 @@ class ProyekController extends Controller
      */
     public function create()
     {
-        //
+        return view('proyek.create');
     }
 
     /**
@@ -42,7 +44,55 @@ class ProyekController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $userAuth = Auth::user();
+        if($userAuth->role == 'admin') {
+            $validator = Validator::make($request->all(), [
+                    'nama_proyek' => 'required|string',
+                    'proyek_manager_id' => 'required|string',
+                    'alamat' => 'required|string',
+                    'latitude' => 'required|numeric',
+                    'longitude' => 'required|numeric',
+                ],[
+                    'nama_proyek.required' => 'Nama Proyek wajib diisi',
+                    'proyek_manager_id.required' => 'Proyek Manager wajib diisi',
+                    'alamat.required' => 'Alamat wajib diisi',
+                    'latitude.required' => 'Latitude wajib diisi',
+                    'longitude.required' => 'Longitude wajib diisi',
+                ]
+            );
+        }else {
+            $validator = Validator::make($request->all(), [
+                    'nama_proyek' => 'required|string',
+                    'alamat' => 'required|string',
+                    'latitude' => 'required|numeric',
+                    'longitude' => 'required|numeric',
+                ],[
+                    'nama_proyek.required' => 'Nama Proyek wajib diisi',
+                    'alamat.required' => 'Alamat wajib diisi',
+                    'latitude.required' => 'Latitude wajib diisi',
+                    'longitude.required' => 'Longitude wajib diisi',
+                ]
+            );
+        }
+        
+        if ($validator->fails()) {
+            return redirect('proyek/tambah')
+            ->withErrors($validator)
+            ->with('createProyekFailed', 'Gagal Menambah Proyek!')
+            ->withInput();
+        }
+        $proyekManagerId = $userAuth->role == 'project manager' ? $userAuth->id : $request->proyek_manager_id;
+
+        $proyek = Proyek::create(
+            [
+                'nama_proyek' => $request->nama_proyek,
+                'alamat' => $request->alamat,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
+                'proyek_manager_id' => $proyekManagerId,
+            ]
+        );
+        return redirect('proyek')->with('createProyekSuccess', 'Berhasil Menambah Proyek'. $proyek->nama_proyek);
     }
 
     /**
@@ -87,6 +137,20 @@ class ProyekController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $proyek = Proyek::find($id);
+        Proyek::destroy($id);
+        return redirect('proyek')->with('deleteProyekSuccess', 'Berhasil Menghapus Proyek '.$proyek->nama_proyek);
     }
+
+    public function selectProyekManager(Request $request)
+    {
+    	$proyekManager = [];
+        $search = $request->q;
+        $proyekManager = User::select("id", "nama")
+                ->where('nama', 'LIKE', "%$search%")
+                ->where('role', 'project manager')
+                ->get();
+        return response()->json($proyekManager);
+    }
+
 }

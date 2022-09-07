@@ -15,7 +15,7 @@ class Proyek extends Model
     protected $guarded = ['id'];
 
     public function supervisor(){
-        return $this->belongsToMany(User::class, 'menanganis','projek_id','supervisor_id');
+        return $this->belongsToMany(User::class, 'menanganis','proyek_id','supervisor_id');
     }
 
     public function proyekManager(){
@@ -33,7 +33,6 @@ class Proyek extends Model
                     return $query->where('selesai', true);
                 if($filter == 'masih berlangsung')
                     return $query->where('selesai', false);
-
             }
             // });
         });
