@@ -2,12 +2,6 @@
 
 use App\Models\User;
 use App\Models\Barang;
-use App\Models\Pengajuan;
-use App\Models\Meminjam;
-use App\Models\AksesBarang;
-use App\Models\Menangani;
-use App\Models\SuratJalan;
-use App\Models\Proyek;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
