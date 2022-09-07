@@ -25,6 +25,7 @@ return new class extends Migration
             $table->boolean('selesai')->default(false);
             $table->timestamp('tggl_selesai')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
         Schema::table('proyeks', function (Blueprint $table) {
             $table->foreignUuid('proyek_manager_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');

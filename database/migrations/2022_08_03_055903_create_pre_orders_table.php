@@ -24,6 +24,7 @@ return new class extends Migration
             $table->integer('jumlah');
             $table->string('keterangan');
             $table->timestamps();
+            $table->softDeletes();
         });
         Schema::table('pre_orders', function (Blueprint $table) {
             $table->foreignUuid('delivery_order_id')->constrained()->onUpdate('cascade')->onDelete('cascade');

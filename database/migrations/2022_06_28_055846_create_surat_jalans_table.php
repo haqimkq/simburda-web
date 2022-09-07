@@ -32,10 +32,11 @@ return new class extends Migration
             $table->string('foto_bukti')->nullable();
             $table->boolean('diterima')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
         Schema::table('surat_jalans', function (Blueprint $table) {
-            $table->foreignUuid('logistic_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('kendaraan_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('logistic_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('kendaraan_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

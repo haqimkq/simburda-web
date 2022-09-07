@@ -19,6 +19,7 @@ return new class extends Migration
             $table->double('longitude');
             $table->double('latitude');
             $table->timestamps();
+            $table->softDeletes();
         });
         Schema::table('logistics', function (Blueprint $table) {
             $table->uuid('id')->primary();

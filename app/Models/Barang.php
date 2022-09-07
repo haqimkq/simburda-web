@@ -7,11 +7,13 @@ use App\Traits\Uuids;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Barang extends Model
 {
     use Uuids;
     use HasFactory;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 

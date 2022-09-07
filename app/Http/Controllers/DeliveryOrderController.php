@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorekendaraanRequest;
-use App\Http\Requests\UpdatekendaraanRequest;
-use App\Models\Kendaraan;
-use App\Models\User;
+use App\Models\DeliveryOrder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class KendaraanController extends Controller
+class DeliveryOrderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,11 +15,12 @@ class KendaraanController extends Controller
      */
     public function index()
     {
-        $kendaraan = Kendaraan::with('user', 'user.logistic')->filter(request(['search', 'filter', 'orderBy']))->paginate(12)->withQueryString();
+        $deliveryOrders = DeliveryOrder::with('user', 'kendaraan', 'preOrder')->filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
         $authUser = Auth::user();
-        return view('kendaraan.index',[
-            'allKendaraan' => $kendaraan,
-            'authUser' => $authUser
+        // dd($deliveryOrders);
+        return view('deliveryorder.index',[
+            'deliveryOrders' => $deliveryOrders,
+            'authUser' => $authUser,
         ]);
     }
 
@@ -38,10 +37,10 @@ class KendaraanController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StorekendaraanRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorekendaraanRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -49,10 +48,10 @@ class KendaraanController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\kendaraan  $kendaraan
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(kendaraan $kendaraan)
+    public function show($id)
     {
         //
     }
@@ -60,10 +59,10 @@ class KendaraanController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\kendaraan  $kendaraan
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(kendaraan $kendaraan)
+    public function edit($id)
     {
         //
     }
@@ -71,11 +70,11 @@ class KendaraanController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdatekendaraanRequest  $request
-     * @param  \App\Models\kendaraan  $kendaraan
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatekendaraanRequest $request, kendaraan $kendaraan)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -83,10 +82,10 @@ class KendaraanController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\kendaraan  $kendaraan
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(kendaraan $kendaraan)
+    public function destroy($id)
     {
         //
     }

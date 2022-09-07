@@ -18,11 +18,17 @@ class DeliveryOrderFactory extends Factory
      */
     public function definition()
     {
+        $diambil = fake()->optional()->boolean();
+        $adminGudangHasSetLogistic = fake()->boolean();
+        $logistic = ($adminGudangHasSetLogistic) ? User::where('role', 'like', 'logistic')->get()->random()->id : NULL;
+        $kendaraan = ($adminGudangHasSetLogistic) ? Kendaraan::all()->random()->id : NULL;
         return [
             'id' => fake()->uuid(),
-            'logistic_id' => User::where('role', 'like', 'logistic')->get()->random()->id,
+            'kode_delivery' => fake()->word(),
+            'diambil' => $diambil,
             'purchasing_id' => User::where('role', 'like', 'purchasing')->get()->random()->id,
-            'kendaraan_id' => Kendaraan::all()->random()->id,
+            'logistic_id' => $logistic,
+            'kendaraan_id' => $kendaraan,
             'latitude' => fake()->latitude(-6.2,-6.1),
             'longitude' => fake()->longitude(106.7,106.8),
             'untuk_perusahaan' => fake()->word(),

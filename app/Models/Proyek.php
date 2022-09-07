@@ -6,16 +6,18 @@ use App\Helpers\Date;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Proyek extends Model
 {
     use Uuids;
     use HasFactory;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 
     public function supervisor(){
-        return $this->belongsToMany(User::class, 'menanganis','projek_id','supervisor_id');
+        return $this->belongsToMany(User::class, 'menanganis','proyek_id','supervisor_id');
     }
 
     public function proyekManager(){
@@ -33,7 +35,6 @@ class Proyek extends Model
                     return $query->where('selesai', true);
                 if($filter == 'masih berlangsung')
                     return $query->where('selesai', false);
-
             }
             // });
         });

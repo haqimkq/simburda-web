@@ -20,7 +20,8 @@ class PreOrderFactory extends Factory
         return [
             'id' => fake()->uuid(),
             'delivery_order_id' => DeliveryOrder::all()->random()->id,
-            'nama_material' => fake()->word(),
+            'nama_material' => fake()->words(2, true),
+            'kode_preorder' => fake()->word(),
             'satuan' => fake()->word(),
             'keterangan' => fake()->word(),
             'jumlah' => 5,

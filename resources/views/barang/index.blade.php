@@ -52,18 +52,25 @@
 					@include('shared.search')
 				</div>
 			</div>
-			<div class="mb-2 flex items-center">
-				<div class="all-status flex items-center">
-					<div class="border-green mr-1 h-5 w-5 rounded-full border"></div>
-					<p class="text-sm">Total Barang</p>
+			@if(!$barangs->isEmpty())
+				@if (request('search'))
+					<div class="flex items-center mb-5">
+						<button class="bg-red-600 py-1 px-2 mr-2 text-center font-normal text-sm delete_search text-white rounded-md" onclick="">Hapus pencarian</button>
+						<h1 class="text-center font-normal text-md">Hasil Pencarian Barang "{{request('search')}}"</h1>
+					</div>
+				@endif
+				<div class="mb-2 flex items-center">
+					<div class="all-status flex items-center">
+						<div class="border-green mr-1 h-5 w-5 rounded-full border"></div>
+						<p class="text-sm">Total Barang</p>
+					</div>
+					<div class="borrow-status ml-2 flex items-center">
+						<div class="mr-1 h-5 w-5 rounded-full border border-orange-500"></div>
+						<p class="text-sm">Jumlah Barang Digunakan</p>
+					</div>
 				</div>
-				<div class="borrow-status ml-2 flex items-center">
-					<div class="mr-1 h-5 w-5 rounded-full border border-orange-500"></div>
-					<p class="text-sm">Jumlah Barang Digunakan</p>
-				</div>
-			</div>
-			<div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-				@foreach ($barangs as $barang)
+				<div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+					@foreach ($barangs as $barang)
 					<div class="relative group flex flex-col rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
 						<a href="{{ route('barang.seri', $barang->nama) }}" class="flex p-2">
 							<div class="mr-2 h-[6em] w-[6em] rounded-xl bg-cover md:h-[5em] md:w-[5em] lg:h-[7em] lg:w-[7em]"
@@ -102,9 +109,18 @@
 									class="bg-primary ml-2 rounded-md py-1 px-3 text-sm text-white self-start">Edit</a>
 							</div>
 						</div>
+					</div>
+					@endforeach
 				</div>
-			@endforeach
-	</div>
+				@else
+				<div class="flex justify-center items-center text-center md:h-[65vh] mb-2 font-medium text-md text-red-600">
+					@if (request('search'))
+						<h1>Tidak ada Barang {{request('search')}}</h1>
+					@else
+						<h1>Belum ada Barang</h1>
+					@endif
+				</div>
+				@endif
 	<div class="mt-5">
 		{{ $barangs->links() }}
 	</div>
@@ -134,5 +150,10 @@
 					}
 				})
 		});
+
+		$('.delete_search').click(function(e){
+			$( "#searchbox" ).val('');
+			$("#form").submit();
+		})
 	</script>
 @endpush
