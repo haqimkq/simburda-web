@@ -6,6 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\API\UserController;
+use App\Models\AksesBarang;
+use App\Models\Meminjam;
+use App\Models\Menangani;
+use App\Models\Pengajuan;
+use App\Models\Proyek;
+use App\Models\SuratJalan;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes

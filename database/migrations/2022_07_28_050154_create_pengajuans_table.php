@@ -25,9 +25,9 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-        Schema::table('proyeks', function (Blueprint $table) {
+        Schema::table('pengajuans', function (Blueprint $table) {
             $table->foreignUuid('proyek_manager_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('adminGudang_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('admin_gudang_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

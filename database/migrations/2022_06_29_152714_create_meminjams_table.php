@@ -21,6 +21,7 @@ return new class extends Migration
             $table->timestamp('tgl_berakhir')->nullable();
             $table->boolean('dipinjam')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
         Schema::table('meminjams', function (Blueprint $table) {
             $table->foreignUuid('surat_jalan_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
