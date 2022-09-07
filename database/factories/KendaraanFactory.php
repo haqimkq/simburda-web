@@ -21,20 +21,21 @@ class KendaraanFactory extends Factory
     {
         $randomImage = 'https://picsum.photos/640/640?random='.mt_rand(1,92392);
         $jenis = fake()->randomElement(['motor','mobil','truck','tronton']);
+        // do {
+        //     $logisticId = User::where('role', 'like', 'logistic')->get()->random()->id;
+        //     $logisticKendaraanExist = Kendaraan::where('logistic_id', $logisticId)->exists();
+        // } while ($logisticKendaraanExist);
         $logisticId = User::where('role', 'like', 'logistic')->get()->random()->id;
-        // $logisticNoKendaraan = Kendaraan::where('logistic_id', $logisticId)->doesntExist();
-        // $logistic_id = NULL;
-        // if($logisticNoKendaraan) 
-        //     $logistic_id = $logisticId;
+        $logisticNoKendaraan = Kendaraan::where('logistic_id', $logisticId)->doesntExist();
+        $logistic_id = $logisticNoKendaraan ? $logisticId : NULL;
         return [
             'id' => fake()->uuid(),
-            'logistic_id' => $logisticId,
+            'logistic_id' => $logistic_id,
             'jenis' => $jenis,
             'merk' => Fake()->word(),
             'plat_nomor' => Fake()->word(),
             // 'gambar' => fake()->imageUrl(360, 360, 'vehicle', true, $jenis, true),
             'gambar' => $randomImage,
-
         ];
     }
 }

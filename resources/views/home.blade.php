@@ -12,29 +12,29 @@
 	<div class="grid w-full xl:grid-cols-2 gap-2">
 		<div class="text-primary relative p-4 shadow-md shadow-gray-100 rounded-lg">
 			<h2 class="text-xl font-medium text-center">Pengguna</h2>
-			<canvas id="userRoleChart" class="max-h-[15em]"></canvas>
+			<canvas id="userRoleChart" class="max-h-[40vw] md:max-h-[30vw] lg:max-h-[20vw]"></canvas>
 		</div>
-		<div class="text-primary relative w-full p-4 shadow-md shadow-gray-100 rounded-lg">
+		<div class="text-primary relative p-4 shadow-md shadow-gray-100 rounded-lg">
 			<h2 class="text-xl font-medium text-center">Proyek</h2>
 			<canvas id="proyekChart"></canvas>
 		</div>
-		<div class="text-primary relative w-full p-4 shadow-md shadow-gray-100 rounded-lg">
+		<div class="text-primary relative p-4 shadow-md shadow-gray-100 rounded-lg">
 			<h2 class="text-xl font-medium text-center">Barang</h2>
 			{{-- <canvas id="barangChart"></canvas> --}}
 		</div>
-		<div class="text-primary relative w-full p-4 shadow-md shadow-gray-100 rounded-lg">
+		<div class="text-primary relative p-4 shadow-md shadow-gray-100 rounded-lg">
 			<h2 class="text-xl font-medium text-center">Peminjaman Barang</h2>
 			{{-- <canvas id="peminjamanChart"></canvas> --}}
 		</div>
-		<div class="text-primary relative w-full p-4 shadow-md shadow-gray-100 rounded-lg">
+		<div class="text-primary relative p-4 shadow-md shadow-gray-100 rounded-lg">
 			<h2 class="text-xl font-medium text-center">Surat Jalan</h2>
 			{{-- <canvas id="peminjamanChart"></canvas> --}}
 		</div>
-		<div class="text-primary relative w-full p-4 shadow-md shadow-gray-100 rounded-lg">
+		<div class="text-primary relative p-4 shadow-md shadow-gray-100 rounded-lg">
 			<h2 class="text-xl font-medium text-center">Delivery Order</h2>
 			{{-- <canvas id="peminjamanChart"></canvas> --}}
 		</div>
-		<div class="text-primary relative w-full p-4 shadow-md shadow-gray-100 rounded-lg">
+		<div class="text-primary relative p-4 shadow-md shadow-gray-100 rounded-lg">
 			<h2 class="text-xl font-medium text-center">Kendaraan</h2>
 			{{-- <canvas id="peminjamanChart"></canvas> --}}
 		</div>
@@ -91,6 +91,9 @@
 						display: true,
 						labelString: 'Temperature'
 					},
+					ticks: {
+							precision: 0
+					}
 					// beginAtZero: true,
 				},
 				x: {

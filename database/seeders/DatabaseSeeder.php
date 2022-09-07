@@ -40,7 +40,9 @@ class DatabaseSeeder extends Seeder
         ]);
         User::factory(40)->create();
         Barang::factory(20)->create();
-        Kendaraan::factory(20)->create();
+        for ($i=0; $i < 20; $i++) { 
+            Kendaraan::factory(1)->create();
+        }
         Logistic::factory(20)->create();
         DeliveryOrder::factory(20)->create();
         PreOrder::factory(50)->create();
@@ -48,6 +50,8 @@ class DatabaseSeeder extends Seeder
         Menangani::factory(20)->create();
         SuratJalan::factory(20)->create();
         Meminjam::factory(20)->create();
-        AksesBarang::factory(20)->create();
+        for ($i=0; $i < 20; $i++) { 
+            AksesBarang::factory(1)->create();
+        }
     }
 }

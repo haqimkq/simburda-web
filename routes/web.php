@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AksesBarangController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\DeliveryOrderController;
 use Illuminate\Support\Facades\Route;
@@ -81,5 +82,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('delivery-order/detail/{id}', 'show')->name('delivery-order.show');
         Route::get('delivery-order/edit/{id}', 'edit')->name('delivery-order.edit');
         Route::post('delivery-order/delete/{id}', 'destroy')->name('delivery-order.destroy');
+    });
+    Route::middleware(['admin-projectmanager-supervisor-admingudang'])->controller(AksesBarangController::class)->group(function () {
+        Route::get('akses-barang', 'index')->name('akses-barang');
+        Route::get('akses-barang/tambah', 'create')->name('akses-barang.create');
+        Route::post('akses-barang/store', 'store')->name('akses-barang.store');
+        Route::get('akses-barang/detail/{id}', 'show')->name('akses-barang.show');
+        Route::get('akses-barang/edit/{id}', 'edit')->name('akses-barang.edit');
+        Route::post('akses-barang/delete/{id}', 'destroy')->name('akses-barang.destroy');
     });
 });
