@@ -57,7 +57,7 @@ class Proyek extends Model
     {
         return Date::dateFormatter($date, 'ddd, D MMM YYYY');
     }
-    public function getTgglSelesaiAttribute($date)
+    public function getTglSelesaiAttribute($date)
     {
         if($date)
         return Date::dateFormatter($date, 'ddd, D MMM YYYY');

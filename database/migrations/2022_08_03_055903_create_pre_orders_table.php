@@ -20,9 +20,9 @@ return new class extends Migration
             $table->string('kode_preorder')->nullable();
             $table->string('nama_material');
             $table->string('satuan');
-            $table->integer('ukuran');
+            $table->string('ukuran');
             $table->integer('jumlah');
-            $table->string('keterangan');
+            $table->string('keterangan')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

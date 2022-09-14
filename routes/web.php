@@ -10,6 +10,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\ProyekController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\SignatureController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,9 +55,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('pengguna/tambah', 'create')->name('pengguna.create');
         Route::post('pengguna/store', 'store')->name('pengguna.store');
         Route::get('pengguna/edit/{id}', 'edit')->name('pengguna.edit');
+        Route::get('/signature', 'signature')->name('pengguna.signature');
         Route::post('pengguna/update/{id}', 'update')->name('pengguna.update');
         Route::get('pengguna/detail/{id}', 'show')->name('pengguna.show');
         Route::post('pengguna/delete/{id}', 'destroy')->name('pengguna.destroy');
+    });
+    Route::controller(SignatureController::class)->group(function () {
+        Route::get('signature', 'index')->name('signature');
+        Route::post('signature/store', 'store')->name('signature.store');
     });
     Route::middleware(['admin-admingudang'])->controller(KendaraanController::class)->group(function () {
         Route::get('kendaraan', 'index')->name('kendaraan');
@@ -80,6 +86,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('delivery-order/tambah', 'create')->name('delivery-order.create');
         Route::post('delivery-order/store', 'store')->name('delivery-order.store');
         Route::get('delivery-order/detail/{id}', 'show')->name('delivery-order.show');
+        Route::get('delivery-order/cetak/{id}', 'cetak')->name('delivery-order.cetak');
+        Route::get('delivery-order/download-pdf/{id}', 'downloadPDF')->name('delivery-order.downloadPDF');
         Route::get('delivery-order/edit/{id}', 'edit')->name('delivery-order.edit');
         Route::post('delivery-order/delete/{id}', 'destroy')->name('delivery-order.destroy');
     });

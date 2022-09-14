@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('email')->unique();
             $table->string('foto')->nullable();
+            $table->string('ttd')->nullable();
             $table->integer('pin')->nullable();
             $table->string('no_hp');
             $table->string('role')->default('user');

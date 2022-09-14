@@ -21,7 +21,7 @@
 			<div class="w-full flex">
 				@section('last-search')
 				<a href="{{ route('delivery-order.create') }}" class="button-custom !w-auto px-5 !h-auto">
-					+ Tambah Delivery Order
+					+ Tambah DO
 				</a>
 				@endsection
 				@section('placeholderSearch', 'Cari Kode Delivery Order') @section('action', '/delivery-order') 
@@ -66,14 +66,14 @@
 						<p class="text-sm">Banyak Jenis Barang Preorder</p>
 					</div>
 					<div class="borrow-status ml-2 flex items-center">
-						<div class="mr-1 h-5 w-5 rounded-full border border-orange-500"></div>
+						<div class="mr-1 h-5 w-5 rounded-full border border-gray-500"></div>
 						<p class="text-sm">Total Kuantitas Barang Preorder</p>
 					</div>
 				</div>
 				<div class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-5">
 					@foreach ($deliveryOrders as $deliveryOrder)
 					<div class="group flex flex-col shadow-md shadow-gray-100 rounded-xl hover:rounded-b-none @if($deliveryOrder->user)  @endif">
-						<a href="{{ route('delivery-order.show', $deliveryOrder->id) }}" class=" p-2 ">
+						<a href="{{ route('delivery-order.cetak', $deliveryOrder->id) }}" class=" p-2 ">
 						<div class="flex flex-col w-full">
 							{{-- @if (isset($deliveryOrder->diambil)) --}}
 								<span
@@ -89,18 +89,16 @@
 										Sudah Diambil
 									@elseif (!$deliveryOrder->diambil && isset($deliveryOrder->diambil)) 
 										Dalam Perjalanan
-									@else Belum Diambil
+									@elseif(!isset($deliveryOrder->diambil)) Belum Diambil
 									@endif
 								</span>
 							<p class="font-medium my-1 line-clamp-2">{{ucfirst($deliveryOrder->kode_delivery)}} </p>
-							<div class="flex items-center md:flex-col lg:flex-row">
+							<div class="flex items-center">
 								<p class="border-green mb-2 self-start rounded-full border px-2 py-1 text-xs text-black">
 									{{ count($deliveryOrder->preOrder) }}
 								</p>
-								<p class="mb-2 ml-2 self-start rounded-full border border-orange-500 px-2 py-1 text-xs text-black md:ml-0 lg:ml-2">
-									{{-- @php $totalJumlahPreorder = 0 @endphp --}}
+								<p class="mb-2 ml-2 self-start rounded-full border border-gray-500 px-2 py-1 text-xs text-black">
 									{{$deliveryOrder->preOrder->sum('jumlah')}}
-									{{-- @php $totalJumlahPreorder = 0 @endphp --}}
 								</p>
 							</div>
 							@if ($deliveryOrder->user)

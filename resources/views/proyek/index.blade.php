@@ -83,7 +83,7 @@
 								</svg>
 								<p class="font-normal text-sm mb-2 line-clamp-1 text-gray-700">{{ucfirst($proyek->alamat)}}</p>
 							</div>
-							<p class="mb-2 text-xs font-normal text-gray-500">{{ $proyek->created_at }} @if ($proyek->tggl_selesai)- {{ $proyek->tggl_selesai }}@endif</p>
+							<p class="mb-2 text-xs font-normal text-gray-500">{{ $proyek->created_at }} @if ($proyek->tgl_selesai)-{{ $proyek->tgl_selesai }}@endif</p>
 						</a>
 						<div class="relative hidden justify-center items-center group-hover:flex w-full h-full">
 							<div class="absolute w-full z-10  h-auto bg-white flex top-0 px-2 left-0 rounded-b-xl pt-0 pb-2 shadow-md">

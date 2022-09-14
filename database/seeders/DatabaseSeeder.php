@@ -39,18 +39,18 @@ class DatabaseSeeder extends Seeder
             'no_hp' => fake()->phoneNumber()
         ]);
         User::factory(40)->create();
-        Barang::factory(20)->create();
+        Barang::factory(100)->create();
         for ($i=0; $i < 20; $i++) { 
             Kendaraan::factory(1)->create();
         }
         Logistic::factory(20)->create();
-        DeliveryOrder::factory(20)->create();
-        PreOrder::factory(50)->create();
+        DeliveryOrder::factory(50)->create();
+        PreOrder::factory(100)->create();
         Proyek::factory(20)->create();
         Menangani::factory(20)->create();
         SuratJalan::factory(20)->create();
-        Meminjam::factory(20)->create();
-        for ($i=0; $i < 20; $i++) { 
+        Meminjam::factory(100)->create();
+        for ($i=0; $i < 100; $i++) { 
             AksesBarang::factory(1)->create();
         }
     }

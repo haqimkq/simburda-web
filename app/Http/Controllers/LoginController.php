@@ -25,7 +25,6 @@ class LoginController extends Controller
         if ($validator->fails()) {
             return back()
                 ->withErrors($validator)
-                ->with('loginError', 'Email / password yang dimasukkan tidak sesuai')
                 ->withInput();
         }
         $credentials = $request->validate([
@@ -37,6 +36,7 @@ class LoginController extends Controller
             session(['timezone' => $request->timezone]);
             return redirect()->intended('home');
         }
+        return back()->with('loginError', 'Email / password yang dimasukkan tidak sesuai');
     }
 
     public function logout(Request $request)

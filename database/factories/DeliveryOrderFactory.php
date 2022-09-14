@@ -18,10 +18,13 @@ class DeliveryOrderFactory extends Factory
      */
     public function definition()
     {
+        // $diambil = fake()->optional()->boolean();
+        // $adminGudangHasSetLogistic = fake()->boolean();
+        // $logistic = ((($diambil && isset($diambil)) || ((!$diambil && isset($diambil))) && $adminGudangHasSetLogistic)) ? User::where('role', 'like', 'logistic')->get()->random()->id : NULL;
+        // $kendaraan = ((($diambil && isset($diambil)) || ((!$diambil && isset($diambil))) && $adminGudangHasSetLogistic)) ? Kendaraan::all()->random()->id : NULL;
         $diambil = fake()->optional()->boolean();
-        $adminGudangHasSetLogistic = fake()->boolean();
-        $logistic = ($adminGudangHasSetLogistic) ? User::where('role', 'like', 'logistic')->get()->random()->id : NULL;
-        $kendaraan = ($adminGudangHasSetLogistic) ? Kendaraan::all()->random()->id : NULL;
+        $logistic = (($diambil && isset($diambil)) || (!$diambil && isset($diambil))) ? User::where('role', 'like', 'logistic')->get()->random()->id : NULL;
+        $kendaraan = (($diambil && isset($diambil)) || (!$diambil && isset($diambil))) ? Kendaraan::all()->random()->id : NULL;
         return [
             'id' => fake()->uuid(),
             'kode_delivery' => fake()->word(),

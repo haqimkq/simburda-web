@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('logistics', function (Blueprint $table) {
             // $table->foreignId('logistic_id');
             // $table->foreign('logistic_id')->references('id')->on('users');
-            $table->double('longitude');
-            $table->double('latitude');
+            $table->double('longitude')->nullable();
+            $table->double('latitude')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

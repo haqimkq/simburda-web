@@ -43,10 +43,10 @@ class Meminjam extends Model
     }
     public function getTglPeminjamanAttribute($date)
     {
-        return Date::dateFormatter($date);
+        return Date::dateFormatter($date, 'ddd, D MMM YYYY');
     }
     public function getTglBerakhirAttribute($date)
     {
-        return Date::dateFormatter($date);
+        return Date::dateFormatter($date, 'ddd, D MMM YYYY');
     }
 }

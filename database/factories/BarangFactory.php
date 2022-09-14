@@ -21,7 +21,7 @@ class BarangFactory extends Factory
     {
         $id = fake()->uuid();
         $jenis = fake()->randomElement(['habis pakai', 'tidak habis pakai']);
-        $name = fake()->name();
+        $name = fake()->words(2, true);
         $output_file = NULL;
         if($jenis == 'tidak habis pakai'){
             $image = QrCode::size(1280)->format('png')->errorCorrection('H')->generate($id);

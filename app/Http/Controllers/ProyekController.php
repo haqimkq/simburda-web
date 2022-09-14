@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AksesBarang;
 use App\Models\Proyek;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -17,10 +18,11 @@ class ProyekController extends Controller
      */
     public function index()
     {
-        //
-        $proyek = Proyek::with('proyekManager', 'supervisor')->filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
+        $countUndefinedAkses = AksesBarang::countUndefinedAkses();
+        $proyek = Proyek::filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
         $authUser = Auth::user();
         return view('proyek.index',[
+            'countUndefinedAkses' => $countUndefinedAkses,
             'proyeks' => $proyek,
             'authUser' => $authUser,
         ]);
@@ -47,44 +49,43 @@ class ProyekController extends Controller
         $userAuth = Auth::user();
         if($userAuth->role == 'admin') {
             $validator = Validator::make($request->all(), [
-                    'nama_proyek' => 'required|string',
-                    'proyek_manager_id' => 'required|string',
-                    'alamat' => 'required|string',
-                    'latitude' => 'required|numeric',
-                    'longitude' => 'required|numeric',
-                ],[
-                    'nama_proyek.required' => 'Nama Proyek wajib diisi',
-                    'proyek_manager_id.required' => 'Proyek Manager wajib diisi',
-                    'alamat.required' => 'Alamat wajib diisi',
-                    'latitude.required' => 'Latitude wajib diisi',
-                    'longitude.required' => 'Longitude wajib diisi',
+                'nama_proyek' => 'required|string',
+                'proyek_manager_id' => 'required|string',
+                'alamat' => 'required|string',
+                'latitude' => 'required|numeric',
+                'longitude' => 'required|numeric',
+            ],[
+                'nama_proyek.required' => 'Nama Proyek wajib diisi',
+                'proyek_manager_id.required' => 'Proyek Manager wajib diisi',
+                'alamat.required' => 'Alamat wajib diisi',
+                'latitude.required' => 'Latitude wajib diisi',
+                'longitude.required' => 'Longitude wajib diisi',
                 ]
             );
         }else {
             $validator = Validator::make($request->all(), [
-                    'nama_proyek' => 'required|string',
-                    'alamat' => 'required|string',
-                    'latitude' => 'required|numeric',
-                    'longitude' => 'required|numeric',
-                ],[
+                'nama_proyek' => 'required|string',
+                'alamat' => 'required|string',
+                'latitude' => 'required|numeric',
+                'longitude' => 'required|numeric',
+            ],[
                     'nama_proyek.required' => 'Nama Proyek wajib diisi',
                     'alamat.required' => 'Alamat wajib diisi',
                     'latitude.required' => 'Latitude wajib diisi',
                     'longitude.required' => 'Longitude wajib diisi',
-                ]
-            );
-        }
-        
-        if ($validator->fails()) {
-            return redirect('proyek/tambah')
-            ->withErrors($validator)
-            ->with('createProyekFailed', 'Gagal Menambah Proyek!')
-            ->withInput();
-        }
-        $proyekManagerId = $userAuth->role == 'project manager' ? $userAuth->id : $request->proyek_manager_id;
-
-        $proyek = Proyek::create(
-            [
+                    ]
+                );
+            }
+            
+            if ($validator->fails()) {
+                return redirect('proyek/tambah')
+                ->withErrors($validator)
+                ->with('createProyekFailed', 'Gagal Menambah Proyek!')
+                ->withInput();
+            }
+            $proyekManagerId = $userAuth->role == 'project manager' ? $userAuth->id : $request->proyek_manager_id;
+            
+            $proyek = Proyek::create([
                 'nama_proyek' => $request->nama_proyek,
                 'alamat' => $request->alamat,
                 'latitude' => $request->latitude,

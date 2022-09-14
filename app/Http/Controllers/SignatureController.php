@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AksesBarang;
-use App\Models\Logistic;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class PenggunaController extends Controller
+class SignatureController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,18 +16,11 @@ class PenggunaController extends Controller
      */
     public function index()
     {
-        $this->authorize('admin');
-        $countUndefinedAkses = AksesBarang::countUndefinedAkses();
-        $user = User::filter(request(['search', 'filter', 'orderBy']))->paginate(12)->withQueryString();
-        $authUser = Auth::user();
-        return view('pengguna.index',[
-            'countUndefinedAkses' => $countUndefinedAkses,
-            'allUser' => $user,
-            'authUser' => $authUser
-            
+        $userAuth=Auth::user();
+        return view('pengguna.signature',[
+            "userAuth" => $userAuth
         ]);
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -48,7 +39,13 @@ class PenggunaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $userAuth=Auth::user();
+        $encoded_image = explode(",", $request->signature)[1];
+        $decoded_image = base64_decode($encoded_image);
+        $fileName = "assets/ttd/".$userAuth->id.".png";
+        User::where('id', $userAuth->id)->update(['ttd'=>$fileName]);
+        Storage::disk('public')->put($fileName, $decoded_image);
+        return redirect()->back()->withInput();
     }
 
     /**
@@ -70,10 +67,7 @@ class PenggunaController extends Controller
      */
     public function edit($id)
     {
-        $user = User::find($id);
-        return view('pengguna.edit', [
-            "user" => $user
-        ]);
+        //
     }
 
     /**
@@ -85,21 +79,7 @@ class PenggunaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = User::find($id);
-        $user->role = $request->role;
-        $user->nama = $request->nama;
-        if($request->foto){
-            $extFormat = $request->file('foto')->getClientOriginalExtension();
-            $fileName = $user->nama.".".$extFormat;
-            $user->foto = $request->file('foto')->storeAS('assets/pengguna',$fileName,'public');
-        }
-        if($request->role=='logistic'){
-            Logistic::firstOrCreate(['logistic_id' => $id,]);
-        }
-        $user->update();
-        return redirect('/pengguna')->with(
-            "updatePenggunaSuccess", "Berhasil Memperbarui Pengguna (".$user->nama.")"
-        );
+        //
     }
 
     /**
@@ -110,8 +90,6 @@ class PenggunaController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::find($id);
-        User::destroy($id);
-        return redirect('/pengguna')->with('deletePenggunaSuccess','Berhasil Menghapus Pengguna ('.$user->nama.')');
+        //
     }
 }

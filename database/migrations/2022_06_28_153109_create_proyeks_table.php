@@ -23,7 +23,7 @@ return new class extends Migration
             $table->double('latitude');
             $table->double('longitude');
             $table->boolean('selesai')->default(false);
-            $table->timestamp('tggl_selesai')->nullable();
+            $table->timestamp('tgl_selesai')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

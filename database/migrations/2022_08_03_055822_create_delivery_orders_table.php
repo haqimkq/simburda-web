@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('untuk_perusahaan');
             $table->string('untuk_perhatian');
             $table->string('perihal');
+            $table->timestamp('tgl_pengambilan');
             $table->timestamps();
             $table->softDeletes();
         });

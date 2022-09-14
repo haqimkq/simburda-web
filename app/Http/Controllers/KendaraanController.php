@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorekendaraanRequest;
 use App\Http\Requests\UpdatekendaraanRequest;
+use App\Models\AksesBarang;
 use App\Models\Kendaraan;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -18,8 +19,10 @@ class KendaraanController extends Controller
     public function index()
     {
         $kendaraan = Kendaraan::with('user', 'user.logistic')->filter(request(['search', 'filter', 'orderBy']))->paginate(12)->withQueryString();
+        $countUndefinedAkses = AksesBarang::countUndefinedAkses();
         $authUser = Auth::user();
         return view('kendaraan.index',[
+            'countUndefinedAkses' => $countUndefinedAkses,
             'allKendaraan' => $kendaraan,
             'authUser' => $authUser
         ]);

@@ -82,14 +82,14 @@
 			@foreach ($allKendaraan as $kendaraan)
 			<div class="w-full flex flex-col group rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
 				<div class="flex">
-				<a href="{{ route('kendaraan.show', $kendaraan->id) }}" class="pl-0">
-				<div class="m-2 h-[5em] w-[5em] rounded-md bg-cover"
+					<div class="m-2 h-[5em] w-[5em] rounded-md bg-cover"
 					style="background-image: url('{{ asset($kendaraan->gambar) }}')"></div>
+					<a href="{{ route('kendaraan.show', $kendaraan->id) }}" class="pl-0">
 					<div
 						class="flex flex-col w-full">
 							<div class="flex w-full flex-col">
 								<div class="flex flex-col md:flex-row md:items-center mt-1">
-									<span class="md:mr-1 mb-1 self-start md:self-center rounded-full border border-green-600 bg-green-200 px-1.5 text-xs text-green-600">
+									<span class="md:mr-1 mb-1 md:mb-0 self-start md:self-center rounded-full border border-green-600 bg-green-200 px-1.5 text-xs text-green-600">
 										{{ ucfirst($kendaraan->jenis) }}
 									</span>
 									<p class="line-clamp-1 font-medium">{{ ucfirst($kendaraan->merk) }}</p>

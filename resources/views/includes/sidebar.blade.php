@@ -59,7 +59,7 @@
 			<a href="/akses-barang" class="sidebar-link text-sm {{ request()->is('akses-barang*') ? 'bg-primary-light' : '' }}">
 				<span class="ml-3 flex-1 whitespace-nowrap">Akses Barang</span>
 				<span
-					class="ml-3 inline-flex h-3 w-3 items-center justify-center rounded-full bg-blue-200 p-3 text-sm font-medium text-blue-600 dark:bg-blue-900 dark:text-blue-200">3</span>
+					class="ml-3 inline-flex h-3 w-3 items-center justify-center rounded-full bg-blue-200 p-3 text-sm font-medium text-blue-600 dark:bg-blue-900 dark:text-blue-200">{{$countUndefinedAkses}}</span>
 			</a>
 		</div>
 		<form action="{{ route('logout') }}" method="post" class="relative" class="md:h-auto">

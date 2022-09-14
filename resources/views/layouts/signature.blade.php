@@ -18,23 +18,19 @@
     <title>@yield('title')</title>
 
     <link rel="icon" type="image/png" href="/images/favico.png" />
-
+    
     {{-- Style --}}
     @stack('prepend-style')
     @include('includes.style')
     @stack('addon-style')
     
   </head>
-
-  <body>
+  
+  <body class="">
     {{-- Sidebar --}}
-    <div class="md:flex flex-col md:flex-row md:min-h-screen p-4">
-      @include('includes.sidebar')
-      {{-- Page Content --}}
+    <div >
       @yield('content')
     </div>
-    {{-- Footer --}}
-    @include('includes.footer')
     {{-- Script --}}
     @stack('prepend-script')
     @include('includes.script')

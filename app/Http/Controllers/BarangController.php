@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use App\Helpers\Date;
+use App\Models\AksesBarang;
 use App\Models\Meminjam;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -24,10 +25,12 @@ class BarangController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $countUndefinedAkses = AksesBarang::countUndefinedAkses();
         $barang = Barang::select(DB::raw('*, count(nama) as jumlah'))->filter(request(['search','orderBy','filter']))->groupBy('nama')->paginate(12)->withQueryString();
         return view('barang.index',[
             'barangs' => $barang,
             'authUser' => $user,
+            'countUndefinedAkses' => $countUndefinedAkses,
         ]);
     }
 

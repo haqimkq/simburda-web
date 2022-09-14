@@ -1,36 +1,5 @@
 @extends('layouts.detail')
 
-@if (!$barangPinjaman->isEmpty())
-	@push('prepend-script')
-		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
-		integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
-		crossorigin="" />
-		<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
-		integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
-		crossorigin=""></script>
-		<script>
-			
-			@foreach ($historyPeminjamanBarang as $hpb)
-			var idExist = document.getElementById('history-{{$hpb->proyek->id}}');
-			if(idExist){
-				var lat_h = {{ $hpb->proyek->latitude }};
-				var lon_h = {{ $hpb->proyek->longitude }};
-					var map_h = L.map('history-{{ $hpb->proyek->id }}', {
-					zoomControl: false
-					}).setView([lat_h, lon_h], 19);
-					var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-						maxZoom: 19,
-						attribution: '© OpenStreetMap'
-					}).addTo(map_h);
-					var marker_h = L.marker([lat_h, lon_h]).addTo(map_h);
-					marker_h.bindPopup(
-						`<a target='_blank' href='https://maps.google.com/?q=${lat_h},${lon_h}&z=20'><b>Proyek {{ $hpb->proyek->nama_proyek }}</b><br>{{ $hpb->proyek->alamat }}</a>`
-					);
-				}
-			@endforeach
-		</script>
-	@endpush
-@endif
 @section('content')
 	<nav class="flex" aria-label="Breadcrumb">
 		<ol class="inline-flex items-center space-x-1 md:space-x-3">
@@ -84,7 +53,7 @@
 		@foreach ($historyPeminjamanBarang as $hbp)
 			<div class="{{ $hbp->dipinjam ? 'border-orange-500' : 'border-gray-500' }} rounded-md border p-2">
 				@if ($hbp->dipinjam)
-				<div class="mb-2 h-[20em] rounded-md" id="history-{{$hbp->proyek->id}}"></div>
+				<iframe class="w-full h-[500px] mb-2 rounded-md" src="https://maps.google.com/maps?q={{$hbp->proyek->latitude}},{{$hbp->proyek->longitude}}&hl=id&z=20&output=embed"></iframe>
 				@endif
 				<a href="">
 					<div class="mb-2 font-bold uppercase flex items-center">

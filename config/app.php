@@ -197,6 +197,8 @@ return [
         
         Kreait\Laravel\Firebase\ServiceProvider::class,
 
+        Barryvdh\DomPDF\ServiceProvider::class,
+
         // SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class
     ],
 
@@ -212,6 +214,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        'PDF' => Barryvdh\DomPDF\Facade::class,
         // 'ExampleClass' => App\Example\ExampleClass::class,
         // 'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class
     ])->toArray(),

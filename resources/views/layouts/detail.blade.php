@@ -19,10 +19,6 @@
 
     <link rel="icon" type="image/png" href="/images/favico.png" />
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    
     {{-- Style --}}
     @stack('prepend-style')
     @include('includes.style')
