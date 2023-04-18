@@ -73,23 +73,23 @@
 				<div class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-5">
 					@foreach ($deliveryOrders as $deliveryOrder)
 					<div class="group flex flex-col shadow-md shadow-gray-100 rounded-xl hover:rounded-b-none @if($deliveryOrder->user)  @endif">
-						<a href="{{ route('delivery-order.cetak', $deliveryOrder->id) }}" class=" p-2 ">
+						<a href="{{ route('delivery-order.show', $deliveryOrder->id) }}" class=" p-2 ">
 						<div class="flex flex-col w-full">
 							{{-- @if (isset($deliveryOrder->diambil)) --}}
 								<span
 									class="self-start my-1 rounded-full border px-1.5 text-xs 
-										@if ($deliveryOrder->diambil && isset($deliveryOrder->diambil))
+										@if ($deliveryOrder->status == 'Selesai')
 												bg-green-200 text-green-600 border-green-600
-										@elseif (!$deliveryOrder->diambil && isset($deliveryOrder->diambil)) 
+										@elseif ($deliveryOrder->status == 'Driver dalam perjalanan')
 											bg-yellow-200 text-yellow-600 border-yellow-600
 										@else 
 											bg-red-200 text-red-600 border-red-600
 										@endif">
-									@if ($deliveryOrder->diambil && isset($deliveryOrder->diambil)) 
+									@if ($deliveryOrder->status == 'Selesai')
 										Sudah Diambil
-									@elseif (!$deliveryOrder->diambil && isset($deliveryOrder->diambil)) 
+									@elseif ($deliveryOrder->status == 'Driver dalam perjalanan')
 										Dalam Perjalanan
-									@elseif(!isset($deliveryOrder->diambil)) Belum Diambil
+									@else Belum Diambil
 									@endif
 								</span>
 							<p class="font-medium my-1 line-clamp-2">{{ucfirst($deliveryOrder->kode_delivery)}} </p>

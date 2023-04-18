@@ -9,6 +9,19 @@
 		@section('foto', asset($authUser->foto))
 	@endif
 	@include('includes.header')
+	<div class="">
+		@if (!$authUser->ttd)
+				Anda Belum membuat tanda tangan
+				<a href="{{route('signature')}}" class="bg-primary px-2 py-1 rounded-lg text-white">
+					Tambah Tanda Tangan
+				</a>
+				@else
+				Tanda tangan sudah dibuat
+				<a href="{{route('signature')}}" class="bg-primary px-2 py-1 rounded-lg text-white">
+					Ubah Tanda Tangan
+				</a>
+		@endif
+	</div>
 	<div class="grid w-full xl:grid-cols-2 gap-2">
 		<div class="text-primary relative p-4 shadow-md shadow-gray-100 rounded-lg">
 			<h2 class="text-xl font-medium text-center">Pengguna</h2>

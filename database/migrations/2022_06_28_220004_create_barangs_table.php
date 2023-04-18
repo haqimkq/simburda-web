@@ -14,24 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('barangs', function (Blueprint $table) {
-            // $table->id();
             $table->uuid('id')->primary();
-            $table->string('qrcode')->nullable();
-            $table->string('nama');
-            $table->integer('nomor_seri');
-            $table->string('jenis');
             $table->string('gambar');
-            // $table->integer('jumlah');
-            $table->text('alamat');
-            $table->double('latitude');
-            $table->double('longitude');
-            // $table->string('berat')->nullable();
-            $table->string('satuan');
-            $table->boolean('bagus')->default(true);
-            $table->boolean('tersedia')->default(true);
-            $table->string('kondisi')->nullable();
+            $table->string('nama');
+            $table->string('merk')->nullable();
+            $table->string('jenis');
             $table->text('detail');
-            $table->string('excerpt');
+            $table->foreignUuid('gudang_id')->constrained('gudangs')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });

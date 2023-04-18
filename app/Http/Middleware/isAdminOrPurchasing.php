@@ -16,7 +16,7 @@ class isAdminOrPurchasing
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->user()->role=='admin'||auth()->user()->role=='purchasing'){
+        if(auth()->user()->role=='ADMIN'||auth()->user()->role=='PURCHASING'){
             return $next($request);
         }
         return redirect('/home');

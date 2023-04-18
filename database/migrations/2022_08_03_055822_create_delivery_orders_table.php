@@ -14,28 +14,20 @@ return new class extends Migration
     public function up()
     {
         Schema::create('delivery_orders', function (Blueprint $table) {
-            // $table->id();
-            // $table->foreignId('logistic_id');
-            // $table->foreignId('purchasing_id');
-            // $table->foreign('logistic_id')->references('id')->on('users');
-            // $table->foreign('purchasing_id')->references('id')->on('users');
-            // $table->foreignId('kendaraan_id');
             $table->uuid('id')->primary();
-            $table->string('kode_delivery')->nullable();
-            $table->boolean('diambil')->nullable();
-            $table->double('longitude');
-            $table->double('latitude');
-            $table->string('untuk_perusahaan');
+            $table->foreignUuid('purchasing_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('logistic_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade')->nullable();
+            $table->foreignUuid('kendaraan_id')->constrained('kendaraans')->onUpdate('cascade')->onDelete('cascade')->nullable();
+            $table->foreignUuid('gudang_id')->constrained('gudangs')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('perusahaan_id')->constrained('perusahaans')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('kode_do');
+            $table->enum('status', ['menunggu_konfirmasi_admin_gudang', 'menunggu_konfirmasi_driver','driver_dalam_perjalanan', 'selesai'])->default('menunggu_konfirmasi_admin_gudang');
             $table->string('untuk_perhatian');
             $table->string('perihal');
+            $table->string('foto_bukti');
             $table->timestamp('tgl_pengambilan');
             $table->timestamps();
             $table->softDeletes();
-        });
-        Schema::table('delivery_orders', function (Blueprint $table) {
-            $table->foreignUuid('purchasing_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('logistic_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('kendaraan_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

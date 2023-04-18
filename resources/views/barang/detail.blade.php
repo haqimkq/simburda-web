@@ -49,11 +49,11 @@
 			Riwayat Penggunaan Barang
 		</h1>
 	</div>
-		<div class="grid gap-2 md:grid-cols-2">
+		<div class="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
 		@foreach ($historyPeminjamanBarang as $hbp)
 			<div class="{{ $hbp->dipinjam ? 'border-orange-500' : 'border-gray-500' }} rounded-md border p-2">
 				@if ($hbp->dipinjam)
-				<iframe class="w-full h-[500px] mb-2 rounded-md" src="https://maps.google.com/maps?q={{$hbp->proyek->latitude}},{{$hbp->proyek->longitude}}&hl=id&z=20&output=embed"></iframe>
+				<iframe class="w-full h-[20vh] mb-2 rounded-md" src="https://maps.google.com/maps?q={{$hbp->proyek->latitude}},{{$hbp->proyek->longitude}}&hl=id&z=20&output=embed"></iframe>
 				@endif
 				<a href="">
 					<div class="mb-2 font-bold uppercase flex items-center">

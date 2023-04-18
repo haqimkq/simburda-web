@@ -16,7 +16,7 @@ class isPurchasing
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->guest()||auth()->user()->role!='purchasing'){
+        if(auth()->guest()||auth()->user()->role!='PURCHASING'){
             // abort(403);
             return redirect('/home');
         }

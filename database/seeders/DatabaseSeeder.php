@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
         Menangani::factory(20)->create();
         SuratJalan::factory(20)->create();
         Meminjam::factory(100)->create();
-        for ($i=0; $i < 100; $i++) { 
+        for ($i=0; $i < 100; $i++) {
             AksesBarang::factory(1)->create();
         }
     }

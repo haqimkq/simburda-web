@@ -14,11 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('proyeks', function (Blueprint $table) {
-            // $table->id();
-            // $table->foreignId('proyek_manager_id');
-            // $table->foreign('proyek_manager_id')->references('id')->on('users');
             $table->uuid('id')->primary();
+            $table->foreignUuid('project_manager_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->string('nama_proyek');
+            $table->string('foto')->nullable();
+            $table->string('alamat');
+            $table->string('provinsi');
+            $table->string('kota');
             $table->string('alamat');
             $table->double('latitude');
             $table->double('longitude');
@@ -26,9 +28,6 @@ return new class extends Migration
             $table->timestamp('tgl_selesai')->nullable();
             $table->timestamps();
             $table->softDeletes();
-        });
-        Schema::table('proyeks', function (Blueprint $table) {
-            $table->foreignUuid('proyek_manager_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

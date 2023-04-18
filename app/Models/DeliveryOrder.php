@@ -40,11 +40,11 @@ class DeliveryOrder extends Model
         //    return $query->where(function($query) use ($filter) {
             if($filter != 'semua status'){
                 if($filter == 'sudah diambil')
-                    return $query->where('diambil', true);
+                    return $query->where('status', 'Selesai');
                 if($filter == 'dalam perjalanan')
-                    return $query->where('diambil', false);
+                    return $query->where('status', 'Driver dalam perjalanan');
                 if($filter == 'belum diambil')
-                    return $query->where('diambil', NULL);
+                    return $query->where('status', 'Menunggu konfirmasi driver');
             }
             // });
         });

@@ -16,7 +16,7 @@ class isAdminGudang
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->guest()||auth()->user()->role!='admin gudang'){
+        if(auth()->guest()||auth()->user()->role!='ADMIN_GUDANG'){
             // abort(403);
             return redirect('/home');
         }

@@ -17,7 +17,7 @@ class isAdminOrAdminGudangOrLogistic
     public function handle(Request $request, Closure $next)
     {
         return $next($request);
-        if(auth()->user()->role=='admin'||auth()->user()->role=='admin gudang'||auth()->user()->role=='logistic'){
+        if(auth()->user()->role=='ADMIN'||auth()->user()->role=='ADMIN_GUDANG'||auth()->user()->role=='LOGISTIC'){
             return $next($request);
         }
         return redirect('/home');

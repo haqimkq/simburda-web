@@ -16,7 +16,7 @@ class isAdminOrProjectManagerOrSupervisorOrAdminGudang
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->user()->role=='admin'||auth()->user()->role=='project manager'||auth()->user()->role=='supervisor'||auth()->user()->role=='admin gudang'){
+        if(auth()->user()->role=='ADMIN'||auth()->user()->role=='PROJECT_MANAGER'||auth()->user()->role=='SUPERVISOR'||auth()->user()->role=='ADMIN_GUDANG'){
             return $next($request);
         }
         return redirect('/home');

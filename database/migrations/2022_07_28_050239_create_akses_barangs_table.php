@@ -14,17 +14,16 @@ return new class extends Migration
     public function up()
     {
         Schema::create('akses_barangs', function (Blueprint $table) {
-            // $table->id();
-            // $table->foreignId('meminjam_id');
-            // $table->uuid('meminjam_id');
             $table->uuid('id')->primary();
             $table->boolean('disetujui_admin')->nullable();
             $table->boolean('disetujui_pm')->nullable();
+            $table->string('keterangan_pm')->nullable();
+            $table->string('keterangan_admin')->nullable();
+            $table->foreignId('peminjaman_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('project_manager_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('admin_gudang_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
-        });
-        Schema::table('akses_barangs', function (Blueprint $table) {
-            $table->foreignUuid('meminjam_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

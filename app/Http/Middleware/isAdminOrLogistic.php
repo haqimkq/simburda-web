@@ -16,7 +16,7 @@ class isAdminOrLogistic
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->user()->role=='admin'||auth()->user()->role=='logistic'){
+        if(auth()->user()->role=='ADMIN'||auth()->user()->role=='LOGISTIC'){
             return $next($request);
         }
         return redirect('/home');

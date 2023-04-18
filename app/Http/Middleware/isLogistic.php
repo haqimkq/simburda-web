@@ -16,7 +16,7 @@ class isLogistic
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->guest()||auth()->user()->role!='logistic'){
+        if(auth()->guest()||auth()->user()->role!='LOGISTIC'){
             // abort(403);
             return redirect('/home');
         }

@@ -16,13 +16,13 @@ class Kendaraan extends Model
 
     protected $guarded = ['id'];
 
-    public function deliveryOrder(){
+    public function deliveryOrders(){
         return $this->hasMany(DeliveryOrder::class);
     }
-    public function suratJalan(){
+    public function suratJalans(){
         return $this->hasMany(SuratJalan::class);
     }
-    public function user(){
+    public function users(){
         return $this->hasOne(User::class, 'id', 'logistic_id');
     }
 

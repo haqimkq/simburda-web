@@ -18,17 +18,13 @@ class DeliveryOrderFactory extends Factory
      */
     public function definition()
     {
-        // $diambil = fake()->optional()->boolean();
-        // $adminGudangHasSetLogistic = fake()->boolean();
-        // $logistic = ((($diambil && isset($diambil)) || ((!$diambil && isset($diambil))) && $adminGudangHasSetLogistic)) ? User::where('role', 'like', 'logistic')->get()->random()->id : NULL;
-        // $kendaraan = ((($diambil && isset($diambil)) || ((!$diambil && isset($diambil))) && $adminGudangHasSetLogistic)) ? Kendaraan::all()->random()->id : NULL;
-        $diambil = fake()->optional()->boolean();
-        $logistic = (($diambil && isset($diambil)) || (!$diambil && isset($diambil))) ? User::where('role', 'like', 'logistic')->get()->random()->id : NULL;
-        $kendaraan = (($diambil && isset($diambil)) || (!$diambil && isset($diambil))) ? Kendaraan::all()->random()->id : NULL;
+        $status = fake()->randomElement(['Admin gudang belum memilih driver', 'Menunggu konfirmasi driver','Driver dalam perjalanan', 'Selesai']);
+        $logistic = ($status!='Admin gudang belum memilih driver') ? User::where('role', 'like', 'logistic')->get()->random()->id : NULL;
+        $kendaraan = ($status!='Admin gudang belum memilih driver') ? Kendaraan::all()->random()->id : NULL;
         return [
             'id' => fake()->uuid(),
             'kode_delivery' => fake()->word(),
-            'diambil' => $diambil,
+            'status' => $status,
             'purchasing_id' => User::where('role', 'like', 'purchasing')->get()->random()->id,
             'logistic_id' => $logistic,
             'kendaraan_id' => $kendaraan,

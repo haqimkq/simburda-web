@@ -2,24 +2,22 @@
 
 namespace App\Models;
 
+use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Pengajuan extends Model
+class SjPengembalian extends Model
 {
     use Uuids;
     use HasFactory;
     use SoftDeletes;
-
     protected $guarded = ['id'];
-
-    public function adminGudang(){
-        return $this->belongsToMany(User::class,'admin_gudang_id','id');
+    
+    public function suratJalan(){
+        return $this->belongsTo(SuratJalan::class);
     }
-
-    public function projectManager(){
-        return $this->belongsToMany(User::class,'project_manager_id','id');
+    public function pengembalianTujuan(){
+        return $this->belongsTo(Pengembalian::class);
     }
 }

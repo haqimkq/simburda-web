@@ -125,59 +125,14 @@ Route::post('/proyek/{id}/menangani',function($id ,Request $request){
 
 /*
 |--------------------------------------------------------------------------
-| Admin Gudang API Routes
+| User API Routes
 |--------------------------------------------------------------------------
 */
 
-//get permision request
-Route::get('/adminGudang/permissions', function(){
-    return AksesBarang::where('disetujui_pm',1)->orderBy('disetujui_admin','desc')->orderBy('created_at')->get();
-});
-
-//get stuff detail
-Route::get('/stuffs/{id}', function($id){
-    return Barang::where('id',$id)->first(); 
-});
-
-//post surat jalan
-Route::post('/suratJalan',function(Request $request){
-    $validateData = $request->validate([
-        'latitude_asal' => 'required',
-        'latitude_tujuan' => 'required',
-        'longitude_asal' => 'required',
-        'longitude_tujuan' => 'required',
-        'alamat_asal' => 'required',
-        'alamat_tujuan' => 'required',
-        'meminjam_id' => 'required'
-    ]);
-
-    return SuratJalan::create($validateData);
-});
-
-//pengusulan pembelian barang
-Route::post('/pengajuanPembelian',function(Request $request){
-    $validateData = $request->validate([
-        'admin_gudang_id' => 'required',
-        'nama_barang' => 'required',
-        'jumlah' => 'required',
-        'satuan' => 'required',
-        'harga' => 'required',
-        'foto' => 'mimes:png,jpg,svg'
-    ]);
-
-    // if($validateData['foto']){
-    //     $filename = time().'.'.$request->file->extension();
-    //     $request->file->move(public_path('documents'),$filename);
-    //     $validateData['foto'] = $filename;
-    // }
-
-    return Pengajuan::create($validateData);
-});
-
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('user/update', [UserController::class, 'updateProfile']);
-    Route::post('user/photo', [UserController::class, 'updatePhoto']);
+    Route::put('user/update', [UserController::class, 'updateProfile']);
+    Route::post('user/update-photo', [UserController::class, 'updatePhoto']);
     Route::post('logout', [UserController::class, 'logout']);
 });
 

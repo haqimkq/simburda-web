@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -15,6 +16,10 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
+        if (env(key: 'APP_ENV') !=='local') {
+            URL::forceScheme(scheme:'https');
+        }
+
     }
 
     /**

@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Menangani extends Model
 {
+    use Uuids;
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['supervisor_id','proyek_id'];
+    protected $guarded = ['id'];
 }

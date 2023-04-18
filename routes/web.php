@@ -99,4 +99,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('akses-barang/edit/{id}', 'edit')->name('akses-barang.edit');
         Route::post('akses-barang/delete/{id}', 'destroy')->name('akses-barang.destroy');
     });
+    Route::middleware(['admin-admingudang-logistic'])->controller(AksesBarangController::class)->group(function () {
+        Route::get('surat-jalan', 'index')->name('surat-jalan');
+        Route::get('surat-jalan/tambah', 'create')->name('surat-jalan.create');
+        Route::post('surat-jalan/store', 'store')->name('surat-jalan.store');
+        Route::get('surat-jalan/detail/{id}', 'show')->name('surat-jalan.show');
+        Route::get('surat-jalan/edit/{id}', 'edit')->name('surat-jalan.edit');
+        Route::post('surat-jalan/delete/{id}', 'destroy')->name('surat-jalan.destroy');
+    });
 });

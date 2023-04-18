@@ -14,16 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('logistics', function (Blueprint $table) {
-            // $table->foreignId('logistic_id');
-            // $table->foreign('logistic_id')->references('id')->on('users');
+            $table->foreignUuid('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('kode_logistic');
             $table->double('longitude')->nullable();
             $table->double('latitude')->nullable();
             $table->timestamps();
             $table->softDeletes();
-        });
-        Schema::table('logistics', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('logistic_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

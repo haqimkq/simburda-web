@@ -22,36 +22,36 @@ class AksesBarangController extends Controller
 
         if($authUser->role == 'project manager' ){
             $aksesBarangs = AksesBarang::select('*', 'akses_barangs.id as id')->join('meminjams', 'akses_barangs.meminjam_id', '=', 'meminjams.id')
-            ->join('barangs', 'meminjams.barang_id', '=', 'barangs.id')
-            ->join('users', 'meminjams.supervisor_id', '=', 'users.id')
-            ->join('proyeks', 'meminjams.proyek_id', '=', 'proyeks.id')
-            ->where('proyeks.proyek_manager_id',$authUser->id)
-            ->orderBy('proyeks.nama_proyek')
-            ->orderBy('meminjams.created_at')
-            ->filter(request(['search', 'filter', 'orderBy']))
-            ->paginate(40)
-            ->withQueryString();
+                ->join('barangs', 'meminjams.barang_id', '=', 'barangs.id')
+                ->join('users', 'meminjams.supervisor_id', '=', 'users.id')
+                ->join('proyeks', 'meminjams.proyek_id', '=', 'proyeks.id')
+                ->where('proyeks.proyek_manager_id',$authUser->id)
+                ->orderBy('proyeks.created_at','DESC')
+                ->orderBy('meminjams.created_at')
+                ->filter(request(['search', 'filter', 'orderBy']))
+                ->paginate(40)
+                ->withQueryString();
         } else if($authUser->role == 'supervisor'){
             $aksesBarangs = AksesBarang::select('*', 'akses_barangs.id as id')->join('meminjams', 'akses_barangs.meminjam_id', '=', 'meminjams.id')
-            ->join('barangs', 'meminjams.barang_id', '=', 'barangs.id')
-            ->join('users', 'meminjams.supervisor_id', '=', 'users.id')
-            ->join('proyeks', 'meminjams.proyek_id', '=', 'proyeks.id')
-            ->orderBy('proyeks.nama_proyek')
-            ->where('meminjams.supervisor_id',$authUser->id)
-            ->orderBy('meminjams.created_at')
-            ->filter(request(['search', 'filter', 'orderBy']))
-            ->paginate(40)
-            ->withQueryString();
+                ->join('barangs', 'meminjams.barang_id', '=', 'barangs.id')
+                ->join('users', 'meminjams.supervisor_id', '=', 'users.id')
+                ->join('proyeks', 'meminjams.proyek_id', '=', 'proyeks.id')
+                ->orderBy('proyeks.created_at','DESC')
+                ->where('meminjams.supervisor_id',$authUser->id)
+                ->orderBy('meminjams.created_at')
+                ->filter(request(['search', 'filter', 'orderBy']))
+                ->paginate(40)
+                ->withQueryString();
         }else{
             $aksesBarangs = AksesBarang::select('*', 'akses_barangs.id as id')->join('meminjams', 'akses_barangs.meminjam_id', '=', 'meminjams.id')
-            ->join('barangs', 'meminjams.barang_id', '=', 'barangs.id')
-            ->join('users', 'meminjams.supervisor_id', '=', 'users.id')
-            ->join('proyeks', 'meminjams.proyek_id', '=', 'proyeks.id')
-            ->orderBy('proyeks.nama_proyek')
-            ->orderBy('meminjams.created_at')
-            ->filter(request(['search', 'filter', 'orderBy']))
-            ->paginate(40)
-            ->withQueryString();
+                ->join('barangs', 'meminjams.barang_id', '=', 'barangs.id')
+                ->join('users', 'meminjams.supervisor_id', '=', 'users.id')
+                ->join('proyeks', 'meminjams.proyek_id', '=', 'proyeks.id')
+                ->orderBy('proyeks.created_at','DESC')
+                ->orderBy('meminjams.created_at')
+                ->filter(request(['search', 'filter', 'orderBy']))
+                ->paginate(40)
+                ->withQueryString();
         }
         return view('aksesbarang.index',[
             'authUser' => $authUser,

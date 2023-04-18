@@ -18,8 +18,16 @@ class AksesBarang extends Model
 
     protected $guarded = ['id'];
 
-    public function meminjam(){
-        return $this->belongsTo(Meminjam::class);
+    public function peminjaman(){
+        return $this->belongsTo(Peminjaman::class);
+    }
+
+    public function projectManager(){
+        return $this->belongsTo(User::class, 'project_manager_id');
+    }
+
+    public function adminGudang(){
+        return $this->belongsTo(User::class, 'admin_gudang_id');
     }
 
     public function scopeFilter($query, array $filters){

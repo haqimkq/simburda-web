@@ -64,6 +64,12 @@ class DeliveryOrderController extends Controller
     public function show($id)
     {
         //
+        $authUser = Auth::user();
+        $deliveryorder = DeliveryOrder::where("id", $id)->first();
+        return view("deliveryorder.detail", [
+            "authUser" => $authUser,
+            "deliveryorder" => $deliveryorder
+        ]);
     }
 
     /**

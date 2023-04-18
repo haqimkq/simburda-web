@@ -1,0 +1,44 @@
+@startuml
+'skinparam groupInheritance 1
+hide circle
+
+class aksesbarang_detail <<view>>
+class aksesbarang_create <<view>>
+class aksesbarang_index <<view>>
+class aksesbarang_edit <<view>>
+
+class auth_login <<view>>
+class auth_register <<view>>
+
+class barang_detail <<view>>
+class barang_create <<view>>
+class barang_index <<view>>
+class barang_edit <<view>>
+class barang_seri <<view>>
+
+class deliveryorder_detail <<view>>
+class deliveryorder_create <<view>>
+class deliveryorder_index <<view>>
+class deliveryorder_edit <<view>>
+class deliveryorder_lokasi <<view>>
+
+View <|- aksesbarang_detail
+View <|- aksesbarang_create
+View <|- aksesbarang_index
+View <|- aksesbarang_edit
+View <|- auth_login
+View <|- auth_register
+View <|- barang_detail
+View <|- barang_create
+barang_index -|> View
+barang_edit -|> View
+barang_seri -|> View
+deliveryorder_detail -|> View
+deliveryorder_create -|> View
+deliveryorder_index -|> View
+deliveryorder_edit -|> View
+deliveryorder_lokasi -|> View
+
+class View
+
+@enduml

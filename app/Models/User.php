@@ -24,7 +24,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $guarded = ['id'];
+    protected $guarded = ['id', 'role'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -44,9 +44,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    public function proyek(){
+    public function menanganiProyek(){
         return $this->belongsToMany(Proyek::class, 'menanganis','supervisor_id','projek_id');
-    }
+    } 
 
     public function mengawasi(){
         return $this->hasMany(Proyek::class, 'proyek_manager_id', 'id');

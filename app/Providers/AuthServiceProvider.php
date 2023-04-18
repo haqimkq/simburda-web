@@ -31,32 +31,32 @@ class AuthServiceProvider extends ServiceProvider
         //     return $user->id == $post->user_id;
         // });
 
-        Gate::define('user', function (User $user) {
-            return $user->role === 'user';
+        Gate::define('USER', function (User $user) {
+            return $user->role === 'USER';
         });
 
-        Gate::define('admin', function (User $user) {
-            return $user->role === 'admin';
+        Gate::define('ADMIN', function (User $user) {
+            return $user->role === 'ADMIN';
         });
 
-        Gate::define('admin-gudang', function (User $user) {
-            return $user->role === 'admin gudang';
+        Gate::define('ADMIN_GUDANG', function (User $user) {
+            return $user->role === 'ADMIN_GUDANG';
         });
 
-        Gate::define('project-manager', function (User $user) {
-            return $user->role === 'project manager';
+        Gate::define('PROJECT_MANAGER', function (User $user) {
+            return $user->role === 'PROJECT_MANAGER';
         });
 
-        Gate::define('purchasing', function (User $user) {
-            return $user->role === 'purchasing';
+        Gate::define('PURCHASING', function (User $user) {
+            return $user->role === 'PURCHASING';
         });
 
-        Gate::define('logistic', function (User $user) {
-            return $user->role === 'logistic';
+        Gate::define('LOGISTIC', function (User $user) {
+            return $user->role === 'LOGISTIC';
         });
 
-        Gate::define('supervisor', function (User $user) {
-            return $user->role === 'supervisor';
+        Gate::define('SUPERVISOR', function (User $user) {
+            return $user->role === 'SUPERVISOR';
         });
 
         // Gate::define('delete-user', function (User $user, Post $post) {

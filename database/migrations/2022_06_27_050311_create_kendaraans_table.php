@@ -15,16 +15,14 @@ return new class extends Migration
     {
         Schema::create('kendaraans', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('jenis');
+            $table->foreignUuid('logistic_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('gudang_id')->nullable()->constrained('gudangs')->onUpdate('cascade')->onDelete('cascade');
+            $table->enum('jenis', ['motor', 'mobil','pickup', 'truck', 'tronton']);
             $table->string('merk');
-            // $table->string('kapasitas');
             $table->string('plat_nomor');
             $table->string('gambar');
             $table->timestamps();
             $table->softDeletes();
-        });
-        Schema::table('kendaraans', function (Blueprint $table) {
-            $table->foreignUuid('logistic_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

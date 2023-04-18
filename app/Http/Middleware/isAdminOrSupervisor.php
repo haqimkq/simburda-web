@@ -16,7 +16,7 @@ class isAdminOrSupervisor
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->user()->role=='admin'||auth()->user()->role=='supervisor'){
+        if(auth()->user()->role=='ADMIN'||auth()->user()->role=='SUPERVISOR'){
             return $next($request);
         }
         return redirect('/home');

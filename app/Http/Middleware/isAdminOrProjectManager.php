@@ -16,7 +16,7 @@ class isAdminOrProjectManager
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->user()->role=='admin'||auth()->user()->role=='project manager'){
+        if(auth()->user()->role=='ADMIN'||auth()->user()->role=='PROJECT_MANAGER'){
             // abort(403);
             return $next($request);
         }

@@ -14,10 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('pre_orders', function (Blueprint $table) {
-            // $table->id();
-            // $table->foreignId('delivery_order_id');
             $table->uuid('id')->primary();
-            $table->string('kode_preorder')->nullable();
+            $table->foreignUuid('delivery_order_id')->constrained('delivery_orders')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('kode_po');
             $table->string('nama_material');
             $table->string('satuan');
             $table->string('ukuran');
@@ -25,9 +24,6 @@ return new class extends Migration
             $table->string('keterangan')->nullable();
             $table->timestamps();
             $table->softDeletes();
-        });
-        Schema::table('pre_orders', function (Blueprint $table) {
-            $table->foreignUuid('delivery_order_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

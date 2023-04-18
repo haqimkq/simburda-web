@@ -51,7 +51,7 @@ class UserController extends Controller
 
             $user = User::where('email', $request->email)->first();
             if ( ! Hash::check($request->password, $user->password, [])) {
-                throw new \Exception('Invalid Credentials');
+                throw new Exception('Invalid Credentials');
             }
             $token = $user->createToken('authToken')->plainTextToken;
             return ResponseFormatter::success([
@@ -70,27 +70,25 @@ class UserController extends Controller
         return ResponseFormatter::success($token,'Token Revoked');
     }
     public function updateProfile(Request $request){
+
         $data = $request->all();
-        
         $user = Auth::user();
         $user->update($data);
-        
         return ResponseFormatter::success($user,'Profile Updated');
     }
     public function updatePhoto(Request $request){
-        $validator = Validator::make($request->all(), [
-            'file' => 'required|image|max:2048',
+        $request->validate([
+            'foto' => 'required|image|max:2048',
+            'id' => 'required',
         ]);
 
-        if ($validator->fails()) {
-            return ResponseFormatter::error(['error'=>$validator->errors()], 'Update Photo Fails', 401);
-        }
-
-        if ($request->file('file')) {
-
-            $file = $request->file->store('assets/user', 'public');
+        if ($request->file('foto')) {
+            $user = User::find($request->id);
+            if(!isset($user)){
+                return ResponseFormatter::error(['user' => null], 'User Not Found', 401);
+            }
+            $file = $request->foto->store('assets/user', 'public');
             //store your file into database
-            $user = Auth::user();
             $user->foto = $file;
             $user->update();
 
