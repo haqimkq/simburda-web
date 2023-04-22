@@ -112,7 +112,7 @@ class DatabaseSeeder extends Seeder
             'longitude' => '107.0118061',
         ])->for($PM1)->create();
 
-        $menanganiProyek1 = 
+        
         $proyekPM1Selesai = Proyek::factory();
 
         $proyekList = Proyek::factory(9)->create()

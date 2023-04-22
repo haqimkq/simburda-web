@@ -14,7 +14,7 @@ class LogisticController extends Controller
     protected $logisticModel;
     public function __construct(Database $database)
     {
-        $this->logisticModel = new Logistic($database);
+        $this->logisticModel = new Logistic();
     }
     public function index(){
         $refTableName = 'logistic';
