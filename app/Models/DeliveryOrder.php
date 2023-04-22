@@ -16,22 +16,27 @@ class DeliveryOrder extends Model
 
     protected $guarded = ['id'];
 
-    public function user(){
-        return $this->hasOne(User::class, 'id','logistic_id');
+    public function logistic(){
+        return $this->belongsTo(User::class, 'logistic_id');
     }
-
+    public function adminGudang(){
+        return $this->belongsTo(User::class, 'admin_gudang_id');
+    }
     public function purchasing(){
-        return $this->hasOne(User::class,'id', 'purchasing_id');
+        return $this->belongsTo(User::class,'purchasing_id');
     }
-
-    public function preOrder(){
-        return $this->hasMany(PreOrder::class);
-    }
-
     public function kendaraan(){
         return $this->belongsTo(Kendaraan::class);
     }
-
+    public function preOrder(){
+        return $this->hasMany(PreOrder::class);
+    }
+    public function perusahaan(){
+        return $this->belongsTo(Perusahaan::class);
+    }
+    public function gudang(){
+        return $this->belongsTo(Gudang::class);
+    }
     public function scopeFilter($query, array $filters){
         $query->when($filters['search'] ?? false, function($query, $search) {
             return $query->where('kode_delivery', 'like', '%' . $search . '%');

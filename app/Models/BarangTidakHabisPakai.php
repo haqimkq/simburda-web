@@ -14,4 +14,7 @@ class BarangTidakHabisPakai extends Model
     use SoftDeletes;
     protected $guarded = ['id'];
 
+    public function barang(){
+        return $this->belongsTo(Barang::class);
+    }
 }

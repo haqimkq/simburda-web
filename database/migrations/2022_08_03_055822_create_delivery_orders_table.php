@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignUuid('gudang_id')->constrained('gudangs')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('perusahaan_id')->constrained('perusahaans')->onUpdate('cascade')->onDelete('cascade');
             $table->string('kode_do');
-            $table->enum('status', ['menunggu_konfirmasi_admin_gudang', 'menunggu_konfirmasi_driver','driver_dalam_perjalanan', 'selesai'])->default('menunggu_konfirmasi_admin_gudang');
+            $table->enum('status', ['MENUNGGU_KONFIRMASI_ADMIN_GUDANG', 'MENUNGGU_KONFIRMASI_DRIVER','DRIVER_DALAM_PERJALANAN', 'SELESAI'])->default('MENUNGGU_KONFIRMASI_ADMIN_GUDANG');
             $table->string('untuk_perhatian');
             $table->string('perihal');
             $table->string('foto_bukti');

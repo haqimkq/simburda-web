@@ -3,6 +3,7 @@
 use App\Http\Controllers\AksesBarangController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\DeliveryOrderController;
+use App\Http\Controllers\Firebase\LogisticController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KendaraanController;
@@ -37,6 +38,11 @@ Route::controller(RegisterController::class)->group(function () {
     Route::post('register', 'store')->name('register-user')->middleware('guest');
 });
 Route::middleware(['auth'])->group(function () {
+    Route::controller(LogisticController::class)->group(function () {
+        Route::get('firebase/create', 'create')->name('firebase.create');
+        Route::get('firebase/store', 'store')->name('firebase.store');
+        Route::get('firebase', 'index')->name('firebase');
+    });
     Route::controller(HomeController::class)->group(function () {
         Route::get('home', 'index')->name('home');
     });

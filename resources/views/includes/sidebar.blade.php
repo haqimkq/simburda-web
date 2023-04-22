@@ -23,16 +23,16 @@
 			<a href="/home" class="sidebar-link text-sm {{ request()->is('home*') ? 'bg-primary-light' : '' }}">
 				<span class="ml-3">Dashboard</span>
 			</a>
-			@canany(['admin','project-manager'])
+			@canany(['ADMIN','project-manager'])
 				<a href="/pengguna" class="sidebar-link text-sm {{ request()->is('pengguna*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Pengguna</span>
 				</a>
 			@endcanany
-			@canany(['admin','admin-gudang'])
+			@canany(['ADMIN','admin-gudang'])
 			<a href="/barang" class="sidebar-link text-sm {{ request()->is('barang*') ? 'bg-primary-light' : '' }}">
 				<span class="ml-3 flex-1 whitespace-nowrap">Barang</span>
 			</a>
-			@canany(['admin','admin-gudang'])
+			@canany(['ADMIN','admin-gudang'])
 				<a href="/kendaraan" class="sidebar-link text-sm {{ request()->is('kendaraan*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Kendaraan</span>
 				</a>
@@ -41,17 +41,17 @@
 			<a href="/proyek" class="sidebar-link text-sm {{ request()->is('proyek*') ? 'bg-primary-light' : '' }}">
 				<span class="ml-3 flex-1 whitespace-nowrap">Proyek</span>
 			</a>
-			@canany(['admin','purchasing'])
+			@canany(['ADMIN','purchasing'])
 				<a href="/delivery-order" class="sidebar-link text-sm {{ request()->is('delivery-order*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Delivery Order</span>
 				</a>
 			@endcanany
-			@canany(['admin','logistic'])
+			@canany(['ADMIN','logistic'])
 				<a href="/surat-jalan" class="sidebar-link text-sm {{ request()->is('surat-jalan*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Surat Jalan</span>
 				</a>
 			@endcanany
-			@canany(['admin','admin-gudang'])
+			@canany(['ADMIN','admin-gudang'])
 				<a href="/peminjaman" class="sidebar-link text-sm {{ request()->is('peminjaman*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Peminjaman</span>
 				</a>

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignUuid('barang_id')->constrained('barangs')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('peminjaman_id')->constrained('peminjamans')->onUpdate('cascade')->onDelete('cascade');
             $table->string('jumlah_satuan');
-            $table->enum('status',['digunakan','tidak_digunakan','dipinjam_proyek_lain','dikembalikan'])->default('digunakan');
+            $table->enum('status',['MENUNGGU_AKSES','DIGUNAKAN','TIDAK_DIGUNAKAN','DIPINJAM_PROYEK_LAIN','DIKEMBALIKAN'])->default('MENUNGGU_AKSES');
             $table->timestamps();
             $table->softDeletes();
         });

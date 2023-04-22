@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('ttd')->nullable();
             $table->string('pin')->nullable();
             $table->string('no_hp');
-            $table->enum('role', ['PROJECT_MANAGER', 'SUPERVISOR', 'ADMIN_GUDANG', 'LOGISTIC', 'PURCHASING', 'ADMIN', 'USER'])->default('user');
+            $table->enum('role', ['PROJECT_MANAGER', 'SUPERVISOR', 'ADMIN_GUDANG', 'LOGISTIC', 'PURCHASING', 'ADMIN', 'USER'])->default('USER');
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

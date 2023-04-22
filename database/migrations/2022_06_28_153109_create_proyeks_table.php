@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('nama_proyek');
             $table->string('foto')->nullable();
             $table->string('alamat');
+            $table->string('client');
             $table->string('provinsi');
             $table->string('kota');
-            $table->string('alamat');
             $table->double('latitude');
             $table->double('longitude');
             $table->boolean('selesai')->default(false);

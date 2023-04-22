@@ -14,4 +14,7 @@ class Perusahaan extends Model
     use HasFactory;
     protected $guarded = ['id'];
 
+    public function deliveryOrder(){
+        return $this->hasMany(DeliveryOrder::class);
+    }
 }

@@ -17,11 +17,11 @@ class Proyek extends Model
     protected $guarded = ['id'];
 
     public function supervisor(){
-        return $this->belongsToMany(User::class, 'menanganis','proyek_id','supervisor_id');
+        return $this->belongsToMany(Proyek::class,'menanganis','proyek_id','supervisor_id');
     }
 
     public function proyekManager(){
-        return $this->hasOne(User::class, 'id',  'proyek_manager_id');
+        return $this->hasOne(User::class, 'project_manager_id');
     }
 
     public function scopeFilter($query, array $filters){

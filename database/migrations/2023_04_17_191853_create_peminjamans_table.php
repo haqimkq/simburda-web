@@ -17,8 +17,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('gudang_id')->constrained('gudangs')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('menangani_id')->constrained('menanganis')->onUpdate('cascade')->onDelete('cascade');
-            $table->enum('tipe',['gudang_proyek','proyek_gudang']);
-            $table->enum('status',['menunggu_akses','akses_ditolak', 'menunggu_pengiriman', 'sedang_dikirim', 'dipinjam', 'selesai'])->default('menunggu_akses');
+            $table->enum('tipe',['GUDANG_PROYEK','PROYEK_PROYEK']);
+            $table->enum('status',['MENUNGGU_AKSES','AKSES_DITOLAK', 'MENUNGGU_PENGIRIMAN', 'SEDANG_DIKIRIM', 'DIPINJAM', 'SELESAI'])->default('MENUNGGU_AKSES');
             $table->timestamp('tgl_peminjaman');
             $table->timestamp('tgl_berakhir');
             $table->timestamps();

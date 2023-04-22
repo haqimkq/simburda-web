@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Helpers\IDGenerator;
+use App\Models\Supervisor;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +20,8 @@ class SupervisorFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'user_id' => User::factory(),
+            'kode_sv' => IDGenerator::generateID(Supervisor::class,'kode_sv',5,'SV')
         ];
     }
 }

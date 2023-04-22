@@ -44,34 +44,22 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    public function menanganiProyek(){
-        return $this->belongsToMany(Proyek::class, 'menanganis','supervisor_id','projek_id');
-    } 
-
-    public function mengawasi(){
-        return $this->hasMany(Proyek::class, 'proyek_manager_id', 'id');
-    }
-
-    public function deliveryOrder(){
-        return $this->hasMany(DeliveryOrder::class,'logistic_id','id');
-    }
     
     public function logistic(){
-        return $this->hasOne(Logistic::class,'logistic_id','id');
+        return $this->hasOne(Logistic::class);
     }
-
-    public function mengajukan(){
-        return $this->hasMany(DeliveryOrder::class,'purchasing_id','id');
+    public function projectManager(){
+        return $this->hasOne(ProjectManager::class);
     }
-
-    public function meminjam(){
-        return $this->hasMany(Meminjam::class, 'supervisor_id','id');
+    public function supervisor(){
+        return $this->hasOne(Supervisor::class);
     }
-
-    public function memiliki(){
-        return $this->hasMany(SuratJalan::class, 'logistic_id','id');
+    public function purchasing(){
+        return $this->hasOne(Purchasing::class);
     }
-
+    public function adminGudang(){
+        return $this->hasOne(AdminGudang::class);
+    }
     public function scopeFilter($query, array $filters){
         $query->when($filters['search'] ?? false, function($query, $search) {
             return $query->where('nama', 'like', '%' . $search . '%');

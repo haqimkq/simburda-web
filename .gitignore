@@ -15,5 +15,5 @@ yarn-error.log
 /.idea
 /.vscode
 .DS_Store
-burda-contraco-firebase-adminsdk-k9yot-1dbc3fad12.json
+config-firebase.json
 .bladeformatterrc

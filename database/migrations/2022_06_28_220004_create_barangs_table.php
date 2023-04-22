@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('gambar');
             $table->string('nama');
             $table->string('merk')->nullable();
-            $table->string('jenis');
+            $table->enum('jenis',['HABIS_PAKAI', 'TIDAK_HABIS_PAKAI']);
             $table->text('detail');
             $table->foreignUuid('gudang_id')->constrained('gudangs')->onUpdate('cascade')->onDelete('cascade');
             $table->timestamps();

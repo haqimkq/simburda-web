@@ -23,8 +23,8 @@ return new class extends Migration
             $table->string('ttd_driver')->nullable();
             $table->string('ttd_penerima')->nullable();
             $table->string('foto_bukti')->nullable();
-            $table->enum('tipe', ['pengiriman-proyek-proyek', 'pengiriman-gudang-proyek','pengembalian']);
-            $table->enum('status', ['menunggu_konfirmasi_driver','driver_dalam_perjalanan', 'selesai'])->default('menunggu_konfirmasi_driver');
+            $table->enum('tipe', ['PENGIRIMAN_PROYEK_PROYEK', 'PENGIRIMAN_GUDANG_PROYEK','PENGEMBALIAN']);
+            $table->enum('status', ['MENUNGGU_KONFIRMASI_DRIVER','DRIVER_DALAM_PERJALANAN', 'SELESAI'])->default('MENUNGGU_KONFIRMASI_DRIVER');
             $table->timestamps();
             $table->softDeletes();
         });

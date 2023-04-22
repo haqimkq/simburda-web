@@ -13,5 +13,10 @@ class Pengembalian extends Model
     use SoftDeletes;
     use HasFactory;
     protected $guarded = ['id'];
-
+    public function peminjaman(){
+        return $this->belongsTo(Peminjaman::class);
+    }
+    public function pengembalianDetail(){
+        return $this->hasMany(PengembalianDetail::class);
+    }
 }

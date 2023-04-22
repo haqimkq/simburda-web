@@ -28,16 +28,16 @@ class SuratJalan extends Model
         return $this->belongsTo(User::class, 'admin_gudang_id');
     }
     
-    public function sjPengirmanPP(){
-        return $this->hasMany(SjPengirimanPp::class);
+    public function sjPengirimanPP(){
+        return $this->hasOne(SjPengirimanPp::class);
     }
 
     public function sjPengirimanGP(){
-        return $this->hasMany(SjPengirimanGp::class);
+        return $this->hasOne(SjPengirimanGp::class);
     }
 
     public function sjPengembalian(){
-        return $this->hasMany(SjPengembalian::class);
+        return $this->hasOne(SjPengembalian::class);
     }
 
     public function scopeFilter($query, array $filters){

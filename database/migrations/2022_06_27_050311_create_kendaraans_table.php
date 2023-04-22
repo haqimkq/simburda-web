@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('logistic_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('gudang_id')->nullable()->constrained('gudangs')->onUpdate('cascade')->onDelete('cascade');
-            $table->enum('jenis', ['motor', 'mobil','pickup', 'truck', 'tronton']);
+            $table->enum('jenis', ['MOTOR', 'MOBIL','PICKUP', 'TRUCK', 'TRONTON']);
             $table->string('merk');
             $table->string('plat_nomor');
             $table->string('gambar');

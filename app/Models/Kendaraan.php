@@ -23,7 +23,7 @@ class Kendaraan extends Model
         return $this->hasMany(SuratJalan::class);
     }
     public function users(){
-        return $this->hasOne(User::class, 'id', 'logistic_id');
+        return $this->hasOne(User::class, 'logistic_id');
     }
 
     public function scopeFilter($query, array $filters){

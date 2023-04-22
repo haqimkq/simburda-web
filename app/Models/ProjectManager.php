@@ -11,5 +11,7 @@ class ProjectManager extends Model
     use HasFactory;
     use SoftDeletes;
     protected $guarded = ['id'];
+    protected $primaryKey = null;
+    public $incrementing = false;
 
 }

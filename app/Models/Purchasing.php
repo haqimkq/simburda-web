@@ -11,8 +11,12 @@ class Purchasing extends Model
     use HasFactory;
     use SoftDeletes;
     protected $guarded = ['id'];
-
+    protected $primaryKey = null;
+    public $incrementing = false;
     public function user(){
         return $this->belongsTo(User::class);
+    }
+    public function deliveryOrder(){
+        return $this->hasMany(DeliveryOrder::class,'purchasing_id','user_id');
     }
 }

@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('pengembalians', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('peminjaman_id')->constrained('peminjamans')->onUpdate('cascade')->onDelete('cascade');
-            $table->enum('status',['menunggu_pengembalian', 'sedang_dikembalikan', 'selesai'])->default('menunggu_pengembalian');
+            $table->enum('status',['MENUNGGU_PENGEMBALIAN', 'SEDANG_DIKEMBALIKAN', 'SELESAI'])->default('MENUNGGU_PENGEMBALIAN');
             $table->timestamps();
             $table->softDeletes();
         });

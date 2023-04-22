@@ -17,8 +17,18 @@ class Barang extends Model
 
     protected $guarded = ['id'];
 
-    public function meminjam(){
-        return $this->hasMany(Meminjam::class);
+    public function peminjamanDetail(){
+        return $this->hasMany(PeminjamanDetail::class);
+    }
+    public function pengembalianDetail(){
+        return $this->hasMany(PengembalianDetail::class);
+    }
+    public function barangTidakHabisPakai(){
+        return $this->hasOne(BarangTidakHabisPakai::class);
+    }
+
+    public function barangHabisPakai(){
+        return $this->hasOne(BarangHabisPakai::class);
     }
 
     public function scopeFilter($query, array $filters){

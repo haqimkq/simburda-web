@@ -13,5 +13,10 @@ class PengembalianDetail extends Model
     use SoftDeletes;
     use HasFactory;
     protected $guarded = ['id'];
-    
+    public function barang(){
+        return $this->belongsTo(Barang::class);
+    }
+    public function pengembalian(){
+        return $this->belongsTo(Pengembalian::class);
+    }
 }
