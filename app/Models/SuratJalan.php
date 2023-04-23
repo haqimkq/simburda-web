@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\Date;
+use App\Helpers\IDGenerator;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -79,10 +80,14 @@ class SuratJalan extends Model
         return Date::dateFormatter($date, 'ddd, D MMM YYYY');
     }
 
-    public function getKodeSuratAttribute($value){
-        $type = $this->attributes['tipe'];
-        $type = $this->attributes['tipe'];
-        return ""
+    public static function generateKodeSurat($tipe){
+        if($tipe == "PENGIRIMAN_PROYEK_PROYEK"){
+            return IDGenerator::generateID(SuratJalan::class, 'kode_surat', 5, 'SJPP');
+        }else if($tipe == "PENGIRIMAN_GUDANG_PROYEK"){
+            return IDGenerator::generateID(SuratJalan::class, 'kode_surat', 5, 'SJGP');
+        }else{
+            return IDGenerator::generateID(SuratJalan::class, 'kode_surat', 5, 'SJPG');
+        }
     }
 
 }

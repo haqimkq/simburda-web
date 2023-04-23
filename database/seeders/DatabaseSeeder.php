@@ -86,6 +86,17 @@ class DatabaseSeeder extends Seeder
                 ]
             )
         )->create();
+        $gudang = Gudang::factory()->state(new Sequence(
+            [
+                'nama' => 'Gudang Jakarta 1',
+                'alamat' => '',
+                'latitude' => '',
+                'longitude' => '',
+                'kota' => '',
+                'provinsi' => '',
+                'gambar' => ''
+            ],
+        ));
         $PM1 = ProjectManager::factory(1)->for(
             User::factory()->state(
                 [

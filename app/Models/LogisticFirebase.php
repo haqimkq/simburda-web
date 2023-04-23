@@ -33,5 +33,4 @@ class LogisticFirebase extends Model
         ];
         self::$firebaseDatabase->getReference(self::$logisticFirebase.$request->userId)->update($updateData);
     }
-
 }
