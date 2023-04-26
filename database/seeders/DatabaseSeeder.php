@@ -15,6 +15,7 @@ use App\Models\Kendaraan;
 use App\Models\menangani;
 use App\Models\SuratJalan;
 use App\Models\AksesBarang;
+use App\Models\BarangTidakHabisPakai;
 use Illuminate\Support\Str;
 use App\Models\DeliveryOrder;
 use App\Models\Gudang;
@@ -86,17 +87,28 @@ class DatabaseSeeder extends Seeder
                 ]
             )
         )->create();
-        $gudang = Gudang::factory()->state(new Sequence(
+        
+        $gudang1 = Gudang::factory()->state(
             [
                 'nama' => 'Gudang Jakarta 1',
-                'alamat' => '',
-                'latitude' => '',
-                'longitude' => '',
-                'kota' => '',
-                'provinsi' => '',
-                'gambar' => ''
-            ],
-        ));
+                'alamat' => 'Jl. Pengadegan Selatan II No.1, RT.10/RW.4, Pengadegan, Kec. Pancoran, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12770',
+                'latitude' => '-6.2501639',
+                'longitude' => '106.8565822',
+                'kota' => 'Jakarta Selatan',
+                'provinsi' => 'DKI Jakarta',
+                'gambar' => 'assets/gudang/Gudang Jakarta 1.jpg'
+            ]
+        )->create();
+        $barangTidakHabisPakai = BarangTidakHabisPakai::factory(10)
+        ->for(Barang::factory()->state(new Sequence(
+                [
+                    'merk' => 'Gudang',
+                    'gambar' => 'Gudang',
+                    'nama' => 'Excavator',
+                    'jenis' => 'TIDAK_HABIS_PAKAI',
+                ],
+            )
+        )->for($gudang1))->create();
         $PM1 = ProjectManager::factory(1)->for(
             User::factory()->state(
                 [
@@ -126,7 +138,7 @@ class DatabaseSeeder extends Seeder
         
         $proyekPM1Selesai = Proyek::factory();
 
-        $proyekList = Proyek::factory(9)->create()
+        $proyekList = Proyek::factory(9)
         ->state(new Sequence(
                     [
                         'nama_proyek' => 'Perbaikan Kolom Struktur Hanggar Skuadron 45 Halim Perdana Kusuma',

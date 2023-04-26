@@ -17,4 +17,7 @@ class BarangTidakHabisPakai extends Model
     public function barang(){
         return $this->belongsTo(Barang::class);
     }
+    public function peminjaman(){
+        return $this->belongsTo(Peminjaman::class);
+    }
 }

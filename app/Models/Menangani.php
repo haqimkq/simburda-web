@@ -14,4 +14,11 @@ class Menangani extends Model
     use SoftDeletes;
 
     protected $guarded = ['id'];
+
+    public function supervisor(){
+        return $this->belongsTo(User::class, 'supervisor_id');
+    }
+    public function proyek(){
+        return $this->belongsTo(Proyek::class, 'proyek_id');
+    }
 }
