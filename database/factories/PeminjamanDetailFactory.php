@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Barang;
 use App\Models\Peminjaman;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -29,6 +30,11 @@ class PeminjamanDetailFactory extends Factory
             $satuan = fake()->randomElement(['Lembar', 'Meter', '']);
         }
         $jumlah_satuan = $jumlah . ' ' . $satuan;
+        $now = Carbon::now();
+        $start_date = Carbon::parse($peminjaman->tgl_peminjaman);
+        $end_date = Carbon::parse($peminjaman->tgl_berakhir);
+
+        
         $status = fake()->randomElement(['MENUNGGU_AKSES','DIGUNAKAN','TIDAK_DIGUNAKAN','DIKEMBALIKAN']);
         $sj_pengiriman = ($status!='Menunggu konfirmasi pengiriman') ? SuratJalan::all()->random()->id : NULL;
         $sj_pengembalian = (isset($sj_pengiriman) && $status!='Sedang dipinjam') ? SuratJalan::all()->random()->id : NULL;
@@ -45,6 +51,7 @@ class PeminjamanDetailFactory extends Factory
             'peminjaman_proyek_lain_id' => NULL,
             'status' => $status,
             'peminjaman_id' => $peminjaman->id,
+            'jumlah_satuan' => $jumlah_satuan
         ];
     }
 }
