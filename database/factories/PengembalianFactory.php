@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\PeminjamanDetail;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +17,13 @@ class PengembalianFactory extends Factory
      */
     public function definition()
     {
+        $id = fake()->uuid();
+        $status = fake()->randomElement(['MENUNGGU_PENGEMBALIAN', 'SEDANG_DIKEMBALIKAN', 'SELESAI']);
+        $peminjaman_detail = PeminjamanDetail::where('status', 'DIKEMBALIKAN')->get()->random();
         return [
-            //
+            'id' => $id,
+            'status' => $status,
+            'peminjaman_id' => $peminjaman_detail->peminjaman_id,
         ];
     }
 }

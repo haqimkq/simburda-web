@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('keterangan_admin')->nullable();
             $table->foreignId('peminjaman_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('project_manager_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('admin_gudang_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('admin_gudang_id')->constrained()->onUpdate('cascade')->onDelete('cascade')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

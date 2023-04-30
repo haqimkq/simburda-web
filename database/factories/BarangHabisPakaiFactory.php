@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Barang;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +17,15 @@ class BarangHabisPakaiFactory extends Factory
      */
     public function definition()
     {
+        $satuan = fake()->randomElement(['Meter', 'Kilogram', 'Box', 'Lembar', 'Karung', 'Batang', ]);
+        $ukuran = fake()->words(2, true);
+        $jumlah = fake()->randomNumber(222);
+        $barang = Barang::where('jenis', 'HABIS_PAKAI')->latest();
         return [
-            //
+            'ukuran' => $ukuran,
+            'satuan' => $satuan,
+            'jumlah' => $jumlah,
+            'barang_id' => $barang->id,
         ];
     }
 }
