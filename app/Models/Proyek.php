@@ -20,7 +20,7 @@ class Proyek extends Model
         return $this->belongsToMany(Proyek::class,'menanganis','proyek_id','supervisor_id');
     }
 
-    public function proyekManager(){
+    public function projectManager(){
         return $this->hasOne(User::class, 'project_manager_id');
     }
 

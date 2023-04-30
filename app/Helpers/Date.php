@@ -15,5 +15,30 @@ class Date{
   public static function dateToMillisecond($date){
     return Carbon::parse($date)->getTimestampMs();
   }
+  public static function getMonthNumber(){
+    $getDate = explode("-", self::getDateString());
+    return $getDate[1];
+  }
+  public static function getYearNumber(){
+    $getDate = explode("-", self::getDateString());
+    return $getDate[0];
+  }
+  public static function getDayNumber(){
+    $getDate = explode("-", self::getDateString());
+    return $getDate[3];
+  }
+  public static function getDateString(){
+    $explodeDate = explode(" ", self::getDateTimeString());
+    return $explodeDate[0];
+  }
+  public static function getTimeString(){
+    $explodeDate = explode(" ", self::getDateTimeString());
+    return $explodeDate[1];
+  }
+  public static function getDateTimeString(){
+    $date = Carbon::now();
+    $dateTimeToString = $date->toDateTimeString();
+    return $dateTimeToString;
+  }
 }
 ?>

@@ -18,11 +18,13 @@ class PengembalianFactory extends Factory
     public function definition()
     {
         $id = fake()->uuid();
+        $kode_pengembalian = 
         $status = fake()->randomElement(['MENUNGGU_PENGEMBALIAN', 'SEDANG_DIKEMBALIKAN', 'SELESAI']);
         $peminjaman_detail = PeminjamanDetail::where('status', 'DIKEMBALIKAN')->get()->random();
         return [
             'id' => $id,
             'status' => $status,
+            'kode_pengembalian' => $kode_pengembalian,
             'peminjaman_id' => $peminjaman_detail->peminjaman_id,
         ];
     }

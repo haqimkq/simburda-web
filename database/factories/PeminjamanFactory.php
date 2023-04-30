@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Helpers\Date;
+use App\Helpers\IDGenerator;
 use App\Models\AdminGudang;
 use App\Models\AksesBarang;
 use App\Models\Gudang;
@@ -27,14 +29,13 @@ class PeminjamanFactory extends Factory
     public function definition()
     {
         $id = fake()->uuid();
-        $menangani = Menangani::get()->random();
+        $menangani = Menangani::with(['proyek','proyek.projectManager'])->get()->random();
         $gudang = Gudang::get()->random();
         $admin_gudang = AdminGudang::where('gudang_id',$gudang->id)->get()->random();
-        $project_manager = User::where('id', $menangani->proyek->proyekManager->id)->get();
-        $proyek_proyek_type = fake()->boolean(30);
         $tgl_peminjaman = fake()->dateTimeBetween('-2 weeks', 'now');
         $tgl_berakhir = fake()->dateTimeBetween('-1 weeks', '+2 weeks');
-        
+        $proyek = $menangani->proyek;
+        $project_manager = $menangani->proyek->projectManager;
         $now = Carbon::now();
         $start_date = Carbon::parse($tgl_peminjaman);
         $end_date = Carbon::parse($tgl_berakhir);
@@ -49,6 +50,11 @@ class PeminjamanFactory extends Factory
                 'project_manager_id' => $project_manager->id,
                 'peminjaman_id' => $id,
             ])->create();
+            $clientAcronym = IDGenerator::getAcronym($proyek->client);
+            $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber());
+            $year = Date::getYearNumber();
+            $prefix = "SJPG/$clientAcronym/$romanMonth/$year";
+            $kode_surat=IDGenerator::generateID(SuratJalan::class,'kode_surat',5,'SJPG');
             $pengembalian_status = fake()->randomElement(['MENUNGGU_PENGEMBALIAN', 'SEDANG_DIKEMBALIKAN', 'SELESAI']);
             if($pengembalian_status != 'MENUNGGU_PENGEMBALIAN'){
                 Pengembalian::factory()->state([
@@ -58,6 +64,7 @@ class PeminjamanFactory extends Factory
                     SuratJalan::factory()->state([
                         'admin_gudang_id' => $admin_gudang->id,
                         'tipe' => 'PENGEMBALIAN',
+                        'kode_surat' => $kode_surat,
                     ])->has(SjPengembalian::factory()->state(function (array $attributes, Pengembalian $pengembalian, SuratJalan $surat_jalan) {
                         return [
                             'surat_jalan_id' => $surat_jalan->id,

@@ -23,15 +23,30 @@ class SuratJalanFactory extends Factory
      */
     public function definition()
     {
-        $tipe = fake()->randomElement(['PENGIRIMAN_GUDANG_PROYEK','PENGIRIMAN_PROYEK_PROYEK', 'PENGEMBALIAN']);
+        $tipe = fake()->randomElement(['PENGIRIMAN_GUDANG_PROYEK', 'PENGEMBALIAN']);
         $status = fake()->randomElement(['MENUNGGU_KONFIRMASI_DRIVER','DRIVER_DALAM_PERJALANAN', 'SELESAI']);
         $logistic = User::where('role', 'like', 'LOGISTIC')->get()->random()->id;
-        $kendaraan = Kendaraan::all()->random()->id;
+        $kendaraan = Kendaraan::get()->random()->id;
         $adminGudang = User::where('role', 'like', 'ADMIN_GUDANG')->get()->random()->id;
         $ttdAdminGudang = fake()->imageUrl(640, 480, 'admin', true);
         $ttdDriver = ($status!='MENUNGGU_KONFIRMASI_DRIVER') ? fake()->imageUrl(640, 480, 'driver', true) : NULL;
         $ttdSupervisor = $status=='SELESAI' ? fake()->imageUrl(640, 480, 'supervisor', true) : NULL;
         $foto_bukti = $status=='SELESAI' ? 'https://picsum.photos/640/640?random='.mt_rand(1,92392) : NULL;
+        if($status == 'SELESAI'){
+            Kendaraan::where('id', $kendaraan->id)->update([
+                'logistic_id' => NULL
+            ]);
+        }else{
+            Kendaraan::where('id', $kendaraan->id)->update([
+                'logistic_id' => $logistic
+            ]);
+        }
+        $kode_surat = NULL;
+        if($tipe=='PENGIRIMAN_GUDANG_PROYEK'){
+            $kode_surat=IDGenerator::generateID(SuratJalan::class,'kode_surat',5,'SJGP');
+        }else{
+            $kode_surat=IDGenerator::generateID(SuratJalan::class,'kode_surat',5,'SJPG');
+        }
         return [
             'id' => fake()->uuid(),
             'logistic_id' => $logistic,
@@ -39,7 +54,7 @@ class SuratJalanFactory extends Factory
             'admin_gudang_id' => $adminGudang,
             'status' => $status,
             'tipe' => $tipe,
-            'kode_surat' => IDGenerator::generateID(SuratJalan::class,'kode_surat',5,'SJ'),
+            'kode_surat' => $kode_surat,
             'ttd_admin' => $ttdAdminGudang,
             'ttd_driver' => $ttdDriver,
             'ttd_penerima' => $ttdSupervisor,

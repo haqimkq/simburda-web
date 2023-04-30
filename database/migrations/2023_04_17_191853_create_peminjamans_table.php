@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('peminjamans', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('kode_peminjaman');
             $table->foreignUuid('gudang_id')->constrained('gudangs')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('menangani_id')->constrained('menanganis')->onUpdate('cascade')->onDelete('cascade');
             $table->enum('tipe',['GUDANG_PROYEK','PROYEK_PROYEK']);

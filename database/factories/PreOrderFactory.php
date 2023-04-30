@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Helpers\IDGenerator;
+use App\Helpers\Date;
 use App\Models\DeliveryOrder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,10 +20,9 @@ class PreOrderFactory extends Factory
     public function definition()
     {
         $delivery_order = DeliveryOrder::latest();
-        // Delimit by multiple spaces, hyphen, underscore, comma, and dot
-        $perusahaanAlias = preg_split("/[\s.,_-]+/", $delivery_order->perusahaan->nama);
-        $date = fake()->now();
-        $prefix = "PO-" . $perusahaanAlias;
+        $perusahaanAlias = IDGenerator::getAcronym($delivery_order->perusahaan->nama);
+        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber());
+        $prefix = "PO/BC-" . $perusahaanAlias . "/" . $romanMonth . "/" . Date::getYearNumber();
         return [
             'id' => fake()->uuid(),
             'delivery_order_id' => $delivery_order->id,
