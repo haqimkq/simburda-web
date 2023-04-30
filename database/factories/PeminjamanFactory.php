@@ -12,13 +12,9 @@ use App\Models\Pengembalian;
 use App\Models\SjPengembalian;
 use App\Models\SjPengirimanGp;
 use App\Models\SuratJalan;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Peminjaman>
- */
 class PeminjamanFactory extends Factory
 {
     /**

@@ -3,17 +3,10 @@
 namespace Database\Factories;
 
 use App\Helpers\IDGenerator;
-use App\Helpers\Location;
-use App\Models\AdminGudang;
 use App\Models\Kendaraan;
-use App\Models\Proyek;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use phpDocumentor\Reflection\Types\Null_;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\surat_jalan>
- */
 class SuratJalanFactory extends Factory
 {
     /**

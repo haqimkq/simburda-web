@@ -7,9 +7,6 @@ use App\Helpers\Date;
 use App\Models\DeliveryOrder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\pre_order>
- */
 class PreOrderFactory extends Factory
 {
     /**
