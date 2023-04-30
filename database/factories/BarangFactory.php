@@ -28,16 +28,6 @@ class BarangFactory extends Factory
         $name = fake()->words(2, true);
         $randomImage = 'https://picsum.photos/640/640?random='.mt_rand(1,92392);
         $gudang_id = Gudang::get()->random()->id;
-
-        if($jenis == 'HABIS_PAKAI'){
-            BarangHabisPakai::factory()->state([
-                'barang_id' => $id
-            ])->create();
-        }else{
-            BarangTidakHabisPakai::factory()->state([
-                'barang_id' => $id
-            ])->create();
-        }
         return [
             'id' => $id,
             'gudang_id' => $gudang_id,
@@ -47,5 +37,41 @@ class BarangFactory extends Factory
             'gambar' => $randomImage,
             'detail' => fake()->text(100)
         ];
+    }
+    public function habisPakai(){
+        return $this->state(function(array $attributes){
+            BarangHabisPakai::factory()->state([
+                'barang_id' => $attributes['id']
+            ])->create();
+            return [
+                'jenis' => 'HABIS_PAKAI'
+            ];
+        });
+    }
+    public function tidakHabisPakai(){
+        return $this->state(function(array $attributes){
+            BarangTidakHabisPakai::factory()->state([
+                'barang_id' => $attributes['id']
+            ])->create();
+            return [
+                'jenis' => 'TIDAK_HABIS_PAKAI'
+            ];
+        });
+    }
+    public function randomJenis(){
+        return $this->state(function(array $attributes){
+            if($attributes['jenis'] == 'HABIS_PAKAI'){
+                BarangHabisPakai::factory()->state([
+                    'barang_id' => $attributes['id']
+                ])->create();
+            }else{
+                BarangTidakHabisPakai::factory()->state([
+                    'barang_id' => $attributes['id']
+                ])->create();
+            }
+            return [
+                'jenis' => $attributes['jenis']
+            ];
+        });
     }
 }

@@ -22,7 +22,6 @@ class PerusahaanFactory extends Factory
         $randomImage = 'https://picsum.photos/640/640?random='.mt_rand(1,92392);
         return [
             'id' => fake()->uuid(),
-            'project_manager_id' => User::factory()->state(['role' => 'PROJECT_MANAGER']),
             'nama' => fake()->words(3, true),
             'alamat' => fake()->streetAddress(),
             'kota' => fake()->city(),
