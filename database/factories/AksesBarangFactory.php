@@ -6,9 +6,6 @@ use App\Models\AksesBarang;
 use App\Models\Meminjam;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\aksesBarang>
- */
 class AksesBarangFactory extends Factory
 {
     /**

@@ -8,9 +8,6 @@ use App\Models\Gudang;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AdminGudang>
- */
 class AdminGudangFactory extends Factory
 {
     /**

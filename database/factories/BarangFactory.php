@@ -2,17 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Helpers\Location;
 use App\Models\BarangHabisPakai;
 use App\Models\BarangTidakHabisPakai;
 use App\Models\Gudang;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Storage;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\barang>
- */
 class BarangFactory extends Factory
 {
     /**

@@ -7,9 +7,6 @@ use App\Models\Logistic;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\logistic>
- */
 class LogisticFactory extends Factory
 {
     /**

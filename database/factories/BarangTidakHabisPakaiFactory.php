@@ -8,9 +8,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BarangTidakHabisPakai>
- */
 class BarangTidakHabisPakaiFactory extends Factory
 {
     /**

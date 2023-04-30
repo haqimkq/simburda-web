@@ -7,9 +7,6 @@ use App\Models\ProjectManager;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Proyek>
- */
 class ProyekFactory extends Factory
 {
     /**

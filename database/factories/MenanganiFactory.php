@@ -6,9 +6,6 @@ use App\Models\Proyek;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\menangani>
- */
 class MenanganiFactory extends Factory
 {
     /**

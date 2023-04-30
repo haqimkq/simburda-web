@@ -5,9 +5,6 @@ namespace Database\Factories;
 use App\Models\Barang;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BarangHabisPakai>
- */
 class BarangHabisPakaiFactory extends Factory
 {
     /**

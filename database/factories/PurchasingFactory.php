@@ -7,9 +7,6 @@ use App\Models\Purchasing;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Purchasing>
- */
 class PurchasingFactory extends Factory
 {
     /**
