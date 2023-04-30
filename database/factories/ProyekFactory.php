@@ -21,18 +21,19 @@ class ProyekFactory extends Factory
     {
         $lat = fake()->latitude(-6.2,-6.1);
         $lon = fake()->longitude(106.7,106.8);
-        // $address = Location::getAddress($lat, $lon);
         $date = fake()->dateTimeBetween('-2 years', 'now');
         $selesai = fake()->boolean();
         $randomImage = 'https://picsum.photos/640/640?random='.mt_rand(1,92392);
         if($selesai) $tgl_selesai = fake()->dateTimeBetween($date, '+2 month');
         else $tgl_selesai = NULL;
+        $project_manager = User::where('role', 'PROJECT_MANAGER')->get()->random();
         return [
             'id' => fake()->uuid(),
-            'project_manager_id' => User::factory()->state(['role' => 'PROJECT_MANAGER']),
+            'project_manager_id' => $project_manager->id,
             'nama_proyek' => fake()->words(3, true),
             'alamat' => fake()->streetAddress(),
             'kota' => fake()->city(),
+            'client' => fake()->name(),
             'provinsi' => fake()->state(),
             'foto' => $randomImage,
             'latitude' => $lat,

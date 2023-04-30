@@ -48,18 +48,4 @@ class BarangFactory extends Factory
             'detail' => fake()->text(100)
         ];
     }
-    /**
-     * Indicate that the model's email address should be unverified.
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
-     */
-
-     public function barangHabisPakai($satuan, $ukuran)
-     {
-         return $this->state(function (array $attributes) {
-             return [
-                 'email_verified_at' => null,
-             ];
-         });
-     }
 }

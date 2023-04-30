@@ -20,8 +20,8 @@ class MenanganiFactory extends Factory
     {
         return [
             'id' => fake()->uuid(),
-            'supervisor_id' => User::where('role', 'like', 'supervisor')->get()->random()->id,
-            'proyek_id' => Proyek::all()->random()->id,
+            'supervisor_id' => User::where('role', 'SUPERVISOR')->get()->random()->id,
+            'proyek_id' => Proyek::get()->random()->id,
         ];
     }
 }

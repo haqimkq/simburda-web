@@ -20,10 +20,10 @@ class LogisticFactory extends Factory
     public function definition()
     {
         return [
-            'logistic_id' => User::factory(),
+            'user_id' => User::where('role', 'LOGISTIC')->get()->random()->id,
             'latitude' => fake()->latitude(-6.2,-6.1),
             'longitude' => fake()->longitude(106.7,106.8),
-            'kode_logistic' => IDGenerator::generateID(Logistic::class,'kode_logistic',4, 'LOG')
+            'kode_logistic' => IDGenerator::generateID(Logistic::class,'kode_logistic',5, 'LOG')
         ];
     }
 }
