@@ -17,11 +17,7 @@ class KendaraanFactory extends Factory
     public function definition()
     {
         $randomImage = 'https://picsum.photos/640/640?random='.mt_rand(1,92392);
-        $jenis = fake()->randomElement(['motor','mobil','truck','tronton']);
-        // do {
-        //     $logisticId = User::where('role', 'like', 'logistic')->get()->random()->id;
-        //     $logisticKendaraanExist = Kendaraan::where('logistic_id', $logisticId)->exists();
-        // } while ($logisticKendaraanExist);
+        $jenis = fake()->randomElement(['MOTOR','MOBIL','TRUCK','TRONTON']);
         $logisticId = User::where('role', 'like', 'logistic')->get()->random()->id;
         $logisticNoKendaraan = Kendaraan::where('logistic_id', $logisticId)->doesntExist();
         $logistic_id = $logisticNoKendaraan ? $logisticId : NULL;
