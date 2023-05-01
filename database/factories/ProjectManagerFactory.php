@@ -17,7 +17,7 @@ class ProjectManagerFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => User::where('role', 'PROJECT_MANAGER')->get()->random()->id,
+            'user_id' => User::where('role', 'PROJECT_MANAGER')->all()->random()->id,
             'kode_pm' => IDGenerator::generateID(ProjectManager::class,'kode_pm',5,'PM')
         ];
     }

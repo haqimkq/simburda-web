@@ -17,7 +17,7 @@ class BarangHabisPakaiFactory extends Factory
         $satuan = fake()->randomElement(['Meter', 'Kilogram', 'Box', 'Lembar', 'Karung', 'Batang']);
         $ukuran = fake()->words(2, true);
         $jumlah = fake()->randomNumber(222);
-        $barang = Barang::where('jenis', 'HABIS_PAKAI')->latest();
+        $barang = Barang::where('jenis', 'HABIS_PAKAI')->doesntHave('barangHabisPakai')->all()->random();
         return [
             'ukuran' => $ukuran,
             'satuan' => $satuan,

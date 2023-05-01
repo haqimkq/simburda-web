@@ -8,6 +8,7 @@ use App\Models\PeminjamanDetail;
 use App\Models\Pengembalian;
 use App\Models\PengembalianDetail;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Builder;
 
 class PengembalianDetailFactory extends Factory
 {
@@ -20,18 +21,12 @@ class PengembalianDetailFactory extends Factory
     {
         $id = fake()->uuid();
         $pengembalian = Pengembalian::latest();
-        $barang = NULL;
+        $peminjaman_detail = PeminjamanDetail::where('status', 'DIKEMBALIKAN')->all()->random();
         $satuan = NULL;
         $jumlah = NULL;
-        do {
-            $peminjaman_detail = PeminjamanDetail::where('status', 'DIKEMBALIKAN')->all()->random();
-            $barang = Barang::where('id', $peminjaman_detail->barang_id)->get();
-            $pengembalianDetailExist = PengembalianDetail::
-                where('pengembalian_id', $pengembalian->id)
-                ->where('barang_id', $barang->id)
-                ->exists();
-        } while ($pengembalianDetailExist);
-        
+        $barang = Barang::where('id', $peminjaman_detail->barang_id)->whereDoesntHave('pengembalianDetail', function (Builder $query) use ($pengembalian){
+            $query->where('pengembalian_id', $pengembalian->id);
+        })->all()->random();
         if($barang->jenis == 'TIDAK_HABIS_PAKAI') {
             $satuan = 'Unit';
             $jumlah = 1;

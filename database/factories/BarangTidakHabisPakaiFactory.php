@@ -19,7 +19,7 @@ class BarangTidakHabisPakaiFactory extends Factory
     {
         $kondisi = fake()->randomElement(['BARU', 'BEKAS']);
         $keterangan = fake()->randomElement(['OK', 'Butuh Service']);
-        $barang = Barang::where('jenis','TIDAK_HABIS_PAKAI')->all()->random();
+        $barang = Barang::where('jenis', 'TIDAK_HABIS_PAKAI')->doesntHave('barangTidakHabisPakai')->all()->random();
         $id = fake()->uuid();
         $image = QrCode::size(1280)->format('png')->errorCorrection('H')->generate($id);
         $output_file = 'assets/qr-code/' . $barang->nama . '.png';

@@ -58,14 +58,15 @@ class PengembalianFactory extends Factory
             SuratJalan::factory()->state([
                 'admin_gudang_id' => $admin_gudang_id,
                 'tipe' => 'PENGEMBALIAN',
-                'kode_surat' => SuratJalan::generateKodeSurat("PENGEMBALIAN", $client, $supervisor),
+                'kode_surat' => 
+                SuratJalan::generateKodeSurat("PENGEMBALIAN", $client, $supervisor),
             ])->dalamPerjalanan()->has(SjPengembalian::factory()->state(function (array $attributes, Pengembalian $pengembalian, SuratJalan $surat_jalan) {
                 return [
                     'surat_jalan_id' => $surat_jalan->id,
                     'pengembalian_id' => $pengembalian->id,
                 ];
             }))
-        )->create();;
+        );
     }
     public function withSuratJalanMenunggu($peminjaman_id, $pengembalian_status, $admin_gudang_id, $client, $supervisor){
         return $this->state(function(array $attributes) use ($peminjaman_id, $pengembalian_status){
@@ -84,6 +85,6 @@ class PengembalianFactory extends Factory
                     'pengembalian_id' => $pengembalian->id,
                 ];
             }))
-        )->create();;
+        );
     }
 }

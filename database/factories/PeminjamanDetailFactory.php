@@ -11,6 +11,7 @@ use App\Models\PeminjamanDetail;
 use App\Models\Pengembalian;
 use App\Models\PengembalianDetail;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PeminjamanDetailFactory extends Factory
@@ -24,17 +25,13 @@ class PeminjamanDetailFactory extends Factory
     {
         $id = fake()->uuid();
         $peminjaman = Peminjaman::latest();
-        $barang = NULL;
         $satuan = NULL;
         $jumlah = NULL;
         $status = NULL;
-        do {
-            $barang = Barang::where('gudang_id', $peminjaman->gudang_id)->all()->random();
-            $peminjamanDetailExist = PeminjamanDetail::
-                where('peminjaman_id', $peminjaman->id)
-                ->where('barang_id', $barang->id)
-                ->exists();
-        } while ($peminjamanDetailExist);
+        $barang = Barang::whereDoesntHave('peminjamanDetail', function (Builder $query) use ($peminjaman){
+            $query->where('peminjaman_id', $peminjaman->id);
+        })->all()->random();
+
         if($barang->jenis == 'TIDAK_HABIS_PAKAI') {
             $satuan = 'Unit';
             $jumlah = 1;
