@@ -18,7 +18,7 @@ class PurchasingFactory extends Factory
     {
         return [
             'user_id' => User::where('role', 'PURCHASING')->get()->random()->id,
-            'kode_purchasing' => IDGenerator::generateID(Purchasing::class,'kode_purchasing',5,'PG')
+            'kode_purchasing' => Purchasing::generateKodePurchasing()
         ];
     }
 }

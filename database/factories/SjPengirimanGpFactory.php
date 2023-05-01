@@ -17,8 +17,8 @@ class SjPengirimanGpFactory extends Factory
     {
         return [
             'id' => fake()->uuid(),
-            'surat_jalan_id' => SuratJalan::factory()->state(['tipe'=>'PENGIRIMAN_GUDANG_PROYEK']),
-            'peminjaman_id' => Peminjaman::factory()->state(['tipe'=>'GUDANG_PROYEK']),
+            'surat_jalan_id' => SuratJalan::where('tipe','PENGIRIMAN_GUDANG_PROYEK')->get()->random()->id,
+            'peminjaman_id' => Peminjaman::where('tipe','GUDANG_PROYEK')->get()->random()->id
         ];
     }
 }

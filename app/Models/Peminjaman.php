@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Helpers\Date;
+use App\Helpers\IDGenerator;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -41,5 +43,20 @@ class Peminjaman extends Model
     }
     public function menangani(){
         return $this->belongsTo(Menangani::class);
+    }
+
+    public static function generateKodePeminjaman($tipe, $client, $supervisor){
+        $clientAcronym = IDGenerator::getAcronym($client);
+        $supervisorAcronym = IDGenerator::getAcronym($supervisor);
+        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber());
+        $year = Date::getYearNumber();
+        $prefix = "$clientAcronym/$supervisorAcronym/$romanMonth/$year";
+        $typePrefix = NULL;
+        if($tipe == "PROYEK_PROYEK"){
+            $typePrefix = "PP";
+        }else{
+            $typePrefix = "GP";
+        }
+        return IDGenerator::generateID(Peminjaman::class,'kode_peminjaman',5,"$typePrefix/$prefix");
     }
 }

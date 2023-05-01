@@ -19,20 +19,19 @@ class PengembalianDetailFactory extends Factory
     public function definition()
     {
         $id = fake()->uuid();
-        $pengembalian = Pengembalian::with('peminjaman')->get()->latest();
+        $pengembalian = Pengembalian::latest();
         $barang = NULL;
-        $pengembalian_detail = 'Not Null';
-        while($pengembalian_detail != NULL){
-            $peminjaman_detail = PeminjamanDetail::where('status', 'DIKEMBALIKAN')->get()->random();
-            $barang = Barang::where('id', $peminjaman_detail->barang_id)->get();
-            $pengembalian_detail = PengembalianDetail::
-                where('pengembalian_id', $pengembalian->id)
-                ->where('barang_id', $barang->id)
-                ->get();
-        }
         $satuan = NULL;
         $jumlah = NULL;
-
+        do {
+            $peminjaman_detail = PeminjamanDetail::where('status', 'DIKEMBALIKAN')->all()->random();
+            $barang = Barang::where('id', $peminjaman_detail->barang_id)->get();
+            $pengembalianDetailExist = PengembalianDetail::
+                where('pengembalian_id', $pengembalian->id)
+                ->where('barang_id', $barang->id)
+                ->exists();
+        } while ($pengembalianDetailExist);
+        
         if($barang->jenis == 'TIDAK_HABIS_PAKAI') {
             $satuan = 'Unit';
             $jumlah = 1;

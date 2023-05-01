@@ -8,6 +8,7 @@ use App\Models\AdminGudang;
 use App\Models\AksesBarang;
 use App\Models\Gudang;
 use App\Models\Menangani;
+use App\Models\Peminjaman;
 use App\Models\Pengembalian;
 use App\Models\SjPengembalian;
 use App\Models\SjPengirimanGp;
@@ -25,17 +26,19 @@ class PeminjamanFactory extends Factory
     public function definition()
     {
         $id = fake()->uuid();
-        $menangani = Menangani::with(['proyek','proyek.projectManager'])->get()->random();
+        $menangani = Menangani::with(['proyek','supervisor','proyek.projectManager'])->get()->random();
         $gudang = Gudang::get()->random();
         $admin_gudang = AdminGudang::where('gudang_id',$gudang->id)->get()->random();
         $tgl_peminjaman = fake()->dateTimeBetween('-2 weeks', 'now');
         $tgl_berakhir = fake()->dateTimeBetween('-1 weeks', '+2 weeks');
         $proyek = $menangani->proyek;
+        $supervisor = $menangani->supervisor;
         $project_manager = $menangani->proyek->projectManager;
         $now = Carbon::now();
         $start_date = Carbon::parse($tgl_peminjaman);
         $end_date = Carbon::parse($tgl_berakhir);
         $status = NULL;
+        $kode_peminjaman = Peminjaman::generateKodePeminjaman("GUDANG_PROYEK", $proyek->client, $supervisor->nama);
 
         if($now->isAfter($end_date)){
             $status = 'SELESAI';
@@ -46,29 +49,43 @@ class PeminjamanFactory extends Factory
                 'project_manager_id' => $project_manager->id,
                 'peminjaman_id' => $id,
             ])->create();
-            $clientAcronym = IDGenerator::getAcronym($proyek->client);
-            $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber());
-            $year = Date::getYearNumber();
-            $prefix = "SJPG/$clientAcronym/$romanMonth/$year";
-            $kode_surat=IDGenerator::generateID(SuratJalan::class,'kode_surat',5,'SJPG');
             $pengembalian_status = fake()->randomElement(['MENUNGGU_PENGEMBALIAN', 'SEDANG_DIKEMBALIKAN', 'SELESAI']);
-            if($pengembalian_status != 'MENUNGGU_PENGEMBALIAN'){
-                Pengembalian::factory()->state([
-                    'peminjaman_id' => $id,
-                    'status' => $pengembalian_status,
-                ])->has(
-                    SuratJalan::factory()->state([
-                        'admin_gudang_id' => $admin_gudang->id,
-                        'tipe' => 'PENGEMBALIAN',
-                        'kode_surat' => $kode_surat,
-                    ])->has(SjPengembalian::factory()->state(function (array $attributes, Pengembalian $pengembalian, SuratJalan $surat_jalan) {
-                        return [
-                            'surat_jalan_id' => $surat_jalan->id,
-                            'pengembalian_id' => $pengembalian->id,
-                        ];
-                    }))
-                )->create();
-            }else{
+            if($pengembalian_status == 'SEDANG_DIKEMBALIKAN'){
+                Pengembalian::factory()->withSuratJalanDalamPerjalanan($id, $pengembalian_status, $admin_gudang->id, $proyek->client, $supervisor->nama)->create();
+                // Pengembalian::factory()->state([
+                //     'peminjaman_id' => $id,
+                //     'status' => $pengembalian_status,
+                // ])->has(
+                //     SuratJalan::factory()->state([
+                //         'admin_gudang_id' => $admin_gudang->id,
+                //         'tipe' => 'PENGEMBALIAN',
+                //         'kode_surat' => SuratJalan::generateKodeSurat("PENGEMBALIAN", $proyek->client, $supervisor->nama),
+                //     ])->dalamPerjalanan()->has(SjPengembalian::factory()->state(function (array $attributes, Pengembalian $pengembalian, SuratJalan $surat_jalan) {
+                //         return [
+                //             'surat_jalan_id' => $surat_jalan->id,
+                //             'pengembalian_id' => $pengembalian->id,
+                //         ];
+                //     }))
+                // )->create();
+            }else if($pengembalian_status == 'SELESAI'){
+                Pengembalian::factory()->withSuratJalanSelesai($id, $pengembalian_status, $admin_gudang->id, $proyek->client, $supervisor->nama)->create();
+                // Pengembalian::factory()->state([
+                //     'peminjaman_id' => $id,
+                //     'status' => $pengembalian_status,
+                // ])->has(
+                //     SuratJalan::factory()->state([
+                //         'admin_gudang_id' => $admin_gudang->id,
+                //         'tipe' => 'PENGEMBALIAN',
+                //         'kode_surat' => SuratJalan::generateKodeSurat("PENGEMBALIAN", $proyek->client, $supervisor->nama),
+                //     ])->selesai()->has(SjPengembalian::factory()->state(function (array $attributes, Pengembalian $pengembalian, SuratJalan $surat_jalan) {
+                //         return [
+                //             'surat_jalan_id' => $surat_jalan->id,
+                //             'pengembalian_id' => $pengembalian->id,
+                //         ];
+                //     }))
+                // )->create();
+            }
+            else{
                 Pengembalian::factory()->state([
                     'peminjaman_id' => $id,
                     'status' => $pengembalian_status
@@ -87,7 +104,8 @@ class PeminjamanFactory extends Factory
             SuratJalan::factory()->state([
                 'admin_gudang_id' => $admin_gudang->id,
                 'tipe' => 'PENGIRIMAN_GUDANG_PROYEK',
-            ])->has(SjPengirimanGp::factory()->state(function (array $attributes, SuratJalan $surat_jalan) use ($id) {
+                'kode_surat' => SuratJalan::generateKodeSurat("PENGIRIMAN_GUDANG_PROYEK", $proyek->client, $supervisor->nama),
+            ])->selesai()->has(SjPengirimanGp::factory()->state(function (array $attributes, SuratJalan $surat_jalan) use ($id) {
                 return [
                     'surat_jalan_id' => $surat_jalan->id,
                     'peminjaman_id' => $id,
@@ -115,7 +133,8 @@ class PeminjamanFactory extends Factory
                     SuratJalan::factory()->state([
                         'admin_gudang_id' => $admin_gudang->id,
                         'tipe' => 'PENGIRIMAN_GUDANG_PROYEK',
-                    ])->has(SjPengirimanGp::factory()->state(function (array $attributes, SuratJalan $surat_jalan) use ($id) {
+                        'kode_surat' => SuratJalan::generateKodeSurat("PENGIRIMAN_GUDANG_PROYEK", $proyek->client, $supervisor->nama),
+                    ])->dalamPerjalanan()->has(SjPengirimanGp::factory()->state(function (array $attributes, SuratJalan $surat_jalan) use ($id) {
                         return [
                             'id' => $attributes['id'],
                             'surat_jalan_id' => $surat_jalan->id,
@@ -129,6 +148,7 @@ class PeminjamanFactory extends Factory
             'id' => $id,
             'gudang_id' => $gudang->id,
             'menangani_id' => $menangani->id,
+            'kode_peminjaman' => $kode_peminjaman,
             'tipe' => 'GUDANG_PROYEK',
             'tgl_peminjaman' => $tgl_peminjaman,
             'tgl_berakhir' => $tgl_berakhir,

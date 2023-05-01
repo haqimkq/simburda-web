@@ -20,7 +20,7 @@ class AdminGudangFactory extends Factory
         return [
             'user_id' => User::where('role', 'ADMIN_GUDANG')->get()->random()->id,
             'gudang_id' => Gudang::get()->random()->id,
-            'kode_ag' => IDGenerator::generateID(AdminGudang::class,'kode_ag',5,'AG')
+            'kode_ag' => AdminGudang::generateKodeAG()
         ];
     }
 }

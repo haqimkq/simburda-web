@@ -80,14 +80,21 @@ class SuratJalan extends Model
         return Date::dateFormatter($date, 'ddd, D MMM YYYY');
     }
 
-    public static function generateKodeSurat($tipe){
+    public static function generateKodeSurat($tipe, $client, $supervisor){
+        $clientAcronym = IDGenerator::getAcronym($client);
+        $supervisorAcronym = IDGenerator::getAcronym($supervisor);
+        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber());
+        $year = Date::getYearNumber();
+        $prefix = "$clientAcronym/$supervisorAcronym/$romanMonth/$year";
+        $typePrefix = NULL;
         if($tipe == "PENGIRIMAN_PROYEK_PROYEK"){
-            return IDGenerator::generateID(SuratJalan::class, 'kode_surat', 5, 'SJPP');
+            $typePrefix = "SJPP";
         }else if($tipe == "PENGIRIMAN_GUDANG_PROYEK"){
-            return IDGenerator::generateID(SuratJalan::class, 'kode_surat', 5, 'SJGP');
+            $typePrefix = "SJGP";
         }else{
-            return IDGenerator::generateID(SuratJalan::class, 'kode_surat', 5, 'SJPG');
+            $typePrefix = "SJPG";
         }
+        return IDGenerator::generateID(SuratJalan::class,'kode_surat',5,"$typePrefix/$prefix");
     }
 
 }

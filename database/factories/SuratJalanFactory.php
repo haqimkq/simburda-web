@@ -81,16 +81,63 @@ class SuratJalanFactory extends Factory
             ];
         });
     }
-    /**
-     * Indicate that the model's code should be for pengembalian gudang proyek.
-     *
-     * @return static
-     */
-    public function sjPengembalian()
+    public function selesai()
     {
         return $this->state(function (array $attributes) {
+            $status = 'SELESAI';
+            $ttdAdminGudang = fake()->imageUrl(640, 480, 'admin', true);
+            $ttdDriver = fake()->imageUrl(640, 480, 'driver', true);
+            $ttdSupervisor = fake()->imageUrl(640, 480, 'supervisor', true);
+            $foto_bukti = 'https://picsum.photos/640/640?random='.mt_rand(1,92392);
+            Kendaraan::where('id', $attributes['kendaraan_id'])->update([
+                'logistic_id' => NULL
+            ]);
             return [
-                'kode_surat' => IDGenerator::generateID(SuratJalan::class,'kode_surat',5,'SJPG'),
+                'status' => $status,
+                'ttd_admin' => $ttdAdminGudang,
+                'ttd_driver' => $ttdDriver,
+                'ttd_penerima' => $ttdSupervisor,
+                'foto_bukti' => $foto_bukti,
+            ];
+        });
+    }
+    public function menunggu()
+    {
+        return $this->state(function (array $attributes) {
+            $status = 'MENUNGGU_KONFIRMASI_DRIVER';
+            $ttdAdminGudang = fake()->imageUrl(640, 480, 'admin', true);
+            $ttdDriver = NULL;
+            $ttdSupervisor = NULL;
+            $foto_bukti = NULL;
+            Kendaraan::where('id', $attributes['kendaraan_id'])->update([
+                'logistic_id' => $attributes['logistic_id']
+            ]);
+            return [
+                'status' => $status,
+                'ttd_admin' => $ttdAdminGudang,
+                'ttd_driver' => $ttdDriver,
+                'ttd_penerima' => $ttdSupervisor,
+                'foto_bukti' => $foto_bukti,
+            ];
+        });
+    }
+    public function dalamPerjalanan()
+    {
+        return $this->state(function (array $attributes) {
+            $status = 'DRIVER_DALAM_PERJALANAN';
+            $ttdAdminGudang = fake()->imageUrl(640, 480, 'admin', true);
+            $ttdDriver = fake()->imageUrl(640, 480, 'driver', true);
+            $ttdSupervisor = NULL;
+            $foto_bukti = NULL;
+            Kendaraan::where('id', $attributes['kendaraan_id'])->update([
+                'logistic_id' => $attributes['logistic_id']
+            ]);
+            return [
+                'status' => $status,
+                'ttd_admin' => $ttdAdminGudang,
+                'ttd_driver' => $ttdDriver,
+                'ttd_penerima' => $ttdSupervisor,
+                'foto_bukti' => $foto_bukti,
             ];
         });
     }

@@ -18,7 +18,7 @@ class SupervisorFactory extends Factory
     {
         return [
             'user_id' => User::where('role', 'SUPERVISOR')->get()->random()->id,
-            'kode_sv' => IDGenerator::generateID(Supervisor::class,'kode_sv',5,'SV')
+            'kode_sv' => Supervisor::generateKodeSupervisor()
         ];
     }
 }
