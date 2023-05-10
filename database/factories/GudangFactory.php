@@ -24,7 +24,8 @@ class GudangFactory extends Factory
             'provinsi' => fake()->state(),
             'latitude' => $lat,
             'longitude' => $lon,
-            'gambar' => $randomImage
+            'gambar' => $randomImage,
+            'created_at' => fake()->dateTimeBetween('-2 years', 'now')
         ];
     }
 }

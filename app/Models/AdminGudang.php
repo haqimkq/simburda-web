@@ -2,17 +2,15 @@
 
 namespace App\Models;
 
-use App\Traits\Uuids;
+use App\Helpers\IDGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AdminGudang extends Model
 {
-    use Uuids;
     use SoftDeletes;
     use HasFactory;
-    protected $guarded = ['id'];
     protected $primaryKey = null;
     public $incrementing = false;
     public function user(){
@@ -31,5 +29,9 @@ class AdminGudang extends Model
     }
     public function deliveryOrder(){
         return $this->hasMany(DeliveryOrder::class,'admin_gudang_id','user_id');
+    }
+
+    public static function generateKodeAG(){
+        return IDGenerator::generateID(new static,'kode_ag',5,'AG');
     }
 }

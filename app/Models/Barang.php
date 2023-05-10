@@ -26,7 +26,6 @@ class Barang extends Model
     public function barangTidakHabisPakai(){
         return $this->hasOne(BarangTidakHabisPakai::class);
     }
-
     public function barangHabisPakai(){
         return $this->hasOne(BarangHabisPakai::class);
     }

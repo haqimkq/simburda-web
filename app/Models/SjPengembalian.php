@@ -17,7 +17,7 @@ class SjPengembalian extends Model
     public function suratJalan(){
         return $this->belongsTo(SuratJalan::class);
     }
-    public function pengembalianTujuan(){
+    public function pengembalian(){
         return $this->belongsTo(Pengembalian::class);
     }
 }

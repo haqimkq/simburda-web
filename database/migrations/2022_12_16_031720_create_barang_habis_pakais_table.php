@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -18,8 +19,11 @@ return new class extends Migration
             $table->integer('jumlah');
             $table->string('ukuran');
             $table->string('satuan');
-            $table->foreignUuid('barang_id')->constrained('barangs')->onUpdate('cascade')->onDelete('cascade');
+            $table->timestamps();
             $table->softDeletes();
+        });
+        Schema::table('barang_habis_pakais', function (Blueprint $table) {
+            $table->foreignUuid('barang_id')->constrained('barangs')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -30,6 +34,8 @@ return new class extends Migration
      */
     public function down()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Schema::dropIfExists('barang_habis_pakais');
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 };

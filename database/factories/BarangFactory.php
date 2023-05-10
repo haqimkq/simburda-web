@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Barang;
 use App\Models\BarangHabisPakai;
 use App\Models\BarangTidakHabisPakai;
 use App\Models\Gudang;
@@ -33,38 +34,23 @@ class BarangFactory extends Factory
     }
     public function habisPakai(){
         return $this->state(function(array $attributes){
-            BarangHabisPakai::factory()->state([
-                'barang_id' => $attributes['id']
-            ])->create();
             return [
                 'jenis' => 'HABIS_PAKAI'
             ];
-        });
+        })->has(BarangHabisPakai::factory(), 'barangHabisPakai');
     }
     public function tidakHabisPakai(){
         return $this->state(function(array $attributes){
-            BarangTidakHabisPakai::factory()->state([
-                'barang_id' => $attributes['id']
-            ])->create();
             return [
                 'jenis' => 'TIDAK_HABIS_PAKAI'
             ];
-        });
+        })->has(BarangTidakHabisPakai::factory(), 'barangTidakHabisPakai');
     }
-    public function randomJenis(){
+    public function tidakHabisPakaiRandom(){
         return $this->state(function(array $attributes){
-            if($attributes['jenis'] == 'HABIS_PAKAI'){
-                BarangHabisPakai::factory()->state([
-                    'barang_id' => $attributes['id']
-                ])->create();
-            }else{
-                BarangTidakHabisPakai::factory()->state([
-                    'barang_id' => $attributes['id']
-                ])->create();
-            }
             return [
-                'jenis' => $attributes['jenis']
+                'jenis' => 'TIDAK_HABIS_PAKAI'
             ];
-        });
+        })->has(BarangTidakHabisPakai::factory(), 'barangTidakHabisPakai');
     }
 }

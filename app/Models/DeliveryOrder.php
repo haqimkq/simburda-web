@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\Date;
+use App\Helpers\IDGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\Uuids;
@@ -69,5 +70,12 @@ class DeliveryOrder extends Model
     public function getUpdatedAtAttribute($date)
     {
         return Date::dateFormatter($date, 'ddd, D MMM YYYY');
+    }
+
+    public static function generateKodeDO($nama_perusahaan){
+        $perusahaanAlias = IDGenerator::getAcronym($nama_perusahaan);
+        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber());
+        $prefix = "DO/BC-" . $perusahaanAlias . "/" . $romanMonth . "/" . Date::getYearNumber();
+        return IDGenerator::generateID(new static, 'kode_do', 5, $prefix);
     }
 }

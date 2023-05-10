@@ -15,11 +15,10 @@ class UserFactory extends Factory
     public function definition()
     {
         $role = fake()->randomElement(['PROJECT_MANAGER', 'PURCHASING', 'LOGISTIC', 'SUPERVISOR', 'ADMIN_GUDANG', 'USER']);
-        $json = file_get_contents('https://randomuser.me/api'); // Get the JSON content
-        $obj=json_decode($json);
-        $results = $obj->results[0];
-        $name = $results->name->first.' '.$results->name->last;
-        $picture = $results->picture->large;
+        $gender = fake()->randomElement(['male', 'female', 'pixel']);
+        $randomNumber = $gender!='pixel' ? fake()->numberBetween(0,78) : fake()->numberBetween(0,53);
+        $name = $gender!='pixel' ? fake()->name($gender) : fake()->name();
+        $picture = "https://xsgames.co/randomusers/assets/avatars/$gender/$randomNumber.jpg";
 
         return [
             'id' => fake()->uuid(),

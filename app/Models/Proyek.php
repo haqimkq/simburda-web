@@ -16,12 +16,16 @@ class Proyek extends Model
 
     protected $guarded = ['id'];
 
-    public function supervisor(){
-        return $this->belongsToMany(Proyek::class,'menanganis','proyek_id','supervisor_id');
+    public function supervisors(){
+        return $this->belongsToMany(User::class,'menanganis','proyek_id','supervisor_id');
     }
 
     public function projectManager(){
-        return $this->hasOne(User::class, 'project_manager_id');
+        return $this->belongsTo(User::class, 'project_manager_id');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'project_manager_id');
     }
 
     public function scopeFilter($query, array $filters){

@@ -22,35 +22,36 @@ class DeliveryOrderFactory extends Factory
     public function definition()
     {
         $status = fake()->randomElement(['MENUNGGU_KONFIRMASI_ADMIN_GUDANG', 'MENUNGGU_KONFIRMASI_DRIVER','DRIVER_DALAM_PERJALANAN', 'SELESAI']);
-        $logistic = ($status!='MENUNGGU_KONFIRMASI_ADMIN_GUDANG') ? User::where('role', 'LOGISTIC')->all()->random()->id : NULL;
-        $kendaraan = ($status!='MENUNGGU_KONFIRMASI_ADMIN_GUDANG') ? Kendaraan::all()->random()->id : NULL;
+        $logistic_id = ($status!='MENUNGGU_KONFIRMASI_ADMIN_GUDANG') ? User::where('role', 'LOGISTIC')->get()->random()->id : NULL;
+        $kendaraan_id = ($status!='MENUNGGU_KONFIRMASI_ADMIN_GUDANG') ? Kendaraan::get()->random()->id : NULL;
         $tgl_pengambilan = fake()->dateTimeBetween('-3 weeks', 'now');
-        $perusahaan = Perusahaan::all()->random();
-        $gudang = Gudang::all()->random();
-        $admin_gudang = AdminGudang::where('gudang_id', $gudang->id)->all()->random();
+        $perusahaan = Perusahaan::get()->random();
+        $gudang = Gudang::get()->random();
+        $admin_gudang = AdminGudang::where('gudang_id', $gudang->id)->get()->random();
 
-        if($status == 'SELESAI' && $kendaraan != NULL){
-            Kendaraan::where('id', $kendaraan->id)->update([
+        if($status == 'SELESAI' && $kendaraan_id != NULL){
+            Kendaraan::where('id', $kendaraan_id)->update([
                 'logistic_id' => NULL
             ]);
-        }else if($status != 'SELESAI' && $kendaraan != NULL){
-            Kendaraan::where('id', $kendaraan->id)->update([
-                'logistic_id' => $logistic
+        }else if($status != 'SELESAI' && $kendaraan_id != NULL){
+            Kendaraan::where('id', $kendaraan_id)->update([
+                'logistic_id' => $logistic_id
             ]);
         }
         return [
             'id' => fake()->uuid(),
             'kode_do' => DeliveryOrder::generateKodeDO($perusahaan->nama),
             'status' => $status,
-            'purchasing_id' => User::where('role', 'PURCHASING')->all()->random()->id,
+            'purchasing_id' => User::where('role', 'PURCHASING')->get()->random()->id,
             'perusahaan_id' => $perusahaan->id,
-            'logistic_id' => $logistic,
-            'kendaraan_id' => $kendaraan,
+            'logistic_id' => $logistic_id,
+            'kendaraan_id' => $kendaraan_id,
             'gudang_id' => $gudang->id,
             'admin_gudang_id' => $admin_gudang->id,
             'untuk_perhatian' => fake()->name(),
             'tgl_pengambilan' => $tgl_pengambilan,
-            'perihal' => 'Delivery Order'
+            'perihal' => 'Delivery Order',
+            'created_at' => $tgl_pengambilan
         ];
     }
 }

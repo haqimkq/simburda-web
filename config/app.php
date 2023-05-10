@@ -198,6 +198,7 @@ return [
         Kreait\Laravel\Firebase\ServiceProvider::class,
 
         Barryvdh\DomPDF\ServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 
         // SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class
     ],

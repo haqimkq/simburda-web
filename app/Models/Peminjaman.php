@@ -15,6 +15,7 @@ class Peminjaman extends Model
     use SoftDeletes;
     use HasFactory;
     protected $guarded = ['id'];
+    protected $table = 'peminjamans';
 
     public function sjPengirimanGP(){
         if($this->tipe == 'GUDANG_PROYEK') return $this->hasOne(SjPengirimanGp::class);
@@ -53,10 +54,10 @@ class Peminjaman extends Model
         $prefix = "$clientAcronym/$supervisorAcronym/$romanMonth/$year";
         $typePrefix = NULL;
         if($tipe == "PROYEK_PROYEK"){
-            $typePrefix = "PP";
+            $typePrefix = "SEND_PP";
         }else{
-            $typePrefix = "GP";
+            $typePrefix = "SEND_GP";
         }
-        return IDGenerator::generateID(Peminjaman::class,'kode_peminjaman',5,"$typePrefix/$prefix");
+        return IDGenerator::generateID(new static,'kode_peminjaman',5,"$typePrefix/$prefix");
     }
 }

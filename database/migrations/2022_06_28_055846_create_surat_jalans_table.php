@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -15,9 +16,6 @@ return new class extends Migration
     {
         Schema::create('surat_jalans', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('logistic_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('admin_gudang_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('kendaraan_id')->constrained('kendaraans')->onUpdate('cascade')->onDelete('cascade')->nullable();
             $table->string('kode_surat');
             $table->string('ttd_admin');
             $table->string('ttd_driver')->nullable();
@@ -28,6 +26,11 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+        Schema::table('surat_jalans', function (Blueprint $table) {
+            $table->foreignUuid('logistic_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('admin_gudang_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('kendaraan_id')->nullable()->constrained('kendaraans')->onUpdate('cascade')->onDelete('cascade');
+        });
     }
 
     /**
@@ -37,6 +40,8 @@ return new class extends Migration
      */
     public function down()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Schema::dropIfExists('surat_jalans');
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 };

@@ -6,13 +6,11 @@ use App\Helpers\IDGenerator;
 use App\Http\Requests\LogisticFirebaseRequest;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 
 class Logistic extends Model
 {
-    use Uuids;
     use HasFactory;
     use SoftDeletes;
     protected $primaryKey = null;
@@ -22,7 +20,7 @@ class Logistic extends Model
     }
 
     public static function generateLogisticCode(){
-        return IDGenerator::generateID(Logistic::class, 'kode_logistic', 4, 'LOG');
+        return IDGenerator::generateID(new static, 'kode_logistic', 4, 'LOG');
     }
 
     public static function createDBWithRDB(Request $request){

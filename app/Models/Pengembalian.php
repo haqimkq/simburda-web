@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Helpers\IDGenerator;
+use App\Helpers\Date;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,5 +20,17 @@ class Pengembalian extends Model
     }
     public function pengembalianDetail(){
         return $this->hasMany(PengembalianDetail::class);
+    }
+    public function sjPengembalian(){
+        return $this->hasOne(SjPengembalian::class);
+    }
+    public static function generateKodePengembalian($client, $supervisor){
+        $clientAcronym = IDGenerator::getAcronym($client);
+        $supervisorAcronym = IDGenerator::getAcronym($supervisor);
+        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber());
+        $year = Date::getYearNumber();
+        $prefix = "$clientAcronym/$supervisorAcronym/$romanMonth/$year";
+        $typePrefix = "RETURN";
+        return IDGenerator::generateID(new static,'kode_pengembalian',5,"$typePrefix/$prefix");
     }
 }

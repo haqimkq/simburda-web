@@ -17,10 +17,10 @@ class AksesBarangFactory extends Factory
      */
     public function definition()
     {
-        $peminjaman = Peminjaman::doesntHave('aksesBarang')->all()->random();
+        $peminjaman = Peminjaman::doesntHave('aksesBarang')->get()->random();
         $meminjamId = $peminjaman->id;
-        $admin_gudang_id = User::where('role','ADMIN_GUDANG')->all()->random()->id;
-        $menangani = Menangani::where('id', $peminjaman->menangani->id)->get();
+        $admin_gudang_id = User::where('role','ADMIN_GUDANG')->get()->random()->id;
+        $menangani = Menangani::where('id', $peminjaman->menangani->id)->first();
         $project_manager_id = $menangani->proyek->projectManager->id;
         $disetujui_admin = fake()->optional()->boolean(50);
         $disetujui_pm = fake()->optional()->boolean(50);

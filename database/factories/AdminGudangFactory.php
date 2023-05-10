@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Helpers\IDGenerator;
 use App\Models\AdminGudang;
 use App\Models\Gudang;
 use App\Models\User;
@@ -20,7 +19,8 @@ class AdminGudangFactory extends Factory
         return [
             'user_id' => User::where('role', 'ADMIN_GUDANG')->get()->random()->id,
             'gudang_id' => Gudang::get()->random()->id,
-            'kode_ag' => AdminGudang::generateKodeAG()
+            'kode_ag' => AdminGudang::generateKodeAG(),
+            'created_at' => fake()->dateTimeBetween('-2 years', 'now')
         ];
     }
 }

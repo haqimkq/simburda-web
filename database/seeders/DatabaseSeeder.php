@@ -15,10 +15,16 @@ use App\Models\Kendaraan;
 use App\Models\menangani;
 use App\Models\SuratJalan;
 use App\Models\AksesBarang;
+use App\Models\BarangHabisPakai;
 use App\Models\BarangTidakHabisPakai;
 use Illuminate\Support\Str;
 use App\Models\DeliveryOrder;
 use App\Models\Gudang;
+use App\Models\Peminjaman;
+use App\Models\PeminjamanDetail;
+use App\Models\Pengembalian;
+use App\Models\PengembalianDetail;
+use App\Models\Perusahaan;
 use App\Models\ProjectManager;
 use App\Models\Purchasing;
 use App\Models\Supervisor;
@@ -36,22 +42,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $allLogistic = Logistic::factory(10)->for(
-            User::factory()->state(
-                ['role'=>'LOGISTIC']
-            )
-        )->create();
-        $allSupervisor = Supervisor::factory(10)->for(
-            User::factory()->state(
-                ['role'=>'SUPERVISOR']
-            )
-        )->create();
-        $allPurchasing = Purchasing::factory(10)->for(
-            User::factory()->state(
-                ['role'=>'PURCHASING']
-            )
-        )->create();
-        $admin1 = User::factory(1)->state(
+        User::factory()->state(
             [
                 'role'=>'ADMIN',
                 'nama' => 'Erna B. Wijayanti, ST.MT.',
@@ -59,36 +50,19 @@ class DatabaseSeeder extends Seeder
                 'foto' => 'assets/users/Director_Erna B. Wijayanti, ST.MT.jpeg'
             ]
         )->create();
-        $purchasing1 = Purchasing::factory(1)->for(
-            User::factory()->state(
+
+        User::factory()->state(
                 [
                     'role'=>'PURCHASING',
                     'nama' => 'Meita Wulansuci S., SH',
                     'email' => 'meitawulansuci@gmail.com',
                     'foto' => 'assets/users/General Affair_Wulansuci S., SH.jpeg'
                 ]
-            )
-        )->create();
-        $adminGudang1 = AdminGudang::factory(1)->for(
-            User::factory()->state(
-                [
-                    'role'=>'ADMIN_GUDANG',
-                    'nama' => 'Ghani Pratama',
-                    'email' => 'ghanipratama@gmail.com'
-                ]
-            )
-        )->create();
-        $logistic1 = Logistic::factory(1)->for(
-            User::factory()->state(
-                [
-                    'role'=>'LOGISTIC',
-                    'nama' => 'Andro',
-                    'email' => 'andro@gmail.com'
-                ]
-            )
-        )->create();
-        
-        $gudang1 = Gudang::factory()->state(
+        )->has(Purchasing::factory()->state(function(array $attributes, User $user){
+            return ['user_id' => $user->id];
+        }))->create();
+
+        $gudang = Gudang::factory()->state(
             [
                 'nama' => 'Gudang Jakarta 1',
                 'alamat' => 'Jl. Pengadegan Selatan II No.1, RT.10/RW.4, Pengadegan, Kec. Pancoran, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12770',
@@ -99,32 +73,213 @@ class DatabaseSeeder extends Seeder
                 'gambar' => 'assets/gudang/Gudang Jakarta 1.jpg'
             ]
         )->create();
-        $barangTidakHabisPakai = BarangTidakHabisPakai::factory(10)
-        ->for(Barang::factory()->state(new Sequence(
+
+        Perusahaan::factory()->count(8)->state(new Sequence(
+            [
+                'nama' => 'PT Onasis Indonesia',
+                'alamat' => 'Jl. KH Abdullah Syafei No.2, RT.12/RW.2, Tebet Tim., Kec. Tebet, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12840',
+                'latitude' => '-6.175507',
+                'longitude' => '106.7466998',
+                'kota' => 'Jakarta Selatan',
+                'provinsi' => 'DKI Jakarta',
+                'gambar' => 'assets/perusahaan/PT Onasis Indonesia.jpg'
+            ],
+            [
+                'nama' => 'WASKITA UTAMA - KSO',
+                'alamat' => 'RT.6/RW.1, Manggarai, Kec. Tebet, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12850',
+                'latitude' => '-6.2123089',
+                'longitude' => '106.8519512',
+                'kota' => 'Jakarta Selatan',
+                'provinsi' => 'DKI Jakarta',
+                'gambar' => 'assets/perusahaan/WASKITA UTAMA - KSO.jpg'
+            ],
+            [
+                'nama' => 'PT Jurong Engineering Lestari',
+                'alamat' => 'Jl. Gunung Sahari Raya Kav 18 Gedung Maspion Plaza, LT 10, RT.4/RW.1, Pademangan Bar., Kec. Pademangan, Jkt Utara, Daerah Khusus Ibukota Jakarta 14420',
+                'latitude' => '-6.1753341',
+                'longitude' => '106.7466997',
+                'kota' => 'Jakarta Utara',
+                'provinsi' => 'DKI Jakarta',
+                'gambar' => 'assets/perusahaan/PT Jurong Engineering Lestari.jpg'
+            ],
+            [
+                'nama' => 'PT. Timas Suplindo',
+                'alamat' => 'Jl. Tanah Abang II No.81, RW.4, Petojo Sel., Kecamatan Gambir, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10160',
+                'latitude' => '-6.17568',
+                'longitude' => '106.7466998',
+                'kota' => 'Jakarta Pusat',
+                'provinsi' => 'DKI Jakarta',
+                'gambar' => 'assets/perusahaan/PT. Timas Suplindo.jpg'
+            ],
+            [
+                'nama' => 'PT. Acset Indonusa',
+                'alamat' => 'Jl. Majapahit No.26, RT.14/RW.8, Petojo Sel., Kecamatan Gambir, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10160',
+                'latitude' => '-6.2122005',
+                'longitude' => '106.8210513',
+                'kota' => 'Jakarta Pusat',
+                'provinsi' => 'DKI Jakarta',
+                'gambar' => 'assets/perusahaan/PT. Acset Indonusa.jpg'
+            ],
+            [
+                'nama' => 'PT. Gearindo Prakarsa',
+                'alamat' => 'Jl. Radin Inten II No.46, RT.10/RW.5, Duren Sawit, Kec. Duren Sawit, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13440',
+                'latitude' => '-6.2126438',
+                'longitude' => '106.8658805',
+                'kota' => 'Jakarta Timur',
+                'provinsi' => 'DKI Jakarta',
+                'gambar' => 'assets/perusahaan/PT. Gearindo Prakarsa.jpg'
+            ],
+            [
+                'nama' => 'PT. Aneka Dharma Persada',
+                'alamat' => '59JX+R63, Rejowinangun, Kotagede, Yogyakarta City, Special Region of Yogyakarta 55172',
+                'latitude' => '-7.7971209',
+                'longitude' => '110.336138',
+                'kota' => 'Yogyakarta',
+                'provinsi' => 'DIY Yogyakarta',
+                'gambar' => 'assets/perusahaan/PT. Aneka Dharma Persada.jpg'
+            ],
+            [
+                'nama' => 'PT. Archikon Wiratama',
+                'alamat' => 'Ruko Sakura Regency, Ketintang, Jl. Ketintang Baru Sel. I No.14-16, Ketintang, Kec. Gayungan, Kota SBY, Jawa Timur 60234',
+                'latitude' => '-7.323788',
+                'longitude' => '112.7100665',
+                'kota' => 'Surabaya',
+                'provinsi' => 'Jawa Timur',
+                'gambar' => 'assets/perusahaan/PT. Archikon Wiratama.jpg'
+            ],
+        ))->create();
+        
+        User::factory()->state(
                 [
-                    'merk' => 'Gudang',
-                    'gambar' => 'Gudang',
-                    'nama' => 'Excavator',
-                    'jenis' => 'TIDAK_HABIS_PAKAI',
-                ],
-            )
-        )->for($gudang1))->create();
-        $PM1 = ProjectManager::factory(1)->for(
-            User::factory()->state(
-                [
-                    'role'=>'PROJECT_MANAGER',
-                    'nama' => 'Novita Cahyanintyas, ST.',
-                    'email' => 'novitacahya@gmail.com',
-                    'foto' => 'assets/users/Project Manager_Novita Cahyanintyas, ST.jpeg'
+                    'role'=>'ADMIN_GUDANG',
+                    'nama' => 'Ghani Pratama',
+                    'email' => 'ghanipratama@gmail.com'
                 ]
-            )
-        )->create();
-        $projectManagers = ProjectManager::factory(7)->for(
-            User::factory()->state(
-                ['role'=>'PROJECT_MANAGER']
-            )
-        )->create();
-        $proyek1 = Proyek::factory()->state([
+        )->has(AdminGudang::factory()->state(function(array $attributes, User $user){
+            return [
+                'user_id' => $user->id
+            ];
+        }))->create();
+
+        User::factory()->state(
+                [
+                    'role'=>'LOGISTIC',
+                    'nama' => 'Andro',
+                    'email' => 'andro@gmail.com'
+                ]
+        )->has(Logistic::factory()->state(function(array $attributes, User $user){
+            return ['user_id' => $user->id];
+        }))->create();
+
+        Barang::factory()->count(19)->state(new Sequence(
+                [
+                    'merk' => 'KOBELCO SK 210',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Kobelco SK200.jpg',
+                    'nama' => 'Excavator',
+                ],
+                [
+                    'merk' => 'KOBELCO PC 130',
+                    'gambar' => 'assets/barang/TidakHabisPakai/KOBELCO PC130.jpg',
+                    'nama' => 'Excavator',
+                ],
+                [
+                    'merk' => 'HITACHI PC ZAXIS 210',
+                    'gambar' => 'assets/barang/TidakHabisPakai/HITACHI EXCAVATOR ZAXIS 210.jpg',
+                    'nama' => 'Excavator',
+                ],
+                [
+                    'merk' => 'HITACHI ZX 48U-5A',
+                    'gambar' => 'assets/barang/TidakHabisPakai/HITACHI ZX48U-5A.jpg',
+                    'nama' => 'Excavator',
+                ],
+                [
+                    'merk' => 'ISUZU',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Dumpt Truck Isuzu.jpg',
+                    'nama' => 'Dump Truck',
+                ],
+                [
+                    'merk' => 'TOYOTA',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Dyna 125 ht toyota.jpg',
+                    'nama' => 'Dyna 125 HT',
+                ],
+                [
+                    'merk' => 'MITSUBISHI',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Medium-Duty Truck Mitsubishi.jpg',
+                    'nama' => 'Truck',
+                ],
+                [
+                    'merk' => 'DAIHATSU',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Pickup Daihatsu.jpg',
+                    'nama' => 'Pick Up',
+                ],
+                [
+                    'merk' => 'HONDA EP2500CX',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Genset Honda EP2500CX.jpg',
+                    'nama' => 'Genset',
+                ],
+                [
+                    'merk' => 'MIKASA',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Aspal Cutter Mikasa.jpg',
+                    'nama' => 'Aspalt Cutter',
+                ],
+                [
+                    'merk' => 'TOP CON',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Waterpass Topcon.jpg',
+                    'nama' => 'Waterpass',
+                ],
+                [
+                    'merk' => 'MIKITA',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Jack Hammer Mikita.jpg',
+                    'nama' => 'Jack Hammer',
+                ],
+                [
+                    'merk' => 'DENYO D300 YANMAR',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Mesin Las Denyo D300 Yanmar.jpg',
+                    'nama' => 'Mesin Las',
+                ],
+                [
+                    'merk' => 'SAKAI',
+                    'gambar' => 'assets/barang/TidakHabisPakai/wales slender sakai.jpg',
+                    'nama' => 'Wales Silinder',
+                ],
+                [
+                    'merk' => 'YANMAR SC5N',
+                    'gambar' => 'assets/barang/TidakHabisPakai/air compressor yanmar sc5n.jpg',
+                    'nama' => 'Compressor Mobil',
+                ],
+                [
+                    'merk' => 'SAKAI',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Baby Roller Sakai.jpg',
+                    'nama' => 'Baby Roller',
+                ],
+                [
+                    'merk' => 'YANMAR',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Trowel Yanmar.jpg',
+                    'nama' => 'Trowel',
+                ],
+                [
+                    'merk' => 'CHINA',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Mesin Paving Cina.jpg',
+                    'nama' => 'Mesin Paving',
+                ],
+                [
+                    'merk' => 'DENYO 300 A',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Generator Las DENYO 300 A.jpg',
+                    'nama' => 'Generator Las',
+                ],
+            ))->tidakHabisPakai()->create();
+        Barang::factory(40)->habisPakai()->create();
+
+        $PM1 = User::factory()->state([
+            'role'=>'PROJECT_MANAGER',
+            'nama' => 'Novita Cahyanintyas, ST.',
+            'email' => 'novitacahya@gmail.com',
+            'foto' => 'assets/users/Project Manager_Novita Cahyanintyas, ST.jpeg'
+        ])->has(ProjectManager::factory()->state(function (array $attributes, User $user){
+            return ['user_id' => $user->id];
+        }))->create();
+
+        Proyek::factory()->state([
             'nama_proyek' => 'Perumahan Sakura Regency 3 Toyota Housing Indonesia Rumah Blok H29',
             'foto' => 'assets/proyek/Perumahan Sakura Regency 3 Toyota Housing Indonesia Rumah Blok H29.jpg',
             'client' => 'PT. Toyota Housing Indonesia',
@@ -133,12 +288,9 @@ class DatabaseSeeder extends Seeder
             'kota' => 'Bekasi',
             'latitude' => '-6.2813794',
             'longitude' => '107.0118061',
-        ])->for($PM1)->create();
+        ])->for($PM1, 'projectManager')->create();
 
-        
-        $proyekPM1Selesai = Proyek::factory();
-
-        $proyekList = Proyek::factory(9)
+        Proyek::factory(9)
         ->state(new Sequence(
                     [
                         'nama_proyek' => 'Perbaikan Kolom Struktur Hanggar Skuadron 45 Halim Perdana Kusuma',
@@ -230,67 +382,79 @@ class DatabaseSeeder extends Seeder
                         'latitude' => '-6.1091684',
                         'longitude' => '106.7404088',
                     ],
-                ))->for($PM1)->create();
+                ))->for($PM1, 'projectManager')->create();
 
-        $gudang = Gudang::factory(3)->create()->state(new Sequence(
-                    ['admin' => 'Y'],
-                    ['admin' => 'N'],
-                ));
+        Kendaraan::factory()->state(new Sequence([
 
-        $adminGudang = AdminGudang::factory(10)->for(
-            User::factory()->state(
-                ['role'=>'ADMIN_GUDANG']
-            )->for($gudang)
-        )->create();
+        ]))->create();
+        Kendaraan::factory(20)->create();
 
-        SuratJalan::factory(20)->create();
-
-        User::factory(10)->state([
-            'role' => 'LOGISTIC'
-        ])->hasLogistic(1)->has(
-            SuratJalan::factory()
-            ->count(20)->state([])
-        );
-
-        
-        ProjectManager::factory(15)
-        ->forUser([
-            'role' => 'PROJECT_MANAGER'
-        ]);
-        Supervisor::factory(15)
-        ->forUser([
+        User::factory(20)->state([
             'role' => 'SUPERVISOR'
-        ]);
-        AdminGudang::factory(15)
-        ->forUser([
-            'role' => 'ADMIN_GUDANG'
-        ]);
-        Purchasing::factory()
-        ->count(15)
-        ->forUser([
+        ])->has(Supervisor::factory()->state(function (array $attributes, User $user){
+            return ['user_id' => $user->id];
+        }))->create();
+
+        Menangani::factory(35)->create();
+        
+        User::factory(20)->state([
+            'role' => 'LOGISTIC'
+        ])->has(Logistic::factory()->state(function (array $attributes, User $user){
+            return ['user_id' => $user->id];
+        }))->create();
+
+        User::factory(20)->state([
+            'role' => 'PROJECT_MANAGER'
+        ])->has(ProjectManager::factory()->state(function (array $attributes, User $user){
+            return ['user_id' => $user->id];
+        }))->create();
+
+        User::factory(20)->state([
             'role' => 'PURCHASING'
-        ]);
+        ])->has(Purchasing::factory()->state(function (array $attributes, User $user){
+            return ['user_id' => $user->id];
+        }))->create();
 
-        Proyek::factory()
-        ->count(10)
-        ->forProjectManager([
-            'nama'
-        ]);
+        User::factory(20)->state([
+            'role' => 'ADMIN_GUDANG'
+        ])->has(AdminGudang::factory()->state(function (array $attributes, User $user){
+            return ['user_id' => $user->id];
+        }))->create();
 
-        // User::factory(40)->create();
-        // Barang::factory(100)->create();
-        // for ($i=0; $i < 20; $i++) { 
-        //     Kendaraan::factory(1)->create();
-        // }
-        // Logistic::factory(20)->create();
-        // DeliveryOrder::factory(50)->create();
-        // PreOrder::factory(100)->create();
-        // Proyek::factory(20)->create();
-        // Menangani::factory(20)->create();
-        // SuratJalan::factory(20)->create();
-        // Meminjam::factory(100)->create();
-        // for ($i=0; $i < 100; $i++) {
-        //     AksesBarang::factory(1)->create();
-        // }
+        Peminjaman::factory(15)->has(PeminjamanDetail::factory()->count(8), 'peminjamanDetail')->create();
+
+        Peminjaman::factory(10)->has(PeminjamanDetail::factory()->count(3), 'peminjamanDetail')->create();
+
+        Peminjaman::factory(5)->has(PeminjamanDetail::factory()->count(4), 'peminjamanDetail')->create();
+
+        do{
+            $pengembalian = Pengembalian::doesntHave('pengembalianDetail')->first();
+            $peminjaman = ($pengembalian!=NULL) ? PeminjamanDetail::where('peminjaman_id', $pengembalian->peminjaman_id)->get() : NULL;
+            if ($peminjaman!=NULL){
+                foreach($peminjaman as $peminjamanDetail){
+                    $satuan = NULL;
+                    $jumlah = NULL;
+                    $kode_pengembalian = Pengembalian::generateKodePengembalian($peminjamanDetail->peminjaman->menangani->proyek->client, $peminjamanDetail->peminjaman->menangani->supervisor->nama);
+                    Pengembalian::where('id',$pengembalian->id)->update(['kode_pengembalian' => $kode_pengembalian]);
+                    $barang = Barang::find($peminjamanDetail->barang_id);
+                    if($barang->jenis == 'TIDAK_HABIS_PAKAI') {
+                        $satuan = 'Unit';
+                        $jumlah = 1;
+                    }else{
+                        $barang_habis_pakai = BarangHabisPakai::where('barang_id', $barang->id)->first();
+                        $satuan = $barang_habis_pakai->satuan;
+                        $jumlah = fake()->numberBetween(1, $barang_habis_pakai->jumlah);
+                    }
+                    $jumlah_satuan = "$jumlah $satuan";
+                    PengembalianDetail::factory()->state([
+                        "barang_id" => $peminjamanDetail->barang_id,
+                        "pengembalian_id" => $pengembalian->id,
+                        "jumlah_satuan" => $jumlah_satuan
+                    ])->create();
+                }
+            }
+        }while($pengembalian!=NULL);
+        
+        DeliveryOrder::factory(20)->has(PreOrder::factory()->count(10))->create();
     }
 }

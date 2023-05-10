@@ -17,17 +17,19 @@ class PreOrderFactory extends Factory
      */
     public function definition()
     {
-        $delivery_order = DeliveryOrder::with('perusahaan')->latest();
+        $delivery_order = DeliveryOrder::latest()->first();
+        $satuan = fake()->randomElement(['Meter', 'Kilogram', 'Box', 'Lembar', 'Karung', 'Batang']);
         $kode_po = PreOrder::generateKodePO($delivery_order->perusahaan->nama);
         return [
             'id' => fake()->uuid(),
             'delivery_order_id' => $delivery_order->id,
             'nama_material' => fake()->words(2, true),
             'kode_po' => $kode_po,
-            'satuan' => fake()->word(),
+            'satuan' => $satuan,
             'keterangan' => fake()->word(),
-            'jumlah' => fake()->randomNumber(15),
+            'jumlah' => fake()->numberBetween(1,40),
             'ukuran' => fake()->words(2, true),
+            'created_at' => fake()->dateTimeBetween('-3 weeks', 'now')
         ];
     }
 }

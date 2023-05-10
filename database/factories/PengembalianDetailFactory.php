@@ -20,20 +20,21 @@ class PengembalianDetailFactory extends Factory
     public function definition()
     {
         $id = fake()->uuid();
-        $pengembalian = Pengembalian::latest();
-        $peminjaman_detail = PeminjamanDetail::where('status', 'DIKEMBALIKAN')->all()->random();
+        $pengembalian = Pengembalian::latest()->first();
+        $peminjaman_detail = PeminjamanDetail::where('status', 'DIKEMBALIKAN')->get()->random();
         $satuan = NULL;
         $jumlah = NULL;
-        $barang = Barang::where('id', $peminjaman_detail->barang_id)->whereDoesntHave('pengembalianDetail', function (Builder $query) use ($pengembalian){
-            $query->where('pengembalian_id', $pengembalian->id);
-        })->all()->random();
+        // $barang = Barang::where('id', $peminjaman_detail->barang_id)->whereDoesntHave('pengembalianDetail', function (Builder $query) use ($pengembalian){
+        //     $query->where('pengembalian_id', $pengembalian->id);
+        // })->get()->random();
+        $barang = Barang::get()->random();
         if($barang->jenis == 'TIDAK_HABIS_PAKAI') {
             $satuan = 'Unit';
             $jumlah = 1;
         }else{
-            $barang_habis_pakai = BarangHabisPakai::where('barang_id', $barang->id)->get();
+            $barang_habis_pakai = BarangHabisPakai::where('barang_id', $barang->id)->first();
             $satuan = $barang_habis_pakai->satuan;
-            $jumlah = fake()->randomNumber($barang_habis_pakai->jumlah);
+            $jumlah = fake()->numberBetween($barang_habis_pakai->jumlah);
         }
         $jumlah_satuan = $jumlah . ' ' . $satuan;
         return [

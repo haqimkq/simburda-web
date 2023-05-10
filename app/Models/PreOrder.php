@@ -25,6 +25,6 @@ class PreOrder extends Model
         $perusahaanAlias = IDGenerator::getAcronym($nama_perusahaan);
         $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber());
         $prefix = "PO/BC-" . $perusahaanAlias . "/" . $romanMonth . "/" . Date::getYearNumber();
-        return IDGenerator::generateID(PreOrder::class, 'kode_po', 5, $prefix);
+        return IDGenerator::generateID(new static, 'kode_po', 5, $prefix);
     }
 }

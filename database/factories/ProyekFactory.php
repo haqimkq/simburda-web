@@ -23,10 +23,12 @@ class ProyekFactory extends Factory
         $randomImage = 'https://picsum.photos/640/640?random='.mt_rand(1,92392);
         if($selesai) $tgl_selesai = fake()->dateTimeBetween($date, '+2 month');
         else $tgl_selesai = NULL;
-        $project_manager = User::where('role', 'PROJECT_MANAGER')->get()->random();
+        // $project_manager = User::where('role', 'PROJECT_MANAGER')->get()->random();
+        $project_manager = User::factory();
         return [
             'id' => fake()->uuid(),
-            'project_manager_id' => $project_manager->id,
+            // 'project_manager_id' => $project_manager->id,
+            'project_manager_id' => $project_manager,
             'nama_proyek' => fake()->words(3, true),
             'alamat' => fake()->streetAddress(),
             'kota' => fake()->city(),

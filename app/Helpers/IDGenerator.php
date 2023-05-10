@@ -1,10 +1,12 @@
 <?php
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\Schema;
+
 class IDGenerator
 {
-    public static function generateID($model, $trow, $length = 4, $prefix){
-        $data = $model::orderBy('id','desc')->first();
+    public static function generateID($model, $trow, $length, $prefix){
+        $data = $model::orderBy('created_at','desc')->first();
         if(!$data){
             $ori_length = $length;
             $last_number = '';
@@ -23,7 +25,7 @@ class IDGenerator
         for($i=0;$i<$ori_length;$i++){
             $zeros.="0";
         }
-        return $prefix.'/'.$zeros.$last_number;
+        return "$prefix/$zeros$last_number";
     }
     public static function getAcronym($words){
         // Delimit by multiple spaces, hyphen, underscore, comma, and dot
@@ -34,7 +36,7 @@ class IDGenerator
                 strcasecmp($w, 'CV') == 0) continue;
             $acronym .= substr($w, 0, 1);
         }
-        return $acronym;
+        return strtoupper($acronym);
     }
     public static function numberToRoman($number) {
         $map = array('X' => 10, 'IX' => 9, 'V' => 5, 'IV' => 4, 'I' => 1);

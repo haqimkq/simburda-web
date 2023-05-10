@@ -60,6 +60,9 @@ class User extends Authenticatable
     public function adminGudang(){
         return $this->hasOne(AdminGudang::class);
     }
+    public function proyeks(){
+        return $this->belongsToMany(Proyek::class,'menanganis','supervisor_id','proyek_id');
+    }
     public function scopeFilter($query, array $filters){
         $query->when($filters['search'] ?? false, function($query, $search) {
             return $query->where('nama', 'like', '%' . $search . '%');

@@ -18,7 +18,8 @@ class SupervisorFactory extends Factory
     {
         return [
             'user_id' => User::where('role', 'SUPERVISOR')->get()->random()->id,
-            'kode_sv' => Supervisor::generateKodeSupervisor()
+            'kode_sv' => Supervisor::generateKodeSupervisor(),
+            'created_at' => fake()->dateTimeBetween('-2 years', 'now')
         ];
     }
 }
