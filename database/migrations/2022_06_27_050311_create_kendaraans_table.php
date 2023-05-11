@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('kendaraans', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->enum('jenis', ['MOTOR', 'MOBIL','PICKUP', 'TRUCK', 'TRONTON']);
+            $table->enum('jenis', ['MOTOR', 'MOBIL','PICKUP', 'TRUCK', 'TRONTON', 'MINIBUS']);
             $table->string('merk');
             $table->string('plat_nomor');
             $table->string('gambar');

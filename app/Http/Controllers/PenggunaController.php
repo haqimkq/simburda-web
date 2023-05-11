@@ -18,7 +18,7 @@ class PenggunaController extends Controller
      */
     public function index()
     {
-        $this->authorize('admin');
+        $this->authorize('ADMIN');
         $countUndefinedAkses = AksesBarang::countUndefinedAkses();
         $user = User::filter(request(['search', 'filter', 'orderBy']))->paginate(12)->withQueryString();
         $authUser = Auth::user();

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Helpers\Date;
 use App\Traits\Uuids;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -26,6 +27,12 @@ class Proyek extends Model
 
     public function user(){
         return $this->belongsTo(User::class, 'project_manager_id');
+    }
+
+    public static function filterBetweenDate($start_date, $end_date){
+        $dateS = new Carbon($start_date);
+        $dateE = new Carbon($end_date);
+        return Proyek::whereBetween('created_at', [$dateS->format('Y-m-d')." 00:00:00", $dateE->format('Y-m-d')." 23:59:59"])->get();
     }
 
     public function scopeFilter($query, array $filters){
@@ -51,12 +58,14 @@ class Proyek extends Model
             if($orderBy == 'jumlah tersedikit') return $query->orderBy('jumlah', 'ASC');
             if($orderBy == 'jumlah terbanyak') return $query->orderBy('jumlah', 'DESC');
         });
+        $query->when($filters['date'] ?? false, function($query, $date) {
+            return $query->whereBetween('nama_proyek', 'like', '%' . $date . '%');
+        });
     }
     public function getCreatedAtAttribute($date)
     {
         return Date::dateFormatter($date, 'ddd, D MMM YYYY');
     }
-
     public function getUpdatedAtAttribute($date)
     {
         return Date::dateFormatter($date, 'ddd, D MMM YYYY');

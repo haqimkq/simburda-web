@@ -193,29 +193,49 @@ class DatabaseSeeder extends Seeder
                     'nama' => 'Excavator',
                 ],
                 [
-                    'merk' => 'ISUZU',
-                    'gambar' => 'assets/barang/TidakHabisPakai/Dumpt Truck Isuzu.jpg',
-                    'nama' => 'Dump Truck',
-                ],
-                [
-                    'merk' => 'TOYOTA',
-                    'gambar' => 'assets/barang/TidakHabisPakai/Dyna 125 ht toyota.jpg',
-                    'nama' => 'Dyna 125 HT',
-                ],
-                [
-                    'merk' => 'MITSUBISHI',
-                    'gambar' => 'assets/barang/TidakHabisPakai/Medium-Duty Truck Mitsubishi.jpg',
-                    'nama' => 'Truck',
-                ],
-                [
-                    'merk' => 'DAIHATSU',
-                    'gambar' => 'assets/barang/TidakHabisPakai/Pickup Daihatsu.jpg',
-                    'nama' => 'Pick Up',
-                ],
-                [
                     'merk' => 'HONDA EP2500CX',
                     'gambar' => 'assets/barang/TidakHabisPakai/Genset Honda EP2500CX.jpg',
                     'nama' => 'Genset',
+                ],
+                [
+                    'merk' => 'Seoul',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Bar cutter portable (Seoul).jpg',
+                    'nama' => 'Bar cutter portable',
+                ],
+                [
+                    'merk' => 'Hilti Te700AVR',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Bobok besar AVR (Hilti Te700AVR).jpg',
+                    'nama' => 'Bobok besar AVR',
+                ],
+                [
+                    'merk' => 'Hilti Te500',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Bobok beton (Hilti Te500).jpg',
+                    'nama' => 'Bobok beton',
+                ],
+                [
+                    'merk' => 'Hilti Te70',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Bor Bobok beton (Hilti Te70).jpg',
+                    'nama' => 'Bor Bobok beton',
+                ],
+                [
+                    'merk' => 'Bosch GLL 5-50 X',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Level laser (Bosch GLL 5-50 X).jpg',
+                    'nama' => 'Level laser',
+                ],
+                [
+                    'merk' => 'Hitachi',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Serut kayu (Hitachi).jpg',
+                    'nama' => 'Serut kayu',
+                ],
+                [
+                    'merk' => 'Honda',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Steam (Honda).jpg',
+                    'nama' => 'Steam',
+                ],
+                [
+                    'merk' => 'Skillsaw',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Sirkel kayu (Skillsaw).jpg',
+                    'nama' => 'Sirkel kayu',
                 ],
                 [
                     'merk' => 'MIKASA',
@@ -384,10 +404,123 @@ class DatabaseSeeder extends Seeder
                     ],
                 ))->for($PM1, 'projectManager')->create();
 
-        Kendaraan::factory()->state(new Sequence([
-
-        ]))->create();
-        Kendaraan::factory(20)->create();
+        Kendaraan::factory()->state(new Sequence(
+            [
+                "gambar" => "assets/kendaraan/Revo Attractive Red.jpg",
+                "merk" => "Revo Attractive Red",
+            ],
+            [
+                "gambar" => "assets/kendaraan/MPM Vario 160.jpg",
+                "merk" => "Honda Vario 160",
+            ],
+            [
+                "gambar" => "assets/kendaraan/Sub Beat.jpg",
+                "merk" => "Honda Beat",
+            ],
+            [
+                "gambar" => "assets/kendaraan/Supra X 125 Golden Matte.jpg",
+                "merk" => "Supra X 125 Golden Matte",
+            ],
+            [
+                "gambar" => "assets/kendaraan/Yamaha Vino.jpg",
+                "merk" => "Yamaha Vino",
+            ],
+            [
+                "gambar" => "assets/kendaraan/GTR150 Sporty Spartan Red.jpg",
+                "merk" => "GTR150 Sporty Spartan Red",
+            ],
+            [
+                "gambar" => "assets/kendaraan/Honda pcx ehev.jpg",
+                "merk" => "Honda PCX ehev",
+            ],
+        ))->motor()->create();
+        
+        Kendaraan::factory()->state(new Sequence(
+            [
+                "gambar" => "assets/kendaraan/Honda BRV.jpg",
+                "merk" => "Honda BRV",
+            ],
+            [
+                "gambar" => "assets/kendaraan/Honda Civic.jpg",
+                "merk" => "Honda Civic",
+            ],
+            [
+                "gambar" => "assets/kendaraan/Gran Max Minibus FH E4.jpg",
+                "merk" => "Gran Max Minibus FH E4",
+            ],
+            [
+                "gambar" => "assets/kendaraan/Toyota Yaris.jpg",
+                "merk" => "Toyota Yaris",
+            ],
+        ))->mobil()->create();
+        
+        Kendaraan::factory()->state(new Sequence(
+            [
+                "gambar" => "assets/kendaraan/Gran Max Minibus FH E4.jpg",
+                "merk" => "Gran Max Minibus FH E4",
+            ],
+            [
+                "gambar" => "assets/kendaraan/APV New Luxury.jpg",
+                "merk" => "APV New Luxury",
+            ],
+        ))->minibus()->create();
+        
+        Kendaraan::factory()->state(new Sequence(
+            [
+                'merk' => 'Daihatsu',
+                'gambar' => 'assets/barang/TidakHabisPakai/Pickup Daihatsu.jpg',
+            ],
+            [
+                'merk' => 'Gran Max Pick Up AC PS',
+                'gambar' => 'assets/kendaraan/Gran Max Pick Up AC PS.jpg',
+            ],
+            [
+                'merk' => 'Gran Max Pick Up PU AC',
+                'gambar' => 'assets/kendaraan/Gran Max Pick Up PU AC.jpg',
+            ],
+            [
+                'merk' => 'Suzuki New Carry Pick Up',
+                'gambar' => 'assets/kendaraan/Suzuki New Carry Pick Up.jpg',
+            ],
+        ))->pickup()->create();
+        
+        Kendaraan::factory()->state(new Sequence(
+            [
+                "gambar" => "assets/kendaraan/Fighter X FM 65 FS Hi-Gear.jpg",
+                "merk" => "Fighter X FM 65 FS Hi-Gear",
+            ],
+            [
+                "gambar" => "assets/kendaraan/Canter FE 73.jpg",
+                "merk" => "Canter FE 73",
+            ],
+            [
+                'merk' => 'Isuzu Dump Truck',
+                'gambar' => 'assets/barang/TidakHabisPakai/Dumpt Truck Isuzu.jpg',
+            ],
+            [
+                'merk' => 'Toyota Dyna 125 HT',
+                'gambar' => 'assets/barang/TidakHabisPakai/Dyna 125 ht toyota.jpg',
+            ],
+            [
+                'merk' => 'Mitsubishi',
+                'gambar' => 'assets/barang/TidakHabisPakai/Medium-Duty Truck Mitsubishi.jpg',
+            ],
+        ))->truck()->create();
+        
+        Kendaraan::factory()->state(new Sequence(
+            [
+                "gambar" => "assets/kendaraan/Fighter X FN 62 F HDR.jpg",
+                "merk" => "Fighter X FN 62 F HDR",
+            ],
+            [
+                "gambar" => "assets/kendaraan/Fighter X FN 62 F Tractor Head.jpg",
+                "merk" => "Fighter X FN 62 F Tractor Head",
+            ],
+            [
+                "gambar" => "assets/kendaraan/Tracktor-Head Truck Mitsubishi.jpg",
+                "merk" => "Tracktor-Head Mitsubishi",
+            ],
+        ))->tronton()->create();
 
         User::factory(20)->state([
             'role' => 'SUPERVISOR'

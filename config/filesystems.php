@@ -69,8 +69,10 @@ return [
     |
     */
 
+    $storage_link = (PHP_OS == "WINNT" || PHP_OS == "WIN32" || PHP_OS == "Windows")  ? "app\public" : "app/public",
+
     'links' => [
-        public_path('storage') => storage_path('app/public'),
+        public_path('storage') => storage_path($storage_link)
     ],
 
 ];

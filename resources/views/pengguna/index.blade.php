@@ -75,13 +75,13 @@
 						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900  focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark: dark:focus:ring-green"
 						>
 							<option value="semua role"  @if(request('filter') == 'semua role') selected @endif>Semua Role</option>
-							<option value="admin" @if(request('filter') == 'admin') selected @endif>Admin</option>
-							<option value="project manager"  @if(request('filter') == 'project manager') selected @endif>Project Manager</option>
-							<option value="supervisor" @if(request('filter') == 'supervisor') selected @endif>Supervisor</option>
-							<option value="logistic"  @if(request('filter') == 'logistic') selected @endif>Logistic</option>
-							<option value="user"  @if(request('filter') == 'user') selected @endif>User</option>
-							<option value="admin gudang"  @if(request('filter') == 'admin gudang') selected @endif>Admin Gudang</option>
-							<option value="purchasing"  @if(request('filter') == 'purchasing') selected @endif>Purchasing</option>
+							<option value="ADMIN" @if(request('filter') == 'ADMIN') selected @endif>Admin</option>
+							<option value="PROJECT_MANAGER"  @if(request('filter') == 'PROJECT_MANAGER') selected @endif>Project Manager</option>
+							<option value="SUPERVISOR" @if(request('filter') == 'SUPERVISOR') selected @endif>Supervisor</option>
+							<option value="LOGISTIC"  @if(request('filter') == 'LOGISTIC') selected @endif>Logistic</option>
+							<option value="USER"  @if(request('filter') == 'USER') selected @endif>User</option>
+							<option value="ADMIN_GUDANG"  @if(request('filter') == 'ADMIN_GUDANG') selected @endif>Admin Gudang</option>
+							<option value="PURCHASING"  @if(request('filter') == 'PURCHASING') selected @endif>Purchasing</option>
 						</select>
 					</div>
 				@endsection

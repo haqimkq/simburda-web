@@ -70,7 +70,7 @@ class User extends Authenticatable
         $query->when($filters['filter'] ?? false, function($query, $filter) {
             //    return $query->where(function($query) use ($filter) {
                 if($filter != 'semua role')
-                return $query->where('role', '=', $filter);
+                return $query->where('role', $filter);
                 // });
             });
         $query->when(!isset($filters['orderBy']), function($query){
