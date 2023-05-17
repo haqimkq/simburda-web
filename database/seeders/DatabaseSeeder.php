@@ -2,9 +2,6 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
-use App\Http\Requests\LogisticFirebaseRequest;
 use App\Models\AdminGudang;
 use App\Models\LogisticFirebase;
 use App\Models\User;
@@ -25,9 +22,9 @@ use App\Models\Perusahaan;
 use App\Models\ProjectManager;
 use App\Models\Purchasing;
 use App\Models\Supervisor;
-use Database\Factories\ProyekFactory;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
+use Illuminate\Http\Request;
 
 class DatabaseSeeder extends Seeder
 {
@@ -610,7 +607,7 @@ class DatabaseSeeder extends Seeder
 
         $logistics = Logistic::get();
         foreach($logistics as $logistic){
-            $request = new LogisticFirebaseRequest([
+            $request = new Request([
                 'user_id'   => $logistic->user_id,
                 'latitude' => $logistic->latitude,
                 'longitude' => $logistic->longitude,
