@@ -23,7 +23,6 @@ class AppServiceProvider extends ServiceProvider
         }else{
             URL::forceScheme(scheme:'http');
         }
-
     }
 
     /**

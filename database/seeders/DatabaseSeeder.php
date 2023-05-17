@@ -4,7 +4,9 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Http\Requests\LogisticFirebaseRequest;
 use App\Models\AdminGudang;
+use App\Models\LogisticFirebase;
 use App\Models\User;
 use App\Models\Barang;
 use App\Models\Proyek;
@@ -42,6 +44,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        LogisticFirebase::deleteAllData();
+        
         User::factory()->state(
             [
                 'role'=>'ADMIN',
@@ -62,7 +66,7 @@ class DatabaseSeeder extends Seeder
             return ['user_id' => $user->id];
         }))->create();
 
-        $gudang = Gudang::factory()->state(
+        Gudang::factory()->state(
             [
                 'nama' => 'Gudang Jakarta 1',
                 'alamat' => 'Jl. Pengadegan Selatan II No.1, RT.10/RW.4, Pengadegan, Kec. Pancoran, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12770',
@@ -170,8 +174,20 @@ class DatabaseSeeder extends Seeder
         )->has(Logistic::factory()->state(function(array $attributes, User $user){
             return ['user_id' => $user->id];
         }))->create();
+        
+        Barang::factory()->state(
+                [
+                    'merk' => 'KOBELCO SK 210',
+                    'gambar' => 'assets/barang/TidakHabisPakai/Kobelco SK200.jpg',
+                    'nama' => 'Excavator',
+                ],
+        )->has(BarangHabisPakai::factory()->state(function(array $attributes, Barang $barang){
+            return [
+                'barang_id' => $barang->id
+            ];
+        }))->create();
 
-        Barang::factory()->count(19)->state(new Sequence(
+        Barang::factory()->count(23)->state(new Sequence(
                 [
                     'merk' => 'KOBELCO SK 210',
                     'gambar' => 'assets/barang/TidakHabisPakai/Kobelco SK200.jpg',
@@ -404,7 +420,7 @@ class DatabaseSeeder extends Seeder
                     ],
                 ))->for($PM1, 'projectManager')->create();
 
-        Kendaraan::factory()->state(new Sequence(
+        Kendaraan::factory(7)->state(new Sequence(
             [
                 "gambar" => "assets/kendaraan/Revo Attractive Red.jpg",
                 "merk" => "Revo Attractive Red",
@@ -435,7 +451,7 @@ class DatabaseSeeder extends Seeder
             ],
         ))->motor()->create();
         
-        Kendaraan::factory()->state(new Sequence(
+        Kendaraan::factory(4)->state(new Sequence(
             [
                 "gambar" => "assets/kendaraan/Honda BRV.jpg",
                 "merk" => "Honda BRV",
@@ -454,7 +470,7 @@ class DatabaseSeeder extends Seeder
             ],
         ))->mobil()->create();
         
-        Kendaraan::factory()->state(new Sequence(
+        Kendaraan::factory(2)->state(new Sequence(
             [
                 "gambar" => "assets/kendaraan/Gran Max Minibus FH E4.jpg",
                 "merk" => "Gran Max Minibus FH E4",
@@ -465,7 +481,7 @@ class DatabaseSeeder extends Seeder
             ],
         ))->minibus()->create();
         
-        Kendaraan::factory()->state(new Sequence(
+        Kendaraan::factory(4)->state(new Sequence(
             [
                 'merk' => 'Daihatsu',
                 'gambar' => 'assets/barang/TidakHabisPakai/Pickup Daihatsu.jpg',
@@ -484,7 +500,7 @@ class DatabaseSeeder extends Seeder
             ],
         ))->pickup()->create();
         
-        Kendaraan::factory()->state(new Sequence(
+        Kendaraan::factory(5)->state(new Sequence(
             [
                 "gambar" => "assets/kendaraan/Fighter X FM 65 FS Hi-Gear.jpg",
                 "merk" => "Fighter X FM 65 FS Hi-Gear",
@@ -507,7 +523,7 @@ class DatabaseSeeder extends Seeder
             ],
         ))->truck()->create();
         
-        Kendaraan::factory()->state(new Sequence(
+        Kendaraan::factory(3)->state(new Sequence(
             [
                 "gambar" => "assets/kendaraan/Fighter X FN 62 F HDR.jpg",
                 "merk" => "Fighter X FN 62 F HDR",
@@ -559,6 +575,14 @@ class DatabaseSeeder extends Seeder
         Peminjaman::factory(10)->has(PeminjamanDetail::factory()->count(3), 'peminjamanDetail')->create();
 
         Peminjaman::factory(5)->has(PeminjamanDetail::factory()->count(4), 'peminjamanDetail')->create();
+        
+        Peminjaman::factory(5)->has(PeminjamanDetail::factory()->count(3), 'peminjamanDetail')->create();
+        
+        Peminjaman::factory(6)->has(PeminjamanDetail::factory()->count(2), 'peminjamanDetail')->create();
+        
+        Peminjaman::factory(7)->has(PeminjamanDetail::factory()->count(1), 'peminjamanDetail')->create();
+        
+        Peminjaman::factory(8)->has(PeminjamanDetail::factory()->count(5), 'peminjamanDetail')->create();
 
         do{
             $pengembalian = Pengembalian::doesntHave('pengembalianDetail')->first();
@@ -589,5 +613,15 @@ class DatabaseSeeder extends Seeder
         }while($pengembalian!=NULL);
         
         DeliveryOrder::factory(20)->has(PreOrder::factory()->count(10))->create();
+
+        $logistics = Logistic::get();
+        foreach($logistics as $logistic){
+            $request = new LogisticFirebaseRequest([
+                'user_id'   => $logistic->user_id,
+                'latitude' => $logistic->latitude,
+                'longitude' => $logistic->longitude,
+            ]);
+            LogisticFirebase::setData($request);
+        }
     }
 }

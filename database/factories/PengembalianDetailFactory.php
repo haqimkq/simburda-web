@@ -21,7 +21,7 @@ class PengembalianDetailFactory extends Factory
     {
         $id = fake()->uuid();
         $pengembalian = Pengembalian::latest()->first();
-        $peminjaman_detail = PeminjamanDetail::where('status', 'DIKEMBALIKAN')->get()->random();
+        // $peminjaman_detail = PeminjamanDetail::where('status', 'DIKEMBALIKAN')->get()->random();
         $satuan = NULL;
         $jumlah = NULL;
         // $barang = Barang::where('id', $peminjaman_detail->barang_id)->whereDoesntHave('pengembalianDetail', function (Builder $query) use ($pengembalian){

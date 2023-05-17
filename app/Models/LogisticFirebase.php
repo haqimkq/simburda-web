@@ -3,34 +3,37 @@
 namespace App\Models;
 
 use App\Http\Requests\LogisticFirebaseRequest;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Kreait\Firebase\Contract\Database;
+use App\Services\FirebaseService;
+use Kreait\Firebase\Factory;
 
-class LogisticFirebase extends Model
+class LogisticFirebase
 {
-    public static $firebaseDatabase;
     public static $logisticFirebase = 'logistic/';
-    public function __construct(Database $firebaseDatabase)
-    {
-        $this->firebaseDatabase = $firebaseDatabase;
-    }
-
-    public static function getData(Request $request){
-        self::$firebaseDatabase->getReference(self::$logisticFirebase.$request->userId)->getValue();
+    public function getData(Request $request){
+        self::getDatabase()->getReference(self::$logisticFirebase.$request->user_id)->getValue();
     }
     public static function setData(LogisticFirebaseRequest $request){
         $setData = [
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
         ];
-        self::$firebaseDatabase->getReference(self::$logisticFirebase.$request->userId)->set($setData);
+        self::getDatabase()->getReference(self::$logisticFirebase.$request->user_id)->set($setData);
     }
     public static function updateData(LogisticFirebaseRequest $request){
         $updateData = [
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
         ];
-        self::$firebaseDatabase->getReference(self::$logisticFirebase.$request->userId)->update($updateData);
+        self::getDatabase()->getReference(self::$logisticFirebase.$request->user_id)->update($updateData);
+    }
+    public static function deleteAllData(){
+        self::getDatabase()->getReference(self::$logisticFirebase)->remove();
+    }
+    public static function getDatabase(){
+        $firebase = (new Factory)
+            ->withServiceAccount(base_path(env('FIREBASE_CREDENTIALS')))
+            ->withDatabaseUri(env("FIREBASE_DATABASE_URL"));
+        return $firebase->createDatabase();
     }
 }

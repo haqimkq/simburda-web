@@ -131,9 +131,11 @@ Route::post('/proyek/{id}/menangani',function($id ,Request $request){
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::put('user/update', [UserController::class, 'updateProfile']);
+    Route::put('user/update-profile', [UserController::class, 'updateProfile']);
     Route::post('user/update-photo', [UserController::class, 'updatePhoto']);
     Route::post('logout', [UserController::class, 'logout']);
+    Route::get('currentAccessToken', [UserController::class, 'currentAccessToken']);
 });
 
 Route::post('login', [UserController::class, 'login']);
+Route::post('register', [UserController::class, 'register']);

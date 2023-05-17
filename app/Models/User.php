@@ -32,6 +32,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
+        'pin',
         'password',
         'remember_token',
     ];
@@ -81,5 +82,80 @@ class User extends Authenticatable
             if($orderBy == 'terlama') return $query->orderBy('created_at', 'ASC');
             if($orderBy == 'role') return $query->orderBy('role');
         });
+    }
+
+
+    public static function createLogistic(Request $request){
+        $request['role'] = "LOGISTIC";
+        $user = self::createUser($request);
+        self::validateCreateUser($request);
+        Logistic::create([
+            'user_id' => $user->user_id,
+            'kode_logistic' => self::generateLogisticCode(),
+        ]);
+    }
+
+    public static function updateLogistic(Request $request){
+        self::validateCreateUser($request);
+        $user=self::create([
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'password' => $request->password,
+            'no_hp' => $request->no_hp,
+            'role' => 'LOGISTIC',
+        ]);
+        Logistic::create([
+            'user_id' => $user->user_id,
+            'kode_logistic' => self::generateLogisticCode(),
+        ]);
+    }
+
+     public static function validateCreateUser(Request $request){
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'no_hp' => 'required|numeric|min:11'
+        ]);
+    }
+    public static function createUser(Request $request){
+        $user=self::create([
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'password' => $request->password,
+            'no_hp' => $request->no_hp,
+            'role' => $request->role,
+        ]);
+        return $user;
+    }
+    public static function validateChangeRole(Request $request){
+        $request->validate([
+            'id' => 'required',
+            'role' => 'required',
+        ]);
+    }
+    public static function validateChangePin(Request $request){
+        $request->validate([
+            'id' => 'required',
+            'pin' => 'required',
+        ]);
+    }
+    public static function validateChangePassword(Request $request){
+        $request->validate([
+            'id' => 'required',
+            'password' => 'required',
+        ]);
+    }
+    public static function validateChangePhoto(Request $request){
+        $request->validate([
+            'foto' => 'required|image|max:2048',
+        ]);
+    }
+    public static function validateChangeProfile(Request $request){
+        $request->validate([
+            'nama' => 'required',
+            'email' => 'required|unique:users',
+            'no_hp' => 'required',
+        ]);
     }
 }

@@ -24,10 +24,9 @@ class LogisticFirebaseRequest extends FormRequest
     public function rules()
     {
         return [
-            'userId' => ['required|uuid'],
+            'user_id' => ['required|uuid'],
             'latitude' => ['required|numeric'],
             'longitude' => ['required|numeric'],
-            'kode_logistic' => ['required'],
         ];
     }
 }

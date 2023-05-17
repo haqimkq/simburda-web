@@ -37,7 +37,6 @@ class Handler extends ExceptionHandler
         'password',
         'password_confirmation',
     ];
-
     /**
      * Register the exception handling callbacks for the application.
      *
@@ -49,7 +48,7 @@ class Handler extends ExceptionHandler
         //     //
         // });
         $this->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
-            if ($e && $request->expectsJson()) return ResponseFormatter::error(null,'Authentication Failed', 401);
+            if ($e && $request->expectsJson()) return ResponseFormatter::error($e->getMessage());
             return redirect()->route('login');
         });
     }

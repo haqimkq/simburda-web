@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdatekendaraanRequest extends FormRequest
+class CreateLogisticRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,8 @@ class UpdatekendaraanRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'nama' => ['required|string'],
+            'email' => ['required|unique:users'],
         ];
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
+use Kreait\Firebase\Contract\Database;
 
 class Logistic extends Model
 {
@@ -20,13 +21,13 @@ class Logistic extends Model
     }
 
     public static function generateLogisticCode(){
-        return IDGenerator::generateID(new static, 'kode_logistic', 4, 'LOG');
+        return IDGenerator::generateID(Logistic::class, 'kode_logistic', 5, 'LOG');
     }
 
     public static function createDBWithRDB(Request $request){
         $requestFirebase = LogisticFirebaseRequest::createFrom($request);
         self::create([
-            'userId' => $requestFirebase->userId,
+            'user_id' => $requestFirebase->user_id,
             'latitude' => $requestFirebase->latitude,
             'longitude' => $requestFirebase->latitude,
             'kode_logistic' => self::generateLogisticCode(),
@@ -34,12 +35,13 @@ class Logistic extends Model
         LogisticFirebase::setData($requestFirebase);
     }
     public static function updateDBWithRDB(Request $request){
-        self::where('userId', $request->userId)->update([
+        self::where('user_id', $request->user_id)->update([
             'latitude' => $request->latitude,
             'longitude' => $request->longitude
         ]);
-        $requestFirebase = LogisticFirebaseRequest::createFrom($request);
-        LogisticFirebase::updateData($requestFirebase);
+        LogisticFirebase::updateData($request);
     }
-
+    public static function deleteRDB(){
+        LogisticFirebase::deleteAllData();
+    }
 }

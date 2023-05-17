@@ -89,16 +89,19 @@ class KendaraanFactory extends Factory
         $daerah = fake()->randomElement(['B','C','E','G','K','N','P','S','T','U','V','W','Z']);
         $randLetter = strtoupper(fake()->randomLetter());
         $randLetter2 = strtoupper(fake()->randomLetter());
-        $number = fake()->numberBetween(1234,9999);
-
+        $number = fake()->numberBetween(1000,1999);
+        
         $kode_kendaraan = NULL;
         $plat_nomor = NULL;
         if($jenis == "MINIBUS"){
             $kode_kendaraan = "F";
         }else if($jenis == "TRUCK" || $jenis == "TRONTON"){
             $kode_kendaraan = "D";
-        }else if($jenis == "MOBIL"){
+            $number = fake()->numberBetween(8000,9999);
+        }else if($jenis == "MOBIL" || $jenis == "PICKUP"){
             $kode_kendaraan = "A";
+        }else if($jenis == "MOTOR"){
+            $number = fake()->numberBetween(2000,6999);
         }
         $plat_nomor = "$daerah $number $kode_kendaraan$randLetter$randLetter2";
         return $plat_nomor;

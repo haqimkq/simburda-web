@@ -32,14 +32,14 @@ class PeminjamanFactory extends Factory
         $id = fake()->uuid();
         $menangani = Menangani::get()->random();
         $gudang = Gudang::get()->random();
-        $tgl_peminjaman = fake()->dateTimeBetween('-2 weeks', 'now');
+        $tgl_peminjaman = fake()->dateTimeBetween('-2 weeks', '+3 Days');
         $tgl_berakhir = fake()->dateTimeBetween($tgl_peminjaman, '+2 weeks');
         $proyek = $menangani->proyek;
         $supervisor = $menangani->supervisor;
         $now = Carbon::now();
         $start_date = Carbon::parse($tgl_peminjaman);
         $end_date = Carbon::parse($tgl_berakhir);
-        $status = NULL;
+        $status = fake()->randomElement(['MENUNGGU_AKSES', 'MENUNGGU_PENGIRIMAN', 'SEDANG_DIKIRIM']);
         $kode_peminjaman = Peminjaman::generateKodePeminjaman("GUDANG_PROYEK", $proyek->client, $supervisor->nama);
 
         if($now->isAfter($end_date)){
@@ -47,8 +47,6 @@ class PeminjamanFactory extends Factory
         }
         else if($now->between($start_date,$end_date)){
             $status = 'DIPINJAM';
-        }else{
-            $status = fake()->randomElement(['MENUNGGU_AKSES', 'MENUNGGU_PENGIRIMAN', 'SEDANG_DIKIRIM']);
         }
         return [
             'id' => $id,
