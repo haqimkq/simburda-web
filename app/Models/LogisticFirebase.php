@@ -13,14 +13,14 @@ class LogisticFirebase
     public function getData(Request $request){
         self::getDatabase()->getReference(self::$logisticFirebase.$request->user_id)->getValue();
     }
-    public static function setData(LogisticFirebaseRequest $request){
+    public static function setData(Request $request){
         $setData = [
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
         ];
         self::getDatabase()->getReference(self::$logisticFirebase.$request->user_id)->set($setData);
     }
-    public static function updateData(LogisticFirebaseRequest $request){
+    public static function updateData(Request $request){
         $updateData = [
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,

@@ -11,15 +11,10 @@ use App\Models\User;
 use App\Models\Barang;
 use App\Models\Proyek;
 use App\Models\Logistic;
-use App\Models\Meminjam;
 use App\Models\PreOrder;
 use App\Models\Kendaraan;
 use App\Models\menangani;
-use App\Models\SuratJalan;
-use App\Models\AksesBarang;
 use App\Models\BarangHabisPakai;
-use App\Models\BarangTidakHabisPakai;
-use Illuminate\Support\Str;
 use App\Models\DeliveryOrder;
 use App\Models\Gudang;
 use App\Models\Peminjaman;
@@ -33,7 +28,6 @@ use App\Models\Supervisor;
 use Database\Factories\ProyekFactory;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {

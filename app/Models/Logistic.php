@@ -25,16 +25,10 @@ class Logistic extends Model
     }
 
     public static function createDBWithRDB(Request $request){
-        $requestFirebase = LogisticFirebaseRequest::createFrom($request);
-        self::create([
-            'user_id' => $requestFirebase->user_id,
-            'latitude' => $requestFirebase->latitude,
-            'longitude' => $requestFirebase->latitude,
-            'kode_logistic' => self::generateLogisticCode(),
-        ]);
-        LogisticFirebase::setData($requestFirebase);
+        User::createLogistic($request);
+        LogisticFirebase::setData($request);
     }
-    public static function updateDBWithRDB(Request $request){
+    public static function updateCoordinate(Request $request){
         self::where('user_id', $request->user_id)->update([
             'latitude' => $request->latitude,
             'longitude' => $request->longitude
