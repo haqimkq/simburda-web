@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Helpers\IDGenerator;
 use App\Models\AdminGudang;
 use App\Models\LogisticFirebase;
 use App\Models\User;
@@ -12,6 +13,7 @@ use App\Models\PreOrder;
 use App\Models\Kendaraan;
 use App\Models\menangani;
 use App\Models\BarangHabisPakai;
+use App\Models\BarangTidakHabisPakai;
 use App\Models\DeliveryOrder;
 use App\Models\Gudang;
 use App\Models\Peminjaman;
@@ -22,9 +24,11 @@ use App\Models\Perusahaan;
 use App\Models\ProjectManager;
 use App\Models\Purchasing;
 use App\Models\Supervisor;
+use App\Models\SuratJalan;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class DatabaseSeeder extends Seeder
 {
@@ -614,5 +618,6 @@ class DatabaseSeeder extends Seeder
             ]);
             LogisticFirebase::setData($request);
         }
+        IDGenerator::reorderAll();
     }
 }
