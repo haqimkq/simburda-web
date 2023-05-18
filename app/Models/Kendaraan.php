@@ -23,7 +23,7 @@ class Kendaraan extends Model
     public function suratJalans(){
         return $this->hasMany(SuratJalan::class);
     }
-    public function logistic(){
+    public function user(){
         return $this->hasOne(User::class, 'id', 'logistic_id');
     }
     public function gudang(){
