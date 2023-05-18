@@ -13,6 +13,7 @@ class AdminGudang extends Model
     use HasFactory;
     protected $primaryKey = null;
     public $incrementing = false;
+    protected $guarded = [];
     public function user(){
         return $this->belongsTo(User::class);
     }

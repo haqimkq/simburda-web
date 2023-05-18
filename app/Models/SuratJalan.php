@@ -8,6 +8,8 @@ use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class SuratJalan extends Model
 {
@@ -40,6 +42,15 @@ class SuratJalan extends Model
     public function sjPengembalian(){
         return $this->hasOne(SjPengembalian::class);
     }
+    public function getCreatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
+
+    public function getUpdatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
 
     public function scopeFilter($query, array $filters){
         $query->when($filters['search'] ?? false, function($query, $search) {
@@ -65,20 +76,6 @@ class SuratJalan extends Model
             if($orderBy == 'jumlah terbanyak') return $query->orderBy('jumlah', 'DESC');
         });
     }
-    public function getCreatedAtAttribute($date)
-    {
-        return Date::dateFormatter($date, 'ddd, D MMM YYYY');
-    }
-
-    public function getUpdatedAtAttribute($date)
-    {
-        return Date::dateFormatter($date, 'ddd, D MMM YYYY');
-    }
-    public function getTglSelesaiAttribute($date)
-    {
-        if($date)
-        return Date::dateFormatter($date, 'ddd, D MMM YYYY');
-    }
 
     public static function generateKodeSurat($tipe, $client, $supervisor){
         $clientAcronym = IDGenerator::getAcronym($client);
@@ -95,6 +92,42 @@ class SuratJalan extends Model
             $typePrefix = "SJPG";
         }
         return IDGenerator::generateID(SuratJalan::class,'kode_surat',5,"$typePrefix/$prefix");
+    }
+    public static function createData(Request $request, $create = true){
+        self::validateCreate($request);
+        if($create) return self::create([
+            'admin_gudang_id' => $request->admin_gudang_id,
+            'logistic_id' => $request->logistic_id,
+            'kendaraan_id' => $request->kendaraan_id,
+            'ttd_admin' => $request->ttd_admin,
+            'tipe' => $request->tipe,
+        ]);
+        else return self::make([
+            'admin_gudang_id' => $request->admin_gudang_id,
+            'logistic_id' => $request->logistic_id,
+            'ttd_admin' => $request->ttd_admin,
+            'kendaraan_id' => $request->kendaraan_id,
+            'tipe' => $request->tipe,
+        ]);
+    }
+    public static function validateCreate(Request $request){
+        $request->validate([
+            'admin_gudang_id' => 'required|exists:users,id',
+            'logistic_id' => 'required|exists:users,id',
+            'kendaraan_id' => 'required|exists:kendaraans,id',
+            'tipe' => ['required', Rule::in(['PENGIRIMAN_GUDANG_PROYEK', 'PENGIRIMAN_PROYEK_PROYEK', 'PENGEMBALIAN'])],
+        ]);
+        $request->merge(['ttd_admin' => User::getTTD($request->admin_gudang_id)]);
+        $request->validate([
+            'ttd_admin' => 'required',
+        ]);
+        if($request->tipe=='PENGIRIMAN_PROYEK_PROYEK'){
+            SjPengirimanPp::validateCreate($request,false);
+        }else if($request->tipe=='PENGIRIMAN_GUDANG_PROYEK'){
+            SjPengirimanGp::validateCreate($request,false);
+        }else{
+            SjPengembalian::validateCreate($request,false);
+        }
     }
 
 }

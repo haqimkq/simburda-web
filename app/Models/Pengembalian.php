@@ -33,4 +33,13 @@ class Pengembalian extends Model
         $typePrefix = "RETURN";
         return IDGenerator::generateID(new static,'kode_pengembalian',5,"$typePrefix/$prefix");
     }
+    public function getCreatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
+
+    public function getUpdatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
 }

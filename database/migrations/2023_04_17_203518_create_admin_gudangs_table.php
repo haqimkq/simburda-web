@@ -21,7 +21,7 @@ return new class extends Migration
         });
         Schema::table('admin_gudangs', function (Blueprint $table) {
             $table->foreignUuid('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('gudang_id')->constrained('gudangs')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('gudang_id')->nullable()->constrained('gudangs')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

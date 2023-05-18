@@ -13,7 +13,6 @@ use App\Models\PreOrder;
 use App\Models\Kendaraan;
 use App\Models\menangani;
 use App\Models\BarangHabisPakai;
-use App\Models\BarangTidakHabisPakai;
 use App\Models\DeliveryOrder;
 use App\Models\Gudang;
 use App\Models\Peminjaman;
@@ -24,11 +23,9 @@ use App\Models\Perusahaan;
 use App\Models\ProjectManager;
 use App\Models\Purchasing;
 use App\Models\Supervisor;
-use App\Models\SuratJalan;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 
 class DatabaseSeeder extends Seeder
 {
@@ -40,27 +37,6 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         LogisticFirebase::deleteAllData();
-        
-        User::factory()->state(
-            [
-                'role'=>'ADMIN',
-                'nama' => 'Erna B. Wijayanti, ST.MT.',
-                'email' => 'ernawijayanti@gmail.com',
-                'foto' => 'assets/users/Director_Erna B. Wijayanti, ST.MT.jpeg'
-            ]
-        )->create();
-
-        User::factory()->state(
-                [
-                    'role'=>'PURCHASING',
-                    'nama' => 'Meita Wulansuci S., SH',
-                    'email' => 'meitawulansuci@gmail.com',
-                    'foto' => 'assets/users/General Affair_Wulansuci S., SH.jpeg'
-                ]
-        )->has(Purchasing::factory()->state(function(array $attributes, User $user){
-            return ['user_id' => $user->id];
-        }))->create();
-
         Gudang::factory()->state(
             [
                 'nama' => 'Gudang Jakarta 1',
@@ -72,6 +48,78 @@ class DatabaseSeeder extends Seeder
                 'gambar' => 'assets/gudang/Gudang Jakarta 1.jpg'
             ]
         )->create();
+        User::factory()->state(
+            [
+                'id'=>'ab7e7da6-9333-35dd-8ae9-021c8a0232d4',
+                'role'=>'ADMIN',
+                'nama' => 'Erna B. Wijayanti, ST.MT.',
+                'email' => 'ernawijayanti@gmail.com',
+                'foto' => 'assets/users/Director_Erna B. Wijayanti, ST.MT.jpeg',
+                'ttd' => 'assets/ttd/92673616-2c3a-3338-a435-2d79d880833e.png'
+            ]
+        )->create();
+
+        User::factory()->state(
+                [
+                    'id'=>'68424cd1-8741-32b9-90a2-aae065dcc7b8',
+                    'role'=>'ADMIN_GUDANG',
+                    'nama' => 'Ghani Pratama',
+                    'email' => 'ghanipratama@gmail.com',
+                    'ttd' => 'assets/ttd/hjgawedyahwdh2837289371jh.png'
+                ]
+        )->has(AdminGudang::factory()->state(function(array $attributes, User $user){
+            return [
+                'user_id' => $user->id
+            ];
+        }))->create();
+
+        User::factory()->state(
+                [
+                    'id'=>'cffe442b-8221-3902-9aee-a3006c5cf641',
+                    'role'=>'LOGISTIC',
+                    'nama' => 'Ahmad Lutfi',
+                    'email' => 'ahmadlutfi@gmail.com',
+                    'ttd' => 'assets/ttd/awdjawoueuy2803910382938djq3e.png'
+                ]
+        )->has(Logistic::factory()->state(function(array $attributes, User $user){
+            return ['user_id' => $user->id];
+        }))->create();
+
+        User::factory()->state(
+                [
+                    'id'=>'576b1742-ec50-30a9-af16-05ba94eab0ce',
+                    'role'=>'SUPERVISOR',
+                    'nama' => 'Rama Wendyanto',
+                    'email' => 'ramawendyanto@gmail.com',
+                    'ttd' => 'assets/ttd/uawyeu2893jaskdh893qu23ajkw.png'
+                ]
+        )->has(Supervisor::factory()->state(function(array $attributes, User $user){
+            return ['user_id' => $user->id];
+        }))->create();
+
+        User::factory()->state(
+                [
+                    'id'=>'67737154-4cc3-3545-9a7b-eeddd715d9f5',
+                    'role'=>'PURCHASING',
+                    'nama' => 'Meita Wulansuci S., SH',
+                    'email' => 'meitawulansuci@gmail.com',
+                    'foto' => 'assets/users/General Affair_Wulansuci S., SH.jpeg',
+                    'ttd' => 'assets/ttd/83719273uawey02938he.png'
+                ]
+        )->has(Purchasing::factory()->state(function(array $attributes, User $user){
+            return ['user_id' => $user->id];
+        }))->create();
+
+        $PM1 = User::factory()->state([
+            'id'=>'02e6804b-9d38-3075-bbc3-69b8cc29da8c',
+            'role'=>'PROJECT_MANAGER',
+            'nama' => 'Novita Cahyanintyas, ST.',
+            'email' => 'novitacahya@gmail.com',
+            'foto' => 'assets/users/Project Manager_Novita Cahyanintyas, ST.jpeg',
+            'ttd' => 'assets/ttd/no238193he012938.png'
+        ])->has(ProjectManager::factory()->state(function (array $attributes, User $user){
+            return ['user_id' => $user->id];
+        }))->create();
 
         Perusahaan::factory()->count(8)->state(new Sequence(
             [
@@ -147,28 +195,6 @@ class DatabaseSeeder extends Seeder
                 'gambar' => 'assets/perusahaan/PT. Archikon Wiratama.jpg'
             ],
         ))->create();
-        
-        User::factory()->state(
-                [
-                    'role'=>'ADMIN_GUDANG',
-                    'nama' => 'Ghani Pratama',
-                    'email' => 'ghanipratama@gmail.com'
-                ]
-        )->has(AdminGudang::factory()->state(function(array $attributes, User $user){
-            return [
-                'user_id' => $user->id
-            ];
-        }))->create();
-
-        User::factory()->state(
-                [
-                    'role'=>'LOGISTIC',
-                    'nama' => 'Andro',
-                    'email' => 'andro@gmail.com'
-                ]
-        )->has(Logistic::factory()->state(function(array $attributes, User $user){
-            return ['user_id' => $user->id];
-        }))->create();
         
         Barang::factory()->state(
                 [
@@ -300,15 +326,6 @@ class DatabaseSeeder extends Seeder
                 ],
             ))->tidakHabisPakai()->create();
         Barang::factory(40)->habisPakai()->create();
-
-        $PM1 = User::factory()->state([
-            'role'=>'PROJECT_MANAGER',
-            'nama' => 'Novita Cahyanintyas, ST.',
-            'email' => 'novitacahya@gmail.com',
-            'foto' => 'assets/users/Project Manager_Novita Cahyanintyas, ST.jpeg'
-        ])->has(ProjectManager::factory()->state(function (array $attributes, User $user){
-            return ['user_id' => $user->id];
-        }))->create();
 
         Proyek::factory()->state([
             'nama_proyek' => 'Perumahan Sakura Regency 3 Toyota Housing Indonesia Rumah Blok H29',

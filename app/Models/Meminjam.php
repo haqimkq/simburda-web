@@ -31,22 +31,20 @@ class Meminjam extends Model
     public function suratJalan(){
         return $this->belongsTo(SuratJalan::class, 'surat_jalan_id', 'id');
     }
-
     public function getCreatedAtAttribute($date)
     {
-        return Date::dateFormatter($date, 'ddd, D MMM YYYY');
+        return Date::dateToMillisecond($date);
     }
-
     public function getUpdatedAtAttribute($date)
     {
-        return Date::dateFormatter($date, 'ddd, D MMM YYYY');
+        return Date::dateToMillisecond($date);
     }
     public function getTglPeminjamanAttribute($date)
     {
-        return Date::dateFormatter($date, 'ddd, D MMM YYYY');
+        return Date::dateToMillisecond($date);
     }
     public function getTglBerakhirAttribute($date)
     {
-        return Date::dateFormatter($date, 'ddd, D MMM YYYY');
+        return Date::dateToMillisecond($date);
     }
 }

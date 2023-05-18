@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Helpers\Date;
 use App\Traits\Uuids;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\HasApiTokens;
@@ -64,6 +66,45 @@ class User extends Authenticatable
     public function proyeks(){
         return $this->belongsToMany(Proyek::class,'menanganis','supervisor_id','proyek_id');
     }
+    public function menanganiProyek(){
+        return $this->hasMany(Menangani::class,'supervisor_id');
+    }
+    public function proyekProjectManager(){
+        return $this->hasMany(Proyek::class,'project_manager_id');
+    }
+    public function kendaraan(){
+        return $this->hasOne(Kendaraan::class,'logistic_id');
+    }
+    public function suratJalanLogistic(){
+        return $this->hasMany(SuratJalan::class,'logistic_id');
+    }
+    public function suratJalanAdminGudang(){
+        return $this->hasMany(SuratJalan::class,'admin_gudang_id');
+    }
+    public function aksesBarangAdminGudang(){
+        return $this->hasMany(AksesBarang::class,'admin_gudang_id');
+    }
+    public function aksesBarangProjectManager(){
+        return $this->hasMany(AksesBarang::class,'project_manager_id');
+    }
+    public function deliveryOrderAdminGudang(){
+        return $this->hasMany(DeliveryOrder::class,'admin_gudang_id');
+    }
+    public function deliveryOrderLogistic(){
+        return $this->hasMany(DeliveryOrder::class,'logistic_id');
+    }
+    public function deliveryOrderPurchasing(){
+        return $this->hasMany(DeliveryOrder::class,'purchasing_id');
+    }
+    public function getCreatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
+
+    public function getUpdatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
     public function scopeFilter($query, array $filters){
         $query->when($filters['search'] ?? false, function($query, $search) {
             return $query->where('nama', 'like', '%' . $search . '%');
@@ -84,7 +125,9 @@ class User extends Authenticatable
         });
     }
 
-
+    public static function getTTD($user_id){
+        return self::where('id', $user_id)->first()->ttd;
+    }
     public static function createLogistic(Request $request){
         $request['role'] = "LOGISTIC";
         $user = self::createUser($request);

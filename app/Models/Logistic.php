@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Date;
 use App\Helpers\IDGenerator;
 use App\Http\Requests\LogisticFirebaseRequest;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,10 +17,11 @@ class Logistic extends Model
     use SoftDeletes;
     protected $primaryKey = null;
     public $incrementing = false;
-    public function user(){
-        return $this->belongsTo(User::class, 'logistic_id','id');
-    }
+    protected $guarded = [];
 
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id','id');
+    }
     public static function generateLogisticCode(){
         return IDGenerator::generateID(Logistic::class, 'kode_logistic', 5, 'LOG');
     }
@@ -37,5 +39,20 @@ class Logistic extends Model
     }
     public static function deleteRDB(){
         LogisticFirebase::deleteAllData();
+    }
+    
+    public static function getKendaraan(Request $request){
+        $request->validate([
+            'user_id' => 'required'
+        ]);
+        return Kendaraan::where('logistic_id', $request->user_id)->first();
+    }
+    public function getCreatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
+    public function getUpdatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
     }
 }

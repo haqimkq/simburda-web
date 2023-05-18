@@ -45,7 +45,12 @@ class Peminjaman extends Model
     public function menangani(){
         return $this->belongsTo(Menangani::class);
     }
-
+    public static function getProyek($id){
+        return self::find($id)->menangani->proyek;
+    }
+    public static function getSupervisor($id){
+        return self::find($id)->menangani->supervisor;
+    }
     public static function generateKodePeminjaman($tipe, $client, $supervisor){
         $clientAcronym = IDGenerator::getAcronym($client);
         $supervisorAcronym = IDGenerator::getAcronym($supervisor);
@@ -59,5 +64,14 @@ class Peminjaman extends Model
             $typePrefix = "SEND_GP";
         }
         return IDGenerator::generateID(new static,'kode_peminjaman',5,"$typePrefix/$prefix");
+    }
+    public function getCreatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
+
+    public function getUpdatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
     }
 }

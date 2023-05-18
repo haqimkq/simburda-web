@@ -27,4 +27,13 @@ class PreOrder extends Model
         $prefix = "PO/BC-" . $perusahaanAlias . "/" . $romanMonth . "/" . Date::getYearNumber();
         return IDGenerator::generateID(new static, 'kode_po', 5, $prefix);
     }
+    public function getCreatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
+
+    public function getUpdatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
 }

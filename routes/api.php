@@ -1,4 +1,6 @@
 <?php
+
+use App\Http\Controllers\Api\SuratJalanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
 
@@ -14,9 +16,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('user/update-photo', [UserController::class, 'updatePhoto']);
     Route::post('logout', [UserController::class, 'logout']);
     Route::get('currentAccessToken', [UserController::class, 'currentAccessToken']);
+
+    Route::middleware(['admin-admingudang'])->group(function () {
+        Route::post('surat-jalan', [SuratJalanController::class, 'create']);
+    });
 });
 
 Route::post('login', [UserController::class, 'login']);
 Route::post('register', [UserController::class, 'register']);
+
 
 

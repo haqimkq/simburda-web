@@ -80,12 +80,11 @@ class AksesBarang extends Model
     }
     public function getCreatedAtAttribute($date)
     {
-        return Date::dateFormatter($date, 'ddd, D MMM YYYY');
+        return Date::dateToMillisecond($date);
     }
-
     public function getUpdatedAtAttribute($date)
     {
-        return Date::dateFormatter($date, 'ddd, D MMM YYYY');
+        return Date::dateToMillisecond($date);
     }
 
     public static function countUndefinedAkses() {

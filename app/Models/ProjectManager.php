@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Date;
 use App\Helpers\IDGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,7 @@ class ProjectManager extends Model
     use SoftDeletes;
     protected $primaryKey = null;
     public $incrementing = false;
+    protected $guarded = [];
 
     public function user(){
         return $this->belongsTo(User::class);
@@ -25,5 +27,14 @@ class ProjectManager extends Model
     }
     public static function generateKodePM(){
         return IDGenerator::generateID(new static,'kode_pm',5,'PM');
+    }
+    public function getCreatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
+
+    public function getUpdatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
     }
 }

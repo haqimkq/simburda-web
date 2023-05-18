@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Gudang;
 use App\Models\Kendaraan;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -24,6 +25,7 @@ class KendaraanFactory extends Factory
         return [
             'id' => fake()->uuid(),
             'logistic_id' => $logistic_id,
+            'gudang_id' => Gudang::first()->id,
             'jenis' => $jenis,
             'merk' => Fake()->word(),
             'plat_nomor' => $this->generateKodeKendaraan($jenis),

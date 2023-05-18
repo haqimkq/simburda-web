@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Helpers\Date;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\Request;
 
 class SjPengembalian extends Model
 {
@@ -19,5 +21,38 @@ class SjPengembalian extends Model
     }
     public function pengembalian(){
         return $this->belongsTo(Pengembalian::class);
+    }
+    public function getCreatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
+
+    public function getUpdatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
+    public static function validateCreate(Request $request, $surat_jalan_created = true){
+        $request->validate([
+            'pengembalian_id' => 'required|exists:pengembalians,id',
+        ]);
+        if($surat_jalan_created){
+            $request->validate([
+                'surat_jalan_id' => 'required|exists:surat_jalans,id',
+            ]);
+        }
+    }
+    public static function createData(Request $request, $create = true){
+        $peminjaman = Pengembalian::find($request->pengembalian_id)->peminjaman;
+        $supervisor = Peminjaman::getSupervisor($peminjaman->id)->nama;
+        $client = Peminjaman::getProyek($peminjaman->id)->client;
+        SuratJalan::where('id', $request->surat_jalan_id)->update(['kode_surat'=>SuratJalan::generateKodeSurat($request->tipe, $client, $supervisor)]);
+        if($create) return self::create([
+            'pengembalian_id' => $request->pengembalian_id,
+            'surat_jalan_id' => $request->surat_jalan_id,
+        ]);
+        else return self::make([
+            'pengembalian_id' => $request->pengembalian_id,
+            'surat_jalan_id' => $request->surat_jalan_id,
+        ]);
     }
 }

@@ -38,6 +38,14 @@ class DeliveryOrder extends Model
     public function gudang(){
         return $this->belongsTo(Gudang::class);
     }
+    public function getCreatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
+    public function getUpdatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
     public function scopeFilter($query, array $filters){
         $query->when($filters['search'] ?? false, function($query, $search) {
             return $query->where('kode_delivery', 'like', '%' . $search . '%');
@@ -62,16 +70,6 @@ class DeliveryOrder extends Model
             if($orderBy == 'terlama') return $query->orderBy('created_at', 'ASC');
         });
     }
-    public function getCreatedAtAttribute($date)
-    {
-        return Date::dateFormatter($date, 'ddd, D MMM YYYY');
-    }
-
-    public function getUpdatedAtAttribute($date)
-    {
-        return Date::dateFormatter($date, 'ddd, D MMM YYYY');
-    }
-
     public static function generateKodeDO($nama_perusahaan){
         $perusahaanAlias = IDGenerator::getAcronym($nama_perusahaan);
         $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber());

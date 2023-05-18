@@ -21,7 +21,8 @@ return new class extends Migration
         });
         Schema::table('sj_pengiriman_pps', function (Blueprint $table) {
             $table->foreignUuid('surat_jalan_id')->constrained('surat_jalans')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('peminjaman_id')->constrained('peminjamans')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('peminjaman_asal_id')->constrained('peminjamans')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('peminjaman_tujuan_id')->constrained('peminjamans')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

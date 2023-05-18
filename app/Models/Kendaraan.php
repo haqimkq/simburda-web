@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\Request;
 
 class Kendaraan extends Model
 {
@@ -22,8 +23,11 @@ class Kendaraan extends Model
     public function suratJalans(){
         return $this->hasMany(SuratJalan::class);
     }
-    public function users(){
-        return $this->hasOne(User::class, 'logistic_id');
+    public function logistic(){
+        return $this->hasOne(User::class, 'id', 'logistic_id');
+    }
+    public function gudang(){
+        return $this->hasOne(Gudang::class);
     }
 
     public function scopeFilter($query, array $filters){
@@ -46,11 +50,20 @@ class Kendaraan extends Model
     }
     public function getCreatedAtAttribute($date)
     {
-        return Date::dateFormatter($date, 'ddd, D MMM YYYY');
+        return Date::dateToMillisecond($date);
     }
-
     public function getUpdatedAtAttribute($date)
     {
-        return Date::dateFormatter($date, 'ddd, D MMM YYYY');
+        return Date::dateToMillisecond($date);
+    }
+    public static function setLogistic(Request $request){
+        self::validateUpdateLogistic($request);
+        self::where('id', $request->kendaraan_id)->update(['logistic_id'=>$request->logistic_id]);
+    }
+    public static function validateUpdateLogistic(Request $request){
+        $request->validate([
+            'logistic_id' => 'required|exists:logistics,user_id',
+            'kendaraan_id' => 'required|exists:kendaraans,id',
+        ]);
     }
 }
