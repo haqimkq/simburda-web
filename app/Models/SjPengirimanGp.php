@@ -32,7 +32,7 @@ class SjPengirimanGp extends Model
     }
     public static function validateCreate(Request $request, $surat_jalan_created=true){
         $request->validate([
-            'peminjaman_id' => 'required|exists:peminjamans,id',
+            'peminjaman_id' => 'required|exists:peminjamans,id|unique:sj_pengiriman_gps,peminjaman_id',
         ]);
         if($surat_jalan_created){
             $request->validate([

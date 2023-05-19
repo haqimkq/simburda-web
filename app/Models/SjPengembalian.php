@@ -33,7 +33,7 @@ class SjPengembalian extends Model
     }
     public static function validateCreate(Request $request, $surat_jalan_created = true){
         $request->validate([
-            'pengembalian_id' => 'required|exists:pengembalians,id',
+            'pengembalian_id' => 'required|exists:pengembalians,id|unique:sj_pengembalian,pengembalian_id',
         ]);
         if($surat_jalan_created){
             $request->validate([

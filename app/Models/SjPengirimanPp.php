@@ -38,7 +38,7 @@ class SjPengirimanPp extends Model
     public static function validateCreate(Request $request, $surat_jalan_created=true){
         $request->validate([
             'peminjaman_asal_id' => 'required|exists:peminjamans,id',
-            'peminjaman_tujuan_id' => 'required|exists:peminjamans,id',
+            'peminjaman_tujuan_id' => 'required|exists:peminjamans,id|unique:sj_pengiriman_pps,peminjaman_tujuan_id',
         ]);
         if($surat_jalan_created){
             $request->validate([
@@ -61,5 +61,4 @@ class SjPengirimanPp extends Model
             'surat_jalan_id' => $request->surat_jalan_id,
         ]);
     }
-    
 }

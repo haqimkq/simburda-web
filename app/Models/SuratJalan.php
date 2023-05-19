@@ -31,11 +31,11 @@ class SuratJalan extends Model
         return $this->belongsTo(User::class, 'admin_gudang_id');
     }
     
-    public function sjPengirimanPP(){
+    public function sjPengirimanPp(){
         return $this->hasOne(SjPengirimanPp::class);
     }
 
-    public function sjPengirimanGP(){
+    public function sjPengirimanGp(){
         return $this->hasOne(SjPengirimanGp::class);
     }
 
@@ -115,7 +115,7 @@ class SuratJalan extends Model
             'admin_gudang_id' => 'required|exists:users,id',
             'logistic_id' => 'required|exists:users,id',
             'kendaraan_id' => 'required|exists:kendaraans,id',
-            'tipe' => ['required', Rule::in(['PENGIRIMAN_GUDANG_PROYEK', 'PENGIRIMAN_PROYEK_PROYEK', 'PENGEMBALIAN'])],
+            'tipe' => 'required|in:PENGIRIMAN_GUDANG_PROYEK,PENGIRIMAN_PROYEK_PROYEK,PENGEMBALIAN',
         ]);
         $request->merge(['ttd_admin' => User::getTTD($request->admin_gudang_id)]);
         $request->validate([
