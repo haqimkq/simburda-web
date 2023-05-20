@@ -24,6 +24,33 @@ class Pengembalian extends Model
     public function sjPengembalian(){
         return $this->hasOne(SjPengembalian::class);
     }
+    public static function getAllBarang($pengembalian_id, $tipe_barang=null){
+        $result = collect();
+        $pengembalian = self::where('id',$pengembalian_id)->first();
+        foreach($pengembalian->pengembalianDetail as $pd){
+            $barang = collect();
+            if($tipe_barang!=null){
+                if($pd->barang->jenis == $tipe_barang) {
+                    $barang['id'] = $pd->barang->id;
+                    $barang['gambar'] = $pd->barang->gambar;
+                    $barang['nama'] = $pd->barang->nama;
+                    $barang['merk'] = $pd->barang->merk;
+                    $barang['jumlah_satuan'] = $pd->jumlah_satuan;
+                    if($tipe_barang == 'HABIS_PAKAI') $barang['ukuran'] = $pd->barang->barangHabisPakai->ukuran;
+                    $result->push($barang);
+                }
+            }else{
+                $barang['id'] = $pd->barang->id;
+                $barang['gambar'] = $pd->barang->gambar;
+                $barang['nama'] = $pd->barang->nama;
+                $barang['merk'] = $pd->barang->merk;
+                $barang['jumlah_satuan'] = $pd->jumlah_satuan;
+                if($tipe_barang == 'HABIS_PAKAI') $barang['ukuran'] = $pd->barang->barangHabisPakai->ukuran;
+                $result->push($barang);
+            }
+        }
+        return $result;
+    }
     public static function generateKodePengembalian($client, $supervisor){
         $clientAcronym = IDGenerator::getAcronym($client);
         $supervisorAcronym = IDGenerator::getAcronym($supervisor);
@@ -37,7 +64,6 @@ class Pengembalian extends Model
     {
         return Date::dateToMillisecond($date);
     }
-
     public function getUpdatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);

@@ -130,4 +130,99 @@ class SuratJalan extends Model
         }
     }
 
+    public static function getAllSuratJalanByUser($user,$tipe, $status, $size = 5){
+        $result = collect();
+        if($user->role == 'ADMIN_GUDANG') {
+            $surat_jalan = SuratJalan::where('admin_gudang_id', $user->id)->where('tipe', $tipe)->where('status', $status)->paginate($size)->withQueryString();
+            if($tipe == 'PENGIRIMAN_GUDANG_PROYEK'){
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengirimanGp', 'peminjaman'));
+                }
+            }else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK'){
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengirimanPp', 'peminjamanAsal'));
+                }
+            }else{
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengembalian', 'peminjaman'));
+                }
+            }
+        }else if($user->role == 'SUPERVISOR'){
+            if($tipe == 'PENGIRIMAN_GUDANG_PROYEK'){
+                $surat_jalan = SuratJalan::whereRelation('sjPengirimanGp.peminjaman.menangani.supervisor', 'id', $user->id)->where('status', $status)->paginate($size)->withQueryString();
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengirimanGp', 'peminjaman'));
+                }
+            }else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK'){
+                $surat_jalan = SuratJalan::whereRelation('sjPengirimanPp.peminjaman.menangani.supervisor', 'id', $user->id)->where('status', $status)->paginate($size)->withQueryString();
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengirimanPp', 'peminjamanAsal'));
+                }
+            }else{
+                $surat_jalan = SuratJalan::whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.supervisor', 'id', $user->id)->where('status', $status)->paginate($size)->withQueryString();
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengembalian', 'peminjaman'));
+                }
+            }
+        }else if($user->role == 'PROJECT_MANAGER'){
+            if($tipe == 'PENGIRIMAN_GUDANG_PROYEK'){
+                $surat_jalan = SuratJalan::whereRelation('sjPengirimanGp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->where('status', $status)->paginate($size)->withQueryString();
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengirimanGp', 'peminjaman'));
+                }
+            }else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK'){
+                $surat_jalan = SuratJalan::whereRelation('sjPengirimanPp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->where('status', $status)->paginate($size)->withQueryString();
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengirimanPp', 'peminjamanAsal'));
+                }
+            }else{
+                $surat_jalan = SuratJalan::whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->where('status', $status)->paginate($size)->withQueryString();
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengembalian', 'peminjaman'));
+                }
+            }
+        }
+        return $result;
+    }
+    public static function getSimpleDataSuratJalanByUser($user_role,$sj, $tipe, $relasiPeminjamanAsal){
+        $data = collect();
+        $nama_project_manager = ($tipe != 'sjPengembalian') ? $sj->$tipe->peminjaman->menangani->proyek->projectManager->nama : $sj->$tipe->pengembalian->peminjaman->menangani->proyek->projectManager->nama;
+        $foto_project_manager = ($tipe != 'sjPengembalian') ? $sj->$tipe->peminjaman->menangani->proyek->projectManager->foto: $sj->$tipe->pengembalian->peminjaman->menangani->proyek->projectManager->foto;
+        $nama_supervisor = ($tipe != 'sjPengembalian') ? $sj->$tipe->peminjaman->menangani->supervisor->nama : $sj->$tipe->pengembalian->peminjaman->menangani->supervisor->nama;
+        $foto_supervisor = ($tipe != 'sjPengembalian') ? $sj->$tipe->peminjaman->menangani->supervisor->foto : $sj->$tipe->pengembalian->peminjaman->menangani->supervisor->foto;
+        $nama_admin_gudang = ($tipe != 'sjPengembalian') ? $sj->$tipe->peminjaman->menangani->proyek->projectManager->nama : $sj->$tipe->pengembalian->peminjaman->menangani->proyek->projectManager->nama;
+        $foto_admin_gudang = ($tipe != 'sjPengembalian') ? $sj->$tipe->peminjaman->menangani->proyek->projectManager->foto : $sj->$tipe->pengembalian->peminjaman->menangani->proyek->projectManager->foto;
+        $foto_driver = $sj->logistic->foto;
+        $nama_driver = $sj->logistic->nama;
+        
+        $nama_tempat_asal = ($tipe != 'sjPengembalian') ? $sj->$tipe->$relasiPeminjamanAsal->gudang->nama : $sj->$tipe->pengembalian->$relasiPeminjamanAsal->gudang->nama;
+        $alamat_tempat_asal = ($tipe != 'sjPengembalian') ? $sj->$tipe->$relasiPeminjamanAsal->gudang->alamat : $sj->$tipe->pengembalian->$relasiPeminjamanAsal->gudang->alamat;
+        $coordinate_tempat_asal = ($tipe != 'sjPengembalian') ? $sj->$tipe->$relasiPeminjamanAsal->gudang->latitude . "|" . $sj->$tipe->$relasiPeminjamanAsal->gudang->longitude : $sj->$tipe->pengembalian->$relasiPeminjamanAsal->gudang->latitude . "|" . $sj->$tipe->pengembalian->$relasiPeminjamanAsal->gudang->longitude;
+
+        $nama_tempat_tujuan = ($tipe != 'sjPengembalian') ? $sj->$tipe->peminjaman->menangani->proyek->nama_proyek : $sj->$tipe->pengembalian->peminjaman->menangani->proyek->nama_proyek;
+        $alamat_tempat_tujuan = ($tipe != 'sjPengembalian') ? $sj->$tipe->peminjaman->menangani->proyek->alamat : $sj->$tipe->pengembalian->peminjaman->menangani->proyek->alamat;
+        $coordinate_tempat_tujuan = ($tipe != 'sjPengembalian') ? $sj->$tipe->peminjaman->menangani->proyek->latitude . "|" . $sj->$tipe->peminjaman->menangani->proyek->longitude : $sj->$tipe->pengembalian->peminjaman->menangani->proyek->latitude . "|" . $sj->$tipe->pengembalian->peminjaman->menangani->proyek->longitude ;
+        
+        $data['id'] = $sj->id;
+        $data['kode_surat'] = $sj->kode_surat;
+        $data['status'] = $sj->status;
+        $data['updated_at'] = $sj->updated_at;
+        $data['nama_project_manager'] = ($user_role == 'SUPERVISOR') ? $nama_project_manager : null;
+        $data['foto_project_manager'] = ($user_role == 'SUPERVISOR') ? $foto_project_manager : null;
+        $data['nama_admin_gudang'] = ($user_role == 'PROJECT_MANAGER') ? $nama_admin_gudang : null;
+        $data['foto_admin_gudang'] = ($user_role == 'PROJECT_MANAGER') ? $foto_admin_gudang : null;
+        $data['nama_driver'] = $nama_driver;
+        $data['foto_driver'] = $foto_driver;
+        $data['nama_supervisor'] = $nama_supervisor;
+        $data['foto_supervisor'] = $foto_supervisor;
+        $data['nama_tempat_asal'] = ($tipe!='sjPengembalian') ? $nama_tempat_asal : $nama_tempat_tujuan;
+        $data['alamat_tempat_asal'] = ($tipe!='sjPengembalian') ? $alamat_tempat_asal : $alamat_tempat_tujuan;
+        $data['coordinate_tempat_asal'] = ($tipe!='sjPengembalian') ? $coordinate_tempat_asal : $coordinate_tempat_tujuan;
+        $data['nama_tempat_tujuan'] = ($tipe!='sjPengembalian') ? $nama_tempat_tujuan : $nama_tempat_asal;
+        $data['alamat_tempat_tujuan'] = ($tipe!='sjPengembalian') ? $alamat_tempat_tujuan : $alamat_tempat_asal;
+        $data['coordinate_tempat_tujuan'] = ($tipe!='sjPengembalian') ? $coordinate_tempat_tujuan: $coordinate_tempat_asal;
+        
+        return $data; 
+    }
+
 }

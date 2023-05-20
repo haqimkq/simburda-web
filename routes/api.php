@@ -19,7 +19,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::middleware(['admin-admingudang'])->group(function () {
         Route::post('surat-jalan', [SuratJalanController::class, 'create']);
-        Route::get('surat-jalan/admin-gudang/{admin_gudang_id}', [SuratJalanController::class, 'getAllSuratJalanByAdminGudang']);
+    });
+    Route::middleware(['admin-projectmanager-supervisor-admingudang-logistic'])->group(function(){
+        Route::get('surat-jalan/all', [SuratJalanController::class, 'getAllSuratJalanByUser']);
+        Route::get('surat-jalan/{id}', [SuratJalanController::class, 'getSuratJalanById']);
     });
 });
 

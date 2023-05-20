@@ -78,5 +78,6 @@ class Kernel extends HttpKernel
         'admin-supervisor' => \App\Http\Middleware\isAdminOrSupervisor::class,
         'admin-purchasing' => \App\Http\Middleware\isAdminOrPurchasing::class,
         'admin-purchasing-admingudang-logistic' => \App\Http\Middleware\isAdminOrPurchasingOrAdminGudangOrLogistic::class,
+        'admin-projectmanager-supervisor-admingudang-logistic' => \App\Http\Middleware\isAdminOrProjectManagerOrSupervisorOrAdminGudangOrLogistic::class,
     ];
 }

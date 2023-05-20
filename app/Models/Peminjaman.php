@@ -17,19 +17,17 @@ class Peminjaman extends Model
     protected $guarded = ['id'];
     protected $table = 'peminjamans';
 
-    public function sjPengirimanGP(){
+    public function sjPengirimanGp(){
         if($this->tipe == 'GUDANG_PROYEK') return $this->hasOne(SjPengirimanGp::class);
     }
-    public function sjPengirimanPP(){
+    public function sjPengirimanPp(){
         if($this->tipe == 'PROYEK_PROYEK'){
             return $this->hasOne(SjPengirimanPp::class, 'peminjaman_tujuan_id');
         }else{
             return $this->hasOne(SjPengirimanPp::class, 'peminjaman_asal_id');
         }
     }
-    public function barang(){
-        return $this->hasMany(Barang::class);
-    }
+
     public function peminjamanDetail(){
         return $this->hasMany(PeminjamanDetail::class);
     }
@@ -50,6 +48,33 @@ class Peminjaman extends Model
     }
     public static function getSupervisor($id){
         return self::find($id)->menangani->supervisor;
+    }
+    public static function getAllBarang($peminjaman_id, $tipe_barang=null){
+        $result = collect();
+        $peminjaman = self::where('id',$peminjaman_id)->first();
+        foreach($peminjaman->peminjamanDetail as $pd){
+            $barang=collect();
+            if($tipe_barang!=null){
+                if($pd->barang->jenis == $tipe_barang) {
+                    $barang['id'] = $pd->barang->id;
+                    $barang['gambar'] = $pd->barang->gambar;
+                    $barang['nama'] = $pd->barang->nama;
+                    $barang['merk'] = $pd->barang->merk;
+                    $barang['jumlah_satuan'] = $pd->jumlah_satuan;
+                    if($tipe_barang == 'HABIS_PAKAI') $barang['ukuran'] = $pd->barang->barangHabisPakai->ukuran;
+                    $result->push($barang);
+                }
+            }else{
+                $barang['id'] = $pd->barang->id;
+                $barang['gambar'] = $pd->barang->gambar;
+                $barang['nama'] = $pd->barang->nama;
+                $barang['merk'] = $pd->barang->merk;
+                $barang['jumlah_satuan'] = $pd->jumlah_satuan;
+                if($tipe_barang == 'HABIS_PAKAI') $barang['ukuran'] = $pd->barang->barangHabisPakai->ukuran;
+                $result->push($barang);
+            }
+        }
+        return $result;
     }
     public static function generateKodePeminjaman($tipe, $client, $supervisor){
         $clientAcronym = IDGenerator::getAcronym($client);
