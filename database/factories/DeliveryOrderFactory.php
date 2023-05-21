@@ -40,7 +40,7 @@ class DeliveryOrderFactory extends Factory
         }
         return [
             'id' => fake()->uuid(),
-            'kode_do' => DeliveryOrder::generateKodeDO($perusahaan->nama),
+            'kode_do' => DeliveryOrder::generateKodeDO($perusahaan->nama, $tgl_pengambilan),
             'status' => $status,
             'purchasing_id' => User::where('role', 'PURCHASING')->get()->random()->id,
             'perusahaan_id' => $perusahaan->id,
