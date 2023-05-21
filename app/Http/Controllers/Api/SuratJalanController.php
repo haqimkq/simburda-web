@@ -25,19 +25,40 @@ class SuratJalanController extends Controller
             $request->merge(['surat_jalan_id' => $sj->id]);
             if($sj->tipe=='PENGIRIMAN_PROYEK_PROYEK'){
                 SjPengirimanPp::createData($request);
-                Kendaraan::setLogistic($request);
-                return ResponseFormatter::success(null, null, 'Berhasil Menambah Surat Jalan Pengiriman Proyek-Proyek');
+                $sjCreate = 'Pengiriman Proyek-Proyek';
             }else if($sj->tipe=='PENGIRIMAN_GUDANG_PROYEK'){
                 SjPengirimanGp::createData($request);
-                Kendaraan::setLogistic($request);
-                return ResponseFormatter::success(null, null, 'Berhasil Menambah Surat Jalan Pengiriman Gudang-Proyek');
+                $sjCreate = 'Pengiriman Gudang-Proyek';
             }else{
                 SjPengembalian::createData($request);
-                Kendaraan::setLogistic($request);
-                return ResponseFormatter::success(null, null, 'Berhasil Menambah Surat Jalan Pengembalian Proyek-Gudang');
+                $sjCreate = 'Pengembalian Proyek-Gudang';
             }
+            Kendaraan::setLogistic($request);
+            return ResponseFormatter::success('surat_jalan_id', $sj->id, "Berhasil Menambahkan Surat Jalan $sjCreate");
         } catch (Exception $error) {
             return ResponseFormatter::error("Gagal Menambahkan Surat Jalan: ". $error->getMessage());
+        }
+    }
+
+    public function update(Request $request){
+        try {
+            $surat_jalan_id = $request->route('surat_jalan_id');
+            $request->merge(['surat_jalan_id' => $surat_jalan_id]);
+            $sj=SuratJalan::updateData($request);
+            if($sj->tipe=='PENGIRIMAN_PROYEK_PROYEK'){
+                SjPengirimanPp::updateData($request);
+                $sjCreate = 'Pengiriman Proyek-Proyek';
+            }else if($sj->tipe=='PENGIRIMAN_GUDANG_PROYEK'){
+                SjPengirimanGp::updateData($request);
+                $sjCreate = 'Pengiriman Gudang-Proyek';
+            }else{
+                SjPengembalian::updateData($request);
+                $sjCreate = 'Pengembalian Proyek-Gudang';
+            }
+            Kendaraan::setLogistic($request);
+            return ResponseFormatter::success('surat_jalan_id', $sj->id, "Berhasil Mengupdate Surat Jalan $sjCreate");
+        } catch (Exception $error) {
+            return ResponseFormatter::error("Gagal Mengupdate Surat Jalan: ". $error);
         }
     }
 
@@ -128,6 +149,9 @@ class SuratJalanController extends Controller
                 'foto_bukti' => $response->foto_bukti,
                 'tipe' => $response->tipe,
                 'status' => $response->status,
+                'merk_kendaraan' => $response->kendaraan->merk,
+                'plat_nomor_kendaraan' => $response->kendaraan->plat_nomor,
+                'jenis_kendaraan' => $response->kendaraan->jenis,
                 'created_at' => $response->created_at,
                 'updated_at' => $response->updated_at,
                 'nama_admin_gudang' => $response->adminGudang->nama,

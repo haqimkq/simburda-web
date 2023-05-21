@@ -1,6 +1,6 @@
 @extends('layouts.detail')
 
-{{-- @if ($deliveryorder->user) --}}
+{{-- @if ($deliveryorder->logistic) --}}
 @push('prepend-script')
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
 		integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
@@ -18,10 +18,10 @@
 							iconSize:     [24, 29.33], // size of the icon
 					});
 			var markers = [
-				@if ($deliveryorder->user)
-					L.marker([{{$deliveryorder->user->logistic->latitude}}, {{$deliveryorder->user->logistic->longitude}}], {icon:driverIcon}).bindPopup('{{$deliveryorder->user->nama}}'),
+				@if ($deliveryorder->logistic)
+					L.marker([{{$deliveryorder->logistic->logistic->latitude}}, {{$deliveryorder->logistic->logistic->longitude}}], {icon:driverIcon}).bindPopup('{{$deliveryorder->logistic->nama}}'),
 				@endif
-					L.marker([{{$deliveryorder->latitude}}, {{$deliveryorder->longitude}}], {icon:barangIcon}).bindPopup('{{$deliveryorder->untuk_perusahaan}}'),
+					L.marker([{{$deliveryorder->perusahaan->latitude}}, {{$deliveryorder->perusahaan->longitude}}], {icon:barangIcon}).bindPopup('{{$deliveryorder->untuk_perusahaan}}'),
 			];
 			var group = L.featureGroup(markers).addTo(map);
 			setTimeout(function () {
@@ -71,10 +71,10 @@
 		</h1>
 		<div class="grid gap-2 md:grid-cols-2 h-[70vh]">
 			<div class="border-green rounded-md border p-2 relative">
-				@if ($deliveryorder->user)
+				@if ($deliveryorder->logistic)
 					<a target="_blank" 
 					class="right-5 top-5 absolute border border-gray-700 bg-green py-1 px-2 text-white rounded-lg self-start mb-2 z-50"
-					href="https://www.google.com/maps?saddr={{$deliveryorder->user->logistic->latitude}},{{$deliveryorder->user->logistic->longitude}}&daddr={{$deliveryorder->latitude}},{{$deliveryorder->longitude}}">
+					href="https://www.google.com/maps?saddr={{$deliveryorder->logistic->logistic->latitude}},{{$deliveryorder->logistic->logistic->longitude}}&daddr={{$deliveryorder->perusahaan->latitude}},{{$deliveryorder->perusahaan->longitude}}">
 						Arahkan ke rute antara driver dengan perusahaan
 					</a>
 				@endif

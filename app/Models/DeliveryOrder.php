@@ -70,9 +70,9 @@ class DeliveryOrder extends Model
             if($orderBy == 'terlama') return $query->orderBy('created_at', 'ASC');
         });
     }
-    public static function generateKodeDO($nama_perusahaan){
+    public static function generateKodeDO($nama_perusahaan, $tgl_pengambilan){
         $perusahaanAlias = IDGenerator::getAcronym($nama_perusahaan);
-        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber());
+        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber($tgl_pengambilan));
         $prefix = "DO/BC-" . $perusahaanAlias . "/" . $romanMonth . "/" . Date::getYearNumber();
         return IDGenerator::generateID(new static, 'kode_do', 5, $prefix);
     }

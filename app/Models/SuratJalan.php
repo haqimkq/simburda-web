@@ -93,24 +93,28 @@ class SuratJalan extends Model
         }
         return IDGenerator::generateID(SuratJalan::class,'kode_surat',5,"$typePrefix/$prefix");
     }
-    public static function createData(Request $request, $create = true){
+    public static function createData(Request $request){
         self::validateCreate($request);
-        if($create) return self::create([
+        return self::create([
             'admin_gudang_id' => $request->admin_gudang_id,
             'logistic_id' => $request->logistic_id,
             'kendaraan_id' => $request->kendaraan_id,
             'ttd_admin' => $request->ttd_admin,
-            'tipe' => $request->tipe,
-        ]);
-        else return self::make([
-            'admin_gudang_id' => $request->admin_gudang_id,
-            'logistic_id' => $request->logistic_id,
-            'ttd_admin' => $request->ttd_admin,
-            'kendaraan_id' => $request->kendaraan_id,
             'tipe' => $request->tipe,
         ]);
     }
-    public static function validateCreate(Request $request){
+    public static function updateData(Request $request){
+        self::validateUpdate($request);
+        self::where('id', $request->surat_jalan_id)->update([
+            'admin_gudang_id' => $request->admin_gudang_id,
+            'logistic_id' => $request->logistic_id,
+            'kendaraan_id' => $request->kendaraan_id,
+            'ttd_admin' => $request->ttd_admin,
+            'tipe' => $request->tipe,
+        ]);
+        return self::where('id', $request->surat_jalan_id)->first();
+    }
+    public static function validateCreate(Request $request, $isCreate = true){
         $request->validate([
             'admin_gudang_id' => 'required|exists:users,id',
             'logistic_id' => 'required|exists:users,id',
@@ -122,12 +126,19 @@ class SuratJalan extends Model
             'ttd_admin' => 'required',
         ]);
         if($request->tipe=='PENGIRIMAN_PROYEK_PROYEK'){
-            SjPengirimanPp::validateCreate($request,false);
+            ($isCreate) ? SjPengirimanPp::validateCreate($request,false) : SjPengirimanPp::validateCreate($request,false, false);
         }else if($request->tipe=='PENGIRIMAN_GUDANG_PROYEK'){
-            SjPengirimanGp::validateCreate($request,false);
+            ($isCreate) ? SjPengirimanGp::validateCreate($request,false) : SjPengirimanGp::validateCreate($request,false, false);
         }else{
-            SjPengembalian::validateCreate($request,false);
+            ($isCreate) ? SjPengembalian::validateCreate($request,false) : SjPengembalian::validateCreate($request,false, false);
         }
+    }
+
+    public static function validateUpdate(Request $request){
+        $request->validate([
+            'surat_jalan_id' => 'required|exists:surat_jalans,id',
+        ]);
+        self::validateCreate($request, false);
     }
 
     public static function getAllSuratJalanByUser($user,$tipe, $status, $size = 5){

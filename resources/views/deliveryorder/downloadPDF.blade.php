@@ -255,11 +255,11 @@
 				<tbody>
 					<tr>
 						<td class="p-1 border border-gray-600 bg-green-200 w-56">Tanggal Pengambilan</td>
-						<td class="p-1 border border-gray-600">{{$deliveryOrder->created_at}}</td>
+						<td class="p-1 border border-gray-600">{{\App\Helpers\Date::parseMilliseconds($deliveryOrder->created_at, 'dddd, D MMM YYYY')}}</td>
 					</tr>
 					<tr>
 						<td class="p-1 border border-gray-600 bg-green-200 w-56">No.</td>
-						<td class="p-1 border border-gray-600">{{$deliveryOrder->kode_delivery}}</td>
+						<td class="p-1 border border-gray-600">{{$deliveryOrder->kode_do}}</td>
 					</tr>
 					<tr>
 						<td class="p-1 border border-gray-600 bg-green-200 w-56">Perihal</td>
@@ -272,7 +272,7 @@
 				</tbody>
 			</table>
 			<div class="message mb-5 w-full">
-				<p>Kepada Yth,<br>{{$deliveryOrder->untuk_perusahaan}}<br>
+				<p>Kepada Yth,<br>{{$deliveryOrder->perusahaan->nama}}<br>
 					Melalui memo ini dari PT. Burda Contraco menyampaikan untuk memohon<br>
 					di berikan kepada pembawa memo material berupa:</p>
 			</div>
@@ -292,7 +292,7 @@
 					@foreach ($deliveryOrder->preOrder as $po)
 					<tr>
 						<td class="p-1 border border-gray-600">{{$loop->iteration}}</td>
-						<td class="p-1 border border-gray-600">{{$po->kode_preorder}}</td>
+						<td class="p-1 border border-gray-600">{{$po->kode_po}}</td>
 						<td class="p-1 border border-gray-600">{{$po->nama_material}}</td>
 						<td class="p-1 border border-gray-600">{{$po->ukuran}}</td>
 						<td class="p-1 border border-gray-600">{{$po->jumlah}}</td>
@@ -314,8 +314,8 @@
 					</tr>
 					<tr>
 						<td>Supir</td>
-						@if ($deliveryOrder->user)
-							<td>: {{$deliveryOrder->user->nama}}</td>
+						@if ($deliveryOrder->logistic)
+							<td>: {{$deliveryOrder->logistic->nama}}</td>
 						@else
 							<td class="text-red-600">: Admin Gudang belum memilih supir</td>
 						@endif

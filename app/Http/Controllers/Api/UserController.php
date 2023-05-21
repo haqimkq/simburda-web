@@ -61,6 +61,14 @@ class UserController extends Controller
             return ResponseFormatter::error("Get Current User Access Token Failed:". $error->getMessage());
         }
     }
+    public function getTtd(Request $request){
+        try{
+            $user = $request->user();
+            return ResponseFormatter::success('ttd', $user->ttd, 'Get User TTD Success');
+        }catch (Exception $error){
+            return ResponseFormatter::error("Get User TTD Failed:". $error->getMessage());
+        }
+    }
     public function updateProfile(Request $request){
         try{
             User::validateChangeProfile($request);
@@ -72,7 +80,7 @@ class UserController extends Controller
             return ResponseFormatter::error("Update Profile Failed:". $error->getMessage());
         }
     }
-    public function updatePhoto(Request $request){
+    public function uploadPhoto(Request $request){
         try{
             User::validateChangePhoto($request);
             if ($request->file('foto')) {
@@ -92,6 +100,26 @@ class UserController extends Controller
         }catch (Exception $error){
             return ResponseFormatter::error("Update Profile Failed:". $error->getMessage());
         }
-        
+    }
+    public function updateTTD(Request $request){
+        try{
+            User::validateChangePhoto($request);
+            if ($request->file('ttd')) {
+                $user = $request->user();
+                $file = $request->file('ttd');
+                $extension = $file->extension();
+                $filename ="$user->id.$extension";
+                $request->ttd->storeAs('assets/users/ttd', $filename,'public');
+                $output_file = "assets/users/ttd/$filename";
+
+                //store your file into database
+                $user->foto = $output_file;
+                $user->update();
+
+                return ResponseFormatter::success('ttd', $user->ttd,'TTD successfully uploaded');
+            }
+        }catch (Exception $error){
+            return ResponseFormatter::error("Update TTD Failed:". $error->getMessage());
+        }
     }
 }

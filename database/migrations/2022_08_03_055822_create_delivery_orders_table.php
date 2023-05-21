@@ -20,7 +20,7 @@ return new class extends Migration
             $table->enum('status', ['MENUNGGU_KONFIRMASI_ADMIN_GUDANG', 'MENUNGGU_KONFIRMASI_DRIVER','DRIVER_DALAM_PERJALANAN', 'SELESAI'])->default('MENUNGGU_KONFIRMASI_ADMIN_GUDANG');
             $table->string('untuk_perhatian');
             $table->string('perihal');
-            $table->string('foto_bukti');
+            $table->string('foto_bukti')->nullable();
             $table->timestamp('tgl_pengambilan');
             $table->timestamps();
             $table->softDeletes();

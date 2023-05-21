@@ -31,9 +31,11 @@ class SjPengembalian extends Model
     {
         return Date::dateToMillisecond($date);
     }
-    public static function validateCreate(Request $request, $surat_jalan_created = true){
-        $request->validate([
+    public static function validateCreate(Request $request, $surat_jalan_created = true, $isCreate = true){
+        ($isCreate) ? $request->validate([
             'pengembalian_id' => 'required|exists:pengembalians,id|unique:sj_pengembalian,pengembalian_id',
+        ]) :  $request->validate([
+            'pengembalian_id' => 'required|exists:pengembalians,id',
         ]);
         if($surat_jalan_created){
             $request->validate([
@@ -42,17 +44,23 @@ class SjPengembalian extends Model
         }
     }
     public static function createData(Request $request, $create = true){
-        $peminjaman = Pengembalian::find($request->pengembalian_id)->peminjaman;
-        $supervisor = Peminjaman::getSupervisor($peminjaman->id)->nama;
-        $client = Peminjaman::getProyek($peminjaman->id)->client;
-        SuratJalan::where('id', $request->surat_jalan_id)->update(['kode_surat'=>SuratJalan::generateKodeSurat($request->tipe, $client, $supervisor)]);
         if($create) return self::create([
             'pengembalian_id' => $request->pengembalian_id,
             'surat_jalan_id' => $request->surat_jalan_id,
         ]);
-        else return self::make([
+    }
+    public static function updateData(Request $request){
+        self::updateKodeSurat($request);
+        self::where('surat_jalan_id', $request->surat_jalan_id)->update([
             'pengembalian_id' => $request->pengembalian_id,
             'surat_jalan_id' => $request->surat_jalan_id,
         ]);
+        return self::where('surat_jalan_id', $request->surat_jalan_id)->first();
+    }
+    public static function updateKodeSurat(Request $request){
+        $peminjaman = Pengembalian::find($request->pengembalian_id)->peminjaman;
+        $supervisor = Peminjaman::getSupervisor($peminjaman->id)->nama;
+        $client = Peminjaman::getProyek($peminjaman->id)->client;
+        SuratJalan::where('id', $request->surat_jalan_id)->update(['kode_surat'=>SuratJalan::generateKodeSurat($request->tipe, $client, $supervisor)]);
     }
 }

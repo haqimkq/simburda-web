@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+
+use App\Models\DeliveryOrder;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -59,8 +61,8 @@ class AuthServiceProvider extends ServiceProvider
             return $user->role === 'SUPERVISOR';
         });
 
-        // Gate::define('delete-user', function (User $user, Post $post) {
-        //     return $user->id === $post->user_id;
-        // });
+        Gate::define('cetak-download-do', function (User $user, DeliveryOrder $deliveryOrder) {
+            return $user->id === $deliveryOrder->purchasing_id || $user->role === 'ADMIN';
+        });
     }
 }

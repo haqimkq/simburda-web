@@ -12,13 +12,15 @@ use App\Http\Controllers\API\UserController;
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::put('user/update-profile', [UserController::class, 'updateProfile']);
-    Route::post('user/update-photo', [UserController::class, 'updatePhoto']);
+    Route::put('user/profile', [UserController::class, 'updateProfile']);
+    Route::post('user/photo', [UserController::class, 'uploadPhoto']);
     Route::post('logout', [UserController::class, 'logout']);
     Route::get('currentAccessToken', [UserController::class, 'currentAccessToken']);
+    Route::get('user/ttd', [UserController::class, 'getTtd']);
 
     Route::middleware(['admin-admingudang'])->group(function () {
         Route::post('surat-jalan', [SuratJalanController::class, 'create']);
+        Route::put('surat-jalan/{surat_jalan_id}', [SuratJalanController::class, 'update']);
     });
     Route::middleware(['admin-projectmanager-supervisor-admingudang-logistic'])->group(function(){
         Route::get('surat-jalan/all', [SuratJalanController::class, 'getAllSuratJalanByUser']);

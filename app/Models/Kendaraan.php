@@ -58,6 +58,7 @@ class Kendaraan extends Model
     }
     public static function setLogistic(Request $request){
         self::validateUpdateLogistic($request);
+        self::where('logistic_id', $request->logistic_id)->update(['logistic_id'=>null]);
         self::where('id', $request->kendaraan_id)->update(['logistic_id'=>$request->logistic_id]);
     }
     public static function validateUpdateLogistic(Request $request){

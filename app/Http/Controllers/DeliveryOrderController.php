@@ -9,6 +9,7 @@ use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class DeliveryOrderController extends Controller
@@ -22,8 +23,10 @@ class DeliveryOrderController extends Controller
     {
         $authUser = Auth::user();
         $countUndefinedAkses = AksesBarang::countUndefinedAkses();
-        if($authUser->role=='purchasing'){
+        if($authUser->role=='PURCHASING'){
             $deliveryOrders = DeliveryOrder::where('purchasing_id',$authUser->id)->filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
+        }else if ($authUser->role=='ADMIN_GUDANG'){
+            $deliveryOrders = DeliveryOrder::where('admin_gudang_id',$authUser->id)->orWhere('admin_gudang_id', null)->filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
         }else{
             $deliveryOrders = DeliveryOrder::filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
         }
@@ -109,6 +112,9 @@ class DeliveryOrderController extends Controller
     public function cetak($id)
     {
         $deliveryOrder = DeliveryOrder::where('id', $id)->first();
+        if (!Gate::allows('cetak-download-do', $deliveryOrder)) {
+            abort(403);
+        }
         $ttdPath = ($deliveryOrder->purchasing->ttd) ? Storage::url($deliveryOrder->purchasing->ttd) : NULL;
         return view('deliveryorder.cetak',[
             "deliveryOrder" => $deliveryOrder,
@@ -117,13 +123,17 @@ class DeliveryOrderController extends Controller
     }
     public function downloadPDF($id)
     {
+        
         $deliveryOrder = DeliveryOrder::where('id', $id)->first();
+        if (!Gate::allows('cetak-download-do', $deliveryOrder)) {
+            abort(403);
+        }
         $ttdPath = ($deliveryOrder->purchasing->ttd) ? Storage::url($deliveryOrder->purchasing->ttd) : NULL;
         $pdf = FacadePdf::loadView('deliveryorder.downloadPDF', [
             "deliveryOrder" => $deliveryOrder,
             "ttdPath" =>$ttdPath
-        ])->setOptions(['defaultFont' => 'Poppins']);
-        return $pdf->download('Memo-'.$deliveryOrder->kode_delivery.'.pdf');
+        ])->setOption(['defaultFont' => 'Poppins']);
+        return $pdf->download('Memo-'.$deliveryOrder->kode_do.'.pdf');
     }
 
 }
