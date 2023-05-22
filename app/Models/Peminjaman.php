@@ -16,6 +16,9 @@ class Peminjaman extends Model
     use HasFactory;
     protected $guarded = ['id'];
     protected $table = 'peminjamans';
+    protected $hidden = [
+        'deleted_at',
+    ];
 
     public function sjPengirimanGp(){
         if($this->tipe == 'GUDANG_PROYEK') return $this->hasOne(SjPengirimanGp::class);

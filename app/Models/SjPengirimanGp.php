@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class SjPengirimanGp extends Model
 {
@@ -15,6 +16,9 @@ class SjPengirimanGp extends Model
     use HasFactory;
     use SoftDeletes;
     protected $guarded = ['id'];
+    protected $hidden = [
+        'deleted_at',
+    ];
     public function suratJalan(){
         return $this->belongsTo(SuratJalan::class);
     }
@@ -30,14 +34,14 @@ class SjPengirimanGp extends Model
     {
         return Date::dateToMillisecond($date);
     }
-    public static function validateCreate(Request $request, $surat_jalan_created=true, $isCreate=true){
-        ($isCreate) ?
-            $request->validate([
-                'peminjaman_id' => 'required|exists:peminjamans,id|unique:sj_pengiriman_gps,peminjaman_id',
-            ]) :
-            $request->validate([
-                'peminjaman_id' => 'required|exists:peminjamans,id',
-            ]);
+    public static function validateCreate(Request $request, $surat_jalan_created=true){
+        $request->validate([
+            'peminjaman_id' => [
+                'required',
+                'exists:peminjamans,id',
+                Rule::unique('sj_pengiriman_gps', 'peminjaman_id')->ignore($request->surat_jalan_id, 'surat_jalan_id'),
+            ]
+        ]);
         if($surat_jalan_created){
             $request->validate([
                 'surat_jalan_id' => 'required|exists:surat_jalans,id',

@@ -15,6 +15,9 @@ class Meminjam extends Model
     use SoftDeletes;
 
     protected $guarded = ['id'];
+    protected $hidden = [
+        'deleted_at',
+    ];
 
     public function barang(){
         return $this->belongsto(Barang::class);

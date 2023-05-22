@@ -15,6 +15,9 @@ class Menangani extends Model
     use SoftDeletes;
 
     protected $guarded = ['id'];
+    protected $hidden = [
+        'deleted_at',
+    ];
 
     public function supervisor(){
         return $this->belongsTo(User::class, 'supervisor_id');

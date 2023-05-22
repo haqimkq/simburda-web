@@ -16,6 +16,9 @@ class PreOrder extends Model
     use SoftDeletes;
 
     protected $guarded = ['id'];
+    protected $hidden = [
+        'deleted_at',
+    ];
 
     public function deliveryOrder(){
         return $this->belongsTo(DeliveryOrder::class);

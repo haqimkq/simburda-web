@@ -95,13 +95,13 @@ class UserController extends Controller
                 $user->foto = $output_file;
                 $user->update();
 
-                return ResponseFormatter::success('user', $user,'File successfully uploaded');
+                return ResponseFormatter::success(null, null,'Photo successfully uploaded');
             }
         }catch (Exception $error){
-            return ResponseFormatter::error("Update Profile Failed:". $error->getMessage());
+            return ResponseFormatter::error("Upload Photo Failed:". $error->getMessage());
         }
     }
-    public function updateTTD(Request $request){
+    public function uploadTTD(Request $request){
         try{
             User::validateChangePhoto($request);
             if ($request->file('ttd')) {
@@ -116,10 +116,10 @@ class UserController extends Controller
                 $user->foto = $output_file;
                 $user->update();
 
-                return ResponseFormatter::success('ttd', $user->ttd,'TTD successfully uploaded');
+                return ResponseFormatter::success(null, null,'TTD successfully uploaded');
             }
         }catch (Exception $error){
-            return ResponseFormatter::error("Update TTD Failed:". $error->getMessage());
+            return ResponseFormatter::error("Upload TTD Failed:". $error->getMessage());
         }
     }
 }

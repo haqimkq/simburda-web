@@ -15,6 +15,9 @@ class Purchasing extends Model
     protected $primaryKey = null;
     public $incrementing = false;
     protected $guarded = [];
+    protected $hidden = [
+        'deleted_at',
+    ];
 
     public function user(){
         return $this->belongsTo(User::class);

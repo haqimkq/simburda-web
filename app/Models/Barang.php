@@ -16,6 +16,9 @@ class Barang extends Model
     use SoftDeletes;
 
     protected $guarded = ['id'];
+    protected $hidden = [
+        'deleted_at',
+    ];
 
     public function peminjamanDetail(){
         return $this->hasMany(PeminjamanDetail::class);

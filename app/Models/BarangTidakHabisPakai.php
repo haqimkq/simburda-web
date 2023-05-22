@@ -14,6 +14,9 @@ class BarangTidakHabisPakai extends Model
     use HasFactory;
     use SoftDeletes;
     protected $guarded = ['id'];
+    protected $hidden = [
+        'deleted_at',
+    ];
 
     public function barang(){
         return $this->belongsTo(Barang::class);

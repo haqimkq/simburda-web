@@ -117,9 +117,7 @@ class SuratJalanController extends Controller
             $coordinate_gudang = ($sj_combine != 'sjPengembalian') ? $response->$sj_combine->peminjaman->gudang->latitude . "|" . $response->$sj_combine->peminjaman->gudang->longitude : $response->$sj_combine->pengembalian->peminjaman->gudang->latitude . "|" . $response->$sj_combine->pengembalian->peminjaman->gudang->longitude;
 
             $nama_proyek_asal = null;
-            $coordinate_proyek_asal = null;
-            $alamat_proyek_asal = null;
-            $foto_proyek_asal = null;
+            $nama_gudang = null;
 
             if($tipe=='PENGIRIMAN_PROYEK_PROYEK'){
                 $alamat_proyek_asal = $response->$sj_combine->peminjamanAsal->menangani->proyek->alamat;
@@ -137,6 +135,57 @@ class SuratJalanController extends Controller
             }
             $project_manager = ($sj_combine != 'sjPengembalian') ? $response->$sj_combine->peminjaman->menangani->proyek->projectManager : $response->$sj_combine->pengembalian->peminjaman->menangani->proyek->projectManager;
             $supervisor = ($sj_combine != 'sjPengembalian') ? $response->$sj_combine->peminjaman->menangani->supervisor : $response->$sj_combine->pengembalian->peminjaman->menangani->supervisor;
+            $admin_gudang = ($response->adminGudang) ? [
+                'nama' => $response->adminGudang->nama,
+                'no_hp' => $response->adminGudang->no_hp,
+                'foto' => $response->adminGudang->foto,
+            ] : null;
+
+            $kendaraan = ($response->kendaraan) ? [
+                'merk' => $response->kendaraan->merk,
+                'plat_nomor' => $response->kendaraan->plat_nomor,
+                'jenis' => $response->kendaraan->jenis,
+            ] : null;
+
+            $logistic = ($response->logistic) ? [
+                'nama' => $response->logistic->nama,
+                'no_hp' => $response->logistic->no_hp,
+                'foto' => $response->logistic->foto,
+            ] : null;
+            
+            $sv = ($supervisor) ? [
+                'nama' => $supervisor->nama,
+                'no_hp' => $supervisor->no_hp,
+                'foto' => $supervisor->foto,
+            ] : null;
+            
+            $pm = ($project_manager) ? [
+                'nama' => $project_manager->nama,
+                'foto' => $project_manager->foto,
+                'no_hp' => $project_manager->no_hp,
+            ] : null;
+            
+            $gd = ($nama_gudang) ? [
+                'nama' => $nama_gudang,
+                'foto' => $foto_gudang,
+                'alamat' => $alamat_gudang,
+                'coordinate' => $coordinate_gudang,
+            ] : null;
+
+            $proyek_asal = ($nama_proyek_asal) ? [
+                'nama' => $nama_proyek_asal,
+                'alamat' => $alamat_proyek_asal,
+                'foto' => $foto_proyek_asal,
+                'coordinate' => $coordinate_proyek_asal,
+            ] : null;
+            
+            $proyek_tujuan = ($proyek) ? [
+                'nama' => $proyek->nama_proyek,
+                'alamat' => $proyek->alamat,
+                'foto' => $proyek->foto,
+                'coordinate' => $coordinate_proyek_tujuan,
+            ] : null;
+            
             $surat_jalan = [
                 'id' => $response->id,
                 'kode_surat' => $response->kode_surat,
@@ -146,34 +195,16 @@ class SuratJalanController extends Controller
                 'foto_bukti' => $response->foto_bukti,
                 'tipe' => $response->tipe,
                 'status' => $response->status,
-                'merk_kendaraan' => $response->kendaraan->merk,
-                'plat_nomor_kendaraan' => $response->kendaraan->plat_nomor,
-                'jenis_kendaraan' => $response->kendaraan->jenis,
-                'created_at' => $response->created_at,
                 'updated_at' => $response->updated_at,
-                'nama_admin_gudang' => $response->adminGudang->nama,
-                'no_hp_admin_gudang' => $response->adminGudang->no_hp,
-                'foto_admin_gudang' => $response->adminGudang->foto,
-                'nama_driver' => $response->logistic->nama,
-                'no_hp_driver' => $response->logistic->no_hp,
-                'foto_driver' => $response->logistic->foto,
-                'nama_supervisor' => $supervisor->nama,
-                'no_hp_supervisor' => $supervisor->no_hp,
-                'foto_supervisor' => $supervisor->foto,
-                'nama_project_manager' => $project_manager->nama,
-                'foto_project_manager' => $project_manager->foto,
-                'nama_gudang' => $nama_gudang,
-                'foto_gudang' => $foto_gudang,
-                'alamat_gudang' => $alamat_gudang,
-                'coordinate_gudang' => $coordinate_gudang,
-                'nama_proyek_tujuan' => $proyek->nama_proyek,
-                'alamat_proyek_tujuan' => $proyek->alamat,
-                'foto_proyek_tujuan' => $proyek->foto,
-                'coordinate_proyek_tujuan' => $coordinate_proyek_tujuan,
-                'nama_proyek_asal' => $nama_proyek_asal,
-                'alamat_proyek_asal' => $alamat_proyek_asal,
-                'foto_proyek_asal' => $foto_proyek_asal,
-                'coordinate_proyek_asal' => $coordinate_proyek_asal,
+                'created_at' => $response->created_at,
+                'kendaraan' => $kendaraan,
+                'admin_gudang' => $admin_gudang,
+                'logistic' => $logistic,
+                'supervisor' => $sv,
+                'project_manager' => $pm,
+                'gudang' => $gd,
+                'proyek_tujuan' => $proyek_tujuan,
+                'proyek_asal' => $proyek_asal,
                 'barang_habis_pakai' => $barang_habis_pakai,
                 'barang_tidak_habis_pakai' => $barang_tidak_habis_pakai,
             ];

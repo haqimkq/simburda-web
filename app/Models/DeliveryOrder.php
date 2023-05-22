@@ -16,6 +16,9 @@ class DeliveryOrder extends Model
     use SoftDeletes;
 
     protected $guarded = ['id'];
+    protected $hidden = [
+        'deleted_at',
+    ];
 
     public function logistic(){
         return $this->belongsTo(User::class, 'logistic_id');

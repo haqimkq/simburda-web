@@ -14,6 +14,9 @@ class Gudang extends Model
     use SoftDeletes;
     use HasFactory;
     protected $guarded = ['id'];
+    protected $hidden = [
+        'deleted_at',
+    ];
 
     public function adminGudang(){
         return $this->hasMany(AdminGudang::class);

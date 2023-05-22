@@ -16,6 +16,9 @@ class Kendaraan extends Model
     use SoftDeletes;
 
     protected $guarded = ['id'];
+    protected $hidden = [
+        'deleted_at',
+    ];
 
     public function deliveryOrders(){
         return $this->hasMany(DeliveryOrder::class);

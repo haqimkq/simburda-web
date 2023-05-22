@@ -14,6 +14,9 @@ class PengembalianDetail extends Model
     use SoftDeletes;
     use HasFactory;
     protected $guarded = ['id'];
+    protected $hidden = [
+        'deleted_at',
+    ];
     public function barang(){
         return $this->belongsTo(Barang::class);
     }

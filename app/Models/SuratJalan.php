@@ -20,6 +20,10 @@ class SuratJalan extends Model
 
     protected $guarded = ['id'];
 
+    protected $hidden = [
+        'deleted_at',
+    ];
+
     public function kendaraan(){
         return $this->belongsTo(Kendaraan::class);
     }
@@ -115,7 +119,7 @@ class SuratJalan extends Model
         ]);
         return self::where('id', $request->surat_jalan_id)->first();
     }
-    public static function validateCreate(Request $request, $isCreate = true){
+    public static function validateCreate(Request $request){
         $request->validate([
             'admin_gudang_id' => 'required|exists:users,id',
             'logistic_id' => 'required|exists:users,id',
@@ -127,11 +131,11 @@ class SuratJalan extends Model
             'ttd_admin' => 'required',
         ]);
         if($request->tipe=='PENGIRIMAN_PROYEK_PROYEK'){
-            ($isCreate) ? SjPengirimanPp::validateCreate($request,false) : SjPengirimanPp::validateCreate($request,false, false);
+            SjPengirimanPp::validateCreate($request,false);
         }else if($request->tipe=='PENGIRIMAN_GUDANG_PROYEK'){
-            ($isCreate) ? SjPengirimanGp::validateCreate($request,false) : SjPengirimanGp::validateCreate($request,false, false);
+            SjPengirimanGp::validateCreate($request,false);
         }else{
-            ($isCreate) ? SjPengembalian::validateCreate($request,false) : SjPengembalian::validateCreate($request,false, false);
+            SjPengembalian::validateCreate($request,false);
         }
     }
 
@@ -139,7 +143,7 @@ class SuratJalan extends Model
         $request->validate([
             'surat_jalan_id' => 'required|exists:surat_jalans,id',
         ]);
-        self::validateCreate($request, false);
+        self::validateCreate($request);
     }
 
     public static function getAllSuratJalanByUser($user,$tipe, $status, $size, $date_start=null, $date_end=null, $srch=null){

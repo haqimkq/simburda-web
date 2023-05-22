@@ -17,6 +17,9 @@ class AksesBarang extends Model
     use SoftDeletes;
 
     protected $guarded = ['id'];
+    protected $hidden = [
+        'deleted_at',
+    ];
 
     public function peminjaman(){
         return $this->belongsTo(Peminjaman::class);

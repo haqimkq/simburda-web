@@ -16,6 +16,9 @@ class Proyek extends Model
     use SoftDeletes;
 
     protected $guarded = ['id'];
+    protected $hidden = [
+        'deleted_at',
+    ];
 
     public function supervisors(){
         return $this->belongsToMany(User::class,'menanganis','proyek_id','supervisor_id');
