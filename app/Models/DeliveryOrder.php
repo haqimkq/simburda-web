@@ -48,7 +48,7 @@ class DeliveryOrder extends Model
     }
     public function scopeFilter($query, array $filters){
         $query->when($filters['search'] ?? false, function($query, $search) {
-            return $query->where('kode_delivery', 'like', '%' . $search . '%');
+            return $query->where('kode_do', 'like', '%' . $search . '%');
         });
         $query->when($filters['filter'] ?? false, function($query, $filter) {
         //    return $query->where(function($query) use ($filter) {

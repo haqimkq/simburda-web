@@ -72,17 +72,14 @@ class SuratJalanController extends Controller
             ]);
             $status = $request->query('status');
             $size = $request->query('size') ?? 5;
-            $date_start = date($request->query('date_start'). " 00:00:00");
-            $date_end = date($request->query('date_end') . " 23:59:59");
-            $tipe = $request->query('tipe');
-
-            $response = SuratJalan::getAllSuratJalanByUser($user, $tipe, $status, $size);
+            $date_start = ($request->query('date_start')) ? date($request->query('date_start') . " 00:00:00") : null;
+            $date_end = ($request->query('date_end')) ? date($request->query('date_end') . " 23:59:59") : null;
             
-            if(isset($date_start) && isset($date_end)){
-                $response->whereBetween('updated_at', [$date_start, $date_end]);
-            }else{
-                $response->whereBetween('updated_at', [Carbon::now()->subMonth(), Carbon::now()]);
-            }
+            $tipe = $request->query('tipe');
+            $search = $request->query('search') ?? null;
+
+            $response = SuratJalan::getAllSuratJalanByUser($user, $tipe, $status, $size, $date_start, $date_end, $search);
+
             $message = ($response->isEmpty()) ? 'Tidak ada surat jalan' : 'Berhasil Mendapatkan Surat Jalan';
             return ResponseFormatter::success('surat_jalan', $response,$message);
         }catch(Exception $e){
