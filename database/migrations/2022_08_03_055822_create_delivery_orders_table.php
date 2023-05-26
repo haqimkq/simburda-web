@@ -32,6 +32,7 @@ return new class extends Migration
             $table->foreignUuid('kendaraan_id')->nullable()->constrained('kendaraans')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('gudang_id')->constrained('gudangs')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('perusahaan_id')->constrained('perusahaans')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('ttd')->nullable()->constrained('ttd_do_verifications')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

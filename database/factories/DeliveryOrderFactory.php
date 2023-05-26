@@ -9,6 +9,8 @@ use App\Models\DeliveryOrder;
 use App\Models\Gudang;
 use App\Models\Kendaraan;
 use App\Models\Perusahaan;
+use App\Models\TtdDoVerification;
+use App\Models\TtdVerification;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -27,31 +29,47 @@ class DeliveryOrderFactory extends Factory
         $tgl_pengambilan = fake()->dateTimeBetween('-3 weeks', 'now');
         $perusahaan = Perusahaan::get()->random();
         $gudang = Gudang::get()->random();
-        $admin_gudang = AdminGudang::where('gudang_id', $gudang->id)->get()->random();
-
+        $admin_gudang_id = ($status!='MENUNGGU_KONFIRMASI_ADMIN_GUDANG') ? AdminGudang::where('gudang_id', $gudang->id)->get()->random()->id : null;
+        $purchasing = User::where('role', 'PURCHASING')->get()->random();
         if($status == 'SELESAI' && $kendaraan_id != NULL){
             Kendaraan::where('id', $kendaraan_id)->update([
                 'logistic_id' => NULL
             ]);
+            
         }else if($status != 'SELESAI' && $kendaraan_id != NULL){
             Kendaraan::where('id', $kendaraan_id)->update([
                 'logistic_id' => $logistic_id
             ]);
         }
+        $untuk_perhatian = fake()->name();
+        $ttd = TtdDoVerification::create([
+            'user_id' => $purchasing->id,
+            'keterangan' => TtdDoVerification::generateKeterangan($purchasing->id, "0",$perusahaan->nama, $gudang->nama, 'Delivery Order', $untuk_perhatian),
+        ]);
         return [
             'id' => fake()->uuid(),
             'kode_do' => DeliveryOrder::generateKodeDO($perusahaan->nama, $tgl_pengambilan),
             'status' => $status,
-            'purchasing_id' => User::where('role', 'PURCHASING')->get()->random()->id,
+            'purchasing_id' => $purchasing->id,
             'perusahaan_id' => $perusahaan->id,
             'logistic_id' => $logistic_id,
             'kendaraan_id' => $kendaraan_id,
             'gudang_id' => $gudang->id,
-            'admin_gudang_id' => $admin_gudang->id,
-            'untuk_perhatian' => fake()->name(),
+            'admin_gudang_id' => $admin_gudang_id,
+            'untuk_perhatian' => $untuk_perhatian,
             'tgl_pengambilan' => $tgl_pengambilan,
             'perihal' => 'Delivery Order',
+            'ttd' => $ttd->id,
             'created_at' => $tgl_pengambilan
         ];
     }
+    // public function configure()
+    // {
+    //     return $this->afterCreating(function (DeliveryOrder $delivery_order) {
+    //         TtdDoVerification::factory()->state([
+    //             'user_id' => $delivery_order->purchasing_id,
+    //             'keterangan' => $delivery_order->purchasing_id,
+    //         ])->create();
+    //     });
+    // }
 }

@@ -37,10 +37,14 @@
 				src="{{ asset($barang->gambar) }}" alt="">
 					
 			@endif
-				@if ($barang->qrcode)
+				@if ($barang->has('barangTidakHabisPakai'))
+				{{-- <img
+					class="ml-5 h-[8em] max-w-[8em] origin-top-left bg-white p-2 hover:z-10 md:h-[10em] md:max-w-[10em] md:hover:scale-125"
+					src="{{ asset($barang->qrcode) }}" alt=""> --}}
 				<img
 					class="ml-5 h-[8em] max-w-[8em] origin-top-left bg-white p-2 hover:z-10 md:h-[10em] md:max-w-[10em] md:hover:scale-125"
-					src="{{ asset($barang->qrcode) }}" alt="">
+					src="data:image/png;base64,{{base64_encode(QrCode::format('png')->size(1080)->generate($barang->barangTidakHabisPakai->id))}}" alt="">
+
 				@endif
 		</div>
 		<div class="info-barang mb-2 ">

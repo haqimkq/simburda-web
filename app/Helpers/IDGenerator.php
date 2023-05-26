@@ -11,6 +11,8 @@ use App\Models\ProjectManager;
 use App\Models\Purchasing;
 use App\Models\Supervisor;
 use App\Models\SuratJalan;
+use App\Models\TtdDoVerification;
+use App\Models\TtdSjVerification;
 use Illuminate\Support\Facades\Schema;
 
 class IDGenerator
@@ -120,6 +122,23 @@ class IDGenerator
                 }
                 $newCode = "$zeros$last_number$suffix";
                 $model::where('id', $data->id)->update([$column_name => $newCode]);
+                if($column_name == 'kode_do'){
+                    TtdDoVerification::where('id',$data->ttd)->update([
+                        'keterangan' => TtdDoVerification::generateKeterangan($data->purchasing_id, $newCode,$data->perusahaan->nama, $data->gudang->nama, $data->perihal, $data->untuk_perhatian),
+                    ]);
+                }else if($column_name == 'kode_surat'){
+                    $sj = SuratJalan::where('id', $data->id)->first();
+                    TtdSjVerification::where('id', $sj->ttd_admin)->update([
+                        'keterangan' => TtdSjVerification::generateKeterangan($sj->id,'ADMIN_GUDANG', $newCode),
+                    ]);
+                    TtdSjVerification::where('id', $sj->ttd_driver)->update([
+                        'keterangan' => TtdSjVerification::generateKeterangan($sj->id,'LOGISTIC', $newCode),
+                    ]);
+                    TtdSjVerification::where('id', $sj->ttd_supervisor)->update([
+                        'keterangan' => TtdSjVerification::generateKeterangan($sj->id,'SUPERVISOR', $newCode),
+                        'user_id' => ($sj->sjPengirimanGp!=null) ? $sj->sjPengirimanGp->peminjaman->menangani->supervisor->id : $sj->sjPengembalian->pengembalian->peminjaman->menangani->supervisor->id,
+                    ]);
+                }
             }else{
                 if($key==0){
                     $ori_length = $length-1;

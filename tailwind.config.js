@@ -30,8 +30,5 @@ module.exports = {
             orange: "#EC9E42",
         },
     },
-    plugins: [
-        require("flowbite/plugin"),
-        require("@tailwindcss/line-clamp"),
-    ],
+    plugins: [require("flowbite/plugin"), require("@tailwindcss/line-clamp")],
 };

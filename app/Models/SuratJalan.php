@@ -47,6 +47,9 @@ class SuratJalan extends Model
     public function sjPengembalian(){
         return $this->hasOne(SjPengembalian::class);
     }
+    public function ttdSjVerifications(){
+        return $this->hasMany(TtdSjVerification::class);
+    }
     public function getCreatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);

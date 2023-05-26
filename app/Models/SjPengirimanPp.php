@@ -26,6 +26,9 @@ class SjPengirimanPp extends Model
     public function peminjaman(){
         return $this->belongsTo(Peminjaman::class, 'peminjaman_tujuan_id');
     }
+    public function ttdSupervisorPeminjam(){
+        return $this->belongsTo(TtdSjVerification::class, 'ttd_supervisor_peminjam');
+    }
     public function peminjamanAsal(){
         return $this->belongsTo(Peminjaman::class, 'peminjaman_asal_id');
     }

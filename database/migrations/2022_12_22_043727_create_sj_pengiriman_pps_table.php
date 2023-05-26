@@ -16,6 +16,7 @@ return new class extends Migration
     {
         Schema::create('sj_pengiriman_pps', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('ttd_supervisor_peminjam')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -17,6 +17,7 @@ use App\Models\PengembalianDetail;
 use App\Models\SjPengembalian;
 use App\Models\SjPengirimanGp;
 use App\Models\SuratJalan;
+use App\Models\TtdSjVerification;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -86,6 +87,7 @@ class PeminjamanFactory extends Factory
                     'created_at' => $created_at,
                 ])->create();
                 SuratJalan::factory()->state([
+                    'id' => fake()->uuid(),
                     'admin_gudang_id' => $admin_gudang->user->id,
                     'tipe' => 'PENGIRIMAN_GUDANG_PROYEK',
                     'kode_surat' => SuratJalan::generateKodeSurat("PENGIRIMAN_GUDANG_PROYEK", $proyek->client, $supervisor->nama),
@@ -110,6 +112,7 @@ class PeminjamanFactory extends Factory
                                 'created_at' => $created_at,
                             ];
                         })->for(SuratJalan::factory()->state([
+                            'id' => fake()->uuid(),
                             'admin_gudang_id' => $admin_gudang->user->id,
                             'tipe' => 'PENGEMBALIAN',
                             'kode_surat' => SuratJalan::generateKodeSurat("PENGEMBALIAN", $proyek->client, $supervisor->nama),
@@ -128,6 +131,7 @@ class PeminjamanFactory extends Factory
                                 'created_at' => $created_at
                             ];
                         })->for(SuratJalan::factory()->state([
+                            'id' => fake()->uuid(),
                             'admin_gudang_id' => $admin_gudang->user->id,
                             'tipe' => 'PENGEMBALIAN',
                             'kode_surat' => SuratJalan::generateKodeSurat("PENGEMBALIAN", $proyek->client, $supervisor->nama),
@@ -153,6 +157,7 @@ class PeminjamanFactory extends Factory
                     'created_at' => $created_at
                 ])->create();
                 SuratJalan::factory()->state([
+                    'id' => fake()->uuid(),
                     'admin_gudang_id' => $admin_gudang->user->id,
                     'tipe' => 'PENGIRIMAN_GUDANG_PROYEK',
                     'kode_surat' => SuratJalan::generateKodeSurat("PENGIRIMAN_GUDANG_PROYEK", $proyek->client, $supervisor->nama),
@@ -185,13 +190,13 @@ class PeminjamanFactory extends Factory
                     ])->create();
                     if($status == 'SEDANG_DIKIRIM'){
                         SuratJalan::factory()->state([
+                            'id' => fake()->uuid(),
                             'admin_gudang_id' => $admin_gudang->user->id,
                             'tipe' => 'PENGIRIMAN_GUDANG_PROYEK',
                             'kode_surat' => SuratJalan::generateKodeSurat("PENGIRIMAN_GUDANG_PROYEK", $proyek->client, $supervisor->nama),
                             'created_at' => $created_at
                         ])->dalamPerjalanan()->has(SjPengirimanGp::factory()->state(function (array $attributes, SuratJalan $surat_jalan) use ($peminjaman, $created_at) {
                             return [
-                                'id' => $attributes['id'],
                                 'surat_jalan_id' => $surat_jalan->id,
                                 'peminjaman_id' => $peminjaman->id,
                                 'created_at' => $created_at

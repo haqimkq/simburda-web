@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Helpers\IDGenerator;
 use App\Models\AdminGudang;
 use App\Models\LogisticFirebase;
+use App\Models\TtdVerification;
 use App\Models\User;
 use App\Models\Barang;
 use App\Models\Proyek;
@@ -37,7 +38,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         LogisticFirebase::deleteAllData();
-        Gudang::factory()->state(
+        $gudang = Gudang::factory()->state(
             [
                 'nama' => 'Gudang Jakarta 1',
                 'alamat' => 'Jl. Pengadegan Selatan II No.1, RT.10/RW.4, Pengadegan, Kec. Pancoran, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12770',
@@ -67,9 +68,10 @@ class DatabaseSeeder extends Seeder
                     'email' => 'ghanipratama@gmail.com',
                     'ttd' => 'assets/ttd/hjgawedyahwdh2837289371jh.png'
                 ]
-        )->has(AdminGudang::factory()->state(function(array $attributes, User $user){
+        )->has(AdminGudang::factory()->state(function(array $attributes, User $user) use ($gudang){
             return [
-                'user_id' => $user->id
+                'user_id' => $user->id,
+                'gudang_id' => $gudang->id,
             ];
         }))->create();
 
@@ -571,7 +573,8 @@ class DatabaseSeeder extends Seeder
         }))->create();
 
         User::factory(20)->state([
-            'role' => 'PURCHASING'
+            'role' => 'PURCHASING',
+            'ttd' => 'assets/ttd/83719273uawey02938he.png'
         ])->has(Purchasing::factory()->state(function (array $attributes, User $user){
             return ['user_id' => $user->id];
         }))->create();
@@ -636,5 +639,6 @@ class DatabaseSeeder extends Seeder
             LogisticFirebase::setData($request);
         }
         IDGenerator::reorderAll();
+
     }
 }

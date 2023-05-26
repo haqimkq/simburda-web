@@ -23,7 +23,7 @@ class Logistic extends Model
     ];
 
     public function user(){
-        return $this->belongsTo(User::class, 'user_id','id');
+        return $this->belongsTo(User::class, 'user_id');
     }
     public static function generateLogisticCode(){
         return IDGenerator::generateID(Logistic::class, 'kode_logistic', 5, 'LOG');

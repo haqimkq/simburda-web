@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('no_hp');
             $table->enum('role', ['PROJECT_MANAGER', 'SUPERVISOR', 'ADMIN_GUDANG', 'LOGISTIC', 'PURCHASING', 'ADMIN', 'USER'])->default('USER');
             $table->string('password');
+            $table->string('device_token')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

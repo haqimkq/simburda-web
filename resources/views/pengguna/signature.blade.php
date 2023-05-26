@@ -222,7 +222,8 @@
 				alert("Please provide a signature first.");
 			} else {
 				var dataURL = signaturePad.toDataURL();
-				download(dataURL, "TTD - {{$userAuth->nama}}.png");
+				// download(dataURL, "TTD - {{$userAuth->nama}}.png");
+				download(dataURL, "TTD - {{$randomId}}.png");
 			}
 		});
 	</script>

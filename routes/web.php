@@ -66,10 +66,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('pengguna/detail/{id}', 'show')->name('pengguna.show');
         Route::post('pengguna/delete/{id}', 'destroy')->name('pengguna.destroy');
     });
-    Route::controller(SignatureController::class)->group(function () {
-        Route::get('signature', 'index')->name('signature');
-        Route::post('signature/store', 'store')->name('signature.store');
-    });
+    // Route::controller(SignatureController::class)->group(function () {
+    //     Route::get('signature', 'index')->name('signature');
+    //     Route::post('signature/store', 'store')->name('signature.store');
+    //     Route::get('signature/verified/{id}', 'verified')->name('signature.verified');
+    //     Route::get('signature/verified/view/{id}', 'viewTTDSuratJalan')->name('signature.viewTTDSuratJalan');
+    // });
     Route::middleware(['admin-admingudang'])->controller(KendaraanController::class)->group(function () {
         Route::get('kendaraan', 'index')->name('kendaraan');
         Route::get('kendaraan/tambah', 'create')->name('kendaraan.create');
@@ -113,4 +115,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('surat-jalan/edit/{id}', 'edit')->name('surat-jalan.edit');
         Route::post('surat-jalan/delete/{id}', 'destroy')->name('surat-jalan.destroy');
     });
+});
+Route::controller(SignatureController::class)->group(function () {
+    Route::get('signature', 'index')->name('signature');
+    Route::post('signature/store', 'store')->name('signature.store');
+    Route::get('signature/v/{id}', 'verified')->name('signature.verified');
+    Route::get('signature/verified/view/{id}', 'viewTTDSuratJalan')->name('signature.viewTTDSuratJalan');
+    Route::get('signature/verified/{id}', 'verifiedTTDSuratJalan')->name('signature.verifiedTTDSuratJalan');
 });

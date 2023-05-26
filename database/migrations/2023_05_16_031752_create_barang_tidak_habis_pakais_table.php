@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('barang_tidak_habis_pakais', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('qrcode');
+            // $table->string('qrcode');
             $table->integer('nomor_seri');
             $table->enum('kondisi', ['BARU', 'BEKAS'])->default('BARU');
             $table->string('keterangan');

@@ -199,7 +199,7 @@ return [
 
         Barryvdh\DomPDF\ServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
-
+        Intervention\Image\ImageServiceProvider::class
         // SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class
     ],
 
@@ -216,6 +216,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Image' => Intervention\Image\Facades\Image::class
         // 'ExampleClass' => App\Example\ExampleClass::class,
         // 'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class
     ])->toArray(),

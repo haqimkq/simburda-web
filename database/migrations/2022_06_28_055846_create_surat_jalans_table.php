@@ -17,9 +17,9 @@ return new class extends Migration
         Schema::create('surat_jalans', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('kode_surat');
-            $table->string('ttd_admin');
-            $table->string('ttd_driver')->nullable();
-            $table->string('ttd_penerima')->nullable();
+            // $table->string('ttd_admin');
+            // $table->string('ttd_driver')->nullable();
+            // $table->string('ttd_penerima')->nullable();
             $table->string('foto_bukti')->nullable();
             $table->enum('tipe', ['PENGIRIMAN_PROYEK_PROYEK', 'PENGIRIMAN_GUDANG_PROYEK','PENGEMBALIAN']);
             $table->enum('status', ['MENUNGGU_KONFIRMASI_DRIVER','DRIVER_DALAM_PERJALANAN', 'SELESAI'])->default('MENUNGGU_KONFIRMASI_DRIVER');
@@ -27,6 +27,9 @@ return new class extends Migration
             $table->softDeletes();
         });
         Schema::table('surat_jalans', function (Blueprint $table) {
+            $table->foreignUuid('ttd_admin')->nullable()->constrained('ttd_sj_verifications')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('ttd_driver')->nullable()->constrained('ttd_sj_verifications')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('ttd_supervisor')->nullable()->constrained('ttd_sj_verifications')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('logistic_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('admin_gudang_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('kendaraan_id')->nullable()->constrained('kendaraans')->onUpdate('cascade')->onDelete('cascade');
