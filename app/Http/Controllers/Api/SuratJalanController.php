@@ -144,6 +144,7 @@ class SuratJalanController extends Controller
             $kendaraan = ($response->kendaraan) ? [
                 'merk' => $response->kendaraan->merk,
                 'plat_nomor' => $response->kendaraan->plat_nomor,
+                'gambar' => $response->kendaraan->gambar,
                 'jenis' => $response->kendaraan->jenis,
             ] : null;
 

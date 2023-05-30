@@ -6,6 +6,7 @@ use App\Helpers\Date;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Spatie\TemporaryDirectory\TemporaryDirectory;
 
@@ -85,7 +86,20 @@ class TtdSjVerification extends Model
 
 
     }
-
+    public static function validateCreate(Request $request, $surat_jalan_created = true){
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'keterangan' => 'required',
+            'sebagai' => 'required|in:PENERIMA,PENGIRIM,PEMBERI'
+        ]);
+    }
+    public static function createData(Request $request){
+        self::validateCreate($request);
+        return self::create([
+            'user_id' => $request->user_id,
+            'keterangan' => $request->keterangan,
+        ]);
+    }
     public function getUpdatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);

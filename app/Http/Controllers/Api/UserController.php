@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Utils;
 use Exception;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -33,8 +34,10 @@ class UserController extends Controller
             if (!Auth::attempt($credentials)) {
                 return ResponseFormatter::error('Authentication Failed');
             }
-
             $user = User::where('email', $request->email)->first();
+            if($request->device_token){
+                $user->update(['device_token' => $request->device_token]);
+            }
             $token = $user->createToken('authToken')->plainTextToken;
             $user['token'] = $token;
 
@@ -47,6 +50,9 @@ class UserController extends Controller
     public function logout(Request $request){
         try{
             $request->user()->currentAccessToken()->delete();
+            $request->user()->update([
+                'device_token' => null,
+            ]);
             return ResponseFormatter::success(null, null, 'Logout Successfully');
         }catch (Exception $error){
             return ResponseFormatter::error("Logout Failed:". $error->getMessage());
@@ -59,6 +65,19 @@ class UserController extends Controller
             return ResponseFormatter::success('user', $user, 'Get Current User Access Token');
         }catch (Exception $error){
             return ResponseFormatter::error("Get Current User Access Token Failed:". $error->getMessage());
+        }
+    }
+    public function setDeviceToken(Request $request){
+        try{
+            $user = $request->user();
+            $request->validate([
+                'device_token' => 'required',
+            ]);
+            $user->device_token = $request->device_token;
+            $user->update();
+            return ResponseFormatter::success(null, null, 'Set User Device Token Success');
+        }catch (Exception $error){
+            return ResponseFormatter::error("Set User Device Token Failed:". $error->getMessage());
         }
     }
     public function getTtd(Request $request){

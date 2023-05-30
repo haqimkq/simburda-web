@@ -1,3 +1,4 @@
+{{-- Put inside head --}}
 <script type="module">
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
@@ -20,5 +21,44 @@
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+  const messaging = getMessaging(app);
+
+  function startFCM() {
+      messaging
+          .requestPermission()
+          .then(function () {
+              return messaging.getToken()
+          })
+          .then(function (response) {
+              $.ajaxSetup({
+                  headers: {
+                      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                  }
+              });
+              $.ajax({
+                  url: '{{ route("store.token") }}',
+                  type: 'POST',
+                  data: {
+                      token: response
+                  },
+                  dataType: 'JSON',
+                  success: function (response) {
+                      alert('Token stored.');
+                  },
+                  error: function (error) {
+                      alert(error);
+                  },
+              });
+          }).catch(function (error) {
+              alert(error);
+          });
+    }
+    messaging.onMessage(function (payload) {
+        const title = payload.notification.title;
+        const options = {
+            body: payload.notification.body,
+            icon: payload.notification.icon,
+        };
+        new Notification(title, options);
+    });
 </script>
