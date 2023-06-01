@@ -69,8 +69,10 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(SignatureController::class)->group(function () {
         Route::get('signature', 'index')->name('signature');
         Route::post('signature/store', 'store')->name('signature.store');
-        Route::get('signature/verified/{id}', 'verified')->name('signature.verified');
-        Route::get('signature/verified/view/{id}', 'viewTTDSuratJalan')->name('signature.viewTTDSuratJalan');
+        Route::get('signature/verified-sj/{id}', 'verifiedTTDSuratJalan')->name('signature.verifiedTTDSuratJalan');
+        Route::get('signature/verified-sj/view/{id}', 'viewTTDSuratJalan')->name('signature.viewTTDSuratJalan');
+        Route::get('signature/verified-do/{id}', 'verifiedTTDDeliveryOrder')->name('signature.verifiedTTDDeliveryOrder');
+        Route::get('signature/verified-do/view/{id}', 'viewTTDDeliveryOrder')->name('signature.viewTTDDeliveryOrder');
     });
     Route::middleware(['admin-admingudang'])->controller(KendaraanController::class)->group(function () {
         Route::get('kendaraan', 'index')->name('kendaraan');

@@ -31,7 +31,8 @@ class TtdDoVerification extends Model
 
     public static function generateKeterangan($user_id, $kode, $perusahaan, $gudang, $perihal, $untuk_perhatian){
         $user = User::find($user_id);
-        $result = "$user->nama [$user->role] telah menandatangani $perihal [$kode]. Dari lokasi pengambilan material $perusahaan dengan UP $untuk_perhatian, menuju $gudang.";
+        $roleLower = ucwords(strtolower(str_replace("_"," ",$user->role)));
+        $result = "$user->nama|$roleLower|$perihal|$kode|$perusahaan|$untuk_perhatian|$gudang";
         return $result;
     }
 

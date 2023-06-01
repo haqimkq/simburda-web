@@ -23,11 +23,11 @@
 		@endif
 	</div>
 	{{-- <img src="{!!$message->embedData(QrCode::format('png')->generate('Embed me into an e-mail!'), 'QrCode.png', 'image/png')!!}" class="img-thumbnail"> --}}
-	<div class="img-thumbnail w-">
+	{{-- <div class="img-thumbnail w-">
     <img
 			class="ml-5 h-[8em] max-w-[8em] origin-top-left bg-white p-2 hover:z-10 md:h-[10em] md:max-w-[10em] md:hover:scale-125"
 			src="data:image/png;base64,{{base64_encode(QrCode::format('png')->size(1080)->generate($authUser->id))}}" alt="">
-	</div>
+	</div> --}}
 	<div class="grid w-full xl:grid-cols-2 gap-2">
 		<div class="text-primary relative p-4 shadow-md shadow-gray-100 rounded-lg">
 			<h2 class="text-xl font-medium text-center">Pengguna</h2>

@@ -62,8 +62,8 @@
 			Delivery Order
 		</h1>
 		<div class="info-barang mb-2">
-			<p class="text-lg font-semibold uppercase"><span class="text-base normal-case font-normal">Kode Delivery: </span> {{ $deliveryorder->kode_delivery }}</p>
-			<p class="text-lg font-semibold uppercase"><span class="text-base normal-case font-normal">Untuk Perusahaan: </span> {{ $deliveryorder->untuk_perusahaan }}</p>
+			<p class="text-lg font-semibold uppercase"><span class="text-base normal-case font-normal">Kode Delivery: </span> {{ $deliveryorder->kode_do }}</p>
+			<p class="text-lg font-semibold uppercase"><span class="text-base normal-case font-normal">Untuk Perusahaan: </span> {{ $deliveryorder->perusahaan->nama }}</p>
 		</div>
 		<a class="bg-green py-1 px-2 text-white rounded-lg self-start mb-2" href="{{route('delivery-order.cetak', $deliveryorder->id)}}">File Delivery Order</a>
 		<h1 class="mt-2 mb-2 text-[1.5em] font-medium">

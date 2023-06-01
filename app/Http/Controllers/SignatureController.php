@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TtdDoVerification;
 use App\Models\TtdSjVerification;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -92,16 +93,37 @@ class SignatureController extends Controller
 
         return response()->file($filePath);
     }
-
-    public function verifiedTTDSuratJalan($id)
+    public function viewTTDDeliveryOrder($id)
     {
-        $sj_verification = TtdSjVerification::find($id);
+        $sj_verification = TtdDoVerification::find($id);
         if ($sj_verification == null) {
             abort(404);
         }
-        $data = explode("|", $sj_verification->keterangan); 
+        $ttd = public_path('storage/'.$sj_verification->user->ttd);
+        $qrValue = (env('APP_ENV') == 'local') ? env('NGROK_URL') : env('APP_URL');;
+
+        $qrcode = QrCode::size(400)->format('png')->errorCorrection('H')->generate("$qrValue/signature/verified/$id");
+        $img_canvas = ImageManager::canvas(850,450);
+
+        $filePath = public_path()."/storage/assets/ttd-sj-verification/temp.jpg";
+        $output_file = "assets/ttd-sj-verification/temp.jpg";
+        Storage::disk('public')->put($output_file, $qrcode);
+        $img_canvas->insert(ImageManager::make($filePath), 'center', 199, 0); // move second image 400 px from left
+        $img_canvas->insert(ImageManager::make($ttd)->resize(400, null), 'left',);
+        $img_canvas->save($filePath, 100);
+
+        return response()->file($filePath);
+    }
+
+    public function verifiedTTDSuratJalan($id)
+    {
+        $do_verification = TtdDoVerification::find($id);
+        if ($do_verification == null) {
+            abort(404);
+        }
+        $data = explode("|", $do_verification->keterangan); 
         return view('signature.verif',[
-            "sjVerif" => $sj_verification,
+            "sjVerif" => $do_verification,
             "nama" => $data[0],
             "role" => $data[1],
             "tipe" => $data[2],
@@ -109,6 +131,24 @@ class SignatureController extends Controller
             "sebagai" => $data[4],
             "asal" => $data[5],
             "tujuan" => $data[6],
+        ]);
+    }
+    public function verifiedTTDDeliveryOrder($id)
+    {
+        $do_verification = TtdDoVerification::find($id);
+        if ($do_verification == null) {
+            abort(404);
+        }
+        $data = explode("|", $do_verification->keterangan); 
+        return view('signature.verifDo',[
+            "doVerif" => $do_verification,
+            "nama" => $data[0],
+            "role" => $data[1],
+            "perihal" => $data[2],
+            "kode" => $data[3],
+            "perusahaan" => $data[4],
+            "untuk_perhatian" => $data[5],
+            "gudang" => $data[6],
         ]);
     }
 

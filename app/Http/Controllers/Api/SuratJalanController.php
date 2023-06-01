@@ -34,7 +34,7 @@ class SuratJalanController extends Controller
                 $sjCreate = 'Pengembalian Proyek-Gudang';
             }
             Kendaraan::setLogistic($request);
-            return ResponseFormatter::success('surat_jalan_id', $sj->id, "Berhasil Menambahkan Surat Jalan $sjCreate");
+            return ResponseFormatter::success(null, null, "Berhasil Menambahkan Surat Jalan $sjCreate");
         } catch (Exception $error) {
             return ResponseFormatter::error("Gagal Menambahkan Surat Jalan: ". $error->getMessage());
         }
@@ -56,7 +56,7 @@ class SuratJalanController extends Controller
                 $sjCreate = 'Pengembalian Proyek-Gudang';
             }
             Kendaraan::setLogistic($request);
-            return ResponseFormatter::success('surat_jalan_id', $sj->id, "Berhasil Mengupdate Surat Jalan $sjCreate");
+            return ResponseFormatter::success(null, null, "Berhasil Mengupdate Surat Jalan $sjCreate");
         } catch (Exception $error) {
             return ResponseFormatter::error("Gagal Mengupdate Surat Jalan: ". $error);
         }
@@ -117,6 +117,7 @@ class SuratJalanController extends Controller
             $coordinate_gudang = ($sj_combine != 'sjPengembalian') ? $response->$sj_combine->peminjaman->gudang->latitude . "|" . $response->$sj_combine->peminjaman->gudang->longitude : $response->$sj_combine->pengembalian->peminjaman->gudang->latitude . "|" . $response->$sj_combine->pengembalian->peminjaman->gudang->longitude;
 
             $nama_proyek_asal = null;
+            $ttd_supervisor_peminjam = null;
             $nama_gudang = null;
 
             if($tipe=='PENGIRIMAN_PROYEK_PROYEK'){
@@ -124,14 +125,33 @@ class SuratJalanController extends Controller
                 $foto_proyek_asal = $response->$sj_combine->peminjamanAsal->menangani->proyek->foto;
                 $nama_proyek_asal = $response->$sj_combine->peminjamanAsal->menangani->proyek->nama_proyek;
                 $coordinate_proyek_asal = $response->$sj_combine->peminjamanAsal->menangani->proyek->latitude . "|" . $response->$sj_combine->peminjamanAsal->menangani->proyek->longitude;
+                $ttd_supervisor_peminjam = $response->$sj_combine->ttd_supervisor_peminjam;
+                $tempat_asal = [
+                    'nama' => $nama_proyek_asal,
+                    'alamat' => $alamat_proyek_asal,
+                    'foto' => $foto_proyek_asal,
+                    'coordinate' => $coordinate_proyek_asal,    
+                ];
             }else if($tipe=='PENGIRIMAN_GUDANG_PROYEK'){
                 $alamat_gudang = $response->$sj_combine->peminjaman->gudang->alamat;
                 $foto_gudang = $response->$sj_combine->peminjaman->gudang->gambar;
                 $nama_gudang = $response->$sj_combine->peminjaman->gudang->nama;
+                $tempat_asal = [
+                    'nama' => $nama_gudang,
+                    'foto' => $foto_gudang,
+                    'alamat' => $alamat_gudang,
+                    'coordinate' => $coordinate_gudang,   
+                ];
             }else{
                 $alamat_gudang = $response->$sj_combine->pengembalian->peminjaman->gudang->alamat;
                 $foto_gudang = $response->$sj_combine->pengembalian->peminjaman->gudang->gambar;
                 $nama_gudang = $response->$sj_combine->pengembalian->peminjaman->gudang->nama;
+                $tempat_asal = [
+                    'nama' => $proyek->nama_proyek,
+                    'alamat' => $proyek->alamat,
+                    'foto' => $proyek->foto,
+                    'coordinate' => $coordinate_proyek_tujuan,
+                ];
             }
             $project_manager = ($sj_combine != 'sjPengembalian') ? $response->$sj_combine->peminjaman->menangani->proyek->projectManager : $response->$sj_combine->pengembalian->peminjaman->menangani->proyek->projectManager;
             $supervisor = ($sj_combine != 'sjPengembalian') ? $response->$sj_combine->peminjaman->menangani->supervisor : $response->$sj_combine->pengembalian->peminjaman->menangani->supervisor;
@@ -149,6 +169,7 @@ class SuratJalanController extends Controller
             ] : null;
 
             $logistic = ($response->logistic) ? [
+                'id' => $response->logistic->id,
                 'nama' => $response->logistic->nama,
                 'no_hp' => $response->logistic->no_hp,
                 'foto' => $response->logistic->foto,
@@ -165,34 +186,26 @@ class SuratJalanController extends Controller
                 'foto' => $project_manager->foto,
                 'no_hp' => $project_manager->no_hp,
             ] : null;
-            
-            $gd = ($nama_gudang) ? [
-                'nama' => $nama_gudang,
-                'foto' => $foto_gudang,
-                'alamat' => $alamat_gudang,
-                'coordinate' => $coordinate_gudang,
-            ] : null;
 
-            $proyek_asal = ($nama_proyek_asal) ? [
-                'nama' => $nama_proyek_asal,
-                'alamat' => $alamat_proyek_asal,
-                'foto' => $foto_proyek_asal,
-                'coordinate' => $coordinate_proyek_asal,
-            ] : null;
-            
-            $proyek_tujuan = ($proyek) ? [
+            $tempat_tujuan = ($sj_combine != 'sjPengembalian') ? [
                 'nama' => $proyek->nama_proyek,
                 'alamat' => $proyek->alamat,
                 'foto' => $proyek->foto,
                 'coordinate' => $coordinate_proyek_tujuan,
-            ] : null;
+            ] : [
+                'nama' => $nama_gudang,
+                'foto' => $foto_gudang,
+                'alamat' => $alamat_gudang,
+                'coordinate' => $coordinate_gudang,
+            ];
             
             $surat_jalan = [
                 'id' => $response->id,
                 'kode_surat' => $response->kode_surat,
                 'ttd_admin' => $response->ttd_admin,
                 'ttd_driver' => $response->ttd_driver,
-                'ttd_penerima' => $response->ttd_penerima,
+                'ttd_supervisor' => $response->ttd_supervisor,
+                'ttd_supervisor_peminjam' => $ttd_supervisor_peminjam,
                 'foto_bukti' => $response->foto_bukti,
                 'tipe' => $response->tipe,
                 'status' => $response->status,
@@ -203,9 +216,8 @@ class SuratJalanController extends Controller
                 'logistic' => $logistic,
                 'supervisor' => $sv,
                 'project_manager' => $pm,
-                'gudang' => $gd,
-                'proyek_tujuan' => $proyek_tujuan,
-                'proyek_asal' => $proyek_asal,
+                'tempat_asal' => $tempat_asal,
+                'tempat_tujuan' => $tempat_tujuan,
                 'barang_habis_pakai' => $barang_habis_pakai,
                 'barang_tidak_habis_pakai' => $barang_tidak_habis_pakai,
             ];

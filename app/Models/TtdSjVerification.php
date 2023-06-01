@@ -36,13 +36,6 @@ class TtdSjVerification extends Model
     {
         return Date::dateToMillisecond($date);
     }
-    public static function createTempDirectory(){
-        $temporaryDirectory = (new TemporaryDirectory())->name('ttd-verification')->force()->create();
-         
-        // $image->move('storage/custom_folder/', $image_new_name);
-        // C:\WebDev\SimburdaWeb\public\storage\assets\ttd-sj-verification
-        return $temporaryDirectory->path('0152536f-4d51-3dfd-8b01-4d187e77ba3d.jpg');
-    }
 
     public static function generateKeterangan($surat_jalan_id, $role=null, $newCode=null){
         $sj = SuratJalan::where('id', $surat_jalan_id)->first();
@@ -83,8 +76,6 @@ class TtdSjVerification extends Model
         $result = "$user->nama|$roleLower|$tipe|$kode_surat|$sebagaiLower|$asal|$tujuan";
         return $result;
         // Ahmad Lutfi [LOGISTIC] telah menandatangani Pengiriman Gudang Proyek [00033/SJGP/MAP/PKO/V/2023] sebagai pengirim. Lokasi asal: Gudang Jakarta 1 Lokasi tujuan: Pembuatan Kantin Karyawan PIK Avenue Mall
-
-
     }
     public static function validateCreate(Request $request, $surat_jalan_created = true){
         $request->validate([

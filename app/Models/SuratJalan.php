@@ -176,6 +176,21 @@ class SuratJalan extends Model
                     $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
                 }
             }
+        }else if($user->role == 'LOGISTIC') {
+            $surat_jalan = $response->has($tipeRelasi)->where('logistic_id', $user->id)->paginate($size)->withQueryString();
+            if($tipe == 'PENGIRIMAN_GUDANG_PROYEK'){
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
+                }
+            }else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK'){
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjamanAsal'));
+                }
+            }else{
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
+                }
+            }
         }else if($user->role == 'SUPERVISOR'){
             if($tipe == 'PENGIRIMAN_GUDANG_PROYEK'){
                 $surat_jalan = $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString();
@@ -228,6 +243,19 @@ class SuratJalan extends Model
         $alamat_tempat_asal = ($tipe != 'sjPengembalian') ? $sj->$tipe->$relasiPeminjamanAsal->gudang->alamat : $sj->$tipe->pengembalian->$relasiPeminjamanAsal->gudang->alamat;
         $coordinate_tempat_asal = ($tipe != 'sjPengembalian') ? $sj->$tipe->$relasiPeminjamanAsal->gudang->latitude . "|" . $sj->$tipe->$relasiPeminjamanAsal->gudang->longitude : $sj->$tipe->pengembalian->$relasiPeminjamanAsal->gudang->latitude . "|" . $sj->$tipe->pengembalian->$relasiPeminjamanAsal->gudang->longitude;
 
+        if($tipe == 'sjPengembalian'){
+            $nama_tempat_asal = $sj->$tipe->pengembalian->$relasiPeminjamanAsal->gudang->nama;
+            $alamat_tempat_asal = $sj->$tipe->pengembalian->$relasiPeminjamanAsal->gudang->alamat;
+            $coordinate_tempat_asal =  $sj->$tipe->pengembalian->$relasiPeminjamanAsal->gudang->latitude . "|" . $sj->$tipe->pengembalian->$relasiPeminjamanAsal->gudang->longitude;
+        }else if($tipe == 'sjPengirimanGp'){
+            $nama_tempat_asal = $sj->$tipe->$relasiPeminjamanAsal->gudang->nama;
+            $alamat_tempat_asal = $sj->$tipe->$relasiPeminjamanAsal->gudang->alamat;
+            $coordinate_tempat_asal =  $sj->$tipe->$relasiPeminjamanAsal->gudang->latitude . "|" . $sj->$tipe->$relasiPeminjamanAsal->gudang->longitude;
+        }else{
+            $nama_tempat_asal = $sj->$tipe->$relasiPeminjamanAsal->menangani->proyek->nama_proyek;
+            $alamat_tempat_asal = $sj->$tipe->$relasiPeminjamanAsal->menangani->proyek->alamat;
+            $coordinate_tempat_asal =  $sj->$tipe->$relasiPeminjamanAsal->menangani->proyek->latitude . "|" . $sj->$tipe->$relasiPeminjamanAsal->menangani->proyek->longitude;
+        }
         $nama_tempat_tujuan = ($tipe != 'sjPengembalian') ? $sj->$tipe->peminjaman->menangani->proyek->nama_proyek : $sj->$tipe->pengembalian->peminjaman->menangani->proyek->nama_proyek;
         $alamat_tempat_tujuan = ($tipe != 'sjPengembalian') ? $sj->$tipe->peminjaman->menangani->proyek->alamat : $sj->$tipe->pengembalian->peminjaman->menangani->proyek->alamat;
         $coordinate_tempat_tujuan = ($tipe != 'sjPengembalian') ? $sj->$tipe->peminjaman->menangani->proyek->latitude . "|" . $sj->$tipe->peminjaman->menangani->proyek->longitude : $sj->$tipe->pengembalian->peminjaman->menangani->proyek->latitude . "|" . $sj->$tipe->pengembalian->peminjaman->menangani->proyek->longitude ;
