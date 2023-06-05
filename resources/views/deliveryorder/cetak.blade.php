@@ -133,7 +133,7 @@
 			<p class="text-center">Hormat Kami, <br><span class="font-bold">PT. BURDA CONTRACO</span></p>
 			@if ($ttdPath)
 			<div class="bg-center bg-no-repeat bg-contain" style="background-image: url('data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/stempel-burda.png'))) }}')">
-				<img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path($ttdPath)))}}" alt="" class=" self-center w-40 my-3">
+				<img src="data:image/png;base64,{{ base64_encode(file_get_contents("http://127.0.0.1:8000/signature/verified-do/view/$deliveryOrder->ttd"))}}" alt="" class=" self-center w-40 my-3">
 			</div>
 			@else
 			<div class="bg-center bg-no-repeat bg-contain w-40 h-24" style="background-image: url('data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/stempel-burda.png'))) }}')">

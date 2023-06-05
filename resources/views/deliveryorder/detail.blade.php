@@ -5,8 +5,10 @@
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
 		integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
 		crossorigin="" />
+		<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
 		<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
 		crossorigin=""></script>
+		<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 		<script>
 			var map = L.map('map').setView([-6.2501422, 106.8564921], 14);
 			barangIcon = L.icon({
@@ -21,7 +23,7 @@
 				@if ($deliveryorder->logistic)
 					L.marker([{{$deliveryorder->logistic->logistic->latitude}}, {{$deliveryorder->logistic->logistic->longitude}}], {icon:driverIcon}).bindPopup('{{$deliveryorder->logistic->nama}}'),
 				@endif
-					L.marker([{{$deliveryorder->perusahaan->latitude}}, {{$deliveryorder->perusahaan->longitude}}], {icon:barangIcon}).bindPopup('{{$deliveryorder->untuk_perusahaan}}'),
+					L.marker([{{$deliveryorder->perusahaan->latitude}}, {{$deliveryorder->perusahaan->longitude}}], {icon:barangIcon}).bindPopup('{{$deliveryorder->perusahaan->nama}}'),
 			];
 			var group = L.featureGroup(markers).addTo(map);
 			setTimeout(function () {
@@ -31,6 +33,19 @@
 			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 				attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
 			}).addTo(map);
+			
+			L.Routing.control({
+			waypoints: [
+					L.latLng({{$deliveryorder->logistic->logistic->latitude}}, {{$deliveryorder->logistic->logistic->longitude}}),
+					L.latLng({{ $deliveryorder->perusahaan->latitude }}, {{ $deliveryorder->perusahaan->longitude }})
+				],
+				show: false,
+			createMarker: function() { return null; },
+			lineOptions: {
+					styles: [{color: '#7000FF', opacity: 1, weight: 5}]
+			}
+			}
+			).addTo(map);
 		</script>
 	@endpush
 {{-- @endif --}}
@@ -69,7 +84,7 @@
 		<h1 class="mt-2 mb-2 text-[1.5em] font-medium">
 			Delivery Order dalam perjalanan
 		</h1>
-		<div class="grid gap-2 md:grid-cols-2 h-[70vh]">
+		<div class="grid gap-2 md:grid-cols-1 h-[70vh]">
 			<div class="border-green rounded-md border p-2 relative">
 				@if ($deliveryorder->logistic)
 					<a target="_blank" 

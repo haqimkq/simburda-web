@@ -44,9 +44,9 @@
 						class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900  focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark: dark:focus:ring-green"
 						>
 							<option value="semua status"  @if(request('filter') == 'semua status') selected @endif>Semua Status</option>
-							<option value='dalam perjalanan' @if(request('filter') == 'dalam perjalanan') selected @endif>Dalam Perjalanan</option>
-							<option value='sudah diambil'  @if(request('filter') == 'sudah diambil') selected @endif>Sudah Diambil</option>
-							<option value='belum diambil'  @if(request('filter') == 'belum diambil') selected @endif>Belum Diambil</option>
+							<option value='DRIVER_DALAM_PERJALANAN' @if(request('filter') == 'DRIVER_DALAM_PERJALANAN') selected @endif>Dalam Perjalanan</option>
+							<option value='SELESAI'  @if(request('filter') == 'SELESAI') selected @endif>Sudah Diambil</option>
+							<option value='MENUNGGU_KONFIRMASI_DRIVER'  @if(request('filter') == 'MENUNGGU_KONFIRMASI_DRIVER') selected @endif>Belum Diambil</option>
 						</select>
 					</div>
 				@endsection

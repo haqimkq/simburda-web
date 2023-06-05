@@ -78,40 +78,16 @@ class SignatureController extends Controller
         if ($sj_verification == null) {
             abort(404);
         }
-        $ttd = public_path('storage/'.$sj_verification->user->ttd);
-        $qrValue = (env('APP_ENV') == 'local') ? env('NGROK_URL') : env('APP_URL');;
-
-        $qrcode = QrCode::size(400)->format('png')->errorCorrection('H')->generate("$qrValue/signature/verified/$id");
-        $img_canvas = ImageManager::canvas(850,450);
-
-        $filePath = public_path()."/storage/assets/ttd-sj-verification/temp.jpg";
-        $output_file = "assets/ttd-sj-verification/temp.jpg";
-        Storage::disk('public')->put($output_file, $qrcode);
-        $img_canvas->insert(ImageManager::make($filePath), 'center', 199, 0); // move second image 400 px from left
-        $img_canvas->insert(ImageManager::make($ttd)->resize(400, null), 'left',);
-        $img_canvas->save($filePath, 100);
-
+        $filePath = TtdSjVerification::getFile($id);
         return response()->file($filePath);
     }
     public function viewTTDDeliveryOrder($id)
     {
-        $sj_verification = TtdDoVerification::find($id);
-        if ($sj_verification == null) {
+        $do_verification = TtdDoVerification::find($id);
+        if ($do_verification == null) {
             abort(404);
         }
-        $ttd = public_path('storage/'.$sj_verification->user->ttd);
-        $qrValue = (env('APP_ENV') == 'local') ? env('NGROK_URL') : env('APP_URL');;
-
-        $qrcode = QrCode::size(400)->format('png')->errorCorrection('H')->generate("$qrValue/signature/verified/$id");
-        $img_canvas = ImageManager::canvas(850,450);
-
-        $filePath = public_path()."/storage/assets/ttd-sj-verification/temp.jpg";
-        $output_file = "assets/ttd-sj-verification/temp.jpg";
-        Storage::disk('public')->put($output_file, $qrcode);
-        $img_canvas->insert(ImageManager::make($filePath), 'center', 199, 0); // move second image 400 px from left
-        $img_canvas->insert(ImageManager::make($ttd)->resize(400, null), 'left',);
-        $img_canvas->save($filePath, 100);
-
+        $filePath = TtdDoVerification::getFile($id);
         return response()->file($filePath);
     }
 
