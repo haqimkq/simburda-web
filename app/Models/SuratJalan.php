@@ -47,8 +47,14 @@ class SuratJalan extends Model
     public function sjPengembalian(){
         return $this->hasOne(SjPengembalian::class);
     }
-    public function ttdSjVerifications(){
-        return $this->hasMany(TtdSjVerification::class);
+    public function ttdSjAdmin(){
+        return $this->belongsTo(TtdVerification::class,'ttd_admin');
+    }
+    public function ttdSjSupervisor(){
+        return $this->belongsTo(TtdVerification::class,'ttd_supervisor');
+    }
+    public function ttdSjDriver(){
+        return $this->belongsTo(TtdVerification::class,'ttd_driver');
     }
     public function getCreatedAtAttribute($date)
     {
@@ -169,7 +175,7 @@ class SuratJalan extends Model
                 }
             }else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK'){
                 foreach($surat_jalan as $sj){
-                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjamanAsal'));
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
                 }
             }else{
                 foreach($surat_jalan as $sj){
@@ -184,7 +190,7 @@ class SuratJalan extends Model
                 }
             }else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK'){
                 foreach($surat_jalan as $sj){
-                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjamanAsal'));
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
                 }
             }else{
                 foreach($surat_jalan as $sj){
@@ -200,7 +206,7 @@ class SuratJalan extends Model
             }else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK'){
                 $surat_jalan = $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString();
                 foreach($surat_jalan as $sj){
-                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjamanAsal'));
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
                 }
             }else{
                 $surat_jalan = $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString();
@@ -217,7 +223,7 @@ class SuratJalan extends Model
             }else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK'){
                 $surat_jalan = $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString();
                 foreach($surat_jalan as $sj){
-                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjamanAsal'));
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
                 }
             }else{
                 $surat_jalan = $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString();
@@ -252,9 +258,9 @@ class SuratJalan extends Model
             $alamat_tempat_asal = $sj->$tipe->$relasiPeminjamanAsal->gudang->alamat;
             $coordinate_tempat_asal =  $sj->$tipe->$relasiPeminjamanAsal->gudang->latitude . "|" . $sj->$tipe->$relasiPeminjamanAsal->gudang->longitude;
         }else{
-            $nama_tempat_asal = $sj->$tipe->$relasiPeminjamanAsal->menangani->proyek->nama_proyek;
-            $alamat_tempat_asal = $sj->$tipe->$relasiPeminjamanAsal->menangani->proyek->alamat;
-            $coordinate_tempat_asal =  $sj->$tipe->$relasiPeminjamanAsal->menangani->proyek->latitude . "|" . $sj->$tipe->$relasiPeminjamanAsal->menangani->proyek->longitude;
+            $nama_tempat_asal = $sj->$tipe->$relasiPeminjamanAsal->peminjamanPp->peminjamanAsal->menangani->proyek->nama_proyek;
+            $alamat_tempat_asal = $sj->$tipe->$relasiPeminjamanAsal->peminjamanPp->peminjamanAsal->menangani->proyek->alamat;
+            $coordinate_tempat_asal =  $sj->$tipe->$relasiPeminjamanAsal->peminjamanPp->peminjamanAsal->menangani->proyek->latitude . "|" . $sj->$tipe->$relasiPeminjamanAsal->menangani->proyek->longitude;
         }
         $nama_tempat_tujuan = ($tipe != 'sjPengembalian') ? $sj->$tipe->peminjaman->menangani->proyek->nama_proyek : $sj->$tipe->pengembalian->peminjaman->menangani->proyek->nama_proyek;
         $alamat_tempat_tujuan = ($tipe != 'sjPengembalian') ? $sj->$tipe->peminjaman->menangani->proyek->alamat : $sj->$tipe->pengembalian->peminjaman->menangani->proyek->alamat;

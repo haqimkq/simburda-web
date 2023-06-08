@@ -21,21 +21,19 @@ class Peminjaman extends Model
     ];
 
     public function sjPengirimanGp(){
-        if($this->tipe == 'GUDANG_PROYEK') return $this->hasOne(SjPengirimanGp::class);
+        return $this->hasOne(SjPengirimanGp::class);
     }
     public function sjPengirimanPp(){
-        if($this->tipe == 'PROYEK_PROYEK'){
-            return $this->hasOne(SjPengirimanPp::class, 'peminjaman_tujuan_id');
-        }else{
-            return $this->hasOne(SjPengirimanPp::class, 'peminjaman_asal_id');
-        }
+        return $this->hasOne(SjPengirimanPp::class);
     }
-
     public function peminjamanDetail(){
         return $this->hasMany(PeminjamanDetail::class);
     }
     public function aksesBarang(){
         return $this->hasOne(AksesBarang::class);
+    }
+    public function peminjamanPp(){
+        return $this->hasOne(PeminjamanPp::class);
     }
     public function pengembalian(){
         return $this->hasMany(Pengembalian::class);

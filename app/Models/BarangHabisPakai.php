@@ -13,7 +13,9 @@ class BarangHabisPakai extends Model
     use Uuids;
     use HasFactory;
     use SoftDeletes;
-    protected $guarded = ['id'];
+    protected $primaryKey = null;
+    public $incrementing = false;
+    protected $guarded = [];
     protected $hidden = [
         'deleted_at',
     ];

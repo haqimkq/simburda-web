@@ -11,24 +11,43 @@ use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as ImageManager;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-class TtdDoVerification extends Model
+class TtdVerification extends Model
 {
     use HasFactory;
     use Uuids;
     protected $guarded = ['id'];
 
+    public static $jenisSuratJalanPengirimanPP = "Surat Jalan Pengiriman Proyek-Proyek";
+    public static $jenisSuratJalanPengirimanGP = "Surat Jalan Pengiriman Gudang-Proyek";
+    public static $jenisSuratJalanPengembalian = "Surat Jalan Pengembalian";
+    public static $jenisDeliveryOrder = "Delivery Order";
     public function user(){
         return $this->belongsTo(User::class,'user_id');
     }
-    public function ttd(){
+    public function ttdDo(){
         return $this->hasOne(DeliveryOrder::class,'ttd');
+    }
+    public function ttdSjAdmin(){
+        return $this->hasOne(SuratJalan::class,'ttd_admin');
+    }
+    public function ttdSjDriver(){
+        return $this->hasOne(SuratJalan::class,'ttd_driver');
+    }
+    public function ttdSjSupervisor(){
+        return $this->hasOne(SuratJalan::class,'ttd_supervisor');
+    }
+    public function ttdSjSupervisorPeminjam(){
+        return $this->hasOne(SjPengirimanPp::class,'ttd_supervisor_peminjam');
+    }
+    public function ttdSjVerification(){
+        return $this->hasOne(TtdSjVerification::class);
     }
     public function getCreatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);
     }
 
-    public static function generateKeterangan($user_id, $kode, $perusahaan, $gudang, $perihal, $untuk_perhatian){
+    public static function generateKeteranganDeliveryOrder($user_id, $kode, $perusahaan, $gudang, $perihal, $untuk_perhatian){
         $user = User::find($user_id);
         $roleLower = ucwords(strtolower(str_replace("_"," ",$user->role)));
         $result = "$user->nama|$roleLower|$perihal|$kode|$perusahaan|$untuk_perhatian|$gudang";
@@ -40,18 +59,18 @@ class TtdDoVerification extends Model
         return Date::dateToMillisecond($date);
     }
 
-    public static function getFile($do_verification_id){
-        $filePath = public_path()."/storage/assets/ttd-do-verification/$do_verification_id.jpg";
+    public static function getFile($id){
+        $filePath = public_path()."/storage/assets/ttd-verification/$id.jpg";
         // if(!file_exists($filePath)){
-        $do_verification = TtdDoVerification::find($do_verification_id);
-        $ttd = public_path('storage/'.$do_verification->user->ttd);
+        $ttd_verification = self::find($id);
+        $ttd = public_path('storage/'.$ttd_verification->user->ttd);
         $qrValue = (env('APP_ENV') == 'local') ? env('NGROK_URL') : env('APP_URL');
 
-        $qrcode = QrCode::size(400)->format('png')->errorCorrection('H')->generate("$qrValue/signature/verified/$do_verification_id");
+        $qrcode = QrCode::size(400)->format('png')->errorCorrection('H')->generate("$qrValue/signature/verified/$id");
         $img_canvas = ImageManager::canvas(850,450);
 
-        $filePath = public_path()."/storage/assets/ttd-do-verification/$do_verification_id.jpg";
-        $output_file = "assets/ttd-do-verification/$do_verification_id.jpg";
+        $filePath = public_path()."/storage/assets/ttd-verification/$id.jpg";
+        $output_file = "assets/ttd-verification/$id.jpg";
         Storage::disk('public')->put($output_file, $qrcode);
         $img_canvas->insert(ImageManager::make($filePath), 'center', 199, 0); // move second image 400 px from left
         $img_canvas->insert(ImageManager::make($ttd)->resize(400, null), 'left',);

@@ -15,15 +15,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('sj_pengiriman_pps', function (Blueprint $table) {
-            $table->uuid('id')->primary();
             $table->string('ttd_supervisor_peminjam')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
         Schema::table('sj_pengiriman_pps', function (Blueprint $table) {
             $table->foreignUuid('surat_jalan_id')->constrained('surat_jalans')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('peminjaman_asal_id')->constrained('peminjamans')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('peminjaman_tujuan_id')->constrained('peminjamans')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('peminjaman_id')->constrained('peminjamans')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

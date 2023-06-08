@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Helpers\IDGenerator;
 use App\Models\AdminGudang;
 use App\Models\LogisticFirebase;
-use App\Models\TtdVerification;
 use App\Models\User;
 use App\Models\Barang;
 use App\Models\Proyek;
@@ -639,6 +638,5 @@ class DatabaseSeeder extends Seeder
             LogisticFirebase::setData($request);
         }
         IDGenerator::reorderAll();
-
     }
 }
