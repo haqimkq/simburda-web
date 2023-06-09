@@ -80,7 +80,7 @@ class TtdVerification extends Model
         if($sj->tipe == 'PENGIRIMAN_GUDANG_PROYEK' && $sj->sjPengirimanGp !=null){
             $asal = $sj->sjPengirimanGp->peminjaman->gudang->nama;
             $tujuan = $sj->sjPengirimanGp->peminjaman->menangani->proyek->nama_proyek;
-        }else if($sj->tipe == 'PENGEMBALIAN' && $sj->sjPengirimanGp!=null){
+        }else if($sj->tipe == 'PENGEMBALIAN' && $sj->sjPengembalian!=null){
             $asal = $sj->sjPengembalian->pengembalian->peminjaman->menangani->proyek->nama_proyek;
             $tujuan = $sj->sjPengembalian->pengembalian->peminjaman->gudang->nama;
         }

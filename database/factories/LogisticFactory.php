@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Helpers\IDGenerator;
 use App\Models\Logistic;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
