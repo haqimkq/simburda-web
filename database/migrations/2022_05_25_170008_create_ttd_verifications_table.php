@@ -14,14 +14,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('ttd_do_verifications', function (Blueprint $table) {
+        Schema::create('ttd_verifications', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->text('keterangan')->nullable();
+            $table->enum('tipe',['SURAT_JALAN','DELIVERY_ORDER']);
             $table->timestamps();
         });
-        Schema::table('ttd_do_verifications', function (Blueprint $table) {
+        Schema::table('ttd_verifications', function (Blueprint $table) {
             $table->foreignUuid('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-            // $table->foreignUuid('delivery_order_id')->constrained('delivery_orders')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -33,7 +33,7 @@ return new class extends Migration
     public function down()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        Schema::dropIfExists('ttd_sj_verifications');
+        Schema::dropIfExists('ttd_verifications');
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 };

@@ -13,6 +13,7 @@ use App\Models\Supervisor;
 use App\Models\SuratJalan;
 use App\Models\TtdDoVerification;
 use App\Models\TtdSjVerification;
+use App\Models\TtdVerification;
 use Illuminate\Support\Facades\Schema;
 
 class IDGenerator
@@ -123,21 +124,34 @@ class IDGenerator
                 $newCode = "$zeros$last_number$suffix";
                 $model::where('id', $data->id)->update([$column_name => $newCode]);
                 if($column_name == 'kode_do'){
-                    TtdDoVerification::where('id',$data->ttd)->update([
-                        'keterangan' => TtdDoVerification::generateKeterangan($data->purchasing_id, $newCode,$data->perusahaan->nama, $data->gudang->nama, $data->perihal, $data->untuk_perhatian),
+                    TtdVerification::where('id',$data->ttd)->update([
+                        'keterangan' => TtdVerification::generateKeteranganDeliveryOrder($data->purchasing_id, $newCode,$data->perusahaan->nama, $data->gudang->nama, $data->perihal, $data->untuk_perhatian),
                     ]);
                 }else if($column_name == 'kode_surat'){
                     $sj = SuratJalan::where('id', $data->id)->first();
-                    TtdSjVerification::where('id', $sj->ttd_admin)->update([
-                        'keterangan' => TtdSjVerification::generateKeterangan($sj->id,'ADMIN_GUDANG', $newCode),
+                    if($sj->ttd_admin!=null){
+                        TtdVerification::where('id', $sj->ttd_admin)->update([
+                            'keterangan' => TtdVerification::generateKeteranganSuratJalan($sj->id,'ADMIN_GUDANG', $newCode),
+                            'user_id' => $sj->adminGudang->id
+                        ]);
+                        TtdSjVerification::where('ttd_verification_id', $sj->ttd_supervisor)->update([
+                            'sebagai' => ($sj->sjPengirimanGp!=null) ? "PEMBERI" : "PENERIMA"
+                        ]);
+                    }
+                    if($sj->ttd_driver!=null)
+                    TtdVerification::where('id', $sj->ttd_driver)->update([
+                        'keterangan' => TtdVerification::generateKeteranganSuratJalan($sj->id,'LOGISTIC', $newCode),
+                        'user_id' => $sj->logistic->id
                     ]);
-                    TtdSjVerification::where('id', $sj->ttd_driver)->update([
-                        'keterangan' => TtdSjVerification::generateKeterangan($sj->id,'LOGISTIC', $newCode),
-                    ]);
-                    TtdSjVerification::where('id', $sj->ttd_supervisor)->update([
-                        'keterangan' => TtdSjVerification::generateKeterangan($sj->id,'SUPERVISOR', $newCode),
-                        'user_id' => ($sj->sjPengirimanGp!=null) ? $sj->sjPengirimanGp->peminjaman->menangani->supervisor->id : $sj->sjPengembalian->pengembalian->peminjaman->menangani->supervisor->id,
-                    ]);
+                    if($sj->ttd_supervisor!=null){
+                        TtdVerification::where('id', $sj->ttd_supervisor)->update([
+                            'keterangan' => TtdVerification::generateKeteranganSuratJalan($sj->id,'SUPERVISOR', $newCode),
+                            'user_id' => ($sj->sjPengirimanGp!=null) ? $sj->sjPengirimanGp->peminjaman->menangani->supervisor->id : $sj->sjPengembalian->pengembalian->peminjaman->menangani->supervisor->id,
+                        ]);
+                        TtdSjVerification::where('ttd_verification_id', $sj->ttd_supervisor)->update([
+                            'sebagai' => ($sj->sjPengirimanGp!=null) ? "PENERIMA" : "PEMBERI"
+                        ]);
+                    }
                 }
             }else{
                 if($key==0){

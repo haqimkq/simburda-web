@@ -16,7 +16,6 @@ class SjPengembalianFactory extends Factory
     public function definition()
     {
         return [
-            'id' => fake()->uuid(),
             // 'surat_jalan_id' => SuratJalan::where('tipe','PENGIRIMAN_GUDANG_PROYEK')->get()->random()->id,
             'surat_jalan_id' => SuratJalan::factory(),
             'pengembalian_id' => Pengembalian::factory(),

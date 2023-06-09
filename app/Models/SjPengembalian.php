@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Helpers\Date;
-use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,7 +11,6 @@ use Illuminate\Validation\Rule;
 
 class SjPengembalian extends Model
 {
-    use Uuids;
     use HasFactory;
     use SoftDeletes;
     protected $primaryKey = null;

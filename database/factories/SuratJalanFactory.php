@@ -6,6 +6,7 @@ use App\Helpers\IDGenerator;
 use App\Models\Kendaraan;
 use App\Models\SuratJalan;
 use App\Models\TtdSjVerification;
+use App\Models\TtdVerification;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -23,9 +24,6 @@ class SuratJalanFactory extends Factory
         $logistic = User::where('role', 'LOGISTIC')->get()->random()->id;
         $kendaraan = Kendaraan::get()->random()->id;
         $adminGudang = User::where('role', 'ADMIN_GUDANG')->get()->random()->id;
-        $ttdAdminGudang = fake()->imageUrl(640, 480, 'admin', true);
-        $ttdDriver = ($status!='MENUNGGU_KONFIRMASI_DRIVER') ? fake()->imageUrl(640, 480, 'driver', true) : NULL;
-        $ttdSupervisor = $status=='SELESAI' ? fake()->imageUrl(640, 480, 'supervisor', true) : NULL;
         $foto_bukti = $status=='SELESAI' ? 'https://picsum.photos/640/640?random='.mt_rand(1,92392) : NULL;
         if($status == 'SELESAI'){
             Kendaraan::where('id', $kendaraan)->update([
@@ -59,26 +57,35 @@ class SuratJalanFactory extends Factory
             Kendaraan::where('id', $attributes['kendaraan_id'])->update([
                 'logistic_id' => NULL
             ]);
-            $ttdAdminGudang = TtdSjVerification::create([
-                // 'keterangan' => TtdSjVerification::generateKeterangan($sj->id,'ADMIN_GUDANG'),
+            $ttdAdminGudang = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => $attributes['admin_gudang_id'],
-                'sebagai' => "PEMBERI",
-                'keterangan' => ""
+                'keterangan' => "",
+                'tipe' => "SURAT_JALAN"
             ]);
-            $ttdDriver = TtdSjVerification::create([
+            TtdSjVerification::create([
+                "ttd_verification_id" => $ttdAdminGudang->id,
+                'sebagai' => "PEMBERI",
+            ]);
+            $ttdDriver = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => $attributes['logistic_id'],
-                'sebagai' => "PEMBERI",
-                // 'keterangan' => TtdSjVerification::generateKeterangan($sj->id,'LOGISTIC'),
-                'keterangan' => ""
+                'keterangan' => "",
+                'tipe' => "SURAT_JALAN"
             ]);
-            $ttdSupervisor = TtdSjVerification::create([
+            TtdSjVerification::create([
+                "ttd_verification_id" => $ttdDriver->id,
+                'sebagai' => "PENGIRIM",
+            ]);
+            $ttdSupervisor = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => User::get()->random()->id,
-                'sebagai' => "PEMBERI",
-                // 'keterangan' => TtdSjVerification::generateKeterangan($sj->id,'SUPERVISOR')
-                'keterangan' => ""
+                'keterangan' => "",
+                'tipe' => "SURAT_JALAN"
+            ]);
+            TtdSjVerification::create([
+                "ttd_verification_id" => $ttdSupervisor->id,
+                'sebagai' => "PENERIMA",
             ]);
             return [
                 'status' => $status,
@@ -96,12 +103,15 @@ class SuratJalanFactory extends Factory
             $ttdDriver = NULL;
             $ttdSupervisor = NULL;
             $foto_bukti = NULL;
-            $ttdAdminGudang = TtdSjVerification::create([
+            $ttdAdminGudang = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => $attributes['admin_gudang_id'],
-                // 'keterangan' => TtdSjVerification::generateKeterangan($sj->id,'ADMIN_GUDANG'),
-                'sebagai' => "PEMBERI",
                 'keterangan' => "",
+                'tipe' => "SURAT_JALAN",
+            ]);
+            TtdSjVerification::create([
+                "ttd_verification_id" => $ttdAdminGudang->id,
+                'sebagai' => "PEMBERI",
             ]);
             Kendaraan::where('id', $attributes['kendaraan_id'])->update([
                 'logistic_id' => $attributes['logistic_id']
@@ -119,19 +129,25 @@ class SuratJalanFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             $status = 'DRIVER_DALAM_PERJALANAN';
-            $ttdAdminGudang = TtdSjVerification::create([
+            $ttdAdminGudang = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => $attributes['admin_gudang_id'],
-                // 'keterangan' => TtdSjVerification::generateKeterangan($sj->id,'ADMIN_GUDANG'),
                 'keterangan' => "",
+                'tipe' => "SURAT_JALAN",
+            ]);
+            TtdSjVerification::create([
+                "ttd_verification_id" => $ttdAdminGudang->id,
                 'sebagai' => "PEMBERI",
             ]);
-            $ttdDriver = TtdSjVerification::create([
+            $ttdDriver = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => $attributes['logistic_id'],
-                // 'keterangan' => TtdSjVerification::generateKeterangan($sj->id,'LOGISTIC'),
-                'sebagai' => "PENGIRIM",
                 'keterangan' => "",
+                'tipe' => "SURAT_JALAN",
+            ]);
+            TtdSjVerification::create([
+                "ttd_verification_id" => $ttdDriver->id,
+                'sebagai' => "PENGIRIM",
             ]);
             $ttdSupervisor = NULL;
             $foto_bukti = NULL;

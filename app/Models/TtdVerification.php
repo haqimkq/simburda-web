@@ -16,11 +16,6 @@ class TtdVerification extends Model
     use HasFactory;
     use Uuids;
     protected $guarded = ['id'];
-
-    public static $jenisSuratJalanPengirimanPP = "Surat Jalan Pengiriman Proyek-Proyek";
-    public static $jenisSuratJalanPengirimanGP = "Surat Jalan Pengiriman Gudang-Proyek";
-    public static $jenisSuratJalanPengembalian = "Surat Jalan Pengembalian";
-    public static $jenisDeliveryOrder = "Delivery Order";
     public function user(){
         return $this->belongsTo(User::class,'user_id');
     }
@@ -46,19 +41,56 @@ class TtdVerification extends Model
     {
         return Date::dateToMillisecond($date);
     }
-
+    public function getUpdatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
     public static function generateKeteranganDeliveryOrder($user_id, $kode, $perusahaan, $gudang, $perihal, $untuk_perhatian){
         $user = User::find($user_id);
         $roleLower = ucwords(strtolower(str_replace("_"," ",$user->role)));
         $result = "$user->nama|$roleLower|$perihal|$kode|$perusahaan|$untuk_perhatian|$gudang";
         return $result;
     }
-
-    public function getUpdatedAtAttribute($date)
-    {
-        return Date::dateToMillisecond($date);
+    public static function generateKeteranganSuratJalan($surat_jalan_id, $role=null, $newCode=null){
+        $sj = SuratJalan::where('id', $surat_jalan_id)->first();
+        $user = null;
+        $sebagai = null;
+        $asal = null;
+        $tujuan = null;
+        $kode_surat = $newCode ?? $sj->kode_surat;
+        if($role=='LOGISTIC'){
+            $user = $sj->logistic;
+            $sebagai = "PENGIRIM";
+        }else if($role=='SUPERVISOR'){
+            if($sj->sjPengirimanGp!=null){
+                $user=$sj->sjPengirimanGp->peminjaman->menangani->supervisor;
+                $sebagai = "PENERIMA";
+            }else if($sj->sjPengembalian!=null){
+                $user=$sj->sjPengembalian->pengembalian->peminjaman->menangani->supervisor;
+                $sebagai = "PEMBERI";
+            }
+        }else if($role=='ADMIN_GUDANG'){
+            $user = $sj->adminGudang;
+            if($sj->has('sjPengirimanGp')){
+                $sebagai = "PEMBERI";
+            }else if($sj->has('sjPengembalian')){
+                $sebagai = "PENERIMA";
+            }
+        }
+        if($sj->tipe == 'PENGIRIMAN_GUDANG_PROYEK' && $sj->sjPengirimanGp !=null){
+            $asal = $sj->sjPengirimanGp->peminjaman->gudang->nama;
+            $tujuan = $sj->sjPengirimanGp->peminjaman->menangani->proyek->nama_proyek;
+        }else if($sj->tipe == 'PENGEMBALIAN' && $sj->sjPengirimanGp!=null){
+            $asal = $sj->sjPengembalian->pengembalian->peminjaman->menangani->proyek->nama_proyek;
+            $tujuan = $sj->sjPengembalian->pengembalian->peminjaman->gudang->nama;
+        }
+        $sebagaiLower = ucfirst(strtolower($sebagai));
+        $roleLower = ucwords(strtolower(str_replace("_"," ",$user->role)));
+        $tipe = ucwords(strtolower(str_replace("_"," ",$sj->tipe)));
+        $result = "$user->nama|$roleLower|$tipe|$kode_surat|$sebagaiLower|$asal|$tujuan";
+        return $result;
+        // Ahmad Lutfi [LOGISTIC] telah menandatangani Pengiriman Gudang Proyek [00033/SJGP/MAP/PKO/V/2023] sebagai pengirim. Lokasi asal: Gudang Jakarta 1 Lokasi tujuan: Pembuatan Kantin Karyawan PIK Avenue Mall
     }
-
     public static function getFile($id){
         $filePath = public_path()."/storage/assets/ttd-verification/$id.jpg";
         // if(!file_exists($filePath)){

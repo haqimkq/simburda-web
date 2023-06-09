@@ -9,7 +9,6 @@ use App\Models\DeliveryOrder;
 use App\Models\Gudang;
 use App\Models\Kendaraan;
 use App\Models\Perusahaan;
-use App\Models\TtdDoVerification;
 use App\Models\TtdVerification;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -42,9 +41,10 @@ class DeliveryOrderFactory extends Factory
             ]);
         }
         $untuk_perhatian = fake()->name();
-        $ttd = TtdDoVerification::create([
+        $ttd = TtdVerification::create([
             'user_id' => $purchasing->id,
-            'keterangan' => TtdDoVerification::generateKeterangan($purchasing->id, "0",$perusahaan->nama, $gudang->nama, 'Delivery Order', $untuk_perhatian),
+            'keterangan' => TtdVerification::generateKeteranganDeliveryOrder($purchasing->id, "0",$perusahaan->nama, $gudang->nama, 'Delivery Order', $untuk_perhatian),
+            'tipe' => "DELIVERY_ORDER"
         ]);
         return [
             'id' => fake()->uuid(),
@@ -63,13 +63,4 @@ class DeliveryOrderFactory extends Factory
             'created_at' => $tgl_pengambilan
         ];
     }
-    // public function configure()
-    // {
-    //     return $this->afterCreating(function (DeliveryOrder $delivery_order) {
-    //         TtdDoVerification::factory()->state([
-    //             'user_id' => $delivery_order->purchasing_id,
-    //             'keterangan' => $delivery_order->purchasing_id,
-    //         ])->create();
-    //     });
-    // }
 }

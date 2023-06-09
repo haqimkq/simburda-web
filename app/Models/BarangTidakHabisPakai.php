@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BarangTidakHabisPakai extends Model
 {
-    use Uuids;
     use HasFactory;
     use SoftDeletes;
     protected $primaryKey = null;

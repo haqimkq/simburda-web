@@ -71,7 +71,7 @@ class SuratJalanController extends Controller
                 'status' => 'required|in:MENUNGGU_KONFIRMASI_DRIVER,DRIVER_DALAM_PERJALANAN,SELESAI',
             ]);
             $status = $request->query('status');
-            $size = $request->query('size') ?? 5;
+            $size = $request->query('size') ?? 10;
             $date_start = ($request->query('date_start')) ? date($request->query('date_start') . " 00:00:00") : null;
             $date_end = ($request->query('date_end')) ? date($request->query('date_end') . " 23:59:59") : null;
             

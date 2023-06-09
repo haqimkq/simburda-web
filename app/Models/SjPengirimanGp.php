@@ -12,7 +12,6 @@ use Illuminate\Validation\Rule;
 
 class SjPengirimanGp extends Model
 {
-    use Uuids;
     use HasFactory;
     use SoftDeletes;
     protected $primaryKey = null;

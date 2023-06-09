@@ -13,7 +13,6 @@ use Illuminate\Validation\ValidationException;
 
 class SjPengirimanPp extends Model
 {
-    use Uuids;
     use HasFactory;
     use SoftDeletes;
     protected $primaryKey = null;

@@ -18,7 +18,6 @@ class BarangTidakHabisPakaiFactory extends Factory
      */
     public function definition()
     {
-        $id = fake()->uuid();
         $nomor_seri = 1;
         $kondisi = fake()->randomElement(['BARU', 'BEKAS']);
         $keterangan = fake()->randomElement(['OK', 'Butuh Service']);
@@ -27,7 +26,6 @@ class BarangTidakHabisPakaiFactory extends Factory
         // $output_file = "assets/qr-code/$id.png";
         // Storage::disk('public')->put($output_file, $image);
         return [
-            'id' => $id,
             // 'qrcode' => $output_file,
             'keterangan' => $keterangan,
             'kondisi' => $kondisi,

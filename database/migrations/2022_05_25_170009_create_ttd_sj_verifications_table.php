@@ -15,14 +15,11 @@ return new class extends Migration
     public function up()
     {
         Schema::create('ttd_sj_verifications', function (Blueprint $table) {
-            $table->uuid('id')->primary();
             $table->enum('sebagai', ['PEMBERI', 'PENGIRIM','PENERIMA']);
-            $table->text('keterangan')->nullable();
             $table->timestamps();
         });
         Schema::table('ttd_sj_verifications', function (Blueprint $table) {
-            $table->foreignUuid('user_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
-            // $table->foreignUuid('surat_jalan_id')->constrained('surat_jalans')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('ttd_verification_id')->constrained('ttd_verifications')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

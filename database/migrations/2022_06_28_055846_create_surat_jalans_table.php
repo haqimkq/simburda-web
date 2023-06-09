@@ -27,9 +27,9 @@ return new class extends Migration
             $table->softDeletes();
         });
         Schema::table('surat_jalans', function (Blueprint $table) {
-            $table->foreignUuid('ttd_admin')->nullable()->constrained('ttd_sj_verifications')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('ttd_driver')->nullable()->constrained('ttd_sj_verifications')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('ttd_supervisor')->nullable()->constrained('ttd_sj_verifications')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('ttd_admin')->nullable()->constrained('ttd_verifications')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('ttd_driver')->nullable()->constrained('ttd_verifications')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('ttd_supervisor')->nullable()->constrained('ttd_verifications')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('logistic_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('admin_gudang_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('kendaraan_id')->nullable()->constrained('kendaraans')->onUpdate('cascade')->onDelete('cascade');

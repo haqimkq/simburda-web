@@ -16,7 +16,6 @@ class SjPengirimanGpFactory extends Factory
     public function definition()
     {
         return [
-            'id' => fake()->uuid(),
             'surat_jalan_id' => SuratJalan::factory(),
             'peminjaman_id' => Peminjaman::factory()
         ];
