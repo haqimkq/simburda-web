@@ -92,22 +92,34 @@ class TtdVerification extends Model
         // Ahmad Lutfi [LOGISTIC] telah menandatangani Pengiriman Gudang Proyek [00033/SJGP/MAP/PKO/V/2023] sebagai pengirim. Lokasi asal: Gudang Jakarta 1 Lokasi tujuan: Pembuatan Kantin Karyawan PIK Avenue Mall
     }
     public static function getFile($id){
-        $filePath = public_path()."/storage/assets/ttd-verification/$id.jpg";
+        $filePath = public_path()."/storage/assets/ttd-verification/$id.png";
         // if(!file_exists($filePath)){
         $ttd_verification = self::find($id);
         $ttd = public_path('storage/'.$ttd_verification->user->ttd);
         $qrValue = (env('APP_ENV') == 'local') ? env('NGROK_URL') : env('APP_URL');
-
-        $qrcode = QrCode::size(400)->format('png')->errorCorrection('H')->generate("$qrValue/signature/verified/$id");
-        $img_canvas = ImageManager::canvas(850,450);
-
-        $filePath = public_path()."/storage/assets/ttd-verification/$id.jpg";
-        $output_file = "assets/ttd-verification/$id.jpg";
+        $qrcode = ($ttd_verification->tipe == 'SURAT_JALAN') 
+        ? QrCode::size(400)->format('png')->errorCorrection('H')->generate("$qrValue/signature/verified-sj/$id") 
+        : QrCode::size(400)->format('png')->errorCorrection('H')->generate("$qrValue/signature/verified-do/$id");
+        $img_canvas = ImageManager::canvas(850,450, 'rgba(0, 0, 0, 0)');
+        $output_file = "assets/ttd-verification/$id.png";
         Storage::disk('public')->put($output_file, $qrcode);
         $img_canvas->insert(ImageManager::make($filePath), 'center', 199, 0); // move second image 400 px from left
         $img_canvas->insert(ImageManager::make($ttd)->resize(400, null), 'left',);
         $img_canvas->save($filePath, 100);
         // }
+        return $filePath;
+    }
+
+    public static function getQrCodeFile($id){
+        $filePath = public_path()."/storage/assets/ttd-verification/$id.png";
+        // if(!file_exists($filePath)){
+        $ttd_verification = self::find($id);
+        $qrValue = (env('APP_ENV') == 'local') ? env('NGROK_URL') : env('APP_URL');
+        $qrcode = ($ttd_verification->tipe == 'SURAT_JALAN') 
+        ? QrCode::size(400)->format('png')->errorCorrection('H')->generate("$qrValue/signature/verified-sj/$id") 
+        : QrCode::size(400)->format('png')->errorCorrection('H')->generate("$qrValue/signature/verified-do/$id");
+        $output_file = "assets/ttd-verification/$id.png";
+        Storage::disk('public')->put($output_file, $qrcode);
         return $filePath;
     }
 }

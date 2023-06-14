@@ -116,6 +116,9 @@
 		.float-right {
   float: right !important;
 }
+		.float-left {
+  float: left !important;
+}
 		.text-center {
 			text-align: center !important;
 		}
@@ -180,6 +183,12 @@
 		}
 		.flex {
 			display: flex !important;
+		}
+		.inline-block{
+			display: inline-block !important;
+		}
+		.w-28 {
+			width: 7rem/* 112px */ !important;
 		}
 		.w-40 {
 			width: 10rem/* 160px */ !important;
@@ -323,17 +332,32 @@
 				</tbody>
 			</table>
 			<p class="mb-5">Atas perhatiannya kami ucapkan terimakasih <br>Mengetahui,</p>
-			<div class="w-full ">
+			<div class="w-full">
 					<div class="float-right">
 						<p class="text-center mb-1">Hormat Kami, <br><span class="font-bold">PT. BURDA CONTRACO</span></p>
-						@if ($ttdPath)
-						<div class="bg-center bg-no-repeat bg-contain" style="background-image: url('data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/stempel-burda.png'))) }}')">
-							<img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path($ttdPath)))}}" alt="" class=" self-center w-40 my-3">
-						</div>
-						@else
-						<div class="bg-center bg-no-repeat bg-contain w-40 h-24" style="background-image: url('data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/stempel-burda.png'))) }}')">
-						</div>
-						@endif
+							@if ($ttdPath)
+							<table class="table-auto mb-5 w-full">
+								<tbody>
+									<tr>
+										<td>
+											<div class="bg-center bg-no-repeat bg-contain" style="background-image: url('data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/stempel-burda.png'))) }}')">
+												<img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/'.$deliveryOrder->purchasing->ttd)))}}" alt="" class=" self-center w-40 my-3">
+											</div>
+										</td>
+										@if ($deliveryOrder->kendaraan)
+											<td>							
+												<img src="data:image/png;base64,{{ base64_encode(file_get_contents($ttdPath))}}" alt="" class=" self-center w-28 my-3">
+											</td>
+										@else
+											<td class="text-red-600">: Admin Gudang belum memilih kendaraan</td>
+										@endif
+									</tr>
+								</tbody>
+							</table>
+							@else
+							<div class="bg-center bg-no-repeat bg-contain w-40 h-24" style="background-image: url('data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/stempel-burda.png'))) }}')">
+							</div>
+							@endif
 						<p class="text-center">{{$deliveryOrder->purchasing->nama}}<br><span>Purchasing</span><br>{{$deliveryOrder->purchasing->no_hp}}</p>
 					</div>
 			</div>

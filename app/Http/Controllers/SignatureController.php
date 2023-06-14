@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TtdDoVerification;
+use App\Models\TtdVerification;
 use App\Models\TtdSjVerification;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -83,17 +83,17 @@ class SignatureController extends Controller
     }
     public function viewTTDDeliveryOrder($id)
     {
-        $do_verification = TtdDoVerification::find($id);
+        $do_verification = TtdVerification::find($id);
         if ($do_verification == null) {
             abort(404);
         }
-        $filePath = TtdDoVerification::getFile($id);
+        $filePath = TtdVerification::getFile($id);
         return response()->file($filePath);
     }
 
     public function verifiedTTDSuratJalan($id)
     {
-        $do_verification = TtdDoVerification::find($id);
+        $do_verification = TtdVerification::find($id);
         if ($do_verification == null) {
             abort(404);
         }
@@ -111,7 +111,7 @@ class SignatureController extends Controller
     }
     public function verifiedTTDDeliveryOrder($id)
     {
-        $do_verification = TtdDoVerification::find($id);
+        $do_verification = TtdVerification::find($id);
         if ($do_verification == null) {
             abort(404);
         }

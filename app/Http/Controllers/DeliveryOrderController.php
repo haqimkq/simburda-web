@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AksesBarang;
 use App\Models\DeliveryOrder;
 use App\Models\Kendaraan;
+use App\Models\TtdVerification;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Http\Request;
@@ -115,7 +116,8 @@ class DeliveryOrderController extends Controller
         if (!Gate::allows('cetak-download-do', $deliveryOrder)) {
             abort(403);
         }
-        $ttdPath = ($deliveryOrder->purchasing->ttd) ? Storage::url($deliveryOrder->purchasing->ttd) : NULL;
+        // $ttdPath = ($deliveryOrder->purchasing->ttd) ? Storage::url($deliveryOrder->purchasing->ttd) : NULL;
+        $ttdPath = ($deliveryOrder->ttd) ? TtdVerification::getQrCodeFile($deliveryOrder->ttd) : NULL;
         return view('deliveryorder.cetak',[
             "deliveryOrder" => $deliveryOrder,
             "ttdPath" => $ttdPath
@@ -128,7 +130,7 @@ class DeliveryOrderController extends Controller
         if (!Gate::allows('cetak-download-do', $deliveryOrder)) {
             abort(403);
         }
-        $ttdPath = ($deliveryOrder->purchasing->ttd) ? Storage::url($deliveryOrder->purchasing->ttd) : NULL;
+        $ttdPath = ($deliveryOrder->ttd) ? TtdVerification::getQrCodeFile($deliveryOrder->ttd) : NULL;
         $pdf = FacadePdf::loadView('deliveryorder.downloadPDF', [
             "deliveryOrder" => $deliveryOrder,
             "ttdPath" =>$ttdPath
