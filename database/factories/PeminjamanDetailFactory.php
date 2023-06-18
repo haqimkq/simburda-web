@@ -36,24 +36,24 @@ class PeminjamanDetailFactory extends Factory
         if($barang->jenis == 'TIDAK_HABIS_PAKAI') {
             $satuan = 'Unit';
             $jumlah = 1;
-            if($peminjaman->status == "MENUNGGU_PENGIRIMAN" || $peminjaman->status == "SEDANG_DIKIRIM" || $peminjaman->status == "DIPINJAM"){
+            if($peminjaman->status == "DIPINJAM"){
                 BarangTidakHabisPakai::where('barang_id', $barang->id)->update(['peminjaman_id' => $peminjaman->id]);
                 $status = "DIGUNAKAN";
             }else if($peminjaman->status == "SELESAI"){
                 $status = "DIKEMBALIKAN";
                 BarangTidakHabisPakai::where('barang_id', $barang->id)->update(['peminjaman_id' => NULL]);
-            }else if($peminjaman->status == "MENUNGGU_AKSES"){
+            }else if($peminjaman->status == "MENUNGGU_AKSES" || $peminjaman->status == "MENUNGGU_SURAT_JALAN" || $peminjaman->status == "MENUNGGU_PENGIRIMAN" || $peminjaman->status == "SEDANG_DIKIRIM"){
                 $status = "MENUNGGU_AKSES";
             }
         }else{
             $barang_habis_pakai = BarangHabisPakai::where('barang_id', $barang->id)->first();
             $satuan = $barang_habis_pakai->satuan;
             $jumlah = fake()->numberBetween(1, $barang_habis_pakai->jumlah);
-            if($peminjaman->status == "MENUNGGU_PENGIRIMAN" || $peminjaman->status == "SEDANG_DIKIRIM" || $peminjaman->status == "DIPINJAM"){
+            if($peminjaman->status == "DIPINJAM"){
                 $status = "DIGUNAKAN";
             }else if($peminjaman->status == "SELESAI"){
                 $status = "DIKEMBALIKAN";
-            }else if($peminjaman->status == "MENUNGGU_AKSES"){
+            }else if($peminjaman->status == "MENUNGGU_AKSES" || $peminjaman->status == "MENUNGGU_SURAT_JALAN" || $peminjaman->status == "MENUNGGU_PENGIRIMAN" || $peminjaman->status == "SEDANG_DIKIRIM"){
                 $status = "MENUNGGU_AKSES";
             }
         }
