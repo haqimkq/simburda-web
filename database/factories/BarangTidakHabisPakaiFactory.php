@@ -30,7 +30,8 @@ class BarangTidakHabisPakaiFactory extends Factory
             'keterangan' => $keterangan,
             'kondisi' => $kondisi,
             'nomor_seri' => $nomor_seri,
-            'barang_id' => Barang::factory(),
+            'barang_id' => Barang::factory()->state(['jenis' => 'TIDAK_HABIS_PAKAI']),
+            
         ];
     }
     public function notRandom()

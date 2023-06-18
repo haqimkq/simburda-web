@@ -147,10 +147,10 @@ class SuratJalanController extends Controller
             $nama_gudang = null;
 
             if($tipe=='PENGIRIMAN_PROYEK_PROYEK'){
-                $alamat_proyek_asal = $response->$sj_combine->peminjamanAsal->menangani->proyek->alamat;
-                $foto_proyek_asal = $response->$sj_combine->peminjamanAsal->menangani->proyek->foto;
-                $nama_proyek_asal = $response->$sj_combine->peminjamanAsal->menangani->proyek->nama_proyek;
-                $coordinate_proyek_asal = $response->$sj_combine->peminjamanAsal->menangani->proyek->latitude . "|" . $response->$sj_combine->peminjamanAsal->menangani->proyek->longitude;
+                $alamat_proyek_asal = $response->$sj_combine->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->alamat;
+                $foto_proyek_asal = $response->$sj_combine->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->foto;
+                $nama_proyek_asal = $response->$sj_combine->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->nama_proyek;
+                $coordinate_proyek_asal = $response->$sj_combine->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->latitude . "|" . $response->$sj_combine->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->longitude;
                 $ttd_supervisor_peminjam = $response->$sj_combine->ttd_supervisor_peminjam;
                 $tempat_asal = [
                     'nama' => $nama_proyek_asal,

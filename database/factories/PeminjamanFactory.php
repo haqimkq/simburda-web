@@ -97,7 +97,7 @@ class PeminjamanFactory extends Factory
                         'surat_jalan_id' => $surat_jalan->id,
                         'peminjaman_id' => $peminjaman->id,
                         'created_at' => $created_at
-                    ];
+                    ]; 
                 }))->create();
                 $pengembalian_status = fake()->randomElement(['MENUNGGU_SURAT_JALAN','MENUNGGU_PENGEMBALIAN', 'SEDANG_DIKEMBALIKAN', 'SELESAI']);
                 if($pengembalian_status == 'SEDANG_DIKEMBALIKAN'){

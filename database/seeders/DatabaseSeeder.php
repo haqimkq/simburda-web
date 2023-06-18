@@ -326,6 +326,7 @@ class DatabaseSeeder extends Seeder
                     'nama' => 'Generator Las',
                 ],
             ))->tidakHabisPakai()->create();
+
         Barang::factory(40)->habisPakai()->create();
 
         Proyek::factory()->state([

@@ -22,7 +22,7 @@ class BarangHabisPakaiFactory extends Factory
             'ukuran' => $ukuran,
             'satuan' => $satuan,
             'jumlah' => $jumlah,
-            'barang_id' => Barang::factory(),
+            'barang_id' => Barang::factory()->state(['jenis' => 'HABIS_PAKAI']),
         ];
     }
 }

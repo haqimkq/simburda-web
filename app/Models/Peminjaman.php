@@ -63,6 +63,7 @@ class Peminjaman extends Model
                     $barang['merk'] = $pd->barang->merk;
                     $barang['jumlah_satuan'] = $pd->jumlah_satuan;
                     if($tipe_barang == 'HABIS_PAKAI') $barang['ukuran'] = $pd->barang->barangHabisPakai->ukuran;
+                    if($tipe_barang == 'TIDAK_HABIS_PAKAI') $barang['nomor_seri'] = $pd->barang->barangTidakHabisPakai->nomor_seri;
                     $result->push($barang);
                 }
             }else{
@@ -72,6 +73,7 @@ class Peminjaman extends Model
                 $barang['merk'] = $pd->barang->merk;
                 $barang['jumlah_satuan'] = $pd->jumlah_satuan;
                 if($tipe_barang == 'HABIS_PAKAI') $barang['ukuran'] = $pd->barang->barangHabisPakai->ukuran;
+                if($tipe_barang == 'TIDAK_HABIS_PAKAI') $barang['nomor_seri'] = $pd->barang->barangTidakHabisPakai->nomor_seri;
                 $result->push($barang);
             }
         }
