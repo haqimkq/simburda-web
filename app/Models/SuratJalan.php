@@ -155,88 +155,188 @@ class SuratJalan extends Model
         self::validateCreate($request);
     }
 
-    public static function getAllSuratJalanByUser($user,$tipe, $status, $size=10, $date_start=null, $date_end=null, $srch=null){
+    public static function getAllSuratJalanByUser($with_total, $user,$tipe, $status, $size=10, $date_start=null, $date_end=null, $srch=null){
         $result = collect();
         // $date_start = $date_s ?? date('Y-m-d 00:00:00', strtotime("-1 month"));
         // $date_end = $date_e ?? date("Y-m-d 23:59:59");
         if($tipe == 'PENGIRIMAN_GUDANG_PROYEK') $tipeRelasi = 'sjPengirimanGp';
         else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK') $tipeRelasi = 'sjPengirimanPp';
-        else $tipeRelasi = 'sjPengembalian';
-        
-        $response=SuratJalan::where('tipe', $tipe);
+        else if($tipe == 'PENGEMBALIAN') $tipeRelasi = 'sjPengembalian';
+
+        if ($tipe!='all') $response= SuratJalan::where('tipe', $tipe);
 
         if($status=='active') $response->where('status', '!=', 'SELESAI');
-        else $response->where('status', $status);
+        else if($status=='DRIVER_DALAM_PERJALANAN' && $tipe=='all') {
+            $response_sj_pp=SuratJalan::where('status', 'DRIVER_DALAM_PERJALANAN');
+            $response=SuratJalan::where('status', 'DRIVER_DALAM_PERJALANAN');
+            $response_sj_p=SuratJalan::where('status', 'DRIVER_DALAM_PERJALANAN');
+        }
+        else if($tipe!='all') $response->where('status', $status);
 
         if($date_start!=null && $date_end!=null) $response->whereBetween('updated_at', [$date_start, $date_end]);
         $response->where('kode_surat', 'LIKE', "%$srch%");
 
         if($user->role == 'ADMIN_GUDANG') {
-            $surat_jalan = $response->has($tipeRelasi)->where('admin_gudang_id', $user->id)->paginate($size)->withQueryString();
-            if($tipe == 'PENGIRIMAN_GUDANG_PROYEK'){
+            if($tipe != 'all'){
+                $surat_jalan = ($size!='all') ? 
+                $response->has($tipeRelasi)->where('admin_gudang_id', $user->id)->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->where('admin_gudang_id', $user->id)->get();
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
                 }
-            }else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK'){
+            }else if($tipe=='all'){
+                $surat_jalan = ($size!='all') ? 
+                $response->has('sjPengirimanGp')->where('admin_gudang_id', $user->id)->paginate($size)->withQueryString()
+                : $response->has('sjPengirimanGp')->where('admin_gudang_id', $user->id)->get();
                 foreach($surat_jalan as $sj){
-                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengirimanGp', 'peminjaman'));
                 }
-            }else{
+                $surat_jalan = ($size!='all') ? 
+                $response_sj_pp->has('sjPengirimanPp')->where('admin_gudang_id', $user->id)->paginate($size)->withQueryString()
+                : $response_sj_pp->has('sjPengirimanPp')->where('admin_gudang_id', $user->id)->get();
                 foreach($surat_jalan as $sj){
-                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengirimanPp', 'peminjaman'));
+                }
+                $surat_jalan = ($size!='all') ? 
+                $response->has('sjPengembalian')->where('admin_gudang_id', $user->id)->paginate($size)->withQueryString()
+                : $response->has('sjPengembalian')->where('admin_gudang_id', $user->id)->get();
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengembalian', 'peminjaman'));
                 }
             }
         }else if($user->role == 'LOGISTIC') {
-            $surat_jalan = $response->has($tipeRelasi)->where('logistic_id', $user->id)->paginate($size)->withQueryString();
-            if($tipe == 'PENGIRIMAN_GUDANG_PROYEK'){
+            if($tipe != 'all'){
+                $surat_jalan = ($size!='all') ? 
+                $response->has($tipeRelasi)->where('logistic_id', $user->id)->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->where('logistic_id', $user->id)->get();
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
                 }
-            }else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK'){
+            }else if($tipe == 'all'){
+                $surat_jalan = ($size!='all') ? 
+                $response_sj_p->has('sjPengembalian')->where('logistic_id', $user->id)->paginate($size)->withQueryString()
+                : $response_sj_p->has('sjPengembalian')->where('logistic_id', $user->id)->get();
                 foreach($surat_jalan as $sj){
-                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengembalian', 'peminjaman'));
                 }
-            }else{
+                $surat_jalan = ($size!='all') ? 
+                $response->has('sjPengirimanGp')->where('logistic_id', $user->id)->paginate($size)->withQueryString()
+                : $response->has('sjPengirimanGp')->where('logistic_id', $user->id)->get();
                 foreach($surat_jalan as $sj){
-                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengirimanGp', 'peminjaman'));
+                }
+                $surat_jalan = ($size!='all') ? 
+                $response_sj_pp->has('sjPengirimanPp')->where('logistic_id', $user->id)->paginate($size)->withQueryString()
+                : $response_sj_pp->has('sjPengirimanPp')->where('logistic_id', $user->id)->get();
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengirimanPp', 'peminjaman'));
                 }
             }
         }else if($user->role == 'SUPERVISOR'){
             if($tipe == 'PENGIRIMAN_GUDANG_PROYEK'){
-                $surat_jalan = $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString();
+                $surat_jalan = ($size!='all') ? 
+                $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjaman.menangani.supervisor', 'id', $user->id)->get();
+                
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
                 }
             }else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK'){
-                $surat_jalan = $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString();
+                $surat_jalan = ($size!='all') ? 
+                $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjaman.menangani.supervisor', 'id', $user->id)->get();
+                
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
                 }
-            }else{
-                $surat_jalan = $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString();
+            }else if($tipe=='PENGEMBALIAN'){
+                $surat_jalan = ($size!='all') ? 
+                $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.supervisor', 'id', $user->id)->get();
+                
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
+                }
+            }else if($tipe=='all'){
+                $surat_jalan = ($size!='all') ? 
+                $response_sj_p->has('sjPengembalian')->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString()
+                : $response_sj_p->has('sjPengembalian')->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.supervisor', 'id', $user->id)->get();
+                
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
+                }
+
+                $surat_jalan = ($size!='all') ? 
+                $response_sj_pp->has('sjPengirimanPp')->whereRelation('sjPengirimanPp.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString()
+                : $response_sj_pp->has('sjPengirimanPp')->whereRelation('sjPengirimanPp.peminjaman.menangani.supervisor', 'id', $user->id)->get();
+                
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengirimanPp', 'peminjaman'));
+                }
+
+                $surat_jalan = ($size!='all') ? 
+                $response->has('sjPengirimanGp')->whereRelation('sjPengirimanGp.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString()
+                : $response->has('sjPengirimanGp')->whereRelation('sjPengirimanGp.peminjaman.menangani.supervisor', 'id', $user->id)->get();
+                
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengirimanGp', 'peminjaman'));
                 }
             }
         }else if($user->role == 'PROJECT_MANAGER'){
             if($tipe == 'PENGIRIMAN_GUDANG_PROYEK'){
-                $surat_jalan = $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString();
+                $surat_jalan = ($size!='all') ? 
+                $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->get();
+                
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
                 }
             }else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK'){
-                $surat_jalan = $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString();
+                $surat_jalan = ($size!='all') ? 
+                $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->get();
+                
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
                 }
-            }else{
-                $surat_jalan = $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString();
+            }else if($tipe=='PENGEMBALIAN'){
+                $surat_jalan = ($size!='all') ? 
+                $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->get();
+                
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, $tipeRelasi, 'peminjaman'));
+                }
+            }else if($tipe=='all'){
+                $surat_jalan = ($size!='all') ? 
+                $response->has('sjPengirimanGp')->whereRelation('sjPengirimanGp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString()
+                : $response->has('sjPengirimanGp')->whereRelation('sjPengirimanGp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->get();
+                
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengirimanGp', 'peminjaman'));
+                }
+
+                $surat_jalan = ($size!='all') ? 
+                $response_sj_pp->has('sjPengirimanPp')->whereRelation('sjPengirimanPp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString()
+                : $response_sj_pp->has('sjPengirimanPp')->whereRelation('sjPengirimanPp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->get();
+                
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengirimanPp', 'peminjaman'));
+                }
+
+                $surat_jalan = ($size!='all') ? 
+                $response_sj_p->has('sjPengembalian')->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString()
+                : $response_sj_p->has('sjPengembalian')->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->get();
+                
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($user->role, $sj, 'sjPengembalian', 'peminjaman'));
                 }
             }
         }
-        return $result;
+        $final_result = collect();
+        $final_result['surat_jalan'] = $result;
+        if($with_total) $final_result['count'] = $surat_jalan->total();
+        return $final_result;
     }
     public static function getSimpleDataSuratJalanByUser($user_role,$sj, $tipe, $relasiPeminjamanAsal){
         $data = collect();
@@ -273,22 +373,22 @@ class SuratJalan extends Model
         $data['id'] = $sj->id;
         $data['kode_surat'] = $sj->kode_surat;
         $data['status'] = $sj->status;
+        $data['tipe'] = $sj->tipe;
         $data['updated_at'] = $sj->updated_at;
-        $data['nama_project_manager'] = ($user_role == 'SUPERVISOR') ? $nama_project_manager : null;
-        $data['foto_project_manager'] = ($user_role == 'SUPERVISOR') ? $foto_project_manager : null;
-        $data['nama_admin_gudang'] = ($user_role == 'PROJECT_MANAGER') ? $nama_admin_gudang : null;
-        $data['foto_admin_gudang'] = ($user_role == 'PROJECT_MANAGER') ? $foto_admin_gudang : null;
+        $data['nama_project_manager'] = $nama_project_manager;
+        $data['foto_project_manager'] = $foto_project_manager;
+        $data['nama_admin_gudang'] = $nama_admin_gudang;
+        $data['foto_admin_gudang'] = $foto_admin_gudang;
         $data['nama_driver'] = $nama_driver;
         $data['foto_driver'] = $foto_driver;
         $data['nama_supervisor'] = $nama_supervisor;
-        $data['foto_supervisor'] = $foto_supervisor;
+        $data['foto_supervisor'] = $foto_supervisor; 
         $data['nama_tempat_asal'] = ($tipe!='sjPengembalian') ? $nama_tempat_asal : $nama_tempat_tujuan;
         $data['alamat_tempat_asal'] = ($tipe!='sjPengembalian') ? $alamat_tempat_asal : $alamat_tempat_tujuan;
         $data['coordinate_tempat_asal'] = ($tipe!='sjPengembalian') ? $coordinate_tempat_asal : $coordinate_tempat_tujuan;
         $data['nama_tempat_tujuan'] = ($tipe!='sjPengembalian') ? $nama_tempat_tujuan : $nama_tempat_asal;
         $data['alamat_tempat_tujuan'] = ($tipe!='sjPengembalian') ? $alamat_tempat_tujuan : $alamat_tempat_asal;
         $data['coordinate_tempat_tujuan'] = ($tipe!='sjPengembalian') ? $coordinate_tempat_tujuan: $coordinate_tempat_asal;
-        
         return $data;
     }
 

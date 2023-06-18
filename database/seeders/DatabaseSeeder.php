@@ -551,7 +551,7 @@ class DatabaseSeeder extends Seeder
             ],
         ))->tronton()->create();
 
-        User::factory(20)->state([
+        User::factory(2)->state([
             'role' => 'SUPERVISOR'
         ])->has(Supervisor::factory()->state(function (array $attributes, User $user){
             return ['user_id' => $user->id];
@@ -559,26 +559,26 @@ class DatabaseSeeder extends Seeder
 
         Menangani::factory(35)->create();
         
-        User::factory(20)->state([
+        User::factory(2)->state([
             'role' => 'LOGISTIC'
         ])->has(Logistic::factory()->state(function (array $attributes, User $user){
             return ['user_id' => $user->id];
         }))->create();
 
-        User::factory(20)->state([
+        User::factory(2)->state([
             'role' => 'PROJECT_MANAGER'
         ])->has(ProjectManager::factory()->state(function (array $attributes, User $user){
             return ['user_id' => $user->id];
         }))->create();
 
-        User::factory(20)->state([
+        User::factory(2)->state([
             'role' => 'PURCHASING',
             'ttd' => 'assets/ttd/83719273uawey02938he.png'
         ])->has(Purchasing::factory()->state(function (array $attributes, User $user){
             return ['user_id' => $user->id];
         }))->create();
 
-        User::factory(20)->state([
+        User::factory(2)->state([
             'role' => 'ADMIN_GUDANG'
         ])->has(AdminGudang::factory()->state(function (array $attributes, User $user){
             return ['user_id' => $user->id];

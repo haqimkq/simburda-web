@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('pengembalians', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('kode_pengembalian');
-            $table->enum('status',['MENUNGGU_PENGEMBALIAN', 'SEDANG_DIKEMBALIKAN', 'SELESAI'])->default('MENUNGGU_PENGEMBALIAN');
+            $table->enum('status',['MENUNGGU_SURAT_JALAN','MENUNGGU_PENGEMBALIAN', 'SEDANG_DIKEMBALIKAN', 'SELESAI'])->default('MENUNGGU_SURAT_JALAN');
             $table->timestamps();
             $table->softDeletes();
         });

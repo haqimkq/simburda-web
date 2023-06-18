@@ -78,28 +78,36 @@ class SuratJalanController extends Controller
             $tipe = $request->query('tipe');
             $search = $request->query('search') ?? null;
 
-            $response = SuratJalan::getAllSuratJalanByUser($user, $tipe, $status, $size, $date_start, $date_end, $search);
+            $response = SuratJalan::getAllSuratJalanByUser(false, $user, $tipe, $status, $size, $date_start, $date_end, $search);
 
-            $message = ($response->isEmpty()) ? 'Tidak ada surat jalan' : 'Berhasil Mendapatkan Surat Jalan';
-            return ResponseFormatter::success('surat_jalan', $response,$message);
+            $message = ($response['surat_jalan']->isEmpty()) ? 'Tidak ada surat jalan' : 'Berhasil Mendapatkan Surat Jalan';
+            return ResponseFormatter::success('surat_jalan', $response['surat_jalan'],$message);
         }catch(Exception $e){
             return ResponseFormatter::error("Gagal Mendapatkan Surat Jalan: ". $e->getMessage());
+        }
+    }
+    public function getAllSuratJalanDalamPerjalananByUser(Request $request){
+        try{
+            $user = $request->user();
+            $response = SuratJalan::getAllSuratJalanByUser(false, $user, 'all', 'DRIVER_DALAM_PERJALANAN', 'all');
+
+            $message = ($response['surat_jalan']->isEmpty()) ? 'Tidak ada surat jalan dalam perjalanan' : 'Berhasil Mendapatkan Surat Jalan Dalam Perjalanan';
+            return ResponseFormatter::success('surat_jalan', $response['surat_jalan'],$message);
+        }catch(Exception $e){
+            return ResponseFormatter::error("Gagal Mendapatkan Surat Jalan Dalam Perjalanan: ". $e->getMessage());
         }
     }
     public function getSomeActiveSuratJalanByUser(Request $request){
         try{
             $user = $request->user();
-            
             $request->validate([
                 'tipe' => 'required|in:PENGIRIMAN_GUDANG_PROYEK,PENGIRIMAN_PROYEK_PROYEK,PENGEMBALIAN',
             ]);
             $size = $request->query('size') ?? 5;
             $tipe = $request->query('tipe');
-
-            $response = SuratJalan::getAllSuratJalanByUser($user, $tipe, 'active', $size);
-
-            $message = ($response->isEmpty()) ? 'Tidak ada surat jalan' : 'Berhasil Mendapatkan Surat Jalan';
-            return ResponseFormatter::success('surat_jalan', $response,$message);
+            $response = SuratJalan::getAllSuratJalanByUser(true, $user, $tipe, 'active', $size);
+            $message = ($response['surat_jalan']->isEmpty()) ? 'Tidak ada surat jalan' : 'Berhasil Mendapatkan Surat Jalan';
+            return ResponseFormatter::success('data', $response,$message);
         }catch(Exception $e){
             return ResponseFormatter::error("Gagal Mendapatkan Surat Jalan: ". $e->getMessage());
         }

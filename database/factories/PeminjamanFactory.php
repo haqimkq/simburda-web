@@ -40,7 +40,7 @@ class PeminjamanFactory extends Factory
         $now = Carbon::now();
         $start_date = Carbon::parse($tgl_peminjaman);
         $end_date = Carbon::parse($tgl_berakhir);
-        $status = fake()->randomElement(['MENUNGGU_AKSES', 'MENUNGGU_PENGIRIMAN', 'SEDANG_DIKIRIM']);
+        $status = fake()->randomElement(['MENUNGGU_AKSES','MENUNGGU_SURAT_JALAN','MENUNGGU_PENGIRIMAN', 'SEDANG_DIKIRIM']);
         $kode_peminjaman = Peminjaman::generateKodePeminjaman("GUDANG_PROYEK", $proyek->client, $supervisor->nama);
 
         if($now->isAfter($end_date)){
@@ -99,7 +99,7 @@ class PeminjamanFactory extends Factory
                         'created_at' => $created_at
                     ];
                 }))->create();
-                $pengembalian_status = fake()->randomElement(['MENUNGGU_PENGEMBALIAN', 'SEDANG_DIKEMBALIKAN', 'SELESAI']);
+                $pengembalian_status = fake()->randomElement(['MENUNGGU_SURAT_JALAN','MENUNGGU_PENGEMBALIAN', 'SEDANG_DIKEMBALIKAN', 'SELESAI']);
                 if($pengembalian_status == 'SEDANG_DIKEMBALIKAN'){
                     Pengembalian::factory()->state([
                         'peminjaman_id' => $peminjaman->id,
@@ -139,12 +139,31 @@ class PeminjamanFactory extends Factory
                         ])->selesai())
                     , 'sjPengembalian')->create();
                 }
-                else{
+                else if($pengembalian_status == 'MENUNGGU_SURAT_JALAN'){
                     Pengembalian::factory()->state([
                         'peminjaman_id' => $peminjaman->id,
                         'status' => $pengembalian_status,
                         'created_at' => $created_at
                     ])->create();
+                }else{
+                    Pengembalian::factory()->state([
+                        'peminjaman_id' => $peminjaman->id,
+                        'status' => $pengembalian_status,
+                        'created_at' => $created_at
+                    ])->has(
+                        SjPengembalian::factory()->state(function (array $attributes, Pengembalian $pengembalian) use ($created_at) {
+                            return [
+                                'pengembalian_id' => $pengembalian->id,
+                                'created_at' => $created_at
+                            ];
+                        })->for(SuratJalan::factory()->state([
+                            'id' => fake()->uuid(),
+                            'admin_gudang_id' => $admin_gudang->user->id,
+                            'tipe' => 'PENGEMBALIAN',
+                            'kode_surat' => SuratJalan::generateKodeSurat("PENGEMBALIAN", $proyek->client, $supervisor->nama),
+                            'created_at' => $created_at
+                        ])->menunggu())
+                    , 'sjPengembalian')->create();
                 }
             }
             else if($now->between($start_date,$end_date)){
@@ -188,6 +207,21 @@ class PeminjamanFactory extends Factory
                         'peminjaman_id' => $peminjaman->id,
                         'created_at' => $created_at
                     ])->create();
+                    if($status == 'MENUNGGU_PENGIRIMAN'){
+                        SuratJalan::factory()->state([
+                            'id' => fake()->uuid(),
+                            'admin_gudang_id' => $admin_gudang->user->id,
+                            'tipe' => 'PENGIRIMAN_GUDANG_PROYEK',
+                            'kode_surat' => SuratJalan::generateKodeSurat("PENGIRIMAN_GUDANG_PROYEK", $proyek->client, $supervisor->nama),
+                            'created_at' => $created_at
+                        ])->menunggu()->has(SjPengirimanGp::factory()->state(function (array $attributes, SuratJalan $surat_jalan) use ($peminjaman, $created_at) {
+                            return [
+                                'surat_jalan_id' => $surat_jalan->id,
+                                'peminjaman_id' => $peminjaman->id,
+                                'created_at' => $created_at
+                            ];
+                        }))->create();
+                    }
                     if($status == 'SEDANG_DIKIRIM'){
                         SuratJalan::factory()->state([
                             'id' => fake()->uuid(),

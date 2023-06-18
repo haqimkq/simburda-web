@@ -18,7 +18,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('kode_peminjaman');
             $table->enum('tipe',['GUDANG_PROYEK','PROYEK_PROYEK']);
-            $table->enum('status',['MENUNGGU_AKSES','AKSES_DITOLAK', 'MENUNGGU_PENGIRIMAN', 'SEDANG_DIKIRIM', 'DIPINJAM', 'SELESAI'])->default('MENUNGGU_AKSES');
+            $table->enum('status',['MENUNGGU_AKSES','AKSES_DITOLAK','MENUNGGU_SURAT_JALAN','MENUNGGU_PENGIRIMAN', 'SEDANG_DIKIRIM', 'DIPINJAM', 'SELESAI'])->default('MENUNGGU_AKSES');
             $table->timestamp('tgl_peminjaman');
             $table->timestamp('tgl_berakhir');
             $table->timestamps();
