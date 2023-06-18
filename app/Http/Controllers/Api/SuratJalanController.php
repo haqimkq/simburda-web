@@ -86,6 +86,24 @@ class SuratJalanController extends Controller
             return ResponseFormatter::error("Gagal Mendapatkan Surat Jalan: ". $e->getMessage());
         }
     }
+    public function getSomeActiveSuratJalanByUser(Request $request){
+        try{
+            $user = $request->user();
+            
+            $request->validate([
+                'tipe' => 'required|in:PENGIRIMAN_GUDANG_PROYEK,PENGIRIMAN_PROYEK_PROYEK,PENGEMBALIAN',
+            ]);
+            $size = $request->query('size') ?? 5;
+            $tipe = $request->query('tipe');
+
+            $response = SuratJalan::getAllSuratJalanByUser($user, $tipe, 'active', $size);
+
+            $message = ($response->isEmpty()) ? 'Tidak ada surat jalan' : 'Berhasil Mendapatkan Surat Jalan';
+            return ResponseFormatter::success('surat_jalan', $response,$message);
+        }catch(Exception $e){
+            return ResponseFormatter::error("Gagal Mendapatkan Surat Jalan: ". $e->getMessage());
+        }
+    }
     public function getSuratJalanById(Request $request){
         try{
             $surat_jalan_id = $request->route('id');

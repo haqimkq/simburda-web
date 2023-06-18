@@ -31,7 +31,10 @@
   </ol>
 </nav>
 
-<div class="flex justify-end flex-col">
+<div class="flex justify-end">
+	<a href="{{route('signature.verifiedTTDDeliveryOrder', $deliveryOrder->ttd)}}" target="_blank" class="rounded-full py-1 px-2 mr-5 text-white self-end bg-green-400" >
+		Verifikasi TTD
+	</a>
 	<a href="{{route('delivery-order.downloadPDF', $deliveryOrder->id)}}" target="_blank" class="rounded-full py-1 px-2 text-white self-end bg-primary" >
 		Download PDF
 	</a>
@@ -137,7 +140,7 @@
 					<img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/'.$deliveryOrder->purchasing->ttd)))}}" alt="" class=" self-center w-40 my-3">
 				</div>
 				<div class="bg-center bg-no-repeat bg-contain">
-					<img src="data:image/png;base64,{{ base64_encode(file_get_contents($ttdPath))}}" alt="" class=" self-center w-28 my-3">
+					<img src="{{ asset("assets/ttd-verification/$deliveryOrder->ttd.png") }}" alt="" class=" self-center w-28 my-3">
 				</div>
 				@else
 				<div class="bg-center bg-no-repeat bg-contain w-40 h-24" style="background-image: url('data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/stempel-burda.png'))) }}')">

@@ -155,7 +155,7 @@ class SuratJalan extends Model
         self::validateCreate($request);
     }
 
-    public static function getAllSuratJalanByUser($user,$tipe, $status, $size, $date_start=null, $date_end=null, $srch=null){
+    public static function getAllSuratJalanByUser($user,$tipe, $status, $size=10, $date_start=null, $date_end=null, $srch=null){
         $result = collect();
         // $date_start = $date_s ?? date('Y-m-d 00:00:00', strtotime("-1 month"));
         // $date_end = $date_e ?? date("Y-m-d 23:59:59");
@@ -163,7 +163,11 @@ class SuratJalan extends Model
         else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK') $tipeRelasi = 'sjPengirimanPp';
         else $tipeRelasi = 'sjPengembalian';
         
-        $response=SuratJalan::where('tipe', $tipe)->where('status', $status);
+        $response=SuratJalan::where('tipe', $tipe);
+
+        if($status=='active') $response->where('status', '!=', 'SELESAI');
+        else $response->where('status', $status);
+
         if($date_start!=null && $date_end!=null) $response->whereBetween('updated_at', [$date_start, $date_end]);
         $response->where('kode_surat', 'LIKE', "%$srch%");
 
@@ -285,7 +289,7 @@ class SuratJalan extends Model
         $data['alamat_tempat_tujuan'] = ($tipe!='sjPengembalian') ? $alamat_tempat_tujuan : $alamat_tempat_asal;
         $data['coordinate_tempat_tujuan'] = ($tipe!='sjPengembalian') ? $coordinate_tempat_tujuan: $coordinate_tempat_asal;
         
-        return $data; 
+        return $data;
     }
 
 }
