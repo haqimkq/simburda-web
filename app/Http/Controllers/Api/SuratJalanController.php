@@ -236,7 +236,7 @@ class SuratJalanController extends Controller
                 'tipe' => $response->tipe,
                 'status' => $response->status,
                 'updated_at' => $response->updated_at,
-                'created_at' => $response->created_at,
+                'created_at' => $response->created_at, 
                 'kendaraan' => $kendaraan,
                 'admin_gudang' => $admin_gudang,
                 'logistic' => $logistic,
@@ -259,19 +259,14 @@ class SuratJalanController extends Controller
             $user = $request->user();
             
             $request->validate([
-                'id' => 'required|in:PENGIRIMAN_GUDANG_PROYEK,PENGIRIMAN_PROYEK_PROYEK,PENGEMBALIAN',
-                'status' => 'required|in:MENUNGGU_KONFIRMASI_DRIVER,DRIVER_DALAM_PERJALANAN,SELESAI',
+                'id' => 'required|exists:surat_jalans,id'
             ]);
-            $status = $request->query('status');
-            $size = $request->query('size') ?? 5;
-            $date_start = ($request->query('date_start')) ? date($request->query('date_start') . " 00:00:00") : null;
-            $date_end = ($request->query('date_end')) ? date($request->query('date_end') . " 23:59:59") : null;
-            
-            $tipe = $request->query('tipe');
-            $search = $request->query('search') ?? null;
 
-            $response = SuratJalan::getAllSuratJalanByUser($user, $tipe, $status, $size, $date_start, $date_end, $search);
+            $surat_jalan = SuratJalan::where('id', $request->id)->first();
+            if($surat_jalan->tipe == 'PENGIRIMAN_GUDANG_PROYEK'){
 
+            }
+            $response = collect();
             $message = ($response->isEmpty()) ? 'Tidak ada surat jalan' : 'Berhasil Mendapatkan Surat Jalan';
             return ResponseFormatter::success('surat_jalan', $response,$message);
         }catch(Exception $e){

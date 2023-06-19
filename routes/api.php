@@ -10,6 +10,11 @@ use App\Http\Controllers\API\UserController;
 |--------------------------------------------------------------------------
 */
 
+    // Token has both "check-status" and "place-orders" abilities...
+    // middleware(['auth:sanctum', 'abilities:check-status,place-orders']);
+
+    // Token has the "check-status" or "place-orders" ability...
+    // middleware(['auth:sanctum', 'ability:check-status,place-orders']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('user/profile', [UserController::class, 'updateProfile']);

@@ -15,7 +15,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('ttd_sj_verifications', function (Blueprint $table) {
-            $table->enum('sebagai', ['PEMBERI', 'PENGIRIM','PENERIMA']);
+            $table->enum('sebagai', ['PEMBUAT', 'PEMBERI', 'PENGIRIM','PENERIMA']);
             $table->timestamps();
         });
         Schema::table('ttd_sj_verifications', function (Blueprint $table) {

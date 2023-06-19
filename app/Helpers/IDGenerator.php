@@ -123,35 +123,9 @@ class IDGenerator
                 }
                 $newCode = "$zeros$last_number$suffix";
                 $model::where('id', $data->id)->update([$column_name => $newCode]);
-                if($column_name == 'kode_do'){
-                    TtdVerification::where('id',$data->ttd)->update([
-                        'keterangan' => TtdVerification::generateKeteranganDeliveryOrder($data->purchasing_id, $newCode,$data->perusahaan->nama, $data->gudang->nama, $data->perihal, $data->untuk_perhatian),
-                    ]);
-                }else if($column_name == 'kode_surat'){
-                    $sj = SuratJalan::where('id', $data->id)->first();
-                    if($sj->ttd_admin!=null){
-                        TtdVerification::where('id', $sj->ttd_admin)->update([
-                            'keterangan' => TtdVerification::generateKeteranganSuratJalan($sj->id,'ADMIN_GUDANG', $newCode),
-                            'user_id' => $sj->adminGudang->id
-                        ]);
-                        TtdSjVerification::where('ttd_verification_id', $sj->ttd_supervisor)->update([
-                            'sebagai' => ($sj->sjPengirimanGp!=null) ? "PEMBERI" : "PENERIMA"
-                        ]);
-                    }
-                    if($sj->ttd_driver!=null)
-                    TtdVerification::where('id', $sj->ttd_driver)->update([
-                        'keterangan' => TtdVerification::generateKeteranganSuratJalan($sj->id,'LOGISTIC', $newCode),
-                        'user_id' => $sj->logistic->id
-                    ]);
-                    if($sj->ttd_supervisor!=null){
-                        TtdVerification::where('id', $sj->ttd_supervisor)->update([
-                            'keterangan' => TtdVerification::generateKeteranganSuratJalan($sj->id,'SUPERVISOR', $newCode),
-                            'user_id' => ($sj->sjPengirimanGp!=null) ? $sj->sjPengirimanGp->peminjaman->menangani->supervisor->id : $sj->sjPengembalian->pengembalian->peminjaman->menangani->supervisor->id,
-                        ]);
-                        TtdSjVerification::where('ttd_verification_id', $sj->ttd_supervisor)->update([
-                            'sebagai' => ($sj->sjPengirimanGp!=null) ? "PENERIMA" : "PEMBERI"
-                        ]);
-                    }
+                if($column_name == 'kode_surat'){
+                    $sj = SuratJalan::find($data->id);
+                    TtdVerification::updateTtdSjVerificationFromSuratJalan($sj);
                 }
             }else{
                 if($key==0){

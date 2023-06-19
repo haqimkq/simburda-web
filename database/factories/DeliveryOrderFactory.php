@@ -43,7 +43,6 @@ class DeliveryOrderFactory extends Factory
         $untuk_perhatian = fake()->name();
         $ttd = TtdVerification::create([
             'user_id' => $purchasing->id,
-            'keterangan' => TtdVerification::generateKeteranganDeliveryOrder($purchasing->id, "0",$perusahaan->nama, $gudang->nama, 'Delivery Order', $untuk_perhatian),
             'tipe' => "DELIVERY_ORDER"
         ]);
         return [

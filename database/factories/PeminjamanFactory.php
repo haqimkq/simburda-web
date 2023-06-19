@@ -84,6 +84,7 @@ class PeminjamanFactory extends Factory
                     'admin_gudang_id' => $admin_gudang->user->id,
                     'project_manager_id' => $project_manager->id,
                     'peminjaman_id' => $peminjaman->id,
+                    'updated_at' => $created_at,
                     'created_at' => $created_at,
                 ])->create();
                 SuratJalan::factory()->state([
@@ -91,11 +92,13 @@ class PeminjamanFactory extends Factory
                     'admin_gudang_id' => $admin_gudang->user->id,
                     'tipe' => 'PENGIRIMAN_GUDANG_PROYEK',
                     'kode_surat' => SuratJalan::generateKodeSurat("PENGIRIMAN_GUDANG_PROYEK", $proyek->client, $supervisor->nama),
+                    'updated_at' => $created_at,
                     'created_at' => $created_at
                 ])->selesai()->has(SjPengirimanGp::factory()->state(function (array $attributes, SuratJalan $surat_jalan) use ($peminjaman , $created_at) {
                     return [
                         'surat_jalan_id' => $surat_jalan->id,
                         'peminjaman_id' => $peminjaman->id,
+                        'updated_at' => $created_at,
                         'created_at' => $created_at
                     ]; 
                 }))->create();
@@ -104,11 +107,13 @@ class PeminjamanFactory extends Factory
                     Pengembalian::factory()->state([
                         'peminjaman_id' => $peminjaman->id,
                         'status' => $pengembalian_status,
+                        'updated_at' => $created_at,
                         'created_at' => $created_at,
                     ])->has(
                         SjPengembalian::factory()->state(function (array $attributes, Pengembalian $pengembalian) use ($created_at) {
                             return [
                                 'pengembalian_id' => $pengembalian->id,
+                                'updated_at' => $created_at,    
                                 'created_at' => $created_at,
                             ];
                         })->for(SuratJalan::factory()->state([
@@ -116,6 +121,7 @@ class PeminjamanFactory extends Factory
                             'admin_gudang_id' => $admin_gudang->user->id,
                             'tipe' => 'PENGEMBALIAN',
                             'kode_surat' => SuratJalan::generateKodeSurat("PENGEMBALIAN", $proyek->client, $supervisor->nama),
+                            'updated_at' => $created_at,
                             'created_at' => $created_at
                         ])->dalamPerjalanan())
                     , 'sjPengembalian')->create();
@@ -123,11 +129,13 @@ class PeminjamanFactory extends Factory
                     Pengembalian::factory()->state([
                         'peminjaman_id' => $peminjaman->id,
                         'status' => $pengembalian_status,
+                        'updated_at' => $created_at,
                         'created_at' => $created_at
                     ])->has(
                         SjPengembalian::factory()->state(function (array $attributes, Pengembalian $pengembalian) use ($created_at) {
                             return [
                                 'pengembalian_id' => $pengembalian->id,
+                                'updated_at' => $created_at,    
                                 'created_at' => $created_at
                             ];
                         })->for(SuratJalan::factory()->state([
@@ -135,6 +143,7 @@ class PeminjamanFactory extends Factory
                             'admin_gudang_id' => $admin_gudang->user->id,
                             'tipe' => 'PENGEMBALIAN',
                             'kode_surat' => SuratJalan::generateKodeSurat("PENGEMBALIAN", $proyek->client, $supervisor->nama),
+                            'updated_at' => $created_at,
                             'created_at' => $created_at
                         ])->selesai())
                     , 'sjPengembalian')->create();
@@ -143,17 +152,20 @@ class PeminjamanFactory extends Factory
                     Pengembalian::factory()->state([
                         'peminjaman_id' => $peminjaman->id,
                         'status' => $pengembalian_status,
+                        'updated_at' => $created_at,
                         'created_at' => $created_at
                     ])->create();
                 }else{
                     Pengembalian::factory()->state([
                         'peminjaman_id' => $peminjaman->id,
                         'status' => $pengembalian_status,
+                        'updated_at' => $created_at,
                         'created_at' => $created_at
                     ])->has(
                         SjPengembalian::factory()->state(function (array $attributes, Pengembalian $pengembalian) use ($created_at) {
                             return [
                                 'pengembalian_id' => $pengembalian->id,
+                                'updated_at' => $created_at,    
                                 'created_at' => $created_at
                             ];
                         })->for(SuratJalan::factory()->state([
@@ -161,6 +173,7 @@ class PeminjamanFactory extends Factory
                             'admin_gudang_id' => $admin_gudang->user->id,
                             'tipe' => 'PENGEMBALIAN',
                             'kode_surat' => SuratJalan::generateKodeSurat("PENGEMBALIAN", $proyek->client, $supervisor->nama),
+                            'updated_at' => $created_at,
                             'created_at' => $created_at
                         ])->menunggu())
                     , 'sjPengembalian')->create();
@@ -173,6 +186,7 @@ class PeminjamanFactory extends Factory
                     'admin_gudang_id' => $admin_gudang->user->id,
                     'project_manager_id' => $project_manager->id,
                     'peminjaman_id' => $peminjaman->id,
+                    'updated_at' => $created_at,
                     'created_at' => $created_at
                 ])->create();
                 SuratJalan::factory()->state([
@@ -180,11 +194,13 @@ class PeminjamanFactory extends Factory
                     'admin_gudang_id' => $admin_gudang->user->id,
                     'tipe' => 'PENGIRIMAN_GUDANG_PROYEK',
                     'kode_surat' => SuratJalan::generateKodeSurat("PENGIRIMAN_GUDANG_PROYEK", $proyek->client, $supervisor->nama),
+                    'updated_at' => $created_at,
                     'created_at' => $created_at
                 ])->selesai()->has(SjPengirimanGp::factory()->state(function (array $attributes, SuratJalan $surat_jalan) use ($peminjaman, $created_at) {
                     return [
                         'surat_jalan_id' => $surat_jalan->id,
                         'peminjaman_id' => $peminjaman->id,
+                        'updated_at' => $created_at,
                         'created_at' => $created_at
                     ];
                 }))->create();
@@ -196,6 +212,7 @@ class PeminjamanFactory extends Factory
                         'admin_gudang_id' => NULL,
                         'project_manager_id' => $project_manager->id,
                         'peminjaman_id' => $peminjaman->id,
+                        'updated_at' => $created_at,
                         'created_at' => $created_at
                     ])->create();
                 }else{
@@ -205,6 +222,7 @@ class PeminjamanFactory extends Factory
                         'admin_gudang_id' => $admin_gudang->user->id,
                         'project_manager_id' => $project_manager->id,
                         'peminjaman_id' => $peminjaman->id,
+                        'updated_at' => $created_at,
                         'created_at' => $created_at
                     ])->create();
                     if($status == 'MENUNGGU_PENGIRIMAN'){
@@ -213,11 +231,13 @@ class PeminjamanFactory extends Factory
                             'admin_gudang_id' => $admin_gudang->user->id,
                             'tipe' => 'PENGIRIMAN_GUDANG_PROYEK',
                             'kode_surat' => SuratJalan::generateKodeSurat("PENGIRIMAN_GUDANG_PROYEK", $proyek->client, $supervisor->nama),
+                            'updated_at' => $created_at,
                             'created_at' => $created_at
                         ])->menunggu()->has(SjPengirimanGp::factory()->state(function (array $attributes, SuratJalan $surat_jalan) use ($peminjaman, $created_at) {
                             return [
                                 'surat_jalan_id' => $surat_jalan->id,
                                 'peminjaman_id' => $peminjaman->id,
+                                'updated_at' => $created_at,    
                                 'created_at' => $created_at
                             ];
                         }))->create();
@@ -228,11 +248,13 @@ class PeminjamanFactory extends Factory
                             'admin_gudang_id' => $admin_gudang->user->id,
                             'tipe' => 'PENGIRIMAN_GUDANG_PROYEK',
                             'kode_surat' => SuratJalan::generateKodeSurat("PENGIRIMAN_GUDANG_PROYEK", $proyek->client, $supervisor->nama),
+                            'updated_at' => $created_at,
                             'created_at' => $created_at
                         ])->dalamPerjalanan()->has(SjPengirimanGp::factory()->state(function (array $attributes, SuratJalan $surat_jalan) use ($peminjaman, $created_at) {
                             return [
                                 'surat_jalan_id' => $surat_jalan->id,
                                 'peminjaman_id' => $peminjaman->id,
+                                'updated_at' => $created_at,    
                                 'created_at' => $created_at
                             ];
                         }))->create();

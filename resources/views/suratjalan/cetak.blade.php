@@ -59,7 +59,7 @@
 		</ol>
 	</nav>
 
-	<div class="flex flex-col justify-end">
+	<div class="flex justify-end">
 		<a href="{{ route('surat-jalan.downloadPDF', $suratJalan->id) }}" target="_blank"
 			class="self-end rounded-full bg-primary py-1 px-2 text-white">
 			Download PDF
@@ -255,6 +255,9 @@
 					</div>
 					<p class="text-center">{{ $suratJalan->adminGudang->nama }}<br><span>Admin
 							Gudang</span><br>{{ $suratJalan->adminGudang->no_hp }}</p>
+					<a href="{{route('signature.verifiedTTDSuratJalan', $suratJalan->ttd_admin)}}" target="_blank" class="rounded-full py-1 px-2 text-white self-center mt-2 bg-green-400" >
+						Verifikasi
+					</a>
 				</div>
 			@elseif($suratJalan->tipe == 'PENGIRIMAN_PROYEK_PROYEK')
 				<div class="flex flex-col">
@@ -277,9 +280,13 @@
 						@endif
 					</div>
 					<p class="text-center">
-						{{ $suratJalan->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->supervisor->nama }}<br><span>Admin
-							Gudang</span><br>{{ $suratJalan->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->supervisor->no_hp }}
+						{{ $suratJalan->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->supervisor->nama }}<br><span>
+							Supervisor Peminjam	
+						</span><br>{{ $suratJalan->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->supervisor->no_hp }}
 					</p>
+					<a href="{{route('signature.verifiedTTDSuratJalan', $suratJalan->sjPengirimanPp->ttd_supervisor_peminjam)}}" target="_blank" class="rounded-full py-1 px-2 text-white self-center mt-2 bg-green-400" >
+						Verifikasi
+					</a>
 				</div>
 			@endif
 			<div class="flex flex-col">
@@ -324,6 +331,11 @@
 						{{ $suratJalan->sjPengembalian->pengembalian->peminjaman->menangani->supervisor->nama }}<br><span>Supervisor</span><br>{{ $suratJalan->sjPengembalian->pengembalian->peminjaman->menangani->supervisor->no_hp }}
 					</p>
 				@endif
+				@if ($suratJalan->ttd_supervisor)
+				<a href="{{route('signature.verifiedTTDSuratJalan', $suratJalan->ttd_supervisor)}}" target="_blank" class="rounded-full py-1 px-2 text-white self-center mt-2 bg-green-400" >
+					Verifikasi
+				</a>
+				@endif
 			</div>
 			<div class="flex flex-col">
 				<div class="flex">
@@ -345,6 +357,12 @@
 					@endif
 				</div>
 				<p class="text-center">{{ $suratJalan->logistic->nama }}<br><span>Driver</span><br>{{ $suratJalan->logistic->no_hp }}</p>
+				
+				@if ($suratJalan->ttd_driver)
+					<a href="{{route('signature.verifiedTTDSuratJalan', $suratJalan->ttd_driver)}}" target="_blank" class="rounded-full py-1 px-2 text-white self-center mt-2 bg-green-400" >
+						Verifikasi
+					</a>
+				@endif
 			</div>
 		</div>
 	</div>

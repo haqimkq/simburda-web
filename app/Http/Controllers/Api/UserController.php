@@ -38,6 +38,7 @@ class UserController extends Controller
             if($request->device_token){
                 $user->update(['device_token' => $request->device_token]);
             }
+            // $token = $user->createToken('authToken', ["$user->role"])->plainTextToken;
             $token = $user->createToken('authToken')->plainTextToken;
             $user['token'] = $token;
 

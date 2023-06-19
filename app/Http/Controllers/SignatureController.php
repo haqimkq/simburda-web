@@ -97,16 +97,17 @@ class SignatureController extends Controller
         if ($do_verification == null) {
             abort(404);
         }
-        $data = explode("|", $do_verification->keterangan); 
+        $data = TtdVerification::getKeteranganSuratJalan($id);
+
         return view('signature.verif',[
             "sjVerif" => $do_verification,
-            "nama" => $data[0],
-            "role" => $data[1],
-            "tipe" => $data[2],
-            "kode_surat" => $data[3],
-            "sebagai" => $data[4],
-            "asal" => $data[5],
-            "tujuan" => $data[6],
+            "nama" => $data['nama'],
+            "role" => $data['role'],
+            "tipe" => $data['tipe'],
+            "kode_surat" => $data['kode_surat'],
+            "sebagai" => $data['sebagai'],
+            "asal" => $data['asal'],
+            "tujuan" => $data['tujuan'],
         ]);
     }
     public function verifiedTTDDeliveryOrder($id)
@@ -115,16 +116,16 @@ class SignatureController extends Controller
         if ($do_verification == null) {
             abort(404);
         }
-        $data = explode("|", $do_verification->keterangan); 
+        $data = TtdVerification::getKeteranganDo($id);
         return view('signature.verifDo',[
             "doVerif" => $do_verification,
-            "nama" => $data[0],
-            "role" => $data[1],
-            "perihal" => $data[2],
-            "kode" => $data[3],
-            "perusahaan" => $data[4],
-            "untuk_perhatian" => $data[5],
-            "gudang" => $data[6],
+            "nama" => $data['nama'],
+            "role" => $data['role'],
+            "perihal" => $data['perihal'],
+            "kode" => $data['kode'],
+            "perusahaan" => $data['perusahaan'],
+            "untuk_perhatian" => $data['untuk_perhatian'],
+            "gudang" => $data['gudang'],
         ]);
     }
 

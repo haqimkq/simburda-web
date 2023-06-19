@@ -37,6 +37,12 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         LogisticFirebase::deleteAllData();
+        $files = glob('C:\WebDev\SimburdaWeb\storage\app\public\assets\ttd-verification\*'); // get all file names
+        foreach($files as $file){ // iterate files
+            if(is_file($file)) {
+                unlink($file); // delete file
+            }
+        }
         $gudang = Gudang::factory()->state(
             [
                 'nama' => 'Gudang Jakarta 1',
@@ -327,7 +333,7 @@ class DatabaseSeeder extends Seeder
                 ],
             ))->tidakHabisPakai()->create();
 
-        Barang::factory(40)->habisPakai()->create();
+        Barang::factory(40)->state(['jenis' => 'HABIS_PAKAI'])->has(BarangHabisPakai::factory())->create();
 
         Proyek::factory()->state([
             'nama_proyek' => 'Perumahan Sakura Regency 3 Toyota Housing Indonesia Rumah Blok H29',
@@ -342,97 +348,97 @@ class DatabaseSeeder extends Seeder
 
         Proyek::factory(9)
         ->state(new Sequence(
-                    [
-                        'nama_proyek' => 'Perbaikan Kolom Struktur Hanggar Skuadron 45 Halim Perdana Kusuma',
-                        'foto' => 'assets/proyek/Perbaikan Kolom Struktur Hanggar Skuadron 45 Halim Perdana Kusuma.jpg',
-                        'client' => 'Sekretariat Negara',
-                        'alamat' => 'Jl. Rajawali Baru No.1, RT.5/RW.11, Halim Perdana Kusumah, Kec. Makasar, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13610',
-                        'provinsi' => 'DKI Jakarta',
-                        'kota' => 'Jakarta Timur',
-                        'latitude' => '-6.261084',
-                        'longitude' => '106.888774',
-                    ],
-                    [
-                        'nama_proyek' => 'Pengecoran Lantai Pondasi Rumah Sakura Regency 3',
-                        'foto' => 'assets/proyek/Pengecoran Lantai Pondasi Rumah Sakura Regency 3.jpg',
-                        'client' => 'PT. Toyota Housing Indonesia',
-                        'alamat' => 'Jl. Cipete Raya No.Kel, Jatimulya, Kec. Tambun Sel., Kota Bks, Jawa Barat 17510',
-                        'provinsi' => 'Jawa Barat',
-                        'kota' => 'Bekasi',
-                        'latitude' => '-6.2813794',
-                        'longitude' => '107.0118061',
-                    ],
-                    [
-                        'nama_proyek' => 'Pembuatan Workshop Office Facility Distrik JIYP',
-                        'foto' => 'assets/proyek/Pembuatan Workshop Office Facility Distrik JIYP.jpg',
-                        'client' => 'PT. Pamapersada Nusantara',
-                        'alamat' => 'Jl. Rawagelam I No.9, RW.9, Jatinegara, Kec. Cakung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13930',
-                        'provinsi' => 'DKI Jakarta',
-                        'kota' => 'Jakarta Timur',
-                        'latitude' => '-6.1979648',
-                        'longitude' => '106.8792105',
-                    ],
-                    [
-                        'nama_proyek' => 'Pembuatan Rumah Type Engawa Sakura Regency Toyota Housing Indonesia',
-                        'foto' => 'assets/proyek/Pembuatan Rumah Type Engawa Sakura Regency Toyota Housing Indonesia.jpg',
-                        'client' => 'PT. Toyota Housing Indonesia',
-                        'alamat' => 'Jl. Cipete Raya No.Kel, Jatimulya, Kec. Tambun Sel., Kota Bks, Jawa Barat 17510',
-                        'provinsi' => 'Jawa Barat',
-                        'kota' => 'Bekasi',
-                        'latitude' => '-6.2813794',
-                        'longitude' => '107.0118061',
-                    ],
-                    [
-                        'nama_proyek' => 'Pembuatan Rumah Type H Sakura Regency Toyota Housing Indonesia',
-                        'foto' => 'assets/proyek/Pembuatan Rumah Type H Sakura Regency Toyota Housing Indonesia.jpg',
-                        'client' => 'PT. Toyota Housing Indonesia',
-                        'alamat' => 'Jl. Cipete Raya No.Kel, Jatimulya, Kec. Tambun Sel., Kota Bks, Jawa Barat 17510',
-                        'provinsi' => 'Jawa Barat',
-                        'kota' => 'Bekasi',
-                        'latitude' => '-6.2813794',
-                        'longitude' => '107.0118061',
-                    ],
-                    [
-                        'nama_proyek' => 'Pembuatan Rumah Type Teitaku 1 Sakura Regency Toyota Housing Indonesia',
-                        'foto' => 'assets/proyek/Pembuatan Rumah Type Teitaku 1 Sakura Regency Toyota Housing Indonesia.jpg',
-                        'client' => 'PT. Toyota Housing Indonesia',
-                        'alamat' => 'Jl. Cipete Raya No.Kel, Jatimulya, Kec. Tambun Sel., Kota Bks, Jawa Barat 17510',
-                        'provinsi' => 'Jawa Barat',
-                        'kota' => 'Bekasi',
-                        'latitude' => '-6.2813794',
-                        'longitude' => '107.0118061',
-                    ],
-                    [
-                        'nama_proyek' => 'Pembuatan Pondasi Rumah Sakura Regency Toyota Housing Indonesia',
-                        'foto' => 'assets/proyek/Pembuatan Pondasi Rumah Sakura Regency Toyota Housing Indonesia.jpg',
-                        'client' => 'PT. Toyota Housing Indonesia',
-                        'alamat' => 'Jl. Cipete Raya No.Kel, Jatimulya, Kec. Tambun Sel., Kota Bks, Jawa Barat 17510',
-                        'provinsi' => 'Jawa Barat',
-                        'kota' => 'Bekasi',
-                        'latitude' => '-6.2813794',
-                        'longitude' => '107.0118061',
-                    ],
-                    [
-                        'nama_proyek' => 'Pembuatan Driver Room PIK Avenue Mall',
-                        'foto' => 'assets/proyek/Pembuatan Driver Room PIK Avenue Mall.jpg',
-                        'client' => 'PT. Multi Artha Pratama',
-                        'alamat' => 'Pantai Indah Kapuk St Boulevard, Kamal Muara, Penjaringan, North Jakarta City, Jakarta 14470',
-                        'provinsi' => 'DKI Jakarta',
-                        'kota' => 'Jakarta Utara',
-                        'latitude' => '-6.1091684',
-                        'longitude' => '106.7404088',
-                    ],
-                    [
-                        'nama_proyek' => 'Pembuatan Kantin Karyawan PIK Avenue Mall',
-                        'foto' => 'assets/proyek/Pembuatan Kantin Karyawan PIK Avenue Mall.jpg',
-                        'client' => 'PT. Multi Artha Pratama',
-                        'alamat' => 'Pantai Indah Kapuk St Boulevard, Kamal Muara, Penjaringan, North Jakarta City, Jakarta 14470',
-                        'provinsi' => 'DKI Jakarta',
-                        'kota' => 'Jakarta Utara',
-                        'latitude' => '-6.1091684',
-                        'longitude' => '106.7404088',
-                    ],
-                ))->for($PM1, 'projectManager')->create();
+            [
+                'nama_proyek' => 'Perbaikan Kolom Struktur Hanggar Skuadron 45 Halim Perdana Kusuma',
+                'foto' => 'assets/proyek/Perbaikan Kolom Struktur Hanggar Skuadron 45 Halim Perdana Kusuma.jpg',
+                'client' => 'Sekretariat Negara',
+                'alamat' => 'Jl. Rajawali Baru No.1, RT.5/RW.11, Halim Perdana Kusumah, Kec. Makasar, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13610',
+                'provinsi' => 'DKI Jakarta',
+                'kota' => 'Jakarta Timur',
+                'latitude' => '-6.261084',
+                'longitude' => '106.888774',
+            ],
+            [
+                'nama_proyek' => 'Pengecoran Lantai Pondasi Rumah Sakura Regency 3',
+                'foto' => 'assets/proyek/Pengecoran Lantai Pondasi Rumah Sakura Regency 3.jpg',
+                'client' => 'PT. Toyota Housing Indonesia',
+                'alamat' => 'Jl. Cipete Raya No.Kel, Jatimulya, Kec. Tambun Sel., Kota Bks, Jawa Barat 17510',
+                'provinsi' => 'Jawa Barat',
+                'kota' => 'Bekasi',
+                'latitude' => '-6.2813794',
+                'longitude' => '107.0118061',
+            ],
+            [
+                'nama_proyek' => 'Pembuatan Workshop Office Facility Distrik JIYP',
+                'foto' => 'assets/proyek/Pembuatan Workshop Office Facility Distrik JIYP.jpg',
+                'client' => 'PT. Pamapersada Nusantara',
+                'alamat' => 'Jl. Rawagelam I No.9, RW.9, Jatinegara, Kec. Cakung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13930',
+                'provinsi' => 'DKI Jakarta',
+                'kota' => 'Jakarta Timur',
+                'latitude' => '-6.1979648',
+                'longitude' => '106.8792105',
+            ],
+            [
+                'nama_proyek' => 'Pembuatan Rumah Type Engawa Sakura Regency Toyota Housing Indonesia',
+                'foto' => 'assets/proyek/Pembuatan Rumah Type Engawa Sakura Regency Toyota Housing Indonesia.jpg',
+                'client' => 'PT. Toyota Housing Indonesia',
+                'alamat' => 'Jl. Cipete Raya No.Kel, Jatimulya, Kec. Tambun Sel., Kota Bks, Jawa Barat 17510',
+                'provinsi' => 'Jawa Barat',
+                'kota' => 'Bekasi',
+                'latitude' => '-6.2813794',
+                'longitude' => '107.0118061',
+            ],
+            [
+                'nama_proyek' => 'Pembuatan Rumah Type H Sakura Regency Toyota Housing Indonesia',
+                'foto' => 'assets/proyek/Pembuatan Rumah Type H Sakura Regency Toyota Housing Indonesia.jpg',
+                'client' => 'PT. Toyota Housing Indonesia',
+                'alamat' => 'Jl. Cipete Raya No.Kel, Jatimulya, Kec. Tambun Sel., Kota Bks, Jawa Barat 17510',
+                'provinsi' => 'Jawa Barat',
+                'kota' => 'Bekasi',
+                'latitude' => '-6.2813794',
+                'longitude' => '107.0118061',
+            ],
+            [
+                'nama_proyek' => 'Pembuatan Rumah Type Teitaku 1 Sakura Regency Toyota Housing Indonesia',
+                'foto' => 'assets/proyek/Pembuatan Rumah Type Teitaku 1 Sakura Regency Toyota Housing Indonesia.jpg',
+                'client' => 'PT. Toyota Housing Indonesia',
+                'alamat' => 'Jl. Cipete Raya No.Kel, Jatimulya, Kec. Tambun Sel., Kota Bks, Jawa Barat 17510',
+                'provinsi' => 'Jawa Barat',
+                'kota' => 'Bekasi',
+                'latitude' => '-6.2813794',
+                'longitude' => '107.0118061',
+            ],
+            [
+                'nama_proyek' => 'Pembuatan Pondasi Rumah Sakura Regency Toyota Housing Indonesia',
+                'foto' => 'assets/proyek/Pembuatan Pondasi Rumah Sakura Regency Toyota Housing Indonesia.jpg',
+                'client' => 'PT. Toyota Housing Indonesia',
+                'alamat' => 'Jl. Cipete Raya No.Kel, Jatimulya, Kec. Tambun Sel., Kota Bks, Jawa Barat 17510',
+                'provinsi' => 'Jawa Barat',
+                'kota' => 'Bekasi',
+                'latitude' => '-6.2813794',
+                'longitude' => '107.0118061',
+            ],
+            [
+                'nama_proyek' => 'Pembuatan Driver Room PIK Avenue Mall',
+                'foto' => 'assets/proyek/Pembuatan Driver Room PIK Avenue Mall.jpg',
+                'client' => 'PT. Multi Artha Pratama',
+                'alamat' => 'Pantai Indah Kapuk St Boulevard, Kamal Muara, Penjaringan, North Jakarta City, Jakarta 14470',
+                'provinsi' => 'DKI Jakarta',
+                'kota' => 'Jakarta Utara',
+                'latitude' => '-6.1091684',
+                'longitude' => '106.7404088',
+            ],
+            [
+                'nama_proyek' => 'Pembuatan Kantin Karyawan PIK Avenue Mall',
+                'foto' => 'assets/proyek/Pembuatan Kantin Karyawan PIK Avenue Mall.jpg',
+                'client' => 'PT. Multi Artha Pratama',
+                'alamat' => 'Pantai Indah Kapuk St Boulevard, Kamal Muara, Penjaringan, North Jakarta City, Jakarta 14470',
+                'provinsi' => 'DKI Jakarta',
+                'kota' => 'Jakarta Utara',
+                'latitude' => '-6.1091684',
+                'longitude' => '106.7404088',
+            ],
+        ))->for($PM1, 'projectManager')->create();
 
         Kendaraan::factory(7)->state(new Sequence(
             [

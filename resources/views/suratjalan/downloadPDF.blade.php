@@ -581,8 +581,9 @@
 									</div>
 								@endif
 								<p class="text-center">
-									{{ $suratJalan->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->supervisor->nama }}<br><span>Admin
-										Gudang</span><br>{{ $suratJalan->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->supervisor->no_hp }}
+									{{ $suratJalan->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->supervisor->nama }}<br><span>
+										Supervisor Peminjam
+									</span><br>{{ $suratJalan->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->supervisor->no_hp }}
 								</p>
 							@endif
 						</td>

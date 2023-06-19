@@ -60,7 +60,6 @@ class SuratJalanFactory extends Factory
             $ttdAdminGudang = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => $attributes['admin_gudang_id'],
-                'keterangan' => "",
                 'tipe' => "SURAT_JALAN"
             ]);
             TtdSjVerification::create([
@@ -70,7 +69,6 @@ class SuratJalanFactory extends Factory
             $ttdDriver = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => $attributes['logistic_id'],
-                'keterangan' => "",
                 'tipe' => "SURAT_JALAN"
             ]);
             TtdSjVerification::create([
@@ -80,7 +78,6 @@ class SuratJalanFactory extends Factory
             $ttdSupervisor = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => User::get()->random()->id,
-                'keterangan' => "",
                 'tipe' => "SURAT_JALAN"
             ]);
             TtdSjVerification::create([
@@ -106,7 +103,6 @@ class SuratJalanFactory extends Factory
             $ttdAdminGudang = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => $attributes['admin_gudang_id'],
-                'keterangan' => "",
                 'tipe' => "SURAT_JALAN",
             ]);
             TtdSjVerification::create([
@@ -132,7 +128,6 @@ class SuratJalanFactory extends Factory
             $ttdAdminGudang = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => $attributes['admin_gudang_id'],
-                'keterangan' => "",
                 'tipe' => "SURAT_JALAN",
             ]);
             TtdSjVerification::create([
@@ -142,7 +137,6 @@ class SuratJalanFactory extends Factory
             $ttdDriver = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => $attributes['logistic_id'],
-                'keterangan' => "",
                 'tipe' => "SURAT_JALAN",
             ]);
             TtdSjVerification::create([
