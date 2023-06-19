@@ -36,7 +36,7 @@
 		Verifikasi TTD
 	</a>
 	<a href="{{route('delivery-order.downloadPDF', $deliveryOrder->id)}}" target="_blank" class="rounded-full py-1 px-2 text-white self-end bg-primary" >
-		Download PDF
+		Download PDF {{ env('APP_ENV') }}
 	</a>
 </div>
 <div class="flex flex-col text-sm">
