@@ -25,8 +25,8 @@ return new class extends Migration
             $table->double('latitude');
             $table->double('longitude');
             $table->boolean('selesai')->default(false);
-            $table->timestamp('tgl_selesai')->nullable();
             $table->timestamps();
+            $table->timestamp('tgl_selesai')->nullable();
             $table->softDeletes();
         });
         Schema::table('proyeks', function (Blueprint $table) {

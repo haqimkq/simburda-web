@@ -58,6 +58,7 @@ class TtdVerification extends Model
             "ttd_verification_id" => $ttd_verification->id,
             'sebagai' => self::setSebagaiTtdSjVerification($user, $sj),
         ]);
+        return $ttd_verification->id;
     }
     public static function updateTtdSjVerificationFromSuratJalan($sj){
         if($sj->sjPengirimanGp!=null && $sj->ttd_supervisor!=null){

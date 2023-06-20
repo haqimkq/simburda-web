@@ -202,18 +202,6 @@ class DatabaseSeeder extends Seeder
                 'gambar' => 'assets/perusahaan/PT. Archikon Wiratama.jpg'
             ],
         ))->create();
-        
-        Barang::factory()->state(
-                [
-                    'merk' => 'KOBELCO SK 210',
-                    'gambar' => 'assets/barang/TidakHabisPakai/Kobelco SK200.jpg',
-                    'nama' => 'Excavator',
-                ],
-        )->has(BarangHabisPakai::factory()->state(function(array $attributes, Barang $barang){
-            return [
-                'barang_id' => $barang->id
-            ];
-        }))->create();
 
         Barang::factory()->count(23)->state(new Sequence(
                 [
@@ -331,7 +319,7 @@ class DatabaseSeeder extends Seeder
                     'gambar' => 'assets/barang/TidakHabisPakai/Generator Las DENYO 300 A.jpg',
                     'nama' => 'Generator Las',
                 ],
-            ))->tidakHabisPakai()->create();
+        ))->tidakHabisPakai()->create();
 
         Barang::factory(40)->state(['jenis' => 'HABIS_PAKAI'])->has(BarangHabisPakai::factory())->create();
 
@@ -591,19 +579,40 @@ class DatabaseSeeder extends Seeder
             return ['user_id' => $user->id];
         }))->create();
 
-        Peminjaman::factory(15)->has(PeminjamanDetail::factory()->count(8), 'peminjamanDetail')->create();
+        Peminjaman::factory(50)->has(PeminjamanDetail::factory()
+        ->count(8)
+        ->resetData()
+        , 'peminjamanDetail')->create();
 
-        Peminjaman::factory(10)->has(PeminjamanDetail::factory()->count(3), 'peminjamanDetail')->create();
+        Peminjaman::factory(50)->has(PeminjamanDetail::factory()
+        ->count(3)
+        ->resetData()
+        , 'peminjamanDetail')->create();
 
-        Peminjaman::factory(5)->has(PeminjamanDetail::factory()->count(4), 'peminjamanDetail')->create();
+        Peminjaman::factory(50)->has(PeminjamanDetail::factory()
+        ->count(4)
+        ->resetData()
+        , 'peminjamanDetail')->create();
         
-        Peminjaman::factory(5)->has(PeminjamanDetail::factory()->count(3), 'peminjamanDetail')->create();
+        Peminjaman::factory(50)->has(PeminjamanDetail::factory()
+        ->count(6)
+        ->resetData()
+        , 'peminjamanDetail')->create();
         
-        Peminjaman::factory(6)->has(PeminjamanDetail::factory()->count(2), 'peminjamanDetail')->create();
+        Peminjaman::factory(50)->has(PeminjamanDetail::factory()
+        ->count(2)
+        ->resetData()
+        , 'peminjamanDetail')->create();
         
-        Peminjaman::factory(7)->has(PeminjamanDetail::factory()->count(1), 'peminjamanDetail')->create();
+        Peminjaman::factory(50)->has(PeminjamanDetail::factory()
+        ->count(1)
+        ->resetData()
+        , 'peminjamanDetail')->create();
         
-        Peminjaman::factory(8)->has(PeminjamanDetail::factory()->count(5), 'peminjamanDetail')->create();
+        Peminjaman::factory(50)->has(PeminjamanDetail::factory()
+        ->count(5)
+        ->resetData()
+        , 'peminjamanDetail')->create();
 
         do{
             $pengembalian = Pengembalian::doesntHave('pengembalianDetail')->first();

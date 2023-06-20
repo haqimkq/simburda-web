@@ -18,12 +18,14 @@ class ProyekFactory extends Factory
     {
         $lat = fake()->latitude(-6.2,-6.1);
         $lon = fake()->longitude(106.7,106.8);
-        $date = fake()->dateTimeBetween('-2 years', 'now');
+        $date = fake()->dateTimeBetween('-2 years', '-2 months');
+        $updated_at = $date;
         $selesai = fake()->boolean();
         $randomImage = 'https://picsum.photos/640/640?random='.mt_rand(1,92392);
-        if($selesai) $tgl_selesai = fake()->dateTimeBetween($date, '+2 month');
-        else $tgl_selesai = NULL;
-        // $project_manager = User::where('role', 'PROJECT_MANAGER')->get()->random();
+        if($selesai) {
+            $tgl_selesai = fake()->dateTimeBetween($date, 'now');
+            $updated_at = $tgl_selesai;
+        } else $tgl_selesai = NULL;
         $project_manager = User::factory();
         return [
             'id' => fake()->uuid(),
@@ -39,7 +41,7 @@ class ProyekFactory extends Factory
             'longitude' => $lon,
             'selesai' => $selesai,
             'created_at'=> $date,
-            'updated_at'=> $date,
+            'updated_at'=> $updated_at,
             'tgl_selesai'=> $tgl_selesai,
         ];
     }
@@ -53,7 +55,7 @@ class ProyekFactory extends Factory
     {
         return $this->state(function (array $attributes){
             $createdAt = $attributes['created_at'];
-            $tgl_selesai = fake()->dateTimeBetween($createdAt, '+2 month');
+            $tgl_selesai = fake()->dateTimeBetween($createdAt, '+5 months');
             return [
                 'selesai' => true,
                 'tgl_selesai' => $tgl_selesai,

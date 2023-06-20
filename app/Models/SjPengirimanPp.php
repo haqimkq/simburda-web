@@ -47,39 +47,43 @@ class SjPengirimanPp extends Model
             $request->validate([
                 'surat_jalan_id' => 'required|exists:surat_jalans,id',
             ]);
-            $request->validate([
-                'peminjaman_id' => [
-                    'required',
-                    'exists:peminjamans,id',
-                    Rule::unique('sj_pengiriman_pps', 'peminjaman_id')->ignore($request->surat_jalan_id, 'surat_jalan_id'),
-                ]
-            ]);
+            $old_peminjaman_id = SuratJalan::find($request->surat_jalan_id)->sjPengirimanPp->peminjaman->id;
+            if($old_peminjaman_id!=$request->peminjaman_id) self::validate($request);
         }else{
-            $request->validate([
-                'peminjaman_id' => [
-                    'required',
-                    Rule::exists('peminjamans', 'id')
-                    ->where('status', PeminjamanStatus::MENUNGGU_SURAT_JALAN->value)
-                    ->where('tipe', PeminjamanTipe::PROYEK_PROYEK->value),
-                ]
-            ]);
+            self::validate($request);
         }
+    }
+    public static function validate(Request $request){
+        $request->validate([
+            'peminjaman_id' => [
+                'required',
+                Rule::unique('sj_pengiriman_pps', 'peminjaman_id'),
+                Rule::exists('peminjamans', 'id')
+                ->where('status', PeminjamanStatus::MENUNGGU_SURAT_JALAN->value)
+                ->where('tipe', PeminjamanTipe::PROYEK_PROYEK->value),
+            ]
+        ]);
     }
     public static function createData(Request $request){
         self::validateCreate($request);
         self::updateKodeSurat($request);
+        SuratJalan::setTtdAdmin($request->surat_jalan_id, $request->admin_gudang_id);
+        Peminjaman::updateStatus($request->peminjaman_id, PeminjamanStatus::MENUNGGU_PENGIRIMAN->value);
         return self::create([
             'peminjaman_id' => $request->peminjaman_id,
             'surat_jalan_id' => $request->surat_jalan_id,
         ]);
     }
     public static function updateData(Request $request){
-        self::updateKodeSurat($request);
-        $sj = self::where('surat_jalan_id', $request->surat_jalan_id)->update([
-            'peminjaman_id' => $request->peminjaman_id,
-            'surat_jalan_id' => $request->surat_jalan_id,
-        ]);
-        return $sj;
+        $old_peminjaman_id = SuratJalan::find($request->surat_jalan_id)->sjPengirimanPp->peminjaman->id;
+        if($old_peminjaman_id!=$request->peminjaman_id){
+            self::updateKodeSurat($request);
+            Peminjaman::updateStatus($old_peminjaman_id, PeminjamanStatus::MENUNGGU_SURAT_JALAN->value);
+            Peminjaman::updateStatus($request->peminjaman_id, PeminjamanStatus::MENUNGGU_PENGIRIMAN->value);
+            self::where('surat_jalan_id', $request->surat_jalan_id)->update([
+                'peminjaman_id' => $request->peminjaman_id,
+            ]);
+        }
     }
     public static function updateKodeSurat(Request $request){
         $supervisor = Peminjaman::getSupervisor($request->peminjaman_id)->nama;

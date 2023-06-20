@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('kode_peminjaman');
             $table->enum('tipe',['GUDANG_PROYEK','PROYEK_PROYEK']);
             $table->enum('status',['MENUNGGU_AKSES','AKSES_DITOLAK','MENUNGGU_SURAT_JALAN','MENUNGGU_PENGIRIMAN', 'SEDANG_DIKIRIM', 'DIPINJAM', 'SELESAI'])->default('MENUNGGU_AKSES');
+            $table->timestamps();
             $table->timestamp('tgl_peminjaman');
             $table->timestamp('tgl_berakhir');
-            $table->timestamps();
             $table->softDeletes();
         });
         Schema::table('peminjamans', function (Blueprint $table) {

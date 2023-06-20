@@ -142,7 +142,7 @@ class SuratJalan extends Model
             'kendaraan_id' => 'required|exists:kendaraans,id',
             'tipe' => [
                 'required',
-                [new Enum(SuratJalanTipe::class)],
+                new Enum(SuratJalanTipe::class),
             ],
         ]);
         $request->merge(['ttd_admin' => User::getTTD($request->admin_gudang_id)]);
@@ -170,7 +170,7 @@ class SuratJalan extends Model
         $lokasi = collect();
         $lokasiAsal = collect();
         $lokasiTujuan = collect();
-        $sj = self::find($surat_jalan_id);
+        $sj = self::findOrFail($surat_jalan_id);
         if($sj->sjPengirimanGp !=null){
             $lokasiAsal['nama'] = $sj->sjPengirimanGp->peminjaman->gudang->nama;
             $lokasiAsal['foto'] = $sj->sjPengirimanGp->peminjaman->gudang->gambar;
@@ -209,7 +209,7 @@ class SuratJalan extends Model
         return $lokasi;
     }
     public static function getProjectManager($surat_jalan_id){
-        $sj = self::find($surat_jalan_id);
+        $sj = self::findOrFail($surat_jalan_id);
         if($sj->tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
             return $sj->sjPengirimanGp->peminjaman->menangani->proyek->projectManager;
         }else if($sj->tipe == SuratJalanTipe::PENGEMBALIAN->value){
@@ -219,7 +219,7 @@ class SuratJalan extends Model
         }
     }
     public static function getSupervisor($surat_jalan_id, $sv_peminjam = false){
-        $sj = self::find($surat_jalan_id);
+        $sj = self::findOrFail($surat_jalan_id);
         if($sj->tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
             return $sj->sjPengirimanGp->peminjaman->menangani->supervisor;
         }else if($sj->tipe == SuratJalanTipe::PENGEMBALIAN->value){
@@ -230,7 +230,7 @@ class SuratJalan extends Model
         }
     }
     public static function getAllBarang($surat_jalan_id){
-        $sj = self::find($surat_jalan_id);
+        $sj = self::findOrFail($surat_jalan_id);
         $result = collect();
         if($sj->tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
             $result['barang_habis_pakai'] = Peminjaman::getAllBarang($sj->sjPengirimanGp->peminjaman->id, 'HABIS_PAKAI');

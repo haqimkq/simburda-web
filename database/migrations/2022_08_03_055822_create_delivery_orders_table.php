@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('untuk_perhatian');
             $table->string('perihal');
             $table->string('foto_bukti')->nullable();
-            $table->timestamp('tgl_pengambilan');
             $table->timestamps();
+            $table->timestamp('tgl_pengambilan');
             $table->softDeletes();
         });
         Schema::table('delivery_orders', function (Blueprint $table) {

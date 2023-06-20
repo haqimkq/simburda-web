@@ -65,6 +65,9 @@ class Pengembalian extends Model
         $typePrefix = "RETURN";
         return IDGenerator::generateID(new static,'kode_pengembalian',5,"$typePrefix/$prefix");
     }
+    public static function updateStatus($id, $status){
+        self::where('id', $id)->update(['status' => $status]);
+    }
     public function getCreatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);

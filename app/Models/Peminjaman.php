@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Enum\PeminjamanDetailStatus;
+use App\Enum\PeminjamanStatus;
+use App\Enum\PeminjamanTipe;
 use App\Helpers\Date;
 use App\Helpers\IDGenerator;
 use App\Traits\Uuids;
@@ -47,6 +50,13 @@ class Peminjaman extends Model
     public static function getProyek($id){
         return self::find($id)->menangani->proyek;
     }
+    public static function doesntHaveSjPengirimanGpByAdminGudang($admin_gudang_id){
+        $user = User::find($admin_gudang_id);
+        return self::where('tipe', PeminjamanTipe::GUDANG_PROYEK->value)
+        ->where('gudang_id', $user->adminGudang->gudang_id)
+        ->where('status',PeminjamanStatus::MENUNGGU_SURAT_JALAN->value)
+        ->doesntHave('sjPengirimanGp')->get();
+    }
     public static function getSupervisor($id){
         return self::find($id)->menangani->supervisor;
     }
@@ -79,10 +89,9 @@ class Peminjaman extends Model
         }
         return $result;
     }
-    public static function updateStatus($id, $status){
-        self::where('id', $id)->update([
-            'status' => $status
-        ]);
+    public static function updateStatus($id, $status, $peminjaman_detail_status=PeminjamanDetailStatus::MENUNGGU_AKSES->value){
+        self::where('id', $id)->update(['status' => $status]);
+        PeminjamanDetail::where('peminjaman_id', $id)->update(['status', $peminjaman_detail_status]);
     }
     public static function generateKodePeminjaman($tipe, $client, $supervisor){
         $clientAcronym = IDGenerator::getAcronym($client);
@@ -104,6 +113,15 @@ class Peminjaman extends Model
     }
 
     public function getUpdatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
+    public function getTglPeminjamanAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
+
+    public function getTglBerakhirAttribute($date)
     {
         return Date::dateToMillisecond($date);
     }

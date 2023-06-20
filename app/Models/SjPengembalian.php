@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enum\PengembalianStatus;
 use App\Helpers\Date;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -40,40 +41,44 @@ class SjPengembalian extends Model
             $request->validate([
                 'surat_jalan_id' => 'required|exists:surat_jalans,id',
             ]);
-            $request->validate([
-                'pengembalian_id' => [
-                    'required',
-                    'exists:pengembalians,id',
-                    Rule::unique('sj_pengembalian', 'pengembalian_id')->ignore($request->surat_jalan_id, 'surat_jalan_id'),
-                ]
-            ]);
+            $old_pengembalian_id = SuratJalan::find($request->surat_jalan_id)->sjPengembalian->pengembalian->id;
+            if($old_pengembalian_id!=$request->pengembalian_id) self::validate($request);
         }else{
-            $request->validate([
-                'pengembalian_id' => [
-                    'required',
-                    Rule::exists('pengembalians', 'id')->where('status', 'MENUNGGU_SURAT_JALAN'),
-                ]
-            ]);
+            self::validate($request);
         }
     }
-    public static function createData(Request $request, $create = true){
-        if($create) return self::create([
+    public static function validate(Request $request){
+        $request->validate([
+            'pengembalian_id' => [
+                'required',
+                Rule::unique('sj_pengembalian', 'pengembalian_id'),
+                Rule::exists('pengembalians', 'id')->where('status', PengembalianStatus::MENUNGGU_SURAT_JALAN->value),
+            ]
+        ]);
+    }
+    public static function createData(Request $request){
+        SuratJalan::setTtdAdmin($request->surat_jalan_id, $request->admin_gudang_id);
+        Pengembalian::updateStatus($request->pengembalian_id, PengembalianStatus::MENUNGGU_PEGEMBALIAN->value);
+        return self::create([
             'pengembalian_id' => $request->pengembalian_id,
             'surat_jalan_id' => $request->surat_jalan_id,
         ]);
     }
     public static function updateData(Request $request){
-        self::updateKodeSurat($request);
-        self::where('surat_jalan_id', $request->surat_jalan_id)->update([
-            'pengembalian_id' => $request->pengembalian_id,
-            'surat_jalan_id' => $request->surat_jalan_id,
-        ]);
-        return self::where('surat_jalan_id', $request->surat_jalan_id)->first();
+        $old_pengembalian_id = SuratJalan::find($request->surat_jalan_id)->sjPengembalian->pengembalian->id;
+        if($old_pengembalian_id!=$request->pengembalian_id){
+            self::updateKodeSurat($request);
+            Pengembalian::find($old_pengembalian_id)->update(['status'=>PengembalianStatus::MENUNGGU_SURAT_JALAN->value]);
+            Pengembalian::find($request->pengembalian_id)->update(['status'=>PengembalianStatus::MENUNGGU_PEGEMBALIAN->value]);
+            self::where('surat_jalan_id', $request->surat_jalan_id)->update([
+                'pengembalian_id' => $request->pengembalian_id,
+            ]);
+        }
     }
     public static function updateKodeSurat(Request $request){
-        $peminjaman = Pengembalian::find($request->pengembalian_id)->peminjaman;
-        $supervisor = Peminjaman::getSupervisor($peminjaman->id)->nama;
-        $client = Peminjaman::getProyek($peminjaman->id)->client;
+        $pengembalian = Pengembalian::find($request->pengembalian_id)->pengembalian;
+        $supervisor = Peminjaman::getSupervisor($pengembalian->id)->nama;
+        $client = Peminjaman::getProyek($pengembalian->id)->client;
         SuratJalan::where('id', $request->surat_jalan_id)->update(['kode_surat'=>SuratJalan::generateKodeSurat($request->tipe, $client, $supervisor)]);
     }
 }
