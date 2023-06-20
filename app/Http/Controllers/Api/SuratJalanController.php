@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enum\SuratJalanStatus;
+use App\Enum\SuratJalanTipe;
 use App\Helpers\Date;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
@@ -12,10 +14,12 @@ use App\Models\SjPengembalian;
 use App\Models\SjPengirimanGp;
 use App\Models\SjPengirimanPp;
 use App\Models\SuratJalan;
+use App\Models\TtdVerification;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Enum;
 
 class SuratJalanController extends Controller
 {
@@ -23,10 +27,11 @@ class SuratJalanController extends Controller
         try {
             $sj=SuratJalan::createData($request);
             $request->merge(['surat_jalan_id' => $sj->id]);
-            if($sj->tipe=='PENGIRIMAN_PROYEK_PROYEK'){
+            
+            if($sj->tipe==SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value){
                 SjPengirimanPp::createData($request);
                 $sjCreate = 'Pengiriman Proyek-Proyek';
-            }else if($sj->tipe=='PENGIRIMAN_GUDANG_PROYEK'){
+            }else if($sj->tipe==SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
                 SjPengirimanGp::createData($request);
                 $sjCreate = 'Pengiriman Gudang-Proyek';
             }else{
@@ -34,7 +39,7 @@ class SuratJalanController extends Controller
                 $sjCreate = 'Pengembalian Proyek-Gudang';
             }
             Kendaraan::setLogistic($request);
-            return ResponseFormatter::success(null, null, "Berhasil Menambahkan Surat Jalan $sjCreate");
+            return ResponseFormatter::success("surat_jalan_id", $sj->id, "Berhasil Menambahkan Surat Jalan $sjCreate");
         } catch (Exception $error) {
             return ResponseFormatter::error("Gagal Menambahkan Surat Jalan: ". $error->getMessage());
         }
@@ -45,18 +50,18 @@ class SuratJalanController extends Controller
             $surat_jalan_id = $request->route('surat_jalan_id');
             $request->merge(['surat_jalan_id' => $surat_jalan_id]);
             $sj=SuratJalan::updateData($request);
-            if($sj->tipe=='PENGIRIMAN_PROYEK_PROYEK'){
+            if($sj->tipe==SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value){
                 SjPengirimanPp::updateData($request);
-                $sjCreate = 'Pengiriman Proyek-Proyek';
-            }else if($sj->tipe=='PENGIRIMAN_GUDANG_PROYEK'){
+                $sjUpdate = 'Pengiriman Proyek-Proyek';
+            }else if($sj->tipe==SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
                 SjPengirimanGp::updateData($request);
-                $sjCreate = 'Pengiriman Gudang-Proyek';
+                $sjUpdate = 'Pengiriman Gudang-Proyek';
             }else{
                 SjPengembalian::updateData($request);
-                $sjCreate = 'Pengembalian Proyek-Gudang';
+                $sjUpdate = 'Pengembalian Proyek-Gudang';
             }
             Kendaraan::setLogistic($request);
-            return ResponseFormatter::success(null, null, "Berhasil Mengupdate Surat Jalan $sjCreate");
+            return ResponseFormatter::success("surat_jalan_id", $sj->id, "Berhasil Mengupdate Surat Jalan $sjUpdate");
         } catch (Exception $error) {
             return ResponseFormatter::error("Gagal Mengupdate Surat Jalan: ". $error);
         }
@@ -67,8 +72,14 @@ class SuratJalanController extends Controller
             $user = $request->user();
             
             $request->validate([
-                'tipe' => 'required|in:PENGIRIMAN_GUDANG_PROYEK,PENGIRIMAN_PROYEK_PROYEK,PENGEMBALIAN',
-                'status' => 'required|in:MENUNGGU_KONFIRMASI_DRIVER,DRIVER_DALAM_PERJALANAN,SELESAI',
+                'tipe' => [
+                    'required',
+                    new Enum(SuratJalanTipe::class),
+                ],
+                'status' => [
+                    'required',
+                    new Enum(SuratJalanStatus::class),
+                ]
             ]);
             $status = $request->query('status');
             $size = $request->query('size') ?? 10;
@@ -101,7 +112,10 @@ class SuratJalanController extends Controller
         try{
             $user = $request->user();
             $request->validate([
-                'tipe' => 'required|in:PENGIRIMAN_GUDANG_PROYEK,PENGIRIMAN_PROYEK_PROYEK,PENGEMBALIAN',
+                'tipe' => [
+                    'required',
+                    new Enum(SuratJalanTipe::class),
+                ],
             ]);
             $size = $request->query('size') ?? 5;
             $tipe = $request->query('tipe');
@@ -121,85 +135,35 @@ class SuratJalanController extends Controller
                 'id' => 'required|exists:surat_jalans,id',
             ]);
 
-            $response = SuratJalan::where('id', $surat_jalan_id)->first();
+            $response = SuratJalan::find($request->id);
             $tipe = $response->tipe;
-            if($tipe == 'PENGIRIMAN_GUDANG_PROYEK'){
-                $barang_habis_pakai = Peminjaman::getAllBarang($response->sjPengirimanGp->peminjaman->id, 'HABIS_PAKAI');
-                $barang_tidak_habis_pakai = Peminjaman::getAllBarang($response->sjPengirimanGp->peminjaman->id, 'TIDAK_HABIS_PAKAI');
-                $sj_combine = 'sjPengirimanGp';
-            }else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK'){
-                $barang_habis_pakai = Peminjaman::getAllBarang($response->sjPengirimanPp->peminjaman->id, 'HABIS_PAKAI');
-                $barang_tidak_habis_pakai = Peminjaman::getAllBarang($response->sjPengirimanPp->peminjaman->id, 'TIDAK_HABIS_PAKAI');
-                $sj_combine = 'sjPengirimanPp';
-            }else{
-                $barang_habis_pakai = Pengembalian::getAllBarang($response->sjPengembalian->pengembalian->id, 'HABIS_PAKAI');
-                $barang_tidak_habis_pakai = Pengembalian::getAllBarang($response->sjPengembalian->pengembalian->id, 'TIDAK_HABIS_PAKAI');
-                $sj_combine = 'sjPengembalian';
-            }
-            $proyek = ($sj_combine!='sjPengembalian') ?$response->$sj_combine->peminjaman->menangani->proyek : $response->$sj_combine->pengembalian->peminjaman->menangani->proyek;
-
-            $coordinate_proyek_tujuan = ($sj_combine != 'sjPengembalian') ? $response->$sj_combine->peminjaman->menangani->proyek->latitude . "|" . $response->$sj_combine->peminjaman->menangani->proyek->longitude : $response->$sj_combine->pengembalian->peminjaman->menangani->proyek->latitude . "|" . $response->$sj_combine->pengembalian->peminjaman->menangani->proyek->longitude;
-
-            $coordinate_gudang = ($sj_combine != 'sjPengembalian') ? $response->$sj_combine->peminjaman->gudang->latitude . "|" . $response->$sj_combine->peminjaman->gudang->longitude : $response->$sj_combine->pengembalian->peminjaman->gudang->latitude . "|" . $response->$sj_combine->pengembalian->peminjaman->gudang->longitude;
-
-            $nama_proyek_asal = null;
-            $ttd_supervisor_peminjam = null;
-            $nama_gudang = null;
-
-            if($tipe=='PENGIRIMAN_PROYEK_PROYEK'){
-                $alamat_proyek_asal = $response->$sj_combine->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->alamat;
-                $foto_proyek_asal = $response->$sj_combine->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->foto;
-                $nama_proyek_asal = $response->$sj_combine->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->nama_proyek;
-                $coordinate_proyek_asal = $response->$sj_combine->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->latitude . "|" . $response->$sj_combine->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->longitude;
-                $ttd_supervisor_peminjam = $response->$sj_combine->ttd_supervisor_peminjam;
-                $tempat_asal = [
-                    'nama' => $nama_proyek_asal,
-                    'alamat' => $alamat_proyek_asal,
-                    'foto' => $foto_proyek_asal,
-                    'coordinate' => $coordinate_proyek_asal,    
-                ];
-            }else if($tipe=='PENGIRIMAN_GUDANG_PROYEK'){
-                $alamat_gudang = $response->$sj_combine->peminjaman->gudang->alamat;
-                $foto_gudang = $response->$sj_combine->peminjaman->gudang->gambar;
-                $nama_gudang = $response->$sj_combine->peminjaman->gudang->nama;
-                $tempat_asal = [
-                    'nama' => $nama_gudang,
-                    'foto' => $foto_gudang,
-                    'alamat' => $alamat_gudang,
-                    'coordinate' => $coordinate_gudang,   
-                ];
-            }else{
-                $alamat_gudang = $response->$sj_combine->pengembalian->peminjaman->gudang->alamat;
-                $foto_gudang = $response->$sj_combine->pengembalian->peminjaman->gudang->gambar;
-                $nama_gudang = $response->$sj_combine->pengembalian->peminjaman->gudang->nama;
-                $tempat_asal = [
-                    'nama' => $proyek->nama_proyek,
-                    'alamat' => $proyek->alamat,
-                    'foto' => $proyek->foto,
-                    'coordinate' => $coordinate_proyek_tujuan,
-                ];
-            }
-            $project_manager = ($sj_combine != 'sjPengembalian') ? $response->$sj_combine->peminjaman->menangani->proyek->projectManager : $response->$sj_combine->pengembalian->peminjaman->menangani->proyek->projectManager;
-            $supervisor = ($sj_combine != 'sjPengembalian') ? $response->$sj_combine->peminjaman->menangani->supervisor : $response->$sj_combine->pengembalian->peminjaman->menangani->supervisor;
-            $admin_gudang = ($response->adminGudang) ? [
+            $barang = SuratJalan::getAllBarang($response->id);
+            $supervisor_peminjam = ($tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value) 
+                ? SuratJalan::getSupervisor($response->id, true) : null;
+            $ttd_supervisor_peminjam = ($tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value) 
+                ? $response->sjPengirimanPp->ttd_supervisor_peminjam : null;
+            $project_manager = SuratJalan::getProjectManager($response->id);
+            $supervisor = SuratJalan::getSupervisor($response->id);
+            
+            $admin_gudang = [
                 'nama' => $response->adminGudang->nama,
                 'no_hp' => $response->adminGudang->no_hp,
                 'foto' => $response->adminGudang->foto,
-            ] : null;
+            ];
 
-            $kendaraan = ($response->kendaraan) ? [
+            $kendaraan = [
                 'merk' => $response->kendaraan->merk,
                 'plat_nomor' => $response->kendaraan->plat_nomor,
                 'gambar' => $response->kendaraan->gambar,
                 'jenis' => $response->kendaraan->jenis,
-            ] : null;
+            ];
 
-            $logistic = ($response->logistic) ? [
+            $logistic = [
                 'id' => $response->logistic->id,
                 'nama' => $response->logistic->nama,
                 'no_hp' => $response->logistic->no_hp,
                 'foto' => $response->logistic->foto,
-            ] : null;
+            ];
             
             $sv = ($supervisor) ? [
                 'nama' => $supervisor->nama,
@@ -207,25 +171,20 @@ class SuratJalanController extends Controller
                 'foto' => $supervisor->foto,
             ] : null;
             
-            $pm = ($project_manager) ? [
+            $sv_p = ($supervisor_peminjam) ? [
+                'nama' => $supervisor_peminjam->nama,
+                'no_hp' => $supervisor_peminjam->no_hp,
+                'foto' => $supervisor_peminjam->foto,
+            ] : null;
+            
+            $pm = [
                 'nama' => $project_manager->nama,
                 'foto' => $project_manager->foto,
                 'no_hp' => $project_manager->no_hp,
-            ] : null;
-
-            $tempat_tujuan = ($sj_combine != 'sjPengembalian') ? [
-                'nama' => $proyek->nama_proyek,
-                'alamat' => $proyek->alamat,
-                'foto' => $proyek->foto,
-                'coordinate' => $coordinate_proyek_tujuan,
-            ] : [
-                'nama' => $nama_gudang,
-                'foto' => $foto_gudang,
-                'alamat' => $alamat_gudang,
-                'coordinate' => $coordinate_gudang,
             ];
-            
-            $surat_jalan = [
+
+            $lokasi = SuratJalan::getLokasiAsalTujuan($response->id);
+            $surat_jalan = collect([
                 'id' => $response->id,
                 'kode_surat' => $response->kode_surat,
                 'ttd_admin' => $response->ttd_admin,
@@ -241,13 +200,14 @@ class SuratJalanController extends Controller
                 'admin_gudang' => $admin_gudang,
                 'logistic' => $logistic,
                 'supervisor' => $sv,
+                'supervisor_peminjam' => $sv_p,
                 'project_manager' => $pm,
-                'tempat_asal' => $tempat_asal,
-                'tempat_tujuan' => $tempat_tujuan,
-                'barang_habis_pakai' => $barang_habis_pakai,
-                'barang_tidak_habis_pakai' => $barang_tidak_habis_pakai,
-            ];
-            $message = ($response->get()->isEmpty()) ? 'Tidak ada surat jalan' : 'Berhasil Mendapatkan Surat Jalan';
+                'tempat_asal' => $lokasi['lokasi_asal'],
+                'tempat_tujuan' => $lokasi['lokasi_tujuan'],
+                'barang_habis_pakai' => $barang['barang_habis_pakai'],
+                'barang_tidak_habis_pakai' => $barang['barang_tidak_habis_pakai'],
+            ]);
+            $message = ($surat_jalan->isEmpty()) ? 'Tidak ada surat jalan' : 'Berhasil Mendapatkan Surat Jalan';
             return ResponseFormatter::success('surat_jalan', $surat_jalan,$message);
         }catch(Exception $e){
             return ResponseFormatter::error("Gagal Mendapatkan Surat Jalan: ". $e->getMessage());
@@ -262,8 +222,8 @@ class SuratJalanController extends Controller
                 'id' => 'required|exists:surat_jalans,id'
             ]);
 
-            $surat_jalan = SuratJalan::where('id', $request->id)->first();
-            if($surat_jalan->tipe == 'PENGIRIMAN_GUDANG_PROYEK'){
+            $surat_jalan = SuratJalan::find($request->id);
+            if($surat_jalan->tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
 
             }
             $response = collect();

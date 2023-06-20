@@ -1,0 +1,10 @@
+<?php
+namespace App\Enum;
+
+
+enum SuratJalanTipe:string
+{
+    case PENGIRIMAN_PROYEK_PROYEK = 'PENGIRIMAN_PROYEK_PROYEK';
+    case PENGIRIMAN_GUDANG_PROYEK = 'PENGIRIMAN_GUDANG_PROYEK';
+    case PENGEMBALIAN = 'PENGEMBALIAN';
+}

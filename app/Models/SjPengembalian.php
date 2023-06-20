@@ -36,16 +36,23 @@ class SjPengembalian extends Model
         return Date::dateToMillisecond($date);
     }
     public static function validateCreate(Request $request, $surat_jalan_created = true){
-        $request->validate([
-            'pengembalian_id' => [
-                'required',
-                'exists:pengembalians,id',
-                Rule::unique('sj_pengembalian', 'pengembalian_id')->ignore($request->surat_jalan_id, 'surat_jalan_id'),
-            ]
-        ]);
         if($surat_jalan_created){
             $request->validate([
                 'surat_jalan_id' => 'required|exists:surat_jalans,id',
+            ]);
+            $request->validate([
+                'pengembalian_id' => [
+                    'required',
+                    'exists:pengembalians,id',
+                    Rule::unique('sj_pengembalian', 'pengembalian_id')->ignore($request->surat_jalan_id, 'surat_jalan_id'),
+                ]
+            ]);
+        }else{
+            $request->validate([
+                'pengembalian_id' => [
+                    'required',
+                    Rule::exists('pengembalians', 'id')->where('status', 'MENUNGGU_SURAT_JALAN'),
+                ]
             ]);
         }
     }

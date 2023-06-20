@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enum\SuratJalanStatus;
+use App\Enum\SuratJalanTipe;
 use App\Helpers\Date;
 use App\Helpers\IDGenerator;
 use App\Traits\Uuids;
@@ -11,6 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class SuratJalan extends Model
 {
@@ -98,9 +101,9 @@ class SuratJalan extends Model
         $year = Date::getYearNumber();
         $prefix = "$clientAcronym/$supervisorAcronym/$romanMonth/$year";
         $typePrefix = NULL;
-        if($tipe == "PENGIRIMAN_PROYEK_PROYEK"){
+        if($tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value){
             $typePrefix = "SJPP";
-        }else if($tipe == "PENGIRIMAN_GUDANG_PROYEK"){
+        }else if($tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
             $typePrefix = "SJGP";
         }else{
             $typePrefix = "SJPG";
@@ -109,39 +112,46 @@ class SuratJalan extends Model
     }
     public static function createData(Request $request){
         self::validateCreate($request);
-        return self::create([
+        $sj = self::create([
             'admin_gudang_id' => $request->admin_gudang_id,
             'logistic_id' => $request->logistic_id,
             'kendaraan_id' => $request->kendaraan_id,
-            'ttd_admin' => $request->ttd_admin,
             'tipe' => $request->tipe,
         ]);
+        return $sj;
     }
     public static function updateData(Request $request){
         self::validateUpdate($request);
-        self::where('id', $request->surat_jalan_id)->update([
+        $sj = self::where('id', $request->surat_jalan_id)->update([
             'admin_gudang_id' => $request->admin_gudang_id,
             'logistic_id' => $request->logistic_id,
             'kendaraan_id' => $request->kendaraan_id,
-            'ttd_admin' => $request->ttd_admin,
             'tipe' => $request->tipe,
         ]);
-        return self::where('id', $request->surat_jalan_id)->first();
+        return $sj;
+    }
+    public static function setTtdAdmin($id, $admin_gudang_id){
+        self::where('id',$id)->update([
+            'ttd_admin' => TtdVerification::createTtdSJVerification($admin_gudang_id,$id),
+        ]);
     }
     public static function validateCreate(Request $request){
         $request->validate([
             'admin_gudang_id' => 'required|exists:users,id',
             'logistic_id' => 'required|exists:users,id',
             'kendaraan_id' => 'required|exists:kendaraans,id',
-            'tipe' => 'required|in:PENGIRIMAN_GUDANG_PROYEK,PENGIRIMAN_PROYEK_PROYEK,PENGEMBALIAN',
+            'tipe' => [
+                'required',
+                [new Enum(SuratJalanTipe::class)],
+            ],
         ]);
         $request->merge(['ttd_admin' => User::getTTD($request->admin_gudang_id)]);
         $request->validate([
             'ttd_admin' => 'required',
         ]);
-        if($request->tipe=='PENGIRIMAN_PROYEK_PROYEK'){
+        if($request->tipe==SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value){
             SjPengirimanPp::validateCreate($request,false);
-        }else if($request->tipe=='PENGIRIMAN_GUDANG_PROYEK'){
+        }else if($request->tipe==SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
             SjPengirimanGp::validateCreate($request,false);
         }else{
             SjPengembalian::validateCreate($request,false);
@@ -163,27 +173,33 @@ class SuratJalan extends Model
         $sj = self::find($surat_jalan_id);
         if($sj->sjPengirimanGp !=null){
             $lokasiAsal['nama'] = $sj->sjPengirimanGp->peminjaman->gudang->nama;
+            $lokasiAsal['foto'] = $sj->sjPengirimanGp->peminjaman->gudang->gambar;
             $lokasiAsal['alamat'] = $sj->sjPengirimanGp->peminjaman->gudang->alamat;
             $lokasiAsal['coordinate'] = $sj->sjPengirimanGp->peminjaman->gudang->latitude . "|" . $sj->sjPengirimanGp->peminjaman->gudang->longitude;
             
             $lokasiTujuan['nama'] = $sj->sjPengirimanGp->peminjaman->menangani->proyek->nama_proyek;
+            $lokasiTujuan['foto'] = $sj->sjPengirimanGp->peminjaman->menangani->proyek->foto;
             $lokasiTujuan['alamat'] = $sj->sjPengirimanGp->peminjaman->menangani->proyek->alamat;
             $lokasiTujuan['coordinate'] = $sj->sjPengirimanGp->peminjaman->menangani->proyek->latitude . "|" . $sj->sjPengirimanGp->peminjaman->menangani->proyek->longitude;
             
         }else if($sj->sjPengembalian!=null){
             $lokasiAsal['nama'] = $sj->sjPengembalian->pengembalian->peminjaman->menangani->proyek->nama_proyek;
+            $lokasiAsal['foto'] = $sj->sjPengembalian->pengembalian->peminjaman->menangani->proyek->foto;
             $lokasiAsal['alamat'] = $sj->sjPengembalian->pengembalian->peminjaman->menangani->proyek->alamat;
             $lokasiAsal['coordinate'] = $sj->sjPengembalian->pengembalian->peminjaman->menangani->proyek->latitude . "|" . $sj->sjPengembalian->pengembalian->peminjaman->menangani->proyek->longitude;
             
             $lokasiTujuan['nama'] = $sj->sjPengembalian->pengembalian->peminjaman->gudang->nama;
+            $lokasiTujuan['foto'] = $sj->sjPengembalian->pengembalian->peminjaman->gudang->gambar;
             $lokasiTujuan['alamat'] = $sj->sjPengembalian->pengembalian->peminjaman->gudang->alamat;
             $lokasiTujuan['coordinate'] = $sj->sjPengembalian->pengembalian->peminjaman->gudang->latitude . "|" . $sj->sjPengembalian->pengembalian->peminjaman->gudang->longitude;
         }else if($sj->sjPengirimanPp!=null){
             $lokasiAsal['nama'] = $sj->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->nama_proyek;
+            $lokasiAsal['foto'] = $sj->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->foto;
             $lokasiAsal['alamat'] = $sj->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->alamat;
             $lokasiAsal['coordinate'] = $sj->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->latitude . "|" . $sj->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->longitude;
             
             $lokasiTujuan['nama'] = $sj->sjPengirimanPp->peminjaman->menangani->proyek->nama_proyek;
+            $lokasiTujuan['foto'] = $sj->sjPengirimanPp->peminjaman->menangani->proyek->foto;
             $lokasiTujuan['alamat'] = $sj->sjPengirimanPp->peminjaman->menangani->proyek->alamat;
             $lokasiTujuan['coordinate'] = $sj->sjPengirimanPp->peminjaman->menangani->proyek->latitude . "|" . $sj->sjPengirimanPp->peminjaman->menangani->proyek->longitude;
         }
@@ -192,18 +208,54 @@ class SuratJalan extends Model
         $lokasi['lokasi_tujuan'] = $lokasiTujuan;
         return $lokasi;
     }
+    public static function getProjectManager($surat_jalan_id){
+        $sj = self::find($surat_jalan_id);
+        if($sj->tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
+            return $sj->sjPengirimanGp->peminjaman->menangani->proyek->projectManager;
+        }else if($sj->tipe == SuratJalanTipe::PENGEMBALIAN->value){
+            return $sj->sjPengembalian->pengembalian->peminjaman->menangani->proyek->projectManager;
+        }else if($sj->tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value){
+            return $sj->sjPengirimanPp->peminjaman->menangani->proyek->projectManager;
+        }
+    }
+    public static function getSupervisor($surat_jalan_id, $sv_peminjam = false){
+        $sj = self::find($surat_jalan_id);
+        if($sj->tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
+            return $sj->sjPengirimanGp->peminjaman->menangani->supervisor;
+        }else if($sj->tipe == SuratJalanTipe::PENGEMBALIAN->value){
+            return $sj->sjPengembalian->pengembalian->peminjaman->menangani->supervisor;
+        }else if($sj->tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value){
+            if($sv_peminjam == false) return $sj->sjPengirimanPp->peminjaman->menangani->supervisor;
+            else return $sj->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->supervisor;
+        }
+    }
+    public static function getAllBarang($surat_jalan_id){
+        $sj = self::find($surat_jalan_id);
+        $result = collect();
+        if($sj->tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
+            $result['barang_habis_pakai'] = Peminjaman::getAllBarang($sj->sjPengirimanGp->peminjaman->id, 'HABIS_PAKAI');
+            $result['barang_tidak_habis_pakai'] = Peminjaman::getAllBarang($sj->sjPengirimanGp->peminjaman->id, 'TIDAK_HABIS_PAKAI');
+        }else if($sj->tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value){
+            $result['barang_habis_pakai'] = Peminjaman::getAllBarang($sj->sjPengirimanPp->peminjaman->id, 'HABIS_PAKAI');
+            $result['barang_tidak_habis_pakai'] = Peminjaman::getAllBarang($sj->sjPengirimanPp->peminjaman->id, 'TIDAK_HABIS_PAKAI');
+        }else if($sj->tipe == SuratJalanTipe::PENGEMBALIAN->value){
+            $result['barang_habis_pakai'] = Pengembalian::getAllBarang($sj->sjPengembalian->pengembalian->id, 'HABIS_PAKAI');
+            $result['barang_tidak_habis_pakai'] = Pengembalian::getAllBarang($sj->sjPengembalian->pengembalian->id, 'TIDAK_HABIS_PAKAI');
+        }
+        return $result;
+    }
     public static function getAllSuratJalanDalamPerjalananByAdminGudang($adminGudangId,$tipeRelasi){
-        $response = self::where('status', 'DRIVER_DALAM_PERJALANAN');
+        $response = self::where('status', SuratJalanStatus::DRIVER_DALAM_PERJALANAN->value);
         $surat_jalan = $response->has($tipeRelasi)->where('admin_gudang_id', $adminGudangId)->get();
         return $surat_jalan;
     }
     public static function getAllSuratJalanDalamPerjalananByLogistic($logisticId,$tipeRelasi){
-        $response = self::where('status', 'DRIVER_DALAM_PERJALANAN');
+        $response = self::where('status', SuratJalanStatus::DRIVER_DALAM_PERJALANAN->value);
         $surat_jalan = $response->has($tipeRelasi)->where('logistic_id', $logisticId)->get();
         return $surat_jalan;
     }
     public static function getAllSuratJalanDalamPerjalananBySupervisor($supervisorId,$tipeRelasi){
-        $response = self::where('status', 'DRIVER_DALAM_PERJALANAN');
+        $response = self::where('status', SuratJalanStatus::DRIVER_DALAM_PERJALANAN->value);
         if($tipeRelasi=='sjPengirimanGp'){
             $surat_jalan = $response->has('sjPengirimanGp')->whereRelation('sjPengirimanGp.peminjaman.menangani.supervisor', 'id', $supervisorId)->get();
         }else if($tipeRelasi=='sjPengirimanPp'){
@@ -214,7 +266,7 @@ class SuratJalan extends Model
         return $surat_jalan;
     }
     public static function getAllSuratJalanDalamPerjalananByPM($pmId,$tipeRelasi){
-        $response = self::where('status', 'DRIVER_DALAM_PERJALANAN');
+        $response = self::where('status', SuratJalanStatus::DRIVER_DALAM_PERJALANAN->value);
         if($tipeRelasi=='sjPengirimanGp'){
             $surat_jalan = $response->has('sjPengirimanGp')->whereRelation('sjPengirimanGp.peminjaman.menangani.proyek.projectManager', 'id', $pmId)->get();
         }else if($tipeRelasi=='sjPengirimanPp'){
@@ -228,9 +280,9 @@ class SuratJalan extends Model
         $result = collect();
         // $date_start = $date_s ?? date('Y-m-d 00:00:00', strtotime("-1 month"));
         // $date_end = $date_e ?? date("Y-m-d 23:59:59");
-        if($tipe == 'PENGIRIMAN_GUDANG_PROYEK') $tipeRelasi = 'sjPengirimanGp';
-        else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK') $tipeRelasi = 'sjPengirimanPp';
-        else if($tipe == 'PENGEMBALIAN') $tipeRelasi = 'sjPengembalian';
+        if($tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value) $tipeRelasi = 'sjPengirimanGp';
+        else if($tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value) $tipeRelasi = 'sjPengirimanPp';
+        else if($tipe == SuratJalanTipe::PENGEMBALIAN->value) $tipeRelasi = 'sjPengembalian';
 
         if($tipe!='all') {
             $response= self::where('tipe', $tipe);
@@ -249,7 +301,7 @@ class SuratJalan extends Model
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj, $tipeRelasi));
                 }
-            }else if($tipe=='all' && $status == 'DRIVER_DALAM_PERJALANAN'){
+            }else if($tipe=='all' && $status == SuratJalanStatus::DRIVER_DALAM_PERJALANAN->value){
                 foreach(self::getAllSuratJalanDalamPerjalananByAdminGudang($user->id,'sjPengirimanGp') as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj, 'sjPengirimanGp'));
                 }
@@ -268,7 +320,7 @@ class SuratJalan extends Model
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj, $tipeRelasi));
                 }
-            }else if($tipe=='all' && $status == 'DRIVER_DALAM_PERJALANAN'){
+            }else if($tipe=='all' && $status == SuratJalanStatus::DRIVER_DALAM_PERJALANAN->value){
                 foreach(self::getAllSuratJalanDalamPerjalananByLogistic($user->id,'sjPengembalian') as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj, 'sjPengembalian'));
                 }
@@ -280,7 +332,7 @@ class SuratJalan extends Model
                 }
             }
         }else if($user->role == 'SUPERVISOR'){
-            if($tipe == 'PENGIRIMAN_GUDANG_PROYEK'){
+            if($tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
                 $surat_jalan = ($size!='all') ? 
                 $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString()
                 : $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjaman.menangani.supervisor', 'id', $user->id)->get();
@@ -288,7 +340,7 @@ class SuratJalan extends Model
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj, $tipeRelasi));
                 }
-            }else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK'){
+            }else if($tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value){
                 $surat_jalan = ($size!='all') ? 
                 $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString()
                 : $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjaman.menangani.supervisor', 'id', $user->id)->get();
@@ -296,7 +348,7 @@ class SuratJalan extends Model
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj, $tipeRelasi));
                 }
-            }else if($tipe=='PENGEMBALIAN'){
+            }else if($tipe==SuratJalanTipe::PENGEMBALIAN->value){
                 $surat_jalan = ($size!='all') ? 
                 $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString()
                 : $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.supervisor', 'id', $user->id)->get();
@@ -304,7 +356,7 @@ class SuratJalan extends Model
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj, $tipeRelasi));
                 }
-            }else if($tipe=='all' && $status == 'DRIVER_DALAM_PERJALANAN'){
+            }else if($tipe=='all' && $status == SuratJalanStatus::DRIVER_DALAM_PERJALANAN->value){
                 foreach(self::getAllSuratJalanDalamPerjalananBySupervisor($user->id,'sjPengembalian') as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj, 'sjPengembalian'));
                 }
@@ -316,7 +368,7 @@ class SuratJalan extends Model
                 }
             }
         }else if($user->role == 'PROJECT_MANAGER'){
-            if($tipe == 'PENGIRIMAN_GUDANG_PROYEK'){
+            if($tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
                 $surat_jalan = ($size!='all') ? 
                 $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString()
                 : $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->get();
@@ -324,7 +376,7 @@ class SuratJalan extends Model
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj, $tipeRelasi));
                 }
-            }else if($tipe == 'PENGIRIMAN_PROYEK_PROYEK'){
+            }else if($tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value){
                 $surat_jalan = ($size!='all') ? 
                 $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString()
                 : $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->get();
@@ -332,7 +384,7 @@ class SuratJalan extends Model
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj, $tipeRelasi));
                 }
-            }else if($tipe=='PENGEMBALIAN'){
+            }else if($tipe==SuratJalanTipe::PENGEMBALIAN->value){
                 $surat_jalan = ($size!='all') ? 
                 $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString()
                 : $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->get();
@@ -340,7 +392,7 @@ class SuratJalan extends Model
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj, $tipeRelasi));
                 }
-            }else if($tipe=='all' && $status == 'DRIVER_DALAM_PERJALANAN'){
+            }else if($tipe=='all' && $status == SuratJalanStatus::DRIVER_DALAM_PERJALANAN->value){
                 foreach(self::getAllSuratJalanDalamPerjalananBySupervisor($user->id,'sjPengirimanGp') as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj, 'sjPengirimanGp'));
                 }

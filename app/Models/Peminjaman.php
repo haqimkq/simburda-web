@@ -79,6 +79,11 @@ class Peminjaman extends Model
         }
         return $result;
     }
+    public static function updateStatus($id, $status){
+        self::where('id', $id)->update([
+            'status' => $status
+        ]);
+    }
     public static function generateKodePeminjaman($tipe, $client, $supervisor){
         $clientAcronym = IDGenerator::getAcronym($client);
         $supervisorAcronym = IDGenerator::getAcronym($supervisor);
