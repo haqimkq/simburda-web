@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Helpers\Date;
 use App\Helpers\IDGenerator;
 use App\Http\Requests\LogisticFirebaseRequest;
+use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,11 +14,10 @@ use Kreait\Firebase\Contract\Database;
 
 class Logistic extends Model
 {
+    use Uuids;
     use HasFactory;
     use SoftDeletes;
-    protected $primaryKey = null;
-    public $incrementing = false;
-    protected $guarded = [];
+    protected $guarded = ['id'];
     protected $hidden = [
         'deleted_at',
     ];

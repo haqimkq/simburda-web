@@ -19,6 +19,7 @@ class BarangHabisPakaiFactory extends Factory
         $jumlah = fake()->numberBetween(10, 140);
         // $barang = Barang::where('jenis', 'HABIS_PAKAI')->doesntHave('barangHabisPakai')->get()->random();
         return [
+            'id' => fake()->uuid(),
             'ukuran' => $ukuran,
             'satuan' => $satuan,
             'jumlah' => $jumlah,

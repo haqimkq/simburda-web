@@ -47,7 +47,6 @@ class PeminjamanDetailFactory extends Factory
             $barang = Barang::whereDoesntHave('peminjamanDetail', function (Builder $query) use ($peminjaman){
                 $query->where('peminjaman_id', $peminjaman->id);
             })->get()->random();
-            Log::debug("TES PEMINJAMAN: ", [$peminjaman]);
             if($barang->jenis == 'TIDAK_HABIS_PAKAI') {
                 $satuan = 'Unit';
                 $jumlah = 1;

@@ -28,10 +28,6 @@ class Proyek extends Model
         return $this->belongsTo(User::class, 'project_manager_id');
     }
 
-    public function user(){
-        return $this->belongsTo(User::class, 'project_manager_id');
-    }
-
     public static function filterBetweenDate($start_date, $end_date){
         $dateS = new Carbon($start_date);
         $dateE = new Carbon($end_date);

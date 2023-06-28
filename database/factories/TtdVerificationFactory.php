@@ -20,6 +20,7 @@ class TtdVerificationFactory extends Factory
             'user_id' => User::get()->random()->id,
             'keterangan' => fake()->text(),
             'tipe' => fake()->randomElement(['SURAT_JALAN','DELIVERY_ORDER']),
+            'sebagai' => fake()->randomElement(['PEMBUAT','PEMBERI', 'PENERIMA', 'PENGIRIM']),
         ];
     }
 }

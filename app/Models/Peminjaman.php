@@ -23,12 +23,6 @@ class Peminjaman extends Model
         'deleted_at',
     ];
 
-    public function sjPengirimanGp(){
-        return $this->hasOne(SjPengirimanGp::class);
-    }
-    public function sjPengirimanPp(){
-        return $this->hasOne(SjPengirimanPp::class);
-    }
     public function peminjamanDetail(){
         return $this->hasMany(PeminjamanDetail::class);
     }
@@ -38,11 +32,11 @@ class Peminjaman extends Model
     public function peminjamanPp(){
         return $this->hasOne(PeminjamanPp::class);
     }
+    public function peminjamanGp(){
+        return $this->hasOne(PeminjamanGp::class);
+    }
     public function pengembalian(){
         return $this->hasMany(Pengembalian::class);
-    }
-    public function gudang(){
-        return $this->belongsTo(Gudang::class);
     }
     public function menangani(){
         return $this->belongsTo(Menangani::class);
@@ -53,8 +47,8 @@ class Peminjaman extends Model
     public static function doesntHaveSjPengirimanGpByAdminGudang($admin_gudang_id){
         $user = User::find($admin_gudang_id);
         return self::where('tipe', PeminjamanTipe::GUDANG_PROYEK->value)
-        ->where('gudang_id', $user->adminGudang->gudang_id)
         ->where('status',PeminjamanStatus::MENUNGGU_SURAT_JALAN->value)
+        ->whereRelation('peminjamanGp.gudang_id', $user->adminGudang->gudang_id)
         ->doesntHave('sjPengirimanGp')->get();
     }
     public static function getSupervisor($id){
@@ -89,7 +83,8 @@ class Peminjaman extends Model
         }
         return $result;
     }
-    public static function updateStatus($id, $status, $peminjaman_detail_status=PeminjamanDetailStatus::MENUNGGU_AKSES->value){
+    public static function updateStatus($id, $status, $peminjaman_detail_status=null){
+        $peminjaman_detail_status = (null) ? PeminjamanDetailStatus::MENUNGGU_AKSES->value : $peminjaman_detail_status;
         self::where('id', $id)->update(['status' => $status]);
         PeminjamanDetail::where('peminjaman_id', $id)->update(['status', $peminjaman_detail_status]);
     }

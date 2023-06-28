@@ -15,9 +15,7 @@ class PeminjamanPp extends Model
     use SoftDeletes;
     use HasFactory;
     protected $table = 'peminjaman_pps';
-    protected $primaryKey = null;
-    public $incrementing = false;
-    protected $guarded = [];
+    protected $guarded = ['id'];
     protected $hidden = [
         'deleted_at',
     ];
@@ -25,7 +23,10 @@ class PeminjamanPp extends Model
         return $this->belongsTo(Peminjaman::class);
     }
     public function peminjamanAsal(){
-        return $this->belongsTo(Peminjaman::class, 'peminjaman_asal_id');
+        return $this->belongsTo(PeminjamanGp::class, 'peminjaman_asal_id');
+    }
+    public function sjPengirimanPp(){
+        return $this->hasOne(SjPengirimanPp::class, 'peminjaman_id');
     }
     public function getCreatedAtAttribute($date)
     {

@@ -25,7 +25,6 @@ return new class extends Migration
             $table->softDeletes();
         });
         Schema::table('peminjamans', function (Blueprint $table) {
-            $table->foreignUuid('gudang_id')->constrained('gudangs')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('menangani_id')->constrained('menanganis')->onUpdate('cascade')->onDelete('cascade');
         });
     }

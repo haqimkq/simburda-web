@@ -43,7 +43,8 @@ class DeliveryOrderFactory extends Factory
         $untuk_perhatian = fake()->name();
         $ttd = TtdVerification::create([
             'user_id' => $purchasing->id,
-            'tipe' => "DELIVERY_ORDER"
+            'tipe' => "DELIVERY_ORDER",
+            'sebagai' => "PEMBUAT"
         ]);
         return [
             'id' => fake()->uuid(),

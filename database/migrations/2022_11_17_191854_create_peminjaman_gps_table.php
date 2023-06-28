@@ -14,12 +14,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('peminjaman_pps', function (Blueprint $table) {
-            $table->timestamps();
+        Schema::create('peminjaman_gps', function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->softDeletes();
+            $table->timestamps();
         });
-        Schema::table('peminjaman_pps', function (Blueprint $table) {
-            $table->foreignUuid('peminjaman_asal_id')->constrained('peminjamans')->onUpdate('cascade')->onDelete('cascade');
+        Schema::table('peminjaman_gps', function (Blueprint $table) {
+            $table->foreignUuid('gudang_id')->constrained('gudangs')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('peminjaman_id')->constrained('peminjamans')->onUpdate('cascade')->onDelete('cascade');
         });
     }
@@ -32,7 +33,7 @@ return new class extends Migration
     public function down()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        Schema::dropIfExists('peminjaman_pps');
+        Schema::dropIfExists('peminjaman_gps');
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 };

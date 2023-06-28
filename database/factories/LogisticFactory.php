@@ -16,10 +16,10 @@ class LogisticFactory extends Factory
     public function definition()
     {
         return [
+            'id' => fake()->uuid(),
             'user_id' => User::where('role', 'LOGISTIC')->get()->random()->id,
             'latitude' => fake()->latitude(-6.2,-6.1),
             'longitude' => fake()->longitude(106.7,106.8),
-            'kode_logistic' => Logistic::generateLogisticCode(),
             'created_at' => fake()->dateTimeBetween('-2 years', 'now')
         ];
     }

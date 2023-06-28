@@ -3,17 +3,17 @@
 namespace App\Models;
 
 use App\Helpers\IDGenerator;
+use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AdminGudang extends Model
 {
+    use Uuids;
     use SoftDeletes;
     use HasFactory;
-    protected $primaryKey = null;
-    public $incrementing = false;
-    protected $guarded = [];
+    protected $guarded = ['id'];
     protected $hidden = [
         'deleted_at',
     ];

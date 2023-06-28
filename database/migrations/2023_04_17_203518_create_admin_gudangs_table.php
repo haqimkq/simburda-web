@@ -15,7 +15,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('admin_gudangs', function (Blueprint $table) {
-            $table->string('kode_ag');
+            $table->uuid('id')->primary();
             $table->timestamps();
             $table->softDeletes();
         });

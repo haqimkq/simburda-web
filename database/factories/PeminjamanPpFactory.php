@@ -12,6 +12,7 @@ use App\Models\Gudang;
 use App\Models\Menangani;
 use App\Models\Peminjaman;
 use App\Models\PeminjamanDetail;
+use App\Models\PeminjamanGp;
 use App\Models\Pengembalian;
 use App\Models\PengembalianDetail;
 use App\Models\SjPengembalian;
@@ -31,7 +32,7 @@ class PeminjamanPpFactory extends Factory
     public function definition()
     {
         return [
-            'peminjaman_asal_id' => Peminjaman::factory(),
+            'peminjaman_asal_id' => PeminjamanGp::factory(),
             'peminjaman_id' => Peminjaman::factory(),
         ];
     }

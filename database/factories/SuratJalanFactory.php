@@ -4,6 +4,9 @@ namespace Database\Factories;
 
 use App\Helpers\IDGenerator;
 use App\Models\Kendaraan;
+use App\Models\Peminjaman;
+use App\Models\PeminjamanGp;
+use App\Models\PeminjamanPp;
 use App\Models\SuratJalan;
 use App\Models\TtdSjVerification;
 use App\Models\TtdVerification;
@@ -60,29 +63,20 @@ class SuratJalanFactory extends Factory
             $ttdAdminGudang = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => $attributes['admin_gudang_id'],
-                'tipe' => "SURAT_JALAN"
-            ]);
-            TtdSjVerification::create([
-                "ttd_verification_id" => $ttdAdminGudang->id,
+                'tipe' => "SURAT_JALAN",
                 'sebagai' => "PEMBERI",
             ]);
             $ttdDriver = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => $attributes['logistic_id'],
-                'tipe' => "SURAT_JALAN"
-            ]);
-            TtdSjVerification::create([
-                "ttd_verification_id" => $ttdDriver->id,
-                'sebagai' => "PENGIRIM",
+                'tipe' => "SURAT_JALAN",
+                'sebagai' => "PEMBERI",
             ]);
             $ttdSupervisor = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => User::get()->random()->id,
-                'tipe' => "SURAT_JALAN"
-            ]);
-            TtdSjVerification::create([
-                "ttd_verification_id" => $ttdSupervisor->id,
-                'sebagai' => "PENERIMA",
+                'tipe' => "SURAT_JALAN",
+                'sebagai' => "PEMBERI",
             ]);
             return [
                 'status' => $status,
@@ -104,9 +98,6 @@ class SuratJalanFactory extends Factory
                 "id" => fake()->uuid(),
                 "user_id" => $attributes['admin_gudang_id'],
                 'tipe' => "SURAT_JALAN",
-            ]);
-            TtdSjVerification::create([
-                "ttd_verification_id" => $ttdAdminGudang->id,
                 'sebagai' => "PEMBERI",
             ]);
             Kendaraan::where('id', $attributes['kendaraan_id'])->update([
@@ -129,19 +120,13 @@ class SuratJalanFactory extends Factory
                 "id" => fake()->uuid(),
                 "user_id" => $attributes['admin_gudang_id'],
                 'tipe' => "SURAT_JALAN",
-            ]);
-            TtdSjVerification::create([
-                "ttd_verification_id" => $ttdAdminGudang->id,
                 'sebagai' => "PEMBERI",
             ]);
             $ttdDriver = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => $attributes['logistic_id'],
                 'tipe' => "SURAT_JALAN",
-            ]);
-            TtdSjVerification::create([
-                "ttd_verification_id" => $ttdDriver->id,
-                'sebagai' => "PENGIRIM",
+                'sebagai' => "PEMBERI",
             ]);
             $ttdSupervisor = NULL;
             $foto_bukti = NULL;
@@ -154,6 +139,51 @@ class SuratJalanFactory extends Factory
                 'ttd_driver' => $ttdDriver,
                 'ttd_supervisor' => $ttdSupervisor,
                 'foto_bukti' => $foto_bukti,
+            ];
+        });
+    }
+    public function pengembalian(){
+        return $this->state(function (array $attributes, Peminjaman $peminjaman){
+            $proyek = $peminjaman->menangani->proyek;
+            $supervisor = $peminjaman->menangani->supervisor;
+            $admin_gudang_id = $peminjaman->gudang->adminGudang->random(1)->all()[0]->user_id;
+            return [
+                'id' => fake()->uuid(),
+                'admin_gudang_id' => $admin_gudang_id,
+                'tipe' => 'PENGEMBALIAN',
+                'kode_surat' => SuratJalan::generateKodeSurat("PENGEMBALIAN", $proyek->client, $supervisor->nama),
+                'updated_at' => $peminjaman->created_at,
+                'created_at' => $peminjaman->created_at
+            ];
+        });
+    }
+    public function pengirimanGp(){
+        return $this->state(function (array $attributes, PeminjamanGp $peminjamanGp){
+            $proyek = $peminjamanGp->peminjaman->menangani->proyek;
+            $supervisor = $peminjamanGp->peminjaman->menangani->supervisor;
+            $admin_gudang_id = $peminjamanGp->gudang->adminGudang->random(1)->all()[0]->user_id;
+            return [
+                'id' => fake()->uuid(),
+                'admin_gudang_id' => $admin_gudang_id,
+                'tipe' => 'PENGIRIMAN_GUDANG_PROYEK',
+                'kode_surat' => SuratJalan::generateKodeSurat("PENGIRIMAN_GUDANG_PROYEK", $proyek->client, $supervisor->nama),
+                'updated_at' => $peminjamanGp->peminjaman->created_at,
+                'created_at' => $peminjamanGp->peminjaman->created_at
+            ];
+        });
+    }
+    public function pengirimanPp(){
+        return $this->state(function (array $attributes, PeminjamanPp $peminjamanPp){
+            $proyek = $peminjamanPp->peminjaman->menangani->proyek;
+            $supervisor = $peminjamanPp->peminjaman->menangani->supervisor;
+            $admin_gudang_id = $peminjamanPp->peminjamanAsal->gudang->adminGudang->random(1)->all()[0]->user_id;
+            return [
+                'id' => fake()->uuid(),
+                'admin_gudang_id' => $admin_gudang_id,
+                'tipe' => 'PENGIRIMAN_GUDANG_PROYEK',
+                'kode_surat' => SuratJalan::generateKodeSurat("PENGIRIMAN_GUDANG_PROYEK", $proyek->client, $supervisor->nama),
+                'updated_at' => $peminjamanPp->peminjaman->created_at,
+                'created_at' => $peminjamanPp->peminjaman->created_at
             ];
         });
     }

@@ -91,15 +91,10 @@ class IDGenerator
         self::reorder_code(SuratJalan::class, 'kode_surat');
         self::reorder_code(Peminjaman::class, 'kode_peminjaman');
         self::reorder_code(Pengembalian::class, 'kode_pengembalian');
-        self::reorder_code(AdminGudang::class, 'kode_ag', false);
-        self::reorder_code(Logistic::class, 'kode_logistic', false);
-        self::reorder_code(Supervisor::class, 'kode_sv', false);
-        self::reorder_code(Purchasing::class, 'kode_purchasing', false);
-        self::reorder_code(ProjectManager::class, 'kode_pm', false);
         self::reorder_code(DeliveryOrder::class, 'kode_do');
         self::reorder_code(PreOrder::class, 'kode_po');
     }
-    public static function reorder_code($model, $column_name, $havePrimary = true){
+    public static function reorder_code($model, $column_name){
         $datas = $model::orderBy('created_at', 'asc')->get();
         foreach ($datas as $key=>$data){
             # Get first code without suffix
@@ -109,38 +104,22 @@ class IDGenerator
             # Increase Last Number of code
             $increment_last_number = ($key)+1;
             $last_number_length = strlen($increment_last_number);
-            if($havePrimary){
-                if($key==0){
-                    $ori_length = $length-1;
-                    $last_number = '1';
-                }else{
-                    $ori_length = $length - $last_number_length;
-                    $last_number = $increment_last_number;
-                }
-                $zeros = "";
-                for($i=0;$i<$ori_length;$i++){
-                    $zeros.="0";
-                }
-                $newCode = "$zeros$last_number$suffix";
-                $model::where('id', $data->id)->update([$column_name => $newCode]);
-                if($column_name == 'kode_surat'){
-                    $sj = SuratJalan::find($data->id);
-                    TtdVerification::updateTtdSjVerificationFromSuratJalan($sj);
-                }
+            if($key==0){
+                $ori_length = $length-1;
+                $last_number = '1';
             }else{
-                if($key==0){
-                    $ori_length = $length-1;
-                    $last_number = '1';
-                }else{
-                    $ori_length = $length - $last_number_length;
-                    $last_number = $increment_last_number;
-                }
-                $zeros = "";
-                for($i=0;$i<$ori_length;$i++){
-                    $zeros.="0";
-                }
-                $newCode = "$zeros$last_number$suffix";
-                $model::where('user_id', $data->user_id)->update([$column_name => $newCode]);
+                $ori_length = $length - $last_number_length;
+                $last_number = $increment_last_number;
+            }
+            $zeros = "";
+            for($i=0;$i<$ori_length;$i++){
+                $zeros.="0";
+            }
+            $newCode = "$zeros$last_number$suffix";
+            $model::where('id', $data->id)->update([$column_name => $newCode]);
+            if($column_name == 'kode_surat'){
+                $sj = SuratJalan::find($data->id);
+                TtdVerification::updateTtdSjVerificationFromSuratJalan($sj);
             }
         }
     }

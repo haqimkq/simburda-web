@@ -36,9 +36,6 @@ class TtdVerification extends Model
     public function ttdSjSupervisorPeminjam(){
         return $this->hasOne(SjPengirimanPp::class,'ttd_supervisor_peminjam');
     }
-    public function ttdSjVerification(){
-        return $this->hasOne(TtdSjVerification::class);
-    }
     public function getCreatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);
@@ -49,13 +46,10 @@ class TtdVerification extends Model
     }
     public static function createTtdSJVerification($user_id, $surat_jalan_id){
         $user = User::find($user_id);
+        $sj = SuratJalan::find($surat_jalan_id);
         $ttd_verification = TtdVerification::create([
             "user_id" => $user_id,
-            'tipe' => "SURAT_JALAN"
-        ]);
-        $sj = SuratJalan::find($surat_jalan_id);
-        TtdSjVerification::create([
-            "ttd_verification_id" => $ttd_verification->id,
+            'tipe' => "SURAT_JALAN",
             'sebagai' => self::setSebagaiTtdSjVerification($user, $sj),
         ]);
         return $ttd_verification->id;
@@ -71,9 +65,7 @@ class TtdVerification extends Model
         }
         if($sj->ttd_admin!=null){
             TtdVerification::find($sj->ttd_admin)->update([
-                'user_id' => $sj->adminGudang->id
-            ]);
-            TtdSjVerification::where('ttd_verification_id', $sj->ttd_admin)->update([
+                'user_id' => $sj->adminGudang->id,
                 'sebagai' => self::setSebagaiTtdSjVerification($sj->adminGudang, $sj)
             ]);
         }
@@ -83,18 +75,14 @@ class TtdVerification extends Model
             ]);
         if($sj->ttd_supervisor!=null){
             TtdVerification::where('id', $sj->ttd_supervisor)->update([
-                'user_id' => $supervisor->id
-            ]);
-            TtdSjVerification::where('ttd_verification_id', $sj->ttd_supervisor)->update([
+                'user_id' => $supervisor->id,
                 'sebagai' => self::setSebagaiTtdSjVerification($supervisor, $sj)
             ]);
         }
         if($sj->sjPengirimanPp!=null){
             if($sj->sjPengirimanPp->ttdSupervisorPeminjam!=null){
                 TtdVerification::where('id', $sj->sjPengirimanPp->ttdSupervisorPeminjam)->update([
-                    'user_id' => $supervisor_peminjam->id
-                ]);
-                TtdSjVerification::where('ttd_verification_id', $sj->sjPengirimanPp->ttdSupervisor_peminjamPeminjam)->update([
+                    'user_id' => $supervisor_peminjam->id,
                     'sebagai' => self::setSebagaiTtdSjVerification($supervisor, $sj)
                 ]);
             }
@@ -145,7 +133,7 @@ class TtdVerification extends Model
         $kode_surat = $sj->kode_surat;
 
         $ttd = $ttd_verification->user->ttd; 
-        $sebagai = $ttd_verification->ttdSjVerification->sebagai;
+        $sebagai = $ttd_verification->sebagai;
         $sebagaiLower = ucfirst(strtolower($sebagai));
         $roleLower = ucwords(strtolower(str_replace("_"," ",$ttd_verification->user->role)));
         $tipeLower = ucwords(strtolower(str_replace("_"," ",$tipe)));

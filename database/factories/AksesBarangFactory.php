@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\AksesBarang;
 use App\Models\Menangani;
 use App\Models\Peminjaman;
+use App\Models\PeminjamanGp;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -42,5 +43,53 @@ class AksesBarangFactory extends Factory
             'project_manager_id' => $project_manager_id,
             'disetujui_pm' => $disetujui_pm,
         ];
+    }
+    public function needAccessWithPeminjaman(){
+        return $this->state(function (array $attributes, Peminjaman $peminjaman){
+            return [
+                'disetujui_admin' => NULL,
+                'disetujui_pm' => NULL,
+                'admin_gudang_id' => NULL,
+                'project_manager_id' => $peminjaman->menangani->proyek->projectManager->id,
+                'peminjaman_id' => $peminjaman->id,
+                'updated_at' => $peminjaman->created_at,
+                'created_at' => $peminjaman->created_at
+            ];
+        });
+    }
+    public function accessNotGrantedWithPeminjaman(){
+        return $this->state(function (array $attributes, Peminjaman $peminjaman){
+            $ditolak_pm = fake()->boolean();
+            $admin_gudang_id = ($peminjaman->peminjamanGp != null) 
+                ? $peminjaman->peminjamanGp->gudang->adminGudang->random(1)->all()[0]['user_id']
+                : $peminjaman->peminjamanPp->peminjamanAsal->gudang->adminGudang->random(1)->all()[0]['user_id'];
+            return [
+                'disetujui_admin' => false,
+                'disetujui_pm' => $ditolak_pm,
+                'keterangan_pm' => (!$ditolak_pm) ? fake()->text() : null,
+                'keterangan_admin' => fake()->text(),
+                'admin_gudang_id' => $admin_gudang_id,
+                'project_manager_id' => $peminjaman->menangani->proyek->projectManager->id,
+                'peminjaman_id' => $peminjaman->id,
+                'updated_at' => $peminjaman->created_at,
+                'created_at' => $peminjaman->created_at
+            ];
+        });
+    }
+    public function accessGrantedWithPeminjaman(){
+        return $this->state(function (array $attributes, Peminjaman $peminjaman){
+            $admin_gudang_id = ($peminjaman->peminjamanGp != null) 
+                ? $peminjaman->peminjamanGp->gudang->adminGudang->random(1)->all()[0]['user_id']
+                : $peminjaman->peminjamanPp->peminjamanAsal->gudang->adminGudang->random(1)->all()[0]['user_id'];
+            return [
+                'disetujui_admin' => true,
+                'disetujui_pm' => true,
+                'admin_gudang_id' => $admin_gudang_id,
+                'project_manager_id' => $peminjaman->menangani->proyek->projectManager->id,
+                'peminjaman_id' => $peminjaman->id,
+                'updated_at' => $peminjaman->created_at,
+                'created_at' => $peminjaman->created_at
+            ];
+        });
     }
 }

@@ -8,26 +8,34 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class BarangTidakHabisPakai extends Model
+class PeminjamanGp extends Model
 {
     use Uuids;
-    use HasFactory;
     use SoftDeletes;
+    use HasFactory;
+    protected $table = 'peminjaman_gps';
     protected $guarded = ['id'];
     protected $hidden = [
         'deleted_at',
     ];
 
-    public function barang(){
-        return $this->belongsTo(Barang::class);
+    public function sjPengirimanGp(){
+        return $this->hasOne(SjPengirimanGp::class, 'peminjaman_id');
+    }
+    public function suratJalan(){
+        return $this->hasOne(SjPengirimanGp::class, 'peminjaman_id');
     }
     public function peminjaman(){
         return $this->belongsTo(Peminjaman::class);
+    }
+    public function gudang(){
+        return $this->belongsTo(Gudang::class);
     }
     public function getCreatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);
     }
+
     public function getUpdatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);

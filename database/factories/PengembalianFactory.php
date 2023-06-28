@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Peminjaman;
 use App\Models\PeminjamanDetail;
 use App\Models\Pengembalian;
 use App\Models\PengembalianDetail;
@@ -29,5 +30,70 @@ class PengembalianFactory extends Factory
             'kode_pengembalian' => $kode_pengembalian,
             'peminjaman_id' => $peminjaman_detail->peminjaman_id,
         ];
+    }
+
+    public function selesai(){
+        return $this->state(function (array $attributes, Peminjaman $peminjaman){
+            return [
+                'peminjaman_id' => $peminjaman->id,
+                'status' => 'SELESAI',
+                'updated_at' => $peminjaman->created_at,
+                'created_at' => $peminjaman->created_at
+            ];
+        })->has(
+            SjPengembalian::factory()->state(function (array $attributes, Peminjaman $peminjaman, Pengembalian $pengembalian) {
+                return [
+                    'pengembalian_id' => $pengembalian->id,
+                    'updated_at' => $peminjaman->created_at,    
+                    'created_at' => $peminjaman->created_at
+                ];
+            })->for(SuratJalan::factory()->pengembalian()->selesai())
+        , 'sjPengembalian');
+    }
+    public function menungguPengembalian(){
+        return $this->state(function (array $attributes, Peminjaman $peminjaman){
+            return [
+                'peminjaman_id' => $peminjaman->id,
+                'status' => 'MENUNGGU_PENGEMBALIAN',
+                'updated_at' => $peminjaman->created_at,
+                'created_at' => $peminjaman->created_at
+            ];
+        })->has(
+            SjPengembalian::factory()->state(function (array $attributes, Peminjaman $peminjaman, Pengembalian $pengembalian) {
+                return [
+                    'pengembalian_id' => $pengembalian->id,
+                    'updated_at' => $peminjaman->created_at,    
+                    'created_at' => $peminjaman->created_at
+                ];
+            })->for(SuratJalan::factory()->pengembalian()->menunggu())
+        , 'sjPengembalian');
+    }
+    public function sedangDikembalikan(){
+        return $this->state(function (array $attributes, Peminjaman $peminjaman){
+            return [
+                'peminjaman_id' => $peminjaman->id,
+                'status' => 'SEDANG_DIKEMBALIKAN',
+                'updated_at' => $peminjaman->created_at,
+                'created_at' => $peminjaman->created_at
+            ];
+        })->has(
+            SjPengembalian::factory()->state(function (array $attributes, Peminjaman $peminjaman, Pengembalian $pengembalian) {
+                return [
+                    'pengembalian_id' => $pengembalian->id,
+                    'updated_at' => $peminjaman->created_at,    
+                    'created_at' => $peminjaman->created_at
+                ];
+            })->for(SuratJalan::factory()->pengembalian()->dalamPerjalanan())
+        , 'sjPengembalian');
+    }
+    public function menungguSuratJalan(){
+        return $this->state(function (array $attributes, Peminjaman $peminjaman){
+            return [
+                'peminjaman_id' => $peminjaman->id,
+                'status' => 'MENUNGGU_SURAT_JALAN',
+                'updated_at' => $peminjaman->created_at,
+                'created_at' => $peminjaman->created_at
+            ];
+        });
     }
 }

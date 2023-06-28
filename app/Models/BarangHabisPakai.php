@@ -10,11 +10,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BarangHabisPakai extends Model
 {
+    use Uuids;
     use HasFactory;
     use SoftDeletes;
-    protected $primaryKey = null;
-    public $incrementing = false;
-    protected $guarded = [];
+    protected $guarded = ['id'];
     protected $hidden = [
         'deleted_at',
     ];

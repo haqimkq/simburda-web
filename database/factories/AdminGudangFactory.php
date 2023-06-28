@@ -17,9 +17,9 @@ class AdminGudangFactory extends Factory
     public function definition()
     {
         return [
+            'id' => fake()->uuid(),
             'user_id' => User::where('role', 'ADMIN_GUDANG')->get()->random()->id,
             'gudang_id' => Gudang::get()->random()->id,
-            'kode_ag' => AdminGudang::generateKodeAG(),
             'created_at' => fake()->dateTimeBetween('-2 years', 'now')
         ];
     }

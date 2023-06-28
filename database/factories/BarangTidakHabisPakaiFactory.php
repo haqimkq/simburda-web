@@ -26,7 +26,7 @@ class BarangTidakHabisPakaiFactory extends Factory
         // $output_file = "assets/qr-code/$id.png";
         // Storage::disk('public')->put($output_file, $image);
         return [
-            // 'qrcode' => $output_file,
+            'id' => fake()->uuid(),
             'keterangan' => $keterangan,
             'kondisi' => $kondisi,
             'nomor_seri' => $nomor_seri,
