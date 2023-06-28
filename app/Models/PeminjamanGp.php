@@ -22,9 +22,6 @@ class PeminjamanGp extends Model
     public function sjPengirimanGp(){
         return $this->hasOne(SjPengirimanGp::class, 'peminjaman_id');
     }
-    public function suratJalan(){
-        return $this->hasOne(SjPengirimanGp::class, 'peminjaman_id');
-    }
     public function peminjaman(){
         return $this->belongsTo(Peminjaman::class);
     }

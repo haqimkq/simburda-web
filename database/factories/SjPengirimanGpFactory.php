@@ -37,28 +37,33 @@ class SjPengirimanGpFactory extends Factory
         );
     }
     public function dalamPerjalanan(){
-        // return $this->state(function (array $attributes, PeminjamanGp $peminjamanGp){
-        //     return [
-        //         'peminjaman_id' => $peminjamanGp->id,
-        //     ];
-        // })->for(SuratJalan::factory()->pengirimanGp()->dalamPerjalanan());
-        return SuratJalan::factory()->pengirimanGp()->dalamPerjalanan()->has(
-            $this->state(function (array $attributes, PeminjamanGp $peminjamanGp, SuratJalan $sj){
-                return [
-                    'surat_jalan_id' => $sj->id,
-                    'peminjaman_id' => $peminjamanGp->id,
-                ];
-            })
-        );
+        return $this->state(function (array $attributes, PeminjamanGp $peminjamanGp){
+            return [
+                'peminjaman_id' => $peminjamanGp->id,
+            ];
+        })->for(SuratJalan::factory()->pengirimanGp()->dalamPerjalanan());
+        // return SuratJalan::factory()->pengirimanGp()->dalamPerjalanan()->has(
+        //     $this->state(function (array $attributes, PeminjamanGp $peminjamanGp, SuratJalan $sj){
+        //         return [
+        //             'surat_jalan_id' => $sj->id,
+        //             'peminjaman_id' => $peminjamanGp->id,
+        //         ];
+        //     })
+        // );
     }
     public function menunggu(){
-        return SuratJalan::factory()->pengirimanGp()->menunggu()->has(
-            $this->state(function (array $attributes, PeminjamanGp $peminjamanGp, SuratJalan $sj){
-                return [
-                    'surat_jalan_id' => $sj->id,
-                    'peminjaman_id' => $peminjamanGp->id,
-                ];
-            })
-        );
+        return $this->state(function (array $attributes, PeminjamanGp $peminjamanGp){
+            return [
+                'peminjaman_id' => $peminjamanGp->id,
+            ];
+        })->for(SuratJalan::factory()->pengirimanGp()->menunggu());
+        // return SuratJalan::factory()->pengirimanGp()->menunggu()->has(
+        //     $this->state(function (array $attributes, PeminjamanGp $peminjamanGp, SuratJalan $sj){
+        //         return [
+        //             'surat_jalan_id' => $sj->id,
+        //             'peminjaman_id' => $peminjamanGp->id,
+        //         ];
+        //     })
+        // );
     }
 }
