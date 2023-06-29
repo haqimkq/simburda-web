@@ -41,13 +41,17 @@ class PengembalianFactory extends Factory
                 'created_at' => $peminjaman->created_at
             ];
         })->has(
-            SjPengembalian::factory()->state(function (array $attributes, Peminjaman $peminjaman, Pengembalian $pengembalian) {
+            SjPengembalian::factory()->state(function (array $attributes, Pengembalian $pengembalian) {
+                $sj = SuratJalan::factory()->selesaiSj()->create();
                 return [
+                    'id' => fake()->uuid(),
                     'pengembalian_id' => $pengembalian->id,
-                    'updated_at' => $peminjaman->created_at,    
-                    'created_at' => $peminjaman->created_at
+                    'updated_at' => $pengembalian->peminjaman->created_at,    
+                    'created_at' => $pengembalian->peminjaman->created_at,
+                    'surat_jalan_id' => $sj->id,
                 ];
-            })->for(SuratJalan::factory()->pengembalian()->selesai())
+            })
+            // ->for(SuratJalan::factory()->selesaiSj())
         , 'sjPengembalian');
     }
     public function menungguPengembalian(){
@@ -59,13 +63,17 @@ class PengembalianFactory extends Factory
                 'created_at' => $peminjaman->created_at
             ];
         })->has(
-            SjPengembalian::factory()->state(function (array $attributes, Peminjaman $peminjaman, Pengembalian $pengembalian) {
+            SjPengembalian::factory()->state(function (array $attributes, Pengembalian $pengembalian) {
+                $sj = SuratJalan::factory()->menungguSj()->create();
                 return [
+                    'id' => fake()->uuid(),
                     'pengembalian_id' => $pengembalian->id,
-                    'updated_at' => $peminjaman->created_at,    
-                    'created_at' => $peminjaman->created_at
+                    'updated_at' => $pengembalian->peminjaman->created_at,    
+                    'created_at' => $pengembalian->peminjaman->created_at,
+                    'surat_jalan_id' => $sj->id,
                 ];
-            })->for(SuratJalan::factory()->pengembalian()->menunggu())
+            })
+            // ->for(SuratJalan::factory()->menungguSj())
         , 'sjPengembalian');
     }
     public function sedangDikembalikan(){
@@ -77,13 +85,17 @@ class PengembalianFactory extends Factory
                 'created_at' => $peminjaman->created_at
             ];
         })->has(
-            SjPengembalian::factory()->state(function (array $attributes, Peminjaman $peminjaman, Pengembalian $pengembalian) {
+            SjPengembalian::factory()->state(function (array $attributes, Pengembalian $pengembalian) {
+                $sj = SuratJalan::factory()->dalamPerjalananSj()->create();
                 return [
+                    'id' => fake()->uuid(),
                     'pengembalian_id' => $pengembalian->id,
-                    'updated_at' => $peminjaman->created_at,    
-                    'created_at' => $peminjaman->created_at
+                    'updated_at' => $pengembalian->peminjaman->created_at,    
+                    'created_at' => $pengembalian->peminjaman->created_at,
+                    'surat_jalan_id' => $sj->id,
                 ];
-            })->for(SuratJalan::factory()->pengembalian()->dalamPerjalanan())
+            })
+            // ->for(SuratJalan::factory()->dalamPerjalananSj())
         , 'sjPengembalian');
     }
     public function menungguSuratJalan(){

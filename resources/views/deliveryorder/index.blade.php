@@ -92,7 +92,7 @@
 									@else Belum Diambil
 									@endif
 								</span>
-							<p class="font-medium my-1 line-clamp-2">{{ucfirst($deliveryOrder->kode_delivery)}} </p>
+							<p class="font-bold my-2 line-clamp-2">{{ucfirst($deliveryOrder->kode_do)}} </p>
 							<div class="flex items-center">
 								<p class="border-green mb-2 self-start rounded-full border px-2 py-1 text-xs text-black">
 									{{ count($deliveryOrder->preOrder) }}
@@ -119,18 +119,20 @@
 								<p class="font-normal text-sm mb-2 line-clamp-1 text-gray-700">Driver belum dipilih admin gudang</p>
 							@endif
 						</a>
-						<div class="relative hidden justify-center items-center group-hover:flex w-full h-full">
-							<div class="absolute w-full z-10  h-auto bg-white flex top-0 px-2 left-0 rounded-b-xl pt-0 pb-2 @if ($deliveryOrder->user) shadow-sm @endif" >
-								<form action="{{ route('delivery-order.destroy', $deliveryOrder->id) }}" method="POST">
-									@csrf
-									<button type="submit"
-										class="show_confirm  bg-white rounded-md border border-red-500 py-1 px-3 text-sm text-red-500"
-										data-name="{{ $deliveryOrder->kode_delivery }}">Hapus</button>
-								</form>
-								<a href="{{ route('delivery-order.edit', $deliveryOrder->id) }}"
-									class="bg-primary ml-2 rounded-md py-1 px-3 text-sm text-white self-start">Edit</a>
+						@can('ADMIN')
+							<div class="relative hidden justify-center items-center group-hover:flex w-full h-full">
+								<div class="absolute w-full z-10  h-auto bg-white flex top-0 px-2 left-0 rounded-b-xl pt-0 pb-2 @if ($deliveryOrder->user) shadow-sm @endif" >
+									<form action="{{ route('delivery-order.destroy', $deliveryOrder->id) }}" method="POST">
+										@csrf
+										<button type="submit"
+											class="show_confirm  bg-white rounded-md border border-red-500 py-1 px-3 text-sm text-red-500"
+											data-name="{{ $deliveryOrder->kode_delivery }}">Hapus</button>
+									</form>
+									<a href="{{ route('delivery-order.edit', $deliveryOrder->id) }}"
+										class="bg-primary ml-2 rounded-md py-1 px-3 text-sm text-white self-start">Edit</a>
+								</div>
 							</div>
-						</div>
+						@endcan
 					</div>
 				</div>
 				@endforeach

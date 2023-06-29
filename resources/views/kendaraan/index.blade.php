@@ -37,7 +37,7 @@
 				@include('shared.alerts.success')
 			@endif
 			@section('headerName', 'Kendaraan')
-			@section('role', $authUser->role)
+			@section('role', App\Helpers\Utils::underscoreToNormal($authUser->role))
 			@if ($authUser->foto)
 				@section('foto', asset($authUser->foto))
 			@endif

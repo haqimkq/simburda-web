@@ -19,11 +19,11 @@ class PeminjamanPp extends Model
     protected $hidden = [
         'deleted_at',
     ];
-    public function peminjaman(){
-        return $this->belongsTo(Peminjaman::class);
+    public function peminjamanPp(){
+        return $this->belongsTo(PeminjamanPp::class, 'peminjaman_id');
     }
     public function peminjamanAsal(){
-        return $this->belongsTo(PeminjamanGp::class, 'peminjaman_asal_id');
+        return $this->belongsTo(Peminjaman::class, 'peminjaman_asal_id');
     }
     public function sjPengirimanPp(){
         return $this->hasOne(SjPengirimanPp::class, 'peminjaman_id');

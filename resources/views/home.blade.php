@@ -3,7 +3,7 @@
 @section('content')
 	<div class="w-full md:ml-[16em] md:px-4">
 	@section('headerName', 'Dashboard')
-	@section('role', $authUser->role)
+	@section('role', App\Helpers\Utils::underscoreToNormal($authUser->role))
 	@section('nama', ucfirst(explode(' ', $authUser->nama, 2)[0]))
 	@if ($authUser->foto)
 		@section('foto', asset($authUser->foto))

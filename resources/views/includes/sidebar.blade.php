@@ -23,7 +23,7 @@
 			<a href="/home" class="sidebar-link text-sm {{ request()->is('home*') ? 'bg-primary-light' : '' }}">
 				<span class="ml-3">Dashboard</span>
 			</a>
-			@canany(['ADMIN','PROJECT_MANAGER'])
+			@canany(['ADMIN'])
 				<a href="/pengguna" class="sidebar-link text-sm {{ request()->is('pengguna*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Pengguna</span>
 				</a>
@@ -32,35 +32,55 @@
 			<a href="/barang" class="sidebar-link text-sm {{ request()->is('barang*') ? 'bg-primary-light' : '' }}">
 				<span class="ml-3 flex-1 whitespace-nowrap">Barang</span>
 			</a>
+			@endcanany
 			@canany(['ADMIN','ADMIN_GUDANG'])
 				<a href="/kendaraan" class="sidebar-link text-sm {{ request()->is('kendaraan*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Kendaraan</span>
 				</a>
 			@endcanany
-			@endcanany
+			@canany(['ADMIN','SUPERVISOR','PROJECT_MANAGER'])
 			<a href="/proyek" class="sidebar-link text-sm {{ request()->is('proyek*') ? 'bg-primary-light' : '' }}">
 				<span class="ml-3 flex-1 whitespace-nowrap">Proyek</span>
 			</a>
+			@endcanany
 			@canany(['ADMIN','PURCHASING'])
+				<a href="/perusahaan" class="sidebar-link text-sm {{ request()->is('perusahaan*') ? 'bg-primary-light' : '' }}">
+					<span class="ml-3 flex-1 whitespace-nowrap">Perusahaan</span>
+				</a>
+			@endcanany
+			@canany(['ADMIN','ADMIN_GUDANG'])
+				<a href="/gudang" class="sidebar-link text-sm {{ request()->is('gudang*') ? 'bg-primary-light' : '' }}">
+					<span class="ml-3 flex-1 whitespace-nowrap">Gudang</span>
+				</a>
+			@endcanany
+			@canany(['ADMIN','PURCHASING','ADMIN_GUDANG'])
 				<a href="/delivery-order" class="sidebar-link text-sm {{ request()->is('delivery-order*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Delivery Order</span>
 				</a>
 			@endcanany
-			@canany(['ADMIN','LOGISTIC'])
+			@canany(['ADMIN','LOGISTIC','ADMIN_GUDANG', 'PROJECT_MANAGER', 'SUPERVISOR'])
 				<a href="/surat-jalan" class="sidebar-link text-sm {{ request()->is('surat-jalan*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Surat Jalan</span>
 				</a>
 			@endcanany
-			@canany(['ADMIN','ADMIN_GUDANG'])
+			@canany(['ADMIN','ADMIN_GUDANG','PROJECT_MANAGER','SUPERVISOR'])
 				<a href="/peminjaman" class="sidebar-link text-sm {{ request()->is('peminjaman*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Peminjaman</span>
 				</a>
 			@endcanany
-			<a href="/akses-barang" class="sidebar-link text-sm {{ request()->is('akses-barang*') ? 'bg-primary-light' : '' }}">
+			@canany(['ADMIN','ADMIN_GUDANG','PROJECT_MANAGER','SUPERVISOR'])
+				<a href="/pengembalian" class="sidebar-link text-sm {{ request()->is('pengembalian*') ? 'bg-primary-light' : '' }}">
+					<span class="ml-3 flex-1 whitespace-nowrap">Pengembalian</span>
+				</a>
+			@endcanany
+			@canany(['ADMIN','ADMIN_GUDANG','PROJECT_MANAGER'])
+				<a href="/akses-barang" class="sidebar-link text-sm {{ request()->is('akses-barang*') ? 'bg-primary-light' : '' }}">
 				<span class="ml-3 flex-1 whitespace-nowrap">Akses Barang</span>
 				<span
 					class="ml-3 inline-flex h-3 w-3 items-center justify-center rounded-full bg-blue-200 p-3 text-sm font-medium text-blue-600 dark:bg-blue-900 dark:text-blue-200">{{$countUndefinedAkses}}</span>
 			</a>
+			@endcanany
+			
 		</div>
 		<form action="{{ route('logout') }}" method="post" class="relative" class="md:h-auto">
 			@csrf

@@ -48,8 +48,15 @@ class Peminjaman extends Model
         $user = User::find($admin_gudang_id);
         return self::where('tipe', PeminjamanTipe::GUDANG_PROYEK->value)
         ->where('status',PeminjamanStatus::MENUNGGU_SURAT_JALAN->value)
-        ->whereRelation('peminjamanGp.gudang_id', $user->adminGudang->gudang_id)
-        ->doesntHave('sjPengirimanGp')->get();
+        ->whereRelation('peminjamanGp', 'gudang_id', $user->adminGudang->gudang_id)
+        ->doesntHave('peminjamanGp.sjPengirimanGp')->get();
+    }
+    public static function doesntHaveSjPengirimanPpByAdminGudang($admin_gudang_id){
+        $user = User::find($admin_gudang_id);
+        return self::where('tipe', PeminjamanTipe::PROYEK_PROYEK->value)
+        ->where('status',PeminjamanStatus::MENUNGGU_SURAT_JALAN->value)
+        ->whereRelation('peminjamanPp', 'gudang_id', $user->adminGudang->gudang_id)
+        ->doesntHave('peminjamanPp.sjPengirimanPp')->get();
     }
     public static function getSupervisor($id){
         return self::find($id)->menangani->supervisor;
@@ -102,15 +109,15 @@ class Peminjaman extends Model
         }
         return IDGenerator::generateID(new static,'kode_peminjaman',5,"$typePrefix/$prefix");
     }
-    public function getCreatedAtAttribute($date)
-    {
-        return Date::dateToMillisecond($date);
-    }
+    // public function getCreatedAtAttribute($date)
+    // {
+    //     return Date::dateToMillisecond($date);
+    // }
 
-    public function getUpdatedAtAttribute($date)
-    {
-        return Date::dateToMillisecond($date);
-    }
+    // public function getUpdatedAtAttribute($date)
+    // {
+    //     return Date::dateToMillisecond($date);
+    // }
     public function getTglPeminjamanAttribute($date)
     {
         return Date::dateToMillisecond($date);

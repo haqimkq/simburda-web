@@ -5,6 +5,16 @@
 			font-size: 0.6rem/* 14px */ !important;
 			line-height: 1rem/* 20px */ !important;
 		}
+		.page {
+			width: 21cm;
+			min-height: 29.7cm;
+			padding: 2cm;
+			margin: 1cm auto;
+			border: 1px #D3D3D3 solid;
+			border-radius: 5px;
+			background: white;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+		}
 	</style>
 @endpush
 @section('content')
@@ -39,7 +49,7 @@
 		Download PDF {{ env('APP_ENV') }}
 	</a>
 </div>
-<div class="flex flex-col text-sm">
+<div class="flex flex-col text-sm page">
 	<div class="w-full mb-1 flex mt-5 justify-between">
 		<img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/logo-burda.png'))) }}" alt="" class="self-start h-10 w-auto my-5">
 		<p class=" ml-2 text-xsm text-right">

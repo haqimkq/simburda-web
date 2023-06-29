@@ -24,7 +24,7 @@ class KendaraanFactory extends Factory
         $logistic_id = $logisticNoKendaraan ? $logisticId : NULL;
         return [
             'id' => fake()->uuid(),
-            'logistic_id' => $logistic_id,
+            'logistic_id' => null,
             'gudang_id' => Gudang::first()->id,
             'jenis' => $jenis,
             'merk' => Fake()->word(),

@@ -35,7 +35,7 @@ class AksesBarang extends Model
 
     public function scopeFilter($query, array $filters){
         $query->when($filters['search'] ?? false, function($query, $search) {
-            return $query->where('nama_proyek', 'like', '%' . $search . '%');
+            return $query->whereRelation('peminjaman.menangani.proyek','nama_proyek', 'like', '%' . $search . '%');
         });
         $authUserRole = Auth::user()->role;
         $query->when($filters['filter'] ?? false, function($query, $filter) use ($authUserRole) {
@@ -55,11 +55,11 @@ class AksesBarang extends Model
                     return $query->where('disetujui_admin', NULL);
                 if($filter == 'akses-belum-ditentukan-pm')
                     return $query->where('disetujui_pm', NULL);
-                if($filter == 'akses-belum-ditentukan' && ($authUserRole == 'admin' || $authUserRole == 'supervisor'))
+                if($filter == 'akses-belum-ditentukan' && ($authUserRole == 'ADMIN' || $authUserRole == 'SUPERVISOR'))
                     return $query->where('disetujui_admin', NULL)->where('disetujui_pm', NULL);
-                if($filter == 'akses-belum-ditentukan' && $authUserRole == 'admin gudang')
+                if($filter == 'akses-belum-ditentukan' && $authUserRole == 'ADMIN_GUDANG')
                     return $query->where('disetujui_admin', NULL);
-                if($filter == 'akses-belum-ditentukan' && $authUserRole == 'project manager')
+                if($filter == 'akses-belum-ditentukan' && $authUserRole == 'PROJECT_MANAGER')
                     return $query->where('disetujui_pm', NULL);
             }
             // });
@@ -67,13 +67,13 @@ class AksesBarang extends Model
         $query->when(!isset($filters['orderBy']), function($query){
             return $query->orderBy('akses_barangs.created_at', 'DESC');
         });
-        $query->when(!isset($filters['filter']) && ($authUserRole == 'admin' || $authUserRole == 'supervisor'), function($query){
+        $query->when(!isset($filters['filter']) && ($authUserRole == 'ADMIN' || $authUserRole == 'SUPERVISOR'), function($query){
             return $query->where('disetujui_admin', NULL)->where('disetujui_pm', NULL);
         });
-        $query->when(!isset($filters['filter']) && $authUserRole == 'project manager', function($query){
+        $query->when(!isset($filters['filter']) && $authUserRole == 'PROJECT_MANAGER', function($query){
             return $query->where('disetujui_pm', NULL);
         });
-        $query->when(!isset($filters['filter']) && $authUserRole == 'admin gudang', function($query){
+        $query->when(!isset($filters['filter']) && $authUserRole == 'ADMIN_GUDANG', function($query){
             return $query->where('disetujui_admin', NULL);
         });
         $query->when($filters['orderBy'] ?? false, function($query, $orderBy) {
@@ -92,11 +92,11 @@ class AksesBarang extends Model
 
     public static function countUndefinedAkses() {
         $authUser = Auth::user();
-        if($authUser->role=='admin'){
+        if($authUser->role=='ADMIN'){
             return self::where('disetujui_admin', NULL)->orWhere('disetujui_pm',NULL)->count();
-        }else if($authUser->role=='project manager'){
-            return self::whereHas('meminjam.proyek', fn($q) => $q->where('proyek_manager_id',$authUser->id))->where('disetujui_pm',NULL)->count();
-        }else if($authUser->role=='admin gudang'){
+        }else if($authUser->role=='PROJECT_MANAGER'){
+            return self::whereHas('peminjaman.menangani.proyek', fn($q) => $q->where('project_manager_id',$authUser->id))->where('disetujui_pm',NULL)->count();
+        }else if($authUser->role=='ADMIN_GUDANG'){
             return self::where('disetujui_admin',NULL)->count();
         }
     }

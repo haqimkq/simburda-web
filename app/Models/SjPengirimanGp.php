@@ -27,7 +27,7 @@ class SjPengirimanGp extends Model
         return $this->belongsTo(SuratJalan::class);
     }
     public function peminjamanGp(){
-        return $this->belongsTo(PeminjamanGp::class);
+        return $this->belongsTo(PeminjamanGp::class, 'peminjaman_id');
     }
     public function getCreatedAtAttribute($date)
     {

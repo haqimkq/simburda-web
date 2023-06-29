@@ -116,7 +116,6 @@ class DeliveryOrderController extends Controller
         if (!Gate::allows('cetak-download-do', $deliveryOrder)) {
             abort(403);
         }
-        // $ttdPath = ($deliveryOrder->purchasing->ttd) ? Storage::url($deliveryOrder->purchasing->ttd) : NULL;
         $ttdPath = ($deliveryOrder->ttd) ? TtdVerification::getQrCodeFile($deliveryOrder->ttd) : NULL;
         return view('deliveryorder.cetak',[
             "deliveryOrder" => $deliveryOrder,

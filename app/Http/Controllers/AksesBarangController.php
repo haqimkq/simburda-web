@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Auth;
 class AksesBarangController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a view.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -20,35 +20,64 @@ class AksesBarangController extends Controller
 
         $countUndefinedAkses = AksesBarang::countUndefinedAkses();
 
-        if($authUser->role == 'project manager' ){
-            $aksesBarangs = AksesBarang::select('*', 'akses_barangs.id as id')->join('meminjams', 'akses_barangs.meminjam_id', '=', 'meminjams.id')
-                ->join('barangs', 'meminjams.barang_id', '=', 'barangs.id')
-                ->join('users', 'meminjams.supervisor_id', '=', 'users.id')
-                ->join('proyeks', 'meminjams.proyek_id', '=', 'proyeks.id')
-                ->where('proyeks.proyek_manager_id',$authUser->id)
-                ->orderBy('proyeks.created_at','DESC')
-                ->orderBy('meminjams.created_at')
+        if($authUser->role == 'PROJECT_MANAGER' ){
+            // $aksesBarangs = AksesBarang::select('*', 'akses_barangs.id as id')->join('peminjamans', 'akses_barangs.peminjaman_id', '=', 'peminjamans.id')
+            //     ->join('barangs', 'peminjamans.barang_id', '=', 'barangs.id')
+            //     ->join('users', 'peminjamans.menanganis.supervisor_id', '=', 'users.id')
+            //     ->join('proyeks', 'peminjamans.menanganis.proyek_id', '=', 'proyeks.id')
+            //     ->where('proyeks.proyek_manager_id',$authUser->id)
+            //     ->orderBy('proyeks.created_at','DESC')
+            //     ->orderBy('peminjamans.created_at')
+            //     ->filter(request(['search', 'filter', 'orderBy']))
+            //     ->paginate(40)
+            //     ->withQueryString();
+            $aksesBarangs = AksesBarang::
+                with(['peminjaman.menangani.proyek' => function ($q){
+                        $q->orderBy('created_at','DESC');
+                }, 'peminjaman' => function ($q){
+                        $q->orderBy('created_at');
+                }, 'peminjaman.peminjamanDetail'])
+                ->whereRelation('peminjaman.menangani.proyek.projectManager', 'id', $authUser->id)  
                 ->filter(request(['search', 'filter', 'orderBy']))
                 ->paginate(40)
                 ->withQueryString();
-        } else if($authUser->role == 'supervisor'){
-            $aksesBarangs = AksesBarang::select('*', 'akses_barangs.id as id')->join('meminjams', 'akses_barangs.meminjam_id', '=', 'meminjams.id')
-                ->join('barangs', 'meminjams.barang_id', '=', 'barangs.id')
-                ->join('users', 'meminjams.supervisor_id', '=', 'users.id')
-                ->join('proyeks', 'meminjams.proyek_id', '=', 'proyeks.id')
-                ->orderBy('proyeks.created_at','DESC')
-                ->where('meminjams.supervisor_id',$authUser->id)
-                ->orderBy('meminjams.created_at')
+        } else if($authUser->role == 'SUPERVISOR') {
+            // $aksesBarangs = AksesBarang::select('*', 'akses_barangs.id as id')->join('peminjamans', 'akses_barangs.peminjaman_id', '=', 'peminjamans.id')
+            //     ->join('barangs', 'peminjamans.barang_id', '=', 'barangs.id')
+            //     ->join('users', 'peminjamans.menanganis.supervisor_id', '=', 'users.id')
+            //     ->join('proyeks', 'peminjamans.menanganis.proyek_id', '=', 'proyeks.id')
+            //     ->orderBy('proyeks.created_at','DESC')
+            //     ->where('peminjamans.menanganis.supervisor_id',$authUser->id)
+            //     ->orderBy('peminjamans.created_at')
+            //     ->filter(request(['search', 'filter', 'orderBy']))
+            //     ->paginate(40)
+            //     ->withQueryString();
+            $aksesBarangs = AksesBarang::
+                with(['peminjaman.menangani.proyek' => function ($q){
+                        $q->orderBy('created_at','DESC');
+                }, 'peminjaman' => function ($q){
+                        $q->orderBy('created_at');
+                }, 'peminjaman.peminjamanDetail'])
+                ->whereRelation('peminjaman.menangani.supervisor', 'id', $authUser->id) 
                 ->filter(request(['search', 'filter', 'orderBy']))
                 ->paginate(40)
                 ->withQueryString();
         }else{
-            $aksesBarangs = AksesBarang::select('*', 'akses_barangs.id as id')->join('meminjams', 'akses_barangs.meminjam_id', '=', 'meminjams.id')
-                ->join('barangs', 'meminjams.barang_id', '=', 'barangs.id')
-                ->join('users', 'meminjams.supervisor_id', '=', 'users.id')
-                ->join('proyeks', 'meminjams.proyek_id', '=', 'proyeks.id')
-                ->orderBy('proyeks.created_at','DESC')
-                ->orderBy('meminjams.created_at')
+            // $aksesBarangs = AksesBarang::select('*', 'akses_barangs.id as id')->join('peminjamans', 'akses_barangs.peminjaman_id', '=', 'peminjamans.id')
+            //     ->join('barangs', 'peminjamans.barang_id', '=', 'barangs.id')
+            //     ->join('users', 'peminjamans.menanganis.supervisor_id', '=', 'users.id')
+            //     ->join('proyeks', 'peminjamans.menanganis.proyek_id', '=', 'proyeks.id')
+            //     ->orderBy('proyeks.created_at','DESC')
+            //     ->orderBy('peminjamans.created_at')
+            //     ->filter(request(['search', 'filter', 'orderBy']))
+            //     ->paginate(40)
+            //     ->withQueryString();
+            $aksesBarangs = AksesBarang::
+                with(['peminjaman.menangani.proyek' => function ($q){
+                        $q->orderBy('created_at','DESC');
+                }, 'peminjaman' => function ($q){
+                        $q->orderBy('created_at');
+                }, 'peminjaman.peminjamanDetail'])
                 ->filter(request(['search', 'filter', 'orderBy']))
                 ->paginate(40)
                 ->withQueryString();
@@ -79,7 +108,7 @@ class AksesBarangController extends Controller
     public function store(Request $request)
     {
         $authUserRole = Auth::user()->role;
-        if($authUserRole == 'admin' && $request->akses == 'setujui'){
+        if($authUserRole == 'ADMIN' && $request->akses == 'setujui'){
             foreach($request->id as $idAksesBarang){
                 $aksesBarang=AksesBarang::find($idAksesBarang);
                 $aksesBarang->disetujui_admin = true;
@@ -87,21 +116,21 @@ class AksesBarangController extends Controller
                 $aksesBarang->save();
             }
         }
-        if($authUserRole == 'project manager' && $request->akses == 'setujui'){
+        if($authUserRole == 'PROJECT_MANAGER' && $request->akses == 'setujui'){
             foreach($request->id as $idAksesBarang){
                 $aksesBarang=AksesBarang::find($idAksesBarang);
                 $aksesBarang->disetujui_pm = true;
                 $aksesBarang->save();
             }
         }
-        if($authUserRole == 'admin gudang' && $request->akses == 'setujui'){
+        if($authUserRole == 'ADMIN_GUDANG' && $request->akses == 'setujui'){
             foreach($request->id as $idAksesBarang){
                 $aksesBarang=AksesBarang::find($idAksesBarang);
                 $aksesBarang->disetujui_admin = true;
                 $aksesBarang->save();
             }
         }
-        if($authUserRole == 'admin' && $request->akses == 'tolak'){
+        if($authUserRole == 'ADMIN' && $request->akses == 'tolak'){
             foreach($request->id as $idAksesBarang){
                 $aksesBarang=AksesBarang::find($idAksesBarang);
                 $aksesBarang->disetujui_admin = false;
@@ -109,14 +138,14 @@ class AksesBarangController extends Controller
                 $aksesBarang->save();
             }
         }
-        if($authUserRole == 'project manager' && $request->akses == 'tolak'){
+        if($authUserRole == 'PROJECT_MANAGER' && $request->akses == 'tolak'){
             foreach($request->id as $idAksesBarang){
                 $aksesBarang=AksesBarang::find($idAksesBarang);
                 $aksesBarang->disetujui_pm = false;
                 $aksesBarang->save();
-            }
+            }   
         }
-        if($authUserRole == 'admin gudang' && $request->akses == 'tolak'){
+        if($authUserRole == 'ADMIN_GUDANG' && $request->akses == 'tolak'){
             foreach($request->id as $idAksesBarang){
                 $aksesBarang=AksesBarang::find($idAksesBarang);
                 $aksesBarang->disetujui_pm = false;
@@ -128,10 +157,9 @@ class AksesBarangController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display a view.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function show($id)
     {

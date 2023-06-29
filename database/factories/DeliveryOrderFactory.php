@@ -28,17 +28,21 @@ class DeliveryOrderFactory extends Factory
         $tgl_pengambilan = fake()->dateTimeBetween('-3 weeks', 'now');
         $perusahaan = Perusahaan::get()->random();
         $gudang = Gudang::get()->random();
-        $admin_gudang_id = ($status!='MENUNGGU_KONFIRMASI_ADMIN_GUDANG') ? AdminGudang::where('gudang_id', $gudang->id)->get()->random()->id : null;
+        $admin_gudang_id = ($status!='MENUNGGU_KONFIRMASI_ADMIN_GUDANG') ? AdminGudang::where('gudang_id', $gudang->id)->get()->random()->user_id : null;
         $purchasing = User::where('role', 'PURCHASING')->get()->random();
         if($status == 'SELESAI' && $kendaraan_id != NULL){
-            Kendaraan::where('id', $kendaraan_id)->update([
-                'logistic_id' => NULL
-            ]);
-            
+            // Kendaraan::where('id', $kendaraan_id)->update([
+            //     'logistic_id' => NULL
+            // ]);
         }else if($status != 'SELESAI' && $kendaraan_id != NULL){
-            Kendaraan::where('id', $kendaraan_id)->update([
-                'logistic_id' => $logistic_id
-            ]);
+            
+            $kendaraan = Kendaraan::where('logistic_id', $logistic_id)->first();
+            if($kendaraan!=null) $kendaraan_id = $kendaraan->id;
+            else{
+                Kendaraan::where('id', $kendaraan_id)->update([
+                    'logistic_id' => $logistic_id
+                ]);
+            }
         }
         $untuk_perhatian = fake()->name();
         $ttd = TtdVerification::create([

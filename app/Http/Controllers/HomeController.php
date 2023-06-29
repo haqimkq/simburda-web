@@ -41,16 +41,16 @@ class HomeController extends Controller
         ->pluck('count', 'role');
 
         $proyek = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
-                    ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
-                    ->orderBy('created_at')
-                    ->pluck('count', 'date');
-
-                    $proyekSelesai = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
-                    ->where('selesai', 1)
-                    ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
+            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
             ->orderBy('created_at')
             ->pluck('count', 'date');
-            $proyekBelumSelesai = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
+
+        $proyekSelesai = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
+            ->where('selesai', 1)
+            ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
+            ->orderBy('created_at')
+            ->pluck('count', 'date');
+        $proyekBelumSelesai = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
             ->where('selesai', 0)
             ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
             ->orderBy('created_at')

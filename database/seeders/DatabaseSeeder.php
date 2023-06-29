@@ -567,69 +567,45 @@ class DatabaseSeeder extends Seeder
             return ['user_id' => $user->id];
         }))->create();
 
-        Peminjaman::factory(3)->menungguAksesGp()
+        Peminjaman::factory(40)->menungguAksesGp()
         ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
         ->create();
         
-        Peminjaman::factory(3)->aksesDitolakGp()
+        Peminjaman::factory(40)->aksesDitolakGp()
         ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
         ->create();
         
-        Peminjaman::factory(3)->menungguSuratJalanGp()
+        Peminjaman::factory(40)->menungguSuratJalanGp()
         ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
         ->create();
 
-        Peminjaman::factory(3)->menungguPengirimanGp()
+        Peminjaman::factory(40)->menungguPengirimanGp()
         ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
         ->create();
 
-        Peminjaman::factory(3)->sedangDikirimGp()
+        Peminjaman::factory(40)->sedangDikirimGp()
         ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
         ->create();
 
-        Peminjaman::factory(3)->dipinjamGp()
+        Peminjaman::factory(40)->dipinjamGp()
         ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
         ->create();
         
-        Peminjaman::factory(3)->selesaiGpWithPengembalianMenungguSuratJalan()
+        Peminjaman::factory(40)->selesaiGpWithPengembalianMenungguSuratJalan()
         ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
         ->create();
 
-        Peminjaman::factory(3)->selesaiGpWithPengembalianSedangDikembalikan()
+        Peminjaman::factory(40)->selesaiGpWithPengembalianSedangDikembalikan()
         ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
         ->create();
 
-        Peminjaman::factory(3)->selesaiGpWithPengembalianMenungguPengembalian()
+        Peminjaman::factory(40)->selesaiGpWithPengembalianMenungguPengembalian()
         ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
         ->create();
 
-        Peminjaman::factory(3)->selesaiGpWithPengembalianSelesai()
+        Peminjaman::factory(40)->selesaiGpWithPengembalianSelesai()
         ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
         ->create();
-
-        // Peminjaman::factory(50)->has(PeminjamanDetail::factory(3)
-        // ->resetData()
-        // , 'peminjamanDetail')->create();
-
-        // Peminjaman::factory(50)->has(PeminjamanDetail::factory(4)
-        // ->resetData()
-        // , 'peminjamanDetail')->create();
-        
-        // Peminjaman::factory(50)->has(PeminjamanDetail::factory(6)
-        // ->resetData()
-        // , 'peminjamanDetail')->create();
-        
-        // Peminjaman::factory(50)->has(PeminjamanDetail::factory(2)
-        // ->resetData()
-        // , 'peminjamanDetail')->create();
-        
-        // Peminjaman::factory(50)->has(PeminjamanDetail::factory(1)
-        // ->resetData()
-        // , 'peminjamanDetail')->create();
-        
-        // Peminjaman::factory(50)->has(PeminjamanDetail::factory(5)
-        // ->resetData()
-        // , 'peminjamanDetail')->create();
 
         do{
             $pengembalian = Pengembalian::doesntHave('pengembalianDetail')->first();

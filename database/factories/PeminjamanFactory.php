@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Enum\PeminjamanStatus;
+use App\Enum\PeminjamanTipe;
+use App\Enum\SuratJalanTipe;
 use App\Helpers\Date;
 use App\Helpers\IDGenerator;
 use App\Models\AdminGudang;
@@ -13,10 +16,12 @@ use App\Models\Menangani;
 use App\Models\Peminjaman;
 use App\Models\PeminjamanDetail;
 use App\Models\PeminjamanGp;
+use App\Models\PeminjamanPp;
 use App\Models\Pengembalian;
 use App\Models\PengembalianDetail;
 use App\Models\SjPengembalian;
 use App\Models\SjPengirimanGp;
+use App\Models\SjPengirimanPp;
 use App\Models\SuratJalan;
 use App\Models\TtdSjVerification;
 use Carbon\Carbon;
@@ -68,6 +73,52 @@ class PeminjamanFactory extends Factory
             'status' => $status,
         ];
     }
+    // public function configure(){
+    //     return $this->afterCreating(function (Peminjaman $peminjaman) {
+    //         $proyek = $peminjaman->menangani->proyek;
+    //         $supervisor = $peminjaman->menangani->supervisor;
+    //         if($peminjaman->tipe == PeminjamanTipe::GUDANG_PROYEK->value){
+    //             $peminjamanGp = PeminjamanGp::find('peminjaman_id', $peminjaman->id);
+    //             $sjPengirimanGp = SjPengirimanGp::find('peminjaman_id', $peminjamanGp->id);
+    //             $admin_gudang_id = $peminjamanGp->gudang->adminGudang->random(1)->all()[0]->user_id;
+    //             SuratJalan::find($sjPengirimanGp->suratJalan->id)->update([
+    //                 'tipe' => SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value,
+    //                 'admin_gudang_id' => $admin_gudang_id,
+    //                 'updated_at' => $peminjaman->created_at,
+    //                 'created_at' => $peminjaman->created_at,
+    //             ]);
+    //             $peminjamanGp->update([
+    //                 'updated_at' => $peminjaman->created_at,
+    //                 'created_at' => $peminjaman->created_at,
+    //             ]);
+    //             if($peminjaman->status == PeminjamanStatus::SELESAI->value){
+    //                 $sjPengembalian = SjPengembalian::find('peminjaman_id', $peminjaman->id);
+    //                 SuratJalan::find($sjPengembalian->suratJalan->id)->update([
+    //                     'tipe' => SuratJalanTipe::PENGEMBALIAN->value,
+    //                     'admin_gudang_id' => $admin_gudang_id,
+    //                     'updated_at' => $peminjaman->created_at,
+    //                     'created_at' => $peminjaman->created_at,
+    //                 ]);
+    //             }
+    //         }
+    //         if($peminjaman->tipe == PeminjamanTipe::PROYEK_PROYEK->value){
+    //             $peminjamanPp = PeminjamanPp::find('peminjaman_id', $peminjaman->id);
+    //             $sjPengirimanPp = SjPengirimanPp::find('peminjaman_id', $peminjamanPp->id);
+    //             $admin_gudang_id = $peminjamanPp->peminjamanAsal->gudang->adminGudang->random(1)->all()[0]->user_id;
+    //             SuratJalan::find($sjPengirimanPp->suratJalan->id)->update([
+    //                 'tipe' => SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value,
+    //                 'admin_gudang_id' => $admin_gudang_id,
+    //                 'updated_at' => $peminjaman->created_at,
+    //                 'kode_surat' => SuratJalan::generateKodeSurat(SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value, $proyek->client, $supervisor->nama),
+    //                 'created_at' => $peminjaman->created_at,
+    //             ]);
+    //             $peminjamanPp->update([
+    //                 'updated_at' => $peminjaman->created_at,
+    //                 'created_at' => $peminjaman->created_at,
+    //             ]);
+    //         }
+    //     });
+    // }
     // public function configure()
     // {
     //     return $this->afterCreating(function (Peminjaman $peminjaman) {
@@ -82,16 +133,7 @@ class PeminjamanFactory extends Factory
     //         $supervisor = $menangani->supervisor;
     //         $project_manager = $menangani->proyek->projectManager;
     //         $status = $peminjaman->status;
-    //         if($now->isAfter($end_date)){
-    //             AksesBarang::factory()->state([
-    //                 'disetujui_admin' => true,
-    //                 'disetujui_pm' => true,
-    //                 'admin_gudang_id' => $admin_gudang->user->id,
-    //                 'project_manager_id' => $project_manager->id,
-    //                 'peminjaman_id' => $peminjaman->id,
-    //                 'updated_at' => $created_at,
-    //                 'created_at' => $created_at,
-    //             ])->create();
+    //         if($status=='SELESAI'){
     //             SuratJalan::factory()->state([
     //                 'id' => fake()->uuid(),
     //                 'admin_gudang_id' => $admin_gudang->user->id,
@@ -186,15 +228,6 @@ class PeminjamanFactory extends Factory
     //         }
     //         else if($now->between($start_date,$end_date)){
     //             if($status == 'DIPINJAM'){
-    //                 AksesBarang::factory()->state([
-    //                     'disetujui_admin' => true,
-    //                     'disetujui_pm' => true,
-    //                     'admin_gudang_id' => $admin_gudang->user->id,
-    //                     'project_manager_id' => $project_manager->id,
-    //                     'peminjaman_id' => $peminjaman->id,
-    //                     'updated_at' => $created_at,
-    //                     'created_at' => $created_at
-    //                 ])->create();
     //                 SuratJalan::factory()->state([
     //                     'id' => fake()->uuid(),
     //                     'admin_gudang_id' => $admin_gudang->user->id,
@@ -363,7 +396,11 @@ class PeminjamanFactory extends Factory
                 'tgl_berakhir' => $result['tgl_berakhir'],
                 'status' => 'MENUNGGU_PENGIRIMAN',
             ];
-        })->has(PeminjamanGp::factory()->withPeminjaman()->has(SjPengirimanGp::factory()->menunggu()))
+        })
+        ->has(PeminjamanGp::factory()->withPeminjaman()
+            ->has(SjPengirimanGp::factory()->menunggu())
+            // ->has(SuratJalan::factory()->pengirimanGp()->menunggu()->has(SjPengirimanGp::factory()->menunggu()))
+        )
         ->has(AksesBarang::factory()->accessGrantedWithPeminjaman());
     }
     public function sedangDikirimGp(){
@@ -381,7 +418,10 @@ class PeminjamanFactory extends Factory
                 'tgl_berakhir' => $result['tgl_berakhir'],
                 'status' => 'SEDANG_DIKIRIM',
             ];
-        })->has(PeminjamanGp::factory()->withPeminjaman()->has(SjPengirimanGp::factory()->dalamPerjalanan()))
+        })
+        ->has(PeminjamanGp::factory()->withPeminjaman()
+            ->has(SjPengirimanGp::factory()->dalamPerjalanan())
+        )
         ->has(AksesBarang::factory()->accessGrantedWithPeminjaman());
     }
     public function dipinjamGp(){
@@ -399,7 +439,10 @@ class PeminjamanFactory extends Factory
                 'tgl_berakhir' => $result['tgl_berakhir'],
                 'status' => 'DIPINJAM',
             ];
-        })->has(PeminjamanGp::factory()->withPeminjaman()->has(SjPengirimanGp::factory()->selesai()))
+        })
+        ->has(PeminjamanGp::factory()->withPeminjaman()
+            ->has(SjPengirimanGp::factory()->selesai())
+        )
         ->has(AksesBarang::factory()->accessGrantedWithPeminjaman());
     }
     public function selesaiGpWithPengembalianMenungguSuratJalan(){
@@ -415,11 +458,14 @@ class PeminjamanFactory extends Factory
                 'created_at' => $result['tgl_peminjaman'],
                 'updated_at' => $result['tgl_peminjaman'],
                 'tgl_berakhir' => $result['tgl_berakhir'],
-                'status' => 'DIPINJAM',
+                'status' => 'SELESAI',
             ];
-        })->has(PeminjamanGp::factory()->withPeminjaman()->has(SjPengirimanGp::factory()->selesai()))
-        ->has(AksesBarang::factory()->accessGrantedWithPeminjaman())
-        ->has(Pengembalian::factory()->menungguSuratJalan());
+        })
+        ->has(PeminjamanGp::factory()->withPeminjaman()
+            ->has(SjPengirimanGp::factory()->selesai())
+        )
+        ->has(Pengembalian::factory()->menungguSuratJalan())
+        ->has(AksesBarang::factory()->accessGrantedWithPeminjaman());
     }
 
     public function selesaiGpWithPengembalianSedangDikembalikan(){
@@ -435,11 +481,14 @@ class PeminjamanFactory extends Factory
                 'created_at' => $result['tgl_peminjaman'],
                 'updated_at' => $result['tgl_peminjaman'],
                 'tgl_berakhir' => $result['tgl_berakhir'],
-                'status' => 'DIPINJAM',
+                'status' => 'SELESAI',
             ];
-        })->has(PeminjamanGp::factory()->withPeminjaman()->has(SjPengirimanGp::factory()->selesai()))
-        ->has(AksesBarang::factory()->accessGrantedWithPeminjaman())
-        ->has(Pengembalian::factory()->sedangDikembalikan());
+        })
+        ->has(PeminjamanGp::factory()->withPeminjaman()
+            ->has(SjPengirimanGp::factory()->selesai())
+        )
+        ->has(Pengembalian::factory()->sedangDikembalikan())
+        ->has(AksesBarang::factory()->accessGrantedWithPeminjaman());
     }
     public function selesaiGpWithPengembalianMenungguPengembalian(){
         return $this->state(function (array $attributes){
@@ -454,11 +503,14 @@ class PeminjamanFactory extends Factory
                 'created_at' => $result['tgl_peminjaman'],
                 'updated_at' => $result['tgl_peminjaman'],
                 'tgl_berakhir' => $result['tgl_berakhir'],
-                'status' => 'DIPINJAM',
+                'status' => 'SELESAI',
             ];
-        })->has(PeminjamanGp::factory()->withPeminjaman()->has(SjPengirimanGp::factory()->selesai()))
-        ->has(AksesBarang::factory()->accessGrantedWithPeminjaman())
-        ->has(Pengembalian::factory()->menungguPengembalian());
+        })
+        ->has(PeminjamanGp::factory()->withPeminjaman()
+            ->has(SjPengirimanGp::factory()->selesai())
+        )
+        ->has(Pengembalian::factory()->menungguPengembalian())
+        ->has(AksesBarang::factory()->accessGrantedWithPeminjaman());
     }
     public function selesaiGpWithPengembalianSelesai(){
         return $this->state(function (array $attributes){
@@ -473,11 +525,14 @@ class PeminjamanFactory extends Factory
                 'created_at' => $result['tgl_peminjaman'],
                 'updated_at' => $result['tgl_peminjaman'],
                 'tgl_berakhir' => $result['tgl_berakhir'],
-                'status' => 'DIPINJAM',
+                'status' => 'SELESAI',
             ];
-        })->has(PeminjamanGp::factory()->withPeminjaman()->has(SjPengirimanGp::factory()->selesai()))
-        ->has(AksesBarang::factory()->accessGrantedWithPeminjaman())
-        ->has(Pengembalian::factory()->selesai());
+        })
+        ->has(PeminjamanGp::factory()->withPeminjaman()
+            ->has(SjPengirimanGp::factory()->selesai())
+        )
+        ->has(Pengembalian::factory()->selesai())
+        ->has(AksesBarang::factory()->accessGrantedWithPeminjaman());
     }
 }
 

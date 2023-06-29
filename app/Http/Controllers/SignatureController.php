@@ -74,11 +74,11 @@ class SignatureController extends Controller
     }
     public function viewTTDSuratJalan($id)
     {
-        $sj_verification = TtdSjVerification::find($id);
+        $sj_verification = TtdVerification::getFile($id);
         if ($sj_verification == null) {
             abort(404);
         }
-        $filePath = TtdSjVerification::getFile($id);
+        $filePath = TtdVerification::getFile($id);
         return response()->file($filePath);
     }
     public function viewTTDDeliveryOrder($id)
@@ -93,14 +93,14 @@ class SignatureController extends Controller
 
     public function verifiedTTDSuratJalan($id)
     {
-        $do_verification = TtdVerification::find($id);
-        if ($do_verification == null) {
+        $sj_verification = TtdVerification::find($id);
+        if ($sj_verification == null) {
             abort(404);
         }
         $data = TtdVerification::getKeteranganSuratJalan($id);
 
         return view('signature.verif',[
-            "sjVerif" => $do_verification,
+            "sjVerif" => $sj_verification,
             "nama" => $data['nama'],
             "role" => $data['role'],
             "tipe" => $data['tipe'],

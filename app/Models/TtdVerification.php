@@ -56,12 +56,12 @@ class TtdVerification extends Model
     }
     public static function updateTtdSjVerificationFromSuratJalan($sj){
         if($sj->sjPengirimanGp!=null && $sj->ttd_supervisor!=null){
-            $supervisor = $sj->sjPengirimanGp->peminjaman->menangani->supervisor;
+            $supervisor = $sj->sjPengirimanGp->peminjamanGp->peminjaman->menangani->supervisor;
         }else if($sj->sjPengembalian!=null){
             $supervisor = $sj->sjPengembalian->pengembalian->peminjaman->menangani->supervisor;
         }else if($sj->sjPengirimanPp!=null){
-            $supervisor_peminjam = $sj->sjPengirimanPp->peminjaman->menangani->supervisor;
-            $supervisor = $sj->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->supervisor;
+            $supervisor_peminjam = $sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->supervisor;
+            $supervisor = $sj->sjPengirimanPp->peminjamanPp->peminjamanAsal->menangani->supervisor;
         }
         if($sj->ttd_admin!=null){
             TtdVerification::find($sj->ttd_admin)->update([
@@ -97,7 +97,7 @@ class TtdVerification extends Model
             }else if($sj->sjPengembalian!=null){
                 $sebagai = "PEMBERI";
             }else if($sj->sjPengirimanPp!=null){
-                $check_user=$sj->sjPengirimanPp->peminjaman->menangani->supervisor;
+                $check_user=$sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->supervisor;
                 if($check_user->id == $user->id) $sebagai = "PENERIMA";
                 else $sebagai = "PEMBERI";
             }

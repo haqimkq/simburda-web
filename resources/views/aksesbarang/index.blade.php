@@ -11,7 +11,7 @@
 				@include('shared.alerts.success')
 			@endif
 			@section('headerName', 'Akses Barang')
-			@section('role', $authUser->role)
+			@section('role', \App\Helpers\Utils::underscoreToNormal($authUser->role))
 			@if ($authUser->foto)
 			@section('foto', asset($authUser->foto))
 			@endif
@@ -80,44 +80,50 @@
 						<p class="">Project Manager</p>
 					</div>
 				</div>
-				@canany(['admin', 'admin-gudang', 'project-manager'])
+				@canany(['ADMIN', 'ADMIN_GUDANG', 'PROJECT_MANAGER'])
 				<div class="flex items-center mt-3 ">
 					<input type="checkbox" id="selectAllProyek" class="cursor-pointer selectAllProyek rounded-md border-green border w-5 h-5 focus:ring-green checked:bg-green mr-2">
 					<label  for="selectAllProyek" class="cursor-pointer">Pilih Semua Proyek</label>
 				</div>
 				@endcanany
-				@canany(['admin', 'admin-gudang', 'project-manager'])
+				@canany(['ADMIN', 'ADMIN_GUDANG', 'PROJECT_MANAGER'])
 				<form action="{{route('akses-barang.store')}}" method="POST" id="" class="formPemberianAkses">
 					@csrf
 				@endcanany
 				<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-2">
 				@foreach ($aksesBarangs as $aksesbarang)
-					@if (!isset($nama_proyek_before) || $aksesbarang->nama_proyek != $nama_proyek_before)
-						@php $nama_proyek_before = $aksesbarang->nama_proyek @endphp
+					@if (!isset($nama_proyek_before) || $aksesbarang->peminjaman->menangani->proyek->nama_proyek != $nama_proyek_before)
+						@php $nama_proyek_before = $aksesbarang->peminjaman->menangani->proyek->nama_proyek @endphp
 						<div class="flex flex-col mt-5 lg:col-span-2 xl:col-span-3">
-							@canany(['admin', 'admin-gudang', 'project-manager'])
+							@canany(['ADMIN', 'ADMIN_GUDANG', 'PROJECT_MANAGER'])
 							<div class="flex items-center">
-								<input id="{{$aksesbarang->proyek_id}}" type="checkbox" data-id-proyek-peminjaman="{{$aksesbarang->proyek_id}}" class="cursor-pointer selectProyek rounded-md border-green border w-5 h-5 focus:ring-green checked:bg-green mr-2">
-								<label for="{{$aksesbarang->proyek_id}}" class="cursor-pointer text-xl font-semibold">{{ucfirst($aksesbarang->nama_proyek)}}</label>
-							</div>
+									@if (!$aksesbarang->disetujui_pm || !$aksesbarang->disetujui_admin)
+									<input id="{{$aksesbarang->peminjaman->menangani->proyek->id}}" type="checkbox" data-id-proyek-peminjaman="{{$aksesbarang->peminjaman->menangani->proyek->id}}" class="cursor-pointer selectProyek rounded-md border-green border w-5 h-5 focus:ring-green checked:bg-green mr-2">
+									@endif
+									<label for="{{$aksesbarang->peminjaman->menangani->proyek->id}}" class="cursor-pointer text-xl font-semibold line-clamp-1">{{ucfirst($aksesbarang->peminjaman->menangani->proyek->nama_proyek)}}</label>
+								</div>
 							@endcanany
-							<div class="flex mt-1">
-								<svg class="fill-blue-600 h-4 w-4 mr-1" width="24" height="26" viewBox="0 0 24 26" xmlns="http://www.w3.org/2000/svg">
-									<path fill-rule="evenodd" clip-rule="evenodd" d="M12.028 11.993C15.309 11.993 17.9687 9.30826 17.9687 5.99648C17.9687 2.6847 15.309 0 12.028 0C8.74711 0 6.08739 2.6847 6.08739 5.99648C6.08739 9.30826 8.74711 11.993 12.028 11.993ZM1.4479 18.1268C3.47951 14.4282 7.16181 13.1679 8.749 13V16.6069C8.749 16.8841 8.81137 17.1578 8.93142 17.4071L10.3135 20.2782L10.8601 20.63L10.5753 18.576L11.6102 16.636C11.6066 16.6335 11.6031 16.631 11.5997 16.6284C11.5834 16.6166 11.5676 16.6035 11.5526 16.5894L10.9492 16.0239C10.7367 15.8247 10.7367 15.4852 10.9492 15.286L11.5526 14.7205C11.744 14.5411 12.04 14.5411 12.2314 14.7205L12.8347 15.286C13.0473 15.4852 13.0473 15.8247 12.8347 16.0239L12.2314 16.5894C12.2131 16.6065 12.1938 16.6221 12.1738 16.636L13.2087 18.576L12.9156 20.6894L13.4722 20.3697L14.8687 17.6029C14.9986 17.3455 15.0664 17.0607 15.0664 16.7717V13C16.6536 13.1679 20.5033 14.4282 22.5349 18.1268C23.4079 19.716 23.807 21.3932 23.9782 22.7893C24.2023 24.6161 22.6664 26 20.8427 26H3.15101C1.34221 26 -0.187285 24.6373 0.0186429 22.8234C0.1779 21.4206 0.567807 19.729 1.4479 18.1268Z"/>
-								</svg>
-								<p class="font-normal text-sm line-clamp-1 text-gray-700">
-									{{ucfirst($aksesbarang->meminjam->proyek->proyekManager->nama)}}
-								</p>
-								<svg class="ml-2 mr-1 h-4 w-4 fill-blue-600" width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+							<div class="mt-1 flex sm:flex-col lg:flex lg:flex-row">
+								<div class="flex">
+									<svg class="fill-blue-600 h-4 w-4 mr-1" width="24" height="26" viewBox="0 0 24 26" xmlns="http://www.w3.org/2000/svg">
+										<path fill-rule="evenodd" clip-rule="evenodd" d="M12.028 11.993C15.309 11.993 17.9687 9.30826 17.9687 5.99648C17.9687 2.6847 15.309 0 12.028 0C8.74711 0 6.08739 2.6847 6.08739 5.99648C6.08739 9.30826 8.74711 11.993 12.028 11.993ZM1.4479 18.1268C3.47951 14.4282 7.16181 13.1679 8.749 13V16.6069C8.749 16.8841 8.81137 17.1578 8.93142 17.4071L10.3135 20.2782L10.8601 20.63L10.5753 18.576L11.6102 16.636C11.6066 16.6335 11.6031 16.631 11.5997 16.6284C11.5834 16.6166 11.5676 16.6035 11.5526 16.5894L10.9492 16.0239C10.7367 15.8247 10.7367 15.4852 10.9492 15.286L11.5526 14.7205C11.744 14.5411 12.04 14.5411 12.2314 14.7205L12.8347 15.286C13.0473 15.4852 13.0473 15.8247 12.8347 16.0239L12.2314 16.5894C12.2131 16.6065 12.1938 16.6221 12.1738 16.636L13.2087 18.576L12.9156 20.6894L13.4722 20.3697L14.8687 17.6029C14.9986 17.3455 15.0664 17.0607 15.0664 16.7717V13C16.6536 13.1679 20.5033 14.4282 22.5349 18.1268C23.4079 19.716 23.807 21.3932 23.9782 22.7893C24.2023 24.6161 22.6664 26 20.8427 26H3.15101C1.34221 26 -0.187285 24.6373 0.0186429 22.8234C0.1779 21.4206 0.567807 19.729 1.4479 18.1268Z"/>
+									</svg>
+									<p class="font-normal text-sm text-gray-700">
+										{{ucfirst($aksesbarang->peminjaman->menangani->proyek->projectManager->nama)}}
+									</p>
+								</div>
+								<div class="flex">
+									<svg class="lg:ml-2 mr-1 h-4 w-4 fill-blue-600" width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
 									<path  fill-rule="evenodd" clip-rule="evenodd" d="M9.36364 0C5.29681 0 2 3.29681 2 7.36364C2 11.4305 9.36364 18 9.36364 18C9.36364 18 16.7273 11.4305 16.7273 7.36364C16.7273 3.29681 13.4305 0 9.36364 0ZM9.36364 9.81818C10.7192 9.81818 11.8182 8.71924 11.8182 7.36364C11.8182 6.00803 10.7192 4.90909 9.36364 4.90909C8.00803 4.90909 6.90909 6.00803 6.90909 7.36364C6.90909 8.71924 8.00803 9.81818 9.36364 9.81818Z"/>
 								</svg>
-								<p class="font-normal text-sm mb-2 line-clamp-1 text-gray-700">{{ucfirst($aksesbarang->meminjam->proyek->alamat)}}</p>
+								<p class="font-normal text-sm mb-2 text-gray-700">{{ucfirst($aksesbarang->peminjaman->menangani->proyek->alamat)}}</p>
+								</div>
 							</div>
 						</div>
 					@endif
 					<a href="{{ route('akses-barang.show', $aksesbarang->id) }}" class="p-2 group flex flex-col shadow-md shadow-gray-100 rounded-xl hover:rounded-b-none">
-						<div class="flex flex-col">
-							<div class="flex items-center mb-1">
+						<div class="flex flex-col p-2">
+							<div class="flex items-center mb-2">
 									@if (isset($aksesbarang->disetujui_pm))
 										@if ($aksesbarang->disetujui_pm)
 											<svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 fill-green-600 mr-1">
@@ -154,27 +160,29 @@
 									@endif
 								</div>
 								<div class="flex items-center">
-									@canany(['admin', 'admin-gudang', 'project-manager'])
-									<input type="checkbox" name="id[]" data-id-proyek-peminjaman="{{$aksesbarang->proyek_id}}" value="{{$aksesbarang->id}}" class="cursor-pointer rounded-md border-green border w-5 h-5 focus:ring-green checked:bg-green mr-2">
+									@canany(['ADMIN', 'ADMIN_GUDANG', 'PROJECT_MANAGER'])
+									@if (!$aksesbarang->disetujui_pm || !$aksesbarang->disetujui_admin)
+									<input type="checkbox" name="id[]" data-id-proyek-peminjaman="{{$aksesbarang->peminjaman->menangani->proyek->id}}" value="{{$aksesbarang->id}}" class="cursor-pointer rounded-md border-green border w-5 h-5 focus:ring-green checked:bg-green mr-2">
+									@endif
 									@endcanany
-									<img  src="{{asset($aksesbarang->meminjam->barang->gambar)}}" alt="" class="w-20 h-20 object-fit object-center rounded-md mr-2">
+									{{-- <img  src="{{asset($aksesbarang->peminjaman->barang->gambar)}}" alt="" class="w-20 h-20 object-fit object-center rounded-md mr-2"> --}}
 									<div class="flex flex-col">
 											{{-- <p class="text-xs font-normal text-gray-500">{{ ($aksesbarang->disetujui_admin) 'Disetujui Admin Gudang' }}</p> --}}
-										<p class="font-medium mb-1 line-clamp-2">#{{$aksesbarang->meminjam->barang->nomor_seri }} {{ucfirst($aksesbarang->meminjam->barang->nama)}} </p>
+										<p class="font-medium mb-1 line-clamp-2">{{$aksesbarang->peminjaman->kode_peminjaman }} </p>
+										{{-- <p class="font-medium mb-1 line-clamp-2">#{{$aksesbarang->peminjaman->barang->nomor_seri }} {{ucfirst($aksesbarang->peminjaman->barang->nama)}} </p> --}}
 										<div class="flex">
 											<svg class="w-4 h-4 mr-1 fill-green" width="25" height="29" viewBox="0 0 25 29" xmlns="http://www.w3.org/2000/svg">
 												<path d="M14.5966 0.394986L14.2487 3.19271C14.4126 3.24282 14.5735 3.2999 14.7311 3.36362L15.4068 0.796254C17.0362 1.77434 18.1337 3.5574 18.1583 5.60052C18.5889 5.79392 18.8315 6.0286 18.8315 6.30606C18.8315 6.70076 18.6063 6.97699 18.2046 7.1702C18.3763 7.73198 18.4687 8.32896 18.4687 8.94779C18.4687 12.2676 15.809 14.9589 12.528 14.9589C9.24711 14.9589 6.58739 12.2676 6.58739 8.94779C6.58739 8.32896 6.6798 7.73198 6.85143 7.1702C6.4498 6.97699 6.2246 6.70076 6.2246 6.30606C6.2246 6.02877 6.46681 5.79383 6.89697 5.60052C6.89748 5.55803 6.89847 5.51567 6.8999 5.47344C6.90282 5.38682 6.90768 5.30074 6.91443 5.21516C7.06139 3.3528 8.10189 1.74384 9.60414 0.823115L10.2778 3.38292C10.4343 3.31804 10.5942 3.25973 10.7571 3.20832L10.4097 0.41474C10.4747 0.388126 10.5404 0.362711 10.6066 0.338536C11.2061 0.119471 11.853 0 12.5276 0C13.1305 0 13.7111 0.0953786 14.2557 0.272002C14.371 0.309402 14.4847 0.350438 14.5966 0.394986ZM1.9479 21.1076C3.97951 17.4 7.66181 16.1366 9.249 15.9684V19.584C9.249 19.8619 9.31138 20.1362 9.43142 20.3862L10.8135 23.2642L11.3601 23.6169L11.0753 21.5579L12.1075 19.6181L11.4492 18.9996C11.2367 18.7999 11.2367 18.4596 11.4492 18.2599L12.392 17.3741L13.3347 18.2599C13.5473 18.4596 13.5473 18.7999 13.3347 18.9996L12.6765 19.6181L13.7087 21.5579L13.4156 23.6764L13.9722 23.356L15.3687 20.5825C15.4986 20.3244 15.5664 20.0389 15.5664 19.7493V15.9684C17.1536 16.1366 21.0033 17.4 23.0349 21.1076C23.9079 22.7007 24.307 24.382 24.4782 25.7815C24.7023 27.6128 23.1664 29 21.3427 29H3.65101C1.84221 29 0.312714 27.634 0.518643 25.8156C0.677901 24.4094 1.06781 22.7137 1.9479 21.1076Z"/>
 											</svg>
-											<p class="font-normal line-clamp-1 text-sm">{{ucfirst($aksesbarang->meminjam->user->nama)}} </p>
+											<p class="font-normal line-clamp-1 text-sm">{{ucfirst($aksesbarang->peminjaman->menangani->supervisor->nama)}} </p>
 										</div>
-										<p class="mt-2 text-xs font-normal">{{ $aksesbarang->meminjam->tgl_peminjaman }} s/d</p>
-										<p class="mt-2 text-xs font-normal">{{ $aksesbarang->meminjam->tgl_berakhir }}</p>
+										<p class="mt-2 text-xs font-normal">{{ \App\Helpers\Date::parseMilliseconds($aksesbarang->peminjaman->tgl_peminjaman) }} s/d {{ \App\Helpers\Date::parseMilliseconds($aksesbarang->peminjaman->tgl_berakhir) }}</p>
 									</div>
 								</div>
 						</div>
 					</a>
 				@endforeach
-				@canany(['admin', 'admin-gudang', 'project-manager'])
+				@canany(['ADMIN', 'ADMIN_GUDANG', 'PROJECT_MANAGER'])
 				<input type="radio" name="akses" id="setujui" value="setujui" class="hidden">
 				<input type="radio" name="akses" id="tolak" value="tolak" class="hidden">
 				@endcanany
@@ -190,7 +198,7 @@
 	<div class="mt-5 mb-20">
 		{{ $aksesBarangs->links() }}
 	</div>
-	@canany(['admin', 'admin-gudang', 'project-manager'])
+	@canany(['ADMIN', 'ADMIN_GUDANG', 'PROJECT_MANAGER'])
 	<div class="z-50 bg-white shadow-md bottom-0 right-0 fixed m-4 p-4 items-end justify-end rounded-lg w-auto flex-col buttonAjukanAksesBarang hidden">
 		<p class="w-full mb-3 text-md font-semibold"><span class="jumlahBarang ">0</span> Akses Barang Dipilih</p>
 		<div class="flex">
@@ -210,7 +218,7 @@
 			$("#form").submit();
 		})
 
-		@canany(['admin', 'admin-gudang', 'project-manager'])
+		@canany(['ADMIN', 'ADMIN_GUDANG', 'PROJECT_MANAGER'])
 		$('input:checkbox').change(function(){
 			var countCheckedValue = $('input[name="id[]"]:checked').length;
 			if(countCheckedValue>0){

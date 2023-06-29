@@ -6,5 +6,8 @@ class Utils{
     $url = (env('APP_ENV') == 'local') ? env('NGROK_URL') : env('APP_URL');
     return "$url/storage/$link";
   }
+  public static function underscoreToNormal($string){
+    return ucwords(strtolower(str_replace("_"," ",$string)));
+  }
 }
 ?>

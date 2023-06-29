@@ -74,7 +74,7 @@
 									<path fill-rule="evenodd" clip-rule="evenodd" d="M12.028 11.993C15.309 11.993 17.9687 9.30826 17.9687 5.99648C17.9687 2.6847 15.309 0 12.028 0C8.74711 0 6.08739 2.6847 6.08739 5.99648C6.08739 9.30826 8.74711 11.993 12.028 11.993ZM1.4479 18.1268C3.47951 14.4282 7.16181 13.1679 8.749 13V16.6069C8.749 16.8841 8.81137 17.1578 8.93142 17.4071L10.3135 20.2782L10.8601 20.63L10.5753 18.576L11.6102 16.636C11.6066 16.6335 11.6031 16.631 11.5997 16.6284C11.5834 16.6166 11.5676 16.6035 11.5526 16.5894L10.9492 16.0239C10.7367 15.8247 10.7367 15.4852 10.9492 15.286L11.5526 14.7205C11.744 14.5411 12.04 14.5411 12.2314 14.7205L12.8347 15.286C13.0473 15.4852 13.0473 15.8247 12.8347 16.0239L12.2314 16.5894C12.2131 16.6065 12.1938 16.6221 12.1738 16.636L13.2087 18.576L12.9156 20.6894L13.4722 20.3697L14.8687 17.6029C14.9986 17.3455 15.0664 17.0607 15.0664 16.7717V13C16.6536 13.1679 20.5033 14.4282 22.5349 18.1268C23.4079 19.716 23.807 21.3932 23.9782 22.7893C24.2023 24.6161 22.6664 26 20.8427 26H3.15101C1.34221 26 -0.187285 24.6373 0.0186429 22.8234C0.1779 21.4206 0.567807 19.729 1.4479 18.1268Z"/>
 								</svg>
 								<p class="font-normal text-sm mb-2 line-clamp-1 text-gray-700">
-									{{ucfirst($proyek->proyekManager->nama)}}
+									{{ucfirst($proyek->projectManager->nama)}}
 								</p>
 							</div>
 							<div class="flex ">
@@ -83,7 +83,7 @@
 								</svg>
 								<p class="font-normal text-sm mb-2 line-clamp-1 text-gray-700">{{ucfirst($proyek->alamat)}}</p>
 							</div>
-							<p class="mb-2 text-xs font-normal text-gray-500">{{ $proyek->created_at }} @if ($proyek->tgl_selesai)-{{ $proyek->tgl_selesai }}@endif</p>
+							<p class="mb-2 text-xs font-normal text-gray-500">{{ \App\Helpers\Date::parseMilliseconds($proyek->created_at) }} @if ($proyek->tgl_selesai)-{{ \App\Helpers\Date::parseMilliseconds($proyek->tgl_selesai) }}@endif</p>
 						</a>
 						<div class="relative hidden justify-center items-center group-hover:flex w-full h-full">
 							<div class="absolute w-full z-10  h-auto bg-white flex top-0 px-2 left-0 rounded-b-xl pt-0 pb-2 shadow-md">

@@ -98,6 +98,7 @@ class SuratJalanController extends Controller
     public function cetak($id)
     {
         $suratJalan = SuratJalan::where('id', $id)->first();
+        $lokasi = SuratJalan::getLokasiAsalTujuan($id);
         // if (!Gate::allows('cetak-download-sj', $suratJalan)) {
         //     abort(403);
         // }
@@ -107,6 +108,7 @@ class SuratJalanController extends Controller
         $ttdPathLogistic = ($suratJalan->ttd_driver) ? TtdVerification::getQrCodeFile($suratJalan->ttd_driver) : NULL;
         return view('suratjalan.cetak',[
             "suratJalan" => $suratJalan,
+            "lokasi" => $lokasi,
             "ttdPath" => $ttdPath,
             "ttdPathSupervisor" => $ttdPathSupervisor,
             "ttdPathSupervisor2" => $ttdPathSupervisor2,
@@ -120,12 +122,14 @@ class SuratJalanController extends Controller
         // if (!Gate::allows('cetak-download-sj', $suratJalan)) {
         //     abort(403);
         // }
+        $lokasi = SuratJalan::getLokasiAsalTujuan($id);
         $ttdPath = ($suratJalan->ttd_admin) ? TtdVerification::getQrCodeFile($suratJalan->ttd_admin) : NULL;
         $ttdPathSupervisor = ($suratJalan->ttd_supervisor) ? TtdVerification::getQrCodeFile($suratJalan->ttd_supervisor) : NULL;
         $ttdPathSupervisor2 = ($suratJalan->sjPengembalian!=null && $suratJalan->ttd_supervisor_peminjam!=null) ? TtdVerification::getQrCodeFile($suratJalan->ttd_supervisor) : NULL;
         $ttdPathLogistic = ($suratJalan->ttd_driver) ? TtdVerification::getQrCodeFile($suratJalan->ttd_driver) : NULL;
         $pdf = FacadePdf::loadView('suratjalan.downloadPDF', [
             "suratJalan" => $suratJalan,
+            "lokasi" => $lokasi,
             "ttdPath" => $ttdPath,
             "ttdPathSupervisor" => $ttdPathSupervisor,
             "ttdPathSupervisor2" => $ttdPathSupervisor2,

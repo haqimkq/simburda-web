@@ -106,7 +106,7 @@
 						@if ($suratJalan->tipe == 'PENGIRIMAN_GUDANG_PROYEK')
 							{{ $suratJalan->adminGudang->nama }}
 						@elseif ($suratJalan->tipe == 'PENGIRIMAN_PROYEK_PROYEK')
-							{{ $suratJalan->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->supervisor->nama }}
+							{{ $suratJalan->sjPengirimanPp->peminjamanPp->peminjamanAsal->menangani->supervisor->nama }}
 						@else
 							{{ $suratJalan->sjPengembalian->pengembalian->peminjaman->menangani->supervisor->nama }}
 						@endif
@@ -122,9 +122,9 @@
 					</td>
 					<td class="border border-gray-600 p-1">
 						@if ($suratJalan->tipe == 'PENGIRIMAN_GUDANG_PROYEK')
-							{{ $suratJalan->sjPengirimanGp->peminjaman->menangani->supervisor->nama }}
+							{{ $suratJalan->sjPengirimanGp->peminjamanGp->peminjaman->menangani->supervisor->nama }}
 						@elseif ($suratJalan->tipe == 'PENGIRIMAN_PROYEK_PROYEK')
-							{{ $suratJalan->sjPengirimanPp->peminjaman->menangani->supervisor->nama }}
+							{{ $suratJalan->sjPengirimanPp->peminjamanPp->peminjaman->menangani->supervisor->nama }}
 						@else
 							{{ $suratJalan->adminGudang->nama }}
 						@endif
@@ -135,16 +135,8 @@
 						Tempat Asal
 					</td>
 					<td class="border border-gray-600 p-1">
-						@if ($suratJalan->tipe == 'PENGIRIMAN_GUDANG_PROYEK')
-							<b>{{ $suratJalan->sjPengirimanGp->peminjaman->gudang->nama }}</b>
-							({{ $suratJalan->sjPengirimanGp->peminjaman->gudang->alamat }})
-						@elseif ($suratJalan->tipe == 'PENGIRIMAN_PROYEK_PROYEK')
-							<b>{{ $suratJalan->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->nama_proyek }}</b>
-							({{ $suratJalan->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->proyek->alamat }})
-						@else
-							<b>{{ $suratJalan->sjPengembalian->pengembalian->peminjaman->menangani->proyek->nama_proyek }}</b>
-							({{ $suratJalan->sjPengembalian->pengembalian->peminjaman->menangani->proyek->alamat }})
-						@endif
+						<b>{{ $lokasi['lokasi_asal']['nama'] }}</b>
+							({{ $lokasi['lokasi_asal']['alamat'] }})
 					</td>
 				</tr>
 				<tr>
@@ -152,16 +144,8 @@
 						Tempat Tujuan
 					</td>
 					<td class="border border-gray-600 p-1">
-						@if ($suratJalan->tipe == 'PENGIRIMAN_GUDANG_PROYEK')
-							<b>{{ $suratJalan->sjPengirimanGp->peminjaman->menangani->proyek->nama_proyek }}</b>
-							({{ $suratJalan->sjPengirimanGp->peminjaman->menangani->proyek->alamat }})
-						@elseif ($suratJalan->tipe == 'PENGIRIMAN_PROYEK_PROYEK')
-							<b>{{ $suratJalan->sjPengirimanPp->peminjaman->menangani->proyek->nama_proyek }}</b>
-							({{ $suratJalan->sjPengirimanPp->peminjaman->menangani->proyek->alamat }})
-						@else
-							<b>{{ $suratJalan->sjPengembalian->pengembalian->peminjaman->gudang->nama }}</b>
-							({{ $suratJalan->sjPengembalian->pengembalian->peminjaman->gudang->alamat }})
-						@endif
+						<b>{{ $lokasi['lokasi_tujuan']['nama'] }}</b>
+							({{ $lokasi['lokasi_tujuan']['alamat'] }})
 					</td>
 				</tr>
 			</tbody>
@@ -176,7 +160,7 @@
 			</thead>
 			<tbody>
 				@if ($suratJalan->tipe == 'PENGIRIMAN_GUDANG_PROYEK')
-					@foreach ($suratJalan->sjPengirimanGp->peminjaman->peminjamanDetail as $pd)
+					@foreach ($suratJalan->sjPengirimanGp->peminjamanGp->peminjaman->peminjamanDetail as $pd)
 						<tr>
 							<td class="border border-gray-600 p-1">{{ $loop->iteration }}</td>
 							<td class="border border-gray-600 p-1">{{ $pd->jumlah_satuan }}</td>
@@ -190,7 +174,7 @@
 						</tr>
 					@endforeach
 				@elseif($suratJalan->tipe == 'PENGIRIMAN_PROYEK_PROYEK')
-					@foreach ($suratJalan->sjPengirimanPp->peminjaman->peminjamanDetail as $pd)
+					@foreach ($suratJalan->sjPengirimanPp->peminjamanPp->peminjaman->peminjamanDetail as $pd)
 						<tr>
 							<td class="border border-gray-600 p-1">{{ $loop->iteration }}</td>
 							<td class="border border-gray-600 p-1">{{ $pd->jumlah_satuan }}</td>
@@ -266,7 +250,7 @@
 							<div class="bg-contain bg-center bg-no-repeat"
 								style="background-image: url('data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/stempel-burda.png'))) }}')">
 								<img
-									src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/' . $suratJalan->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->supervisor->ttd))) }}"
+									src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/' . $suratJalan->sjPengirimanPp->peminjamanPp->peminjamanAsal->menangani->supervisor->ttd))) }}"
 									alt="" class="my-3 w-40 self-center">
 							</div>
 							<div class="bg-contain bg-center bg-no-repeat">
@@ -280,9 +264,9 @@
 						@endif
 					</div>
 					<p class="text-center">
-						{{ $suratJalan->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->supervisor->nama }}<br><span>
+						{{ $suratJalan->sjPengirimanPp->peminjamanPp->peminjamanAsal->menangani->supervisor->nama }}<br><span>
 							Supervisor Peminjam	
-						</span><br>{{ $suratJalan->sjPengirimanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->supervisor->no_hp }}
+						</span><br>{{ $suratJalan->sjPengirimanPp->peminjamanPp->peminjamanAsal->menangani->supervisor->no_hp }}
 					</p>
 					<a href="{{route('signature.verifiedTTDSuratJalan', $suratJalan->sjPengirimanPp->ttd_supervisor_peminjam)}}" target="_blank" class="rounded-full py-1 px-2 text-white self-center mt-2 bg-green-400" >
 						Verifikasi
@@ -296,11 +280,11 @@
 							style="background-image: url('data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/stempel-burda.png'))) }}')">
 							@if ($suratJalan->sjPengirimanGp != null)
 								<img
-									src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/' . $suratJalan->sjPengirimanGp->peminjaman->menangani->supervisor->ttd))) }}"
+									src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/' . $suratJalan->sjPengirimanGp->peminjamanGp->peminjaman->menangani->supervisor->ttd))) }}"
 									alt="" class="my-3 w-40 self-center">
 							@elseif ($suratJalan->sjPengirimanPp != null)
 								<img
-									src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/' . $suratJalan->sjPengirimanPp->peminjaman->menangani->supervisor->ttd))) }}"
+									src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/' . $suratJalan->sjPengirimanPp->peminjamanPp->peminjaman->menangani->supervisor->ttd))) }}"
 									alt="" class="my-3 w-40 self-center">
 							@else
 								<img
@@ -320,11 +304,11 @@
 				</div>
 				@if ($suratJalan->sjPengirimanGp != null)
 					<p class="text-center">
-						{{ $suratJalan->sjPengirimanGp->peminjaman->menangani->supervisor->nama }}<br><span>Supervisor</span><br>{{ $suratJalan->sjPengirimanGp->peminjaman->menangani->supervisor->no_hp }}
+						{{ $suratJalan->sjPengirimanGp->peminjamanGp->peminjaman->menangani->supervisor->nama }}<br><span>Supervisor</span><br>{{ $suratJalan->sjPengirimanGp->peminjamanGp->peminjaman->menangani->supervisor->no_hp }}
 					</p>
 				@elseif ($suratJalan->sjPengirimanPp != null)
 					<p class="text-center">
-						{{ $suratJalan->sjPengirimanPp->peminjaman->menangani->supervisor->nama }}<br><span>Supervisor</span><br>{{ $suratJalan->sjPengirimanPp->peminjaman->menangani->supervisor->no_hp }}
+						{{ $suratJalan->sjPengirimanPp->peminjamanPp->peminjaman->menangani->supervisor->nama }}<br><span>Supervisor</span><br>{{ $suratJalan->sjPengirimanPp->peminjamanPp->peminjaman->menangani->supervisor->no_hp }}
 					</p>
 				@else
 					<p class="text-center">
