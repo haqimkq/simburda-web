@@ -32,6 +32,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['admin-projectmanager-supervisor-admingudang-logistic'])->group(function(){
         Route::get('surat-jalan/all', [SuratJalanController::class, 'getAllSuratJalanByUser']);
         Route::get('surat-jalan/active', [SuratJalanController::class, 'getSomeActiveSuratJalanByUser']);
+        Route::get('surat-jalan/active/count', [SuratJalanController::class, 'getCountActiveSuratJalanByUser']);
         Route::get('surat-jalan/all/dalam-perjalanan', [SuratJalanController::class, 'getAllSuratJalanDalamPerjalananByUser']);
         Route::get('surat-jalan/{id}', [SuratJalanController::class, 'getSuratJalanById']);
     });

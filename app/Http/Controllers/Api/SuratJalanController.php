@@ -108,6 +108,16 @@ class SuratJalanController extends Controller
             return ResponseFormatter::error("Gagal Mendapatkan Surat Jalan Dalam Perjalanan: ". $e->getMessage());
         }
     }
+    public function getCountActiveSuratJalanByUser(Request $request){
+        try{
+            $user = $request->user();
+            $response = SuratJalan::getCountActiveSuratJalanByUser($user->id);
+            $message = ($response==0) ? 'Tidak ada surat jalan' : 'Berhasil Mendapatkan Jumlah Surat Jalan Aktif';
+            return ResponseFormatter::success('total_active', $response,$message);
+        }catch(Exception $e){
+            return ResponseFormatter::error("Gagal Mendapatkan Surat Jalan: ". $e->getMessage());
+        }
+    }
     public function getSomeActiveSuratJalanByUser(Request $request){
         try{
             $user = $request->user();
@@ -182,7 +192,6 @@ class SuratJalanController extends Controller
                 'foto' => $project_manager->foto,
                 'no_hp' => $project_manager->no_hp,
             ];
-
             $lokasi = SuratJalan::getLokasiAsalTujuan($response->id);
             $surat_jalan = collect([
                 'id' => $response->id,

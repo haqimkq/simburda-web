@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enum\SuratJalanStatus;
 use App\Enum\SuratJalanTipe;
+use App\Enum\UserRole;
 use App\Helpers\Date;
 use App\Helpers\IDGenerator;
 use App\Traits\Uuids;
@@ -160,6 +161,19 @@ class SuratJalan extends Model
     public static function markCompleteSuratJalan($id){
         self::where('id',$id);
     }
+    public static function getCountActiveSuratJalanByUser($user_id, SuratJalanTipe $tipe = null){
+        $user = User::find($user_id);
+        if($tipe==null){
+            $sj_pengiriman_gp = self::getAllSuratJalanByUser(true, $user, SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value, 'active', 1);
+            $sj_pengiriman_pp = self::getAllSuratJalanByUser(true, $user, SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value, 'active', 1);
+            $sj_pengembalian = self::getAllSuratJalanByUser(true, $user, SuratJalanTipe::PENGEMBALIAN->value, 'active', 1);
+            $result = $sj_pengiriman_gp['count'] + $sj_pengiriman_pp['count'] + $sj_pengembalian['count'];
+        }else{
+            $data = self::getAllSuratJalanByUser(true, $user, $tipe->value, 'active', 1);
+            $result = $data['count'];
+        }
+        return $result;
+    }
     public static function validateUpdate(Request $request){
         $request->validate([
             'surat_jalan_id' => 'required|exists:surat_jalans,id',
@@ -286,7 +300,7 @@ class SuratJalan extends Model
 
         if($tipe!='all') {
             $response= self::where('tipe', $tipe);
-            if($status=='active') $response->where('status', '!=', 'SELESAI');
+            if($status=='active') $response->where('status', '!=', 'SELESAI')->orderBy('status', 'ASC');
             else $response->where('status', $status);
             
             if($date_start!=null && $date_end!=null) $response->whereBetween('updated_at', [$date_start, $date_end]);
@@ -296,8 +310,8 @@ class SuratJalan extends Model
         if($user->role == 'ADMIN_GUDANG') {
             if($tipe != 'all'){
                 $surat_jalan = ($size!='all') ? 
-                $response->has($tipeRelasi)->where('admin_gudang_id', $user->id)->paginate($size)->withQueryString()
-                : $response->has($tipeRelasi)->where('admin_gudang_id', $user->id)->get();
+                $response->has($tipeRelasi)->where('admin_gudang_id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->where('admin_gudang_id', $user->id)->orderBy('created_at')->get();
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj));
                 }
@@ -315,8 +329,8 @@ class SuratJalan extends Model
         }else if($user->role == 'LOGISTIC') {
             if($tipe != 'all'){
                 $surat_jalan = ($size!='all') ? 
-                $response->has($tipeRelasi)->where('logistic_id', $user->id)->paginate($size)->withQueryString()
-                : $response->has($tipeRelasi)->where('logistic_id', $user->id)->get();
+                $response->has($tipeRelasi)->where('logistic_id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->where('logistic_id', $user->id)->orderBy('created_at')->get();
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj));
                 }
@@ -334,24 +348,24 @@ class SuratJalan extends Model
         }else if($user->role == 'SUPERVISOR'){
             if($tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
                 $surat_jalan = ($size!='all') ? 
-                $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjamanGp.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString()
-                : $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjamanGp.peminjaman.menangani.supervisor', 'id', $user->id)->get();
+                $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjamanGp.peminjaman.menangani.supervisor', 'id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjamanGp.peminjaman.menangani.supervisor', 'id', $user->id)->orderBy('created_at')->get();
                 
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj));
                 }
             }else if($tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value){
                 $surat_jalan = ($size!='all') ? 
-                $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjamanPp.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString()
-                : $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjamanPp.peminjaman.menangani.supervisor', 'id', $user->id)->get();
+                $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjamanPp.peminjaman.menangani.supervisor', 'id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjamanPp.peminjaman.menangani.supervisor', 'id', $user->id)->orderBy('created_at')->get();
                 
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj));
                 }
             }else if($tipe==SuratJalanTipe::PENGEMBALIAN->value){
                 $surat_jalan = ($size!='all') ? 
-                $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.supervisor', 'id', $user->id)->paginate($size)->withQueryString()
-                : $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.supervisor', 'id', $user->id)->get();
+                $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.supervisor', 'id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.supervisor', 'id', $user->id)->orderBy('created_at')->get();
                 
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj));
@@ -370,24 +384,24 @@ class SuratJalan extends Model
         }else if($user->role == 'PROJECT_MANAGER'){
             if($tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
                 $surat_jalan = ($size!='all') ? 
-                $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjamanGp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString()
-                : $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjamanGp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->get();
+                $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjamanGp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->whereRelation('sjPengirimanGp.peminjamanGp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->orderBy('created_at')->get();
                 
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj));
                 }
             }else if($tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value){
                 $surat_jalan = ($size!='all') ? 
-                $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjamanPp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString()
-                : $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjamanPp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->get();
+                $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjamanPp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->whereRelation('sjPengirimanPp.peminjamanPp.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->orderBy('created_at')->get();
                 
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj));
                 }
             }else if($tipe==SuratJalanTipe::PENGEMBALIAN->value){
                 $surat_jalan = ($size!='all') ? 
-                $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->paginate($size)->withQueryString()
-                : $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->get();
+                $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.proyek.projectManager', 'id', $user->id)->orderBy('created_at')->get();
                 
                 foreach($surat_jalan as $sj){
                     $result->push(self::getSimpleDataSuratJalanByUser($sj));
