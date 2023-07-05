@@ -258,6 +258,11 @@ class SuratJalan extends Model
         }
         return $result;
     }
+    public static function getAllSuratJalanDalamPerjalananByAdmin($admin_id,$tipeRelasi){
+        $response = self::where('status', SuratJalanStatus::DRIVER_DALAM_PERJALANAN->value);
+        $surat_jalan = $response->has($tipeRelasi)->get();
+        return $surat_jalan;
+    }
     public static function getAllSuratJalanDalamPerjalananByAdminGudang($adminGudangId,$tipeRelasi){
         $response = self::where('status', SuratJalanStatus::DRIVER_DALAM_PERJALANAN->value);
         $surat_jalan = $response->has($tipeRelasi)->where('admin_gudang_id', $adminGudangId)->get();
@@ -307,7 +312,26 @@ class SuratJalan extends Model
             $response->where('kode_surat', 'LIKE', "%$srch%");
         }
 
-        if($user->role == 'ADMIN_GUDANG') {
+        if($user->role == 'ADMIN') {
+            if($tipe != 'all'){
+                $surat_jalan = ($size!='all') ? 
+                $response->has($tipeRelasi)->orderBy('created_at')->paginate($size)->withQueryString()
+                : $response->has($tipeRelasi)->orderBy('created_at')->get();
+                foreach($surat_jalan as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($sj));
+                }
+            }else if($tipe=='all' && $status == SuratJalanStatus::DRIVER_DALAM_PERJALANAN->value){
+                foreach(self::getAllSuratJalanDalamPerjalananByAdmin($user->id,'sjPengirimanGp') as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($sj));
+                }
+                foreach(self::getAllSuratJalanDalamPerjalananByAdmin($user->id,'sjPengirimanPp') as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($sj));
+                }
+                foreach(self::getAllSuratJalanDalamPerjalananByAdmin($user->id,'sjPengembalian') as $sj){
+                    $result->push(self::getSimpleDataSuratJalanByUser($sj));
+                }
+            }
+        }else if($user->role == 'ADMIN_GUDANG') {
             if($tipe != 'all'){
                 $surat_jalan = ($size!='all') ? 
                 $response->has($tipeRelasi)->where('admin_gudang_id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString()
