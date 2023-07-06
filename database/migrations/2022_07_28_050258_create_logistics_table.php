@@ -18,6 +18,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->double('longitude')->nullable();
             $table->double('latitude')->nullable();
+            $table->double('speed')->nullable();
+            $table->double('bearing')->nullable();
+            $table->double('accuracy')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

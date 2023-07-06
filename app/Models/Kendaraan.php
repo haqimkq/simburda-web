@@ -30,9 +30,28 @@ class Kendaraan extends Model
         return $this->hasOne(User::class, 'id', 'logistic_id');
     }
     public function gudang(){
-        return $this->hasOne(Gudang::class);
+        return $this->belongsTo(Gudang::class);
     }
-
+    public static function getKendaraanByLogistic($logistic_id){
+        $kendaraan = self::where('logistic_id',$logistic_id)->first();
+        $result = collect();
+        if($kendaraan!=null){
+            $result = [
+                "id" => $kendaraan->id,
+                "jenis" => $kendaraan->jenis,
+                "merk" => $kendaraan->merk,
+                "plat_nomor" => $kendaraan->plat_nomor,
+                "logistic_id" => $kendaraan->plat_nomor,
+                "gambar" => $kendaraan->gambar,
+                "id_gudang" => $kendaraan->gudang->id,
+                "coordinate_gudang" => $kendaraan->gudang->latitude."|".$kendaraan->gudang->longitude,
+                "nama_gudang" => $kendaraan->gudang->nama,
+                "alamat_gudang" => $kendaraan->gudang->alamat,
+                "gambar_gudang" => $kendaraan->gudang->gambar,
+            ];
+        }
+        return $result;
+    }
     public function scopeFilter($query, array $filters){
         $query->when($filters['search'] ?? false, function($query, $search) {
             return $query->where('merk', 'like', '%' . $search . '%');

@@ -17,6 +17,9 @@ class LogisticFirebase
         $setData = [
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
+            'bearing' => $request->bearing,
+            'speed' => $request->speed,
+            'accuracy' => $request->accuracy,
         ];
         self::getDatabase()->getReference(self::$logisticFirebase.$request->user_id)->set($setData);
     }
@@ -24,6 +27,9 @@ class LogisticFirebase
         $updateData = [
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
+            'bearing' => $request->bearing,
+            'speed' => $request->speed,
+            'accuracy' => $request->accuracy,
         ];
         self::getDatabase()->getReference(self::$logisticFirebase.$request->user_id)->update($updateData);
     }

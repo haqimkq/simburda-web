@@ -643,6 +643,9 @@ class DatabaseSeeder extends Seeder
                 'user_id'   => $logistic->user_id,
                 'latitude' => $logistic->latitude,
                 'longitude' => $logistic->longitude,
+                'bearing' => 0.0,
+                'speed' => 0.0,
+                'accuracy' => 0.0,
             ]);
             LogisticFirebase::setData($request);
         }
