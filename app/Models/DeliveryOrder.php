@@ -88,37 +88,47 @@ class DeliveryOrder extends Model
     public static function createData(Request $request){
         self::validateCreate($request);
         $do = self::create([
-            'admin_gudang_id' => $request->admin_gudang_id,
-            'logistic_id' => $request->logistic_id,
-            'kendaraan_id' => $request->kendaraan_id,
-            'tipe' => $request->tipe,
+            'untuk_perhatian' => $request->untuk_perhatian,
+            'perihal' => $request->perihal,
+            'tgl_pengambilan' => $request->tgl_pengambilan,
+            'purchasing_id' => $request->purchasing_id,
+            'gudang_id' => $request->gudang_id,
+            'perusahaan_id' => $request->perusahaan_id,
         ]);
         return $do;
     }
     public static function updateData(Request $request){
         self::validateUpdate($request);
         $do = self::where('id', $request->delivery_order_id)->update([
-            'admin_gudang_id' => $request->admin_gudang_id,
-            'logistic_id' => $request->logistic_id,
-            'kendaraan_id' => $request->kendaraan_id,
-            'tipe' => $request->tipe,
+            'untuk_perhatian' => $request->untuk_perhatian,
+            'perihal' => $request->perihal,
+            'tgl_pengambilan' => $request->tgl_pengambilan,
+            'purchasing_id' => $request->purchasing_id,
+            'gudang_id' => $request->gudang_id,
+            'perusahaan_id' => $request->perusahaan_id,
         ]);
         return $do;
     }
-    public static function setTtdAdmin($id, $admin_gudang_id){
+    public static function setTtd($id, $purhcasing_id){
         self::where('id',$id)->update([
-            'ttd_admin' => TtdVerification::createTtdVerification($admin_gudang_id,$id),
+            'ttd' => TtdVerification::createTtdDoVerification($purhcasing_id),
         ]);
     }
     public static function validateCreate(Request $request){
         $request->validate([
-            'admin_gudang_id' => 'required|exists:users,id',
-            'logistic_id' => 'required|exists:users,id',
-            'kendaraan_id' => 'required|exists:kendaraans,id',
+            'untuk_perhatian' => 'required',
+            'perihal' => 'required',
+            'tgl_pengambilan' => 'required|date|date_format:Y-m-d',
+            'purchasing_id' => 'required|exists:users,id',
+            'gudang_id' => 'required|exists:gudangs,id',
+            'perusahaan_id' => 'required|exists:perusahaans,id',
         ]);
-        $request->merge(['ttd_admin' => User::getTTD($request->admin_gudang_id)]);
+        $ttd = User::getTTD($request->purchasing_id);
+        if($ttd!=null){
+            $request->merge(['ttd' => $ttd]);
+        }
         $request->validate([
-            'ttd_admin' => 'required',
+            'ttd' => 'required',
         ]);
     }
     public static function markCompleteDeliveryOrder($id){

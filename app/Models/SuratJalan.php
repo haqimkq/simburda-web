@@ -146,7 +146,10 @@ class SuratJalan extends Model
                 new Enum(SuratJalanTipe::class),
             ],
         ]);
-        $request->merge(['ttd_admin' => User::getTTD($request->admin_gudang_id)]);
+        $ttd = User::getTTD($request->admin_gudang_id);
+        if($ttd!=null){
+            $request->merge(['ttd_admin' => $ttd]);
+        }
         $request->validate([
             'ttd_admin' => 'required',
         ]);

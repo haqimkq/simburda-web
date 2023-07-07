@@ -83,6 +83,18 @@ class SuratJalanController extends Controller
             ]);
             $status = $request->query('status');
             $size = $request->query('size') ?? 10;
+            if($request->query('date_start') || $request->query('date_end')){
+                $request->validate([
+                    'date_start' => [
+                        'required',
+                        'date_format:Y-m-d'
+                    ],
+                    'date_end' => [
+                        'required',
+                        'date_format:Y-m-d',
+                    ]
+                ]);
+            }
             $date_start = ($request->query('date_start')) ? date($request->query('date_start') . " 00:00:00") : null;
             $date_end = ($request->query('date_end')) ? date($request->query('date_end') . " 23:59:59") : null;
             

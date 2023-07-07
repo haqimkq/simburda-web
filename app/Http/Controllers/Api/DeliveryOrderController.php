@@ -27,7 +27,7 @@ class DeliveryOrderController extends Controller
         try {
             $sj=DeliveryOrder::createData($request);
             $request->merge(['delivery_order_id' => $sj->id]);
-            Kendaraan::setLogistic($request);
+            // Kendaraan::setLogistic($request);
             return ResponseFormatter::success("delivery_order_id", $sj->id, "Berhasil Menambahkan delivery order");
         } catch (Exception $error) {
             return ResponseFormatter::error("Gagal Menambahkan delivery order: ". $error->getMessage());
@@ -56,6 +56,18 @@ class DeliveryOrderController extends Controller
             ]);
             $status = $request->query('status');
             $size = $request->query('size') ?? 10;
+            if($request->query('date_start') || $request->query('date_end')){
+                $request->validate([
+                    'date_start' => [
+                        'required',
+                        'date_format:Y-m-d'
+                    ],
+                    'date_end' => [
+                        'required',
+                        'date_format:Y-m-d',
+                    ]
+                ]);
+            }
             $date_start = ($request->query('date_start')) ? date($request->query('date_start') . " 00:00:00") : null;
             $date_end = ($request->query('date_end')) ? date($request->query('date_end') . " 23:59:59") : null;
             $search = $request->query('search') ?? null;

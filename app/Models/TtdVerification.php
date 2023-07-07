@@ -54,6 +54,14 @@ class TtdVerification extends Model
         ]);
         return $ttd_verification->id;
     }
+    public static function createTtdDoVerification($user_id){
+        $ttd_verification = TtdVerification::create([
+            "user_id" => $user_id,
+            'tipe' => "DELIVERY_ORDER",
+            'sebagai' => 'PEMBUAT'
+        ]);
+        return $ttd_verification->id;
+    }
     public static function updateTtdSjVerificationFromSuratJalan($sj){
         if($sj->sjPengirimanGp!=null && $sj->ttd_supervisor!=null){
             $supervisor = $sj->sjPengirimanGp->peminjamanGp->peminjaman->menangani->supervisor;
