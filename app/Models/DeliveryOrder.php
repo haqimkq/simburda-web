@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Enum\DeliveryOrderStatus;
 use App\Helpers\Date;
 use App\Helpers\IDGenerator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\Request;
 
 class DeliveryOrder extends Model
 {
@@ -78,5 +80,201 @@ class DeliveryOrder extends Model
         $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber($tgl_pengambilan));
         $prefix = "DO/BC-" . $perusahaanAlias . "/" . $romanMonth . "/" . Date::getYearNumber();
         return IDGenerator::generateID(new static, 'kode_do', 5, $prefix);
+    }
+    public static function createData(Request $request){
+        self::validateCreate($request);
+        $do = self::create([
+            'admin_gudang_id' => $request->admin_gudang_id,
+            'logistic_id' => $request->logistic_id,
+            'kendaraan_id' => $request->kendaraan_id,
+            'tipe' => $request->tipe,
+        ]);
+        return $do;
+    }
+    public static function updateData(Request $request){
+        self::validateUpdate($request);
+        $do = self::where('id', $request->delivery_order_id)->update([
+            'admin_gudang_id' => $request->admin_gudang_id,
+            'logistic_id' => $request->logistic_id,
+            'kendaraan_id' => $request->kendaraan_id,
+            'tipe' => $request->tipe,
+        ]);
+        return $do;
+    }
+    public static function setTtdAdmin($id, $admin_gudang_id){
+        self::where('id',$id)->update([
+            'ttd_admin' => TtdVerification::createTtdVerification($admin_gudang_id,$id),
+        ]);
+    }
+    public static function validateCreate(Request $request){
+        $request->validate([
+            'admin_gudang_id' => 'required|exists:users,id',
+            'logistic_id' => 'required|exists:users,id',
+            'kendaraan_id' => 'required|exists:kendaraans,id',
+        ]);
+        $request->merge(['ttd_admin' => User::getTTD($request->admin_gudang_id)]);
+        $request->validate([
+            'ttd_admin' => 'required',
+        ]);
+    }
+    public static function markCompleteDeliveryOrder($id){
+        self::where('id',$id);
+    }
+    public static function getCountActiveDeliveryOrderByUser($user_id){
+        $user = User::find($user_id);
+        $data = self::getAllDeliveryOrderByUser(true, $user, 'active', 1);
+        $result = $data['count'];
+        return $result;
+    }
+    public static function validateUpdate(Request $request){
+        $request->validate([
+            'delivery_order_id' => 'required|exists:delivery_orders,id',
+        ]);
+        self::validateCreate($request);
+    }
+    public static function getLokasiAsalTujuan($delivery_order_id){
+        $lokasi = collect();
+        $lokasiAsal = collect();
+        $lokasiTujuan = collect();
+        $do = self::findOrFail($delivery_order_id);
+        $lokasiAsal['nama'] = $do->gudang->nama;
+        $lokasiAsal['foto'] = $do->gudang->gambar;
+        $lokasiAsal['alamat'] = $do->gudang->alamat;
+        $lokasiAsal['coordinate'] = $do->gudang->latitude . "|" . $do->gudang->longitude;
+        
+        $lokasiTujuan['nama'] = $do->gudang->nama;
+        $lokasiTujuan['foto'] = $do->gudang->gambar;
+        $lokasiTujuan['alamat'] = $do->gudang->alamat;
+        $lokasiTujuan['coordinate'] = $do->gudang->latitude . "|" . $do->gudang->longitude;
+
+        $lokasi['lokasi_asal'] = $lokasiAsal;
+        $lokasi['lokasi_tujuan'] = $lokasiTujuan;
+        return $lokasi;
+    }
+    public static function getAllPreOrder($delivery_order_id){
+        $do = self::findOrFail($delivery_order_id);
+        $result = collect();
+        // if($do->tipe == DeliveryOrderTipe::PENGIRIMAN_GUDANG_PROYEK->value){
+        //     $result['barang_habis_pakai'] = Peminjaman::getAllBarang($do->sjPengirimanGp->peminjamanGp->peminjaman->id, 'HABIS_PAKAI');
+        //     $result['barang_tidak_habis_pakai'] = Peminjaman::getAllBarang($do->sjPengirimanGp->peminjamanGp->peminjaman->id, 'TIDAK_HABIS_PAKAI');
+        // }else if($do->tipe == DeliveryOrderTipe::PENGIRIMAN_PROYEK_PROYEK->value){
+        //     $result['barang_habis_pakai'] = Peminjaman::getAllBarang($do->sjPengirimanPp->peminjamanPp->peminjaman->id, 'HABIS_PAKAI');
+        //     $result['barang_tidak_habis_pakai'] = Peminjaman::getAllBarang($do->sjPengirimanPp->peminjamanPp->peminjaman->id, 'TIDAK_HABIS_PAKAI');
+        // }else if($do->tipe == DeliveryOrderTipe::PENGEMBALIAN->value){
+        //     $result['barang_habis_pakai'] = Pengembalian::getAllBarang($do->sjPengembalian->pengembalian->id, 'HABIS_PAKAI');
+        //     $result['barang_tidak_habis_pakai'] = Pengembalian::getAllBarang($do->sjPengembalian->pengembalian->id, 'TIDAK_HABIS_PAKAI');
+        // }
+        return $result;
+    }
+    public static function getAllDeliveryOrderDalamPerjalananByAdmin(){
+        return self::where('status', DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value)->get();
+    }
+    public static function getAllDeliveryOrderDalamPerjalananByAdminGudang($adminGudangId){
+        return self::where('status', DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value)->where('admin_gudang_id', $adminGudangId)->get();;
+    }
+    public static function getAllDeliveryOrderDalamPerjalananByLogistic($logisticId){
+        return self::where('status', DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value)->where('logistic_id', $logisticId)->get();
+    }
+    public static function getAllDeliveryOrderDalamPerjalananByPurchasing($purchasingId){
+        return self::where('status', DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value)->whereRelation('purchasing_id', 'id', $purchasingId)->get();
+    }
+    public static function getAllDeliveryOrderDalamPerjalananByPM($pmId,$tipeRelasi){
+        $response = self::where('status', DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value);
+        if($tipeRelasi=='sjPengirimanGp'){
+            $delivery_order = $response->has('sjPengirimanGp')->whereRelation('sjPengirimanGp.peminjamanGp.peminjaman.menangani.proyek.projectManager', 'id', $pmId)->get();
+        }else if($tipeRelasi=='sjPengirimanPp'){
+            $delivery_order = $response->has('sjPengirimanPp')->whereRelation('sjPengirimanPp.peminjamanPp.peminjaman.menangani.proyek.projectManager', 'id', $pmId)->get();
+        }else if($tipeRelasi=='sjPengembalian'){
+            $delivery_order = $response->has('sjPengembalian')->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.proyek.projectManager', 'id', $pmId)->get();
+        }
+        return $delivery_order;
+    }
+    public static function getAllDeliveryOrderByUser($with_total,$user,$status,$size=10, $date_start=null, $date_end=null, $srch=null){
+        $result = collect();
+        if($status=='active') $response=self::where('status', '!=', 'SELESAI')->orderBy('status', 'ASC');
+        else $response=self::where('status', $status);
+        if($date_start!=null && $date_end!=null) $response->whereBetween('updated_at', [$date_start, $date_end]);
+        $response->where('kode_do', 'LIKE', "%$srch%");
+
+        if($user->role == 'ADMIN') {
+            if($status != DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value && $size!='all'){
+                $delivery_order = ($size!='all') ? 
+                $response->orderBy('created_at')->paginate($size)->withQueryString()
+                : $response->orderBy('created_at')->get();
+                foreach($delivery_order as $do){
+                    $result->push(self::getSimpleDataDeliveryOrderByUser($do));
+                }
+            }else if($status == DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value && $size=='all'){
+                foreach(self::getAllDeliveryOrderDalamPerjalananByAdmin() as $do){
+                    $result->push(self::getSimpleDataDeliveryOrderByUser($do));
+                }
+            }
+        }else if($user->role == 'ADMIN_GUDANG') {
+            if($status != DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value && $size!='all'){
+                $delivery_order = ($size!='all') ? 
+                $response->where('admin_gudang_id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString()
+                : $response->where('admin_gudang_id', $user->id)->orderBy('created_at')->get();
+                foreach($delivery_order as $do){
+                    $result->push(self::getSimpleDataDeliveryOrderByUser($do));
+                }
+            }else if($status == DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value && $size=='all'){
+                foreach(self::getAllDeliveryOrderDalamPerjalananByAdminGudang($user->id) as $do){
+                    $result->push(self::getSimpleDataDeliveryOrderByUser($do));
+                }
+            }
+        }else if($user->role == 'LOGISTIC') {
+            if($status != DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value && $size!='all'){
+                $delivery_order = ($size!='all') ? 
+                $response->where('logistic_id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString()
+                : $response->where('logistic_id', $user->id)->orderBy('created_at')->get();
+                foreach($delivery_order as $do){
+                    $result->push(self::getSimpleDataDeliveryOrderByUser($do));
+                }
+            }else if($status == DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value && $size=='all'){
+                foreach(self::getAllDeliveryOrderDalamPerjalananByLogistic($user->id) as $do){
+                    $result->push(self::getSimpleDataDeliveryOrderByUser($do));
+                }
+            }
+        }else if($user->role == 'PURCHASING'){
+            if($status != DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value && $size!='all'){
+                $delivery_order = ($size!='all') ? 
+                $response->where('purchasing_id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString()
+                : $response->where('purchasing_id', $user->id)->orderBy('created_at')->get();
+                foreach($delivery_order as $do){
+                    $result->push(self::getSimpleDataDeliveryOrderByUser($do));
+                }
+            }else if($status == DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value && $size=='all'){
+                foreach(self::getAllDeliveryOrderDalamPerjalananByPurchasing($user->id) as $do){
+                    $result->push(self::getSimpleDataDeliveryOrderByUser($do));
+                }
+            }
+        }
+        $final_result = collect();
+        $final_result['delivery_order'] = $result;
+        if($with_total) $final_result['count'] = $delivery_order->total();
+        return $final_result;
+    }
+    public static function getSimpleDataDeliveryOrderByUser($do){
+        $data = collect();
+        $lokasi = self::getLokasiAsalTujuan($do->id);
+
+        $data['id'] = $do->id;
+        $data['kode_surat'] = $do->kode_surat;
+        $data['status'] = $do->status;
+        $data['tipe'] = $do->tipe;
+        $data['updated_at'] = $do->updated_at;
+        $data['nama_purchasing'] = $do->purchasing->nama;
+        $data['foto_purchasing'] = $do->purchasing->nama;
+        $data['nama_admin_gudang'] = $do->adminGudang->nama;
+        $data['foto_admin_gudang'] = $do->adminGudang->foto;
+        $data['nama_driver'] = $do->logistic->nama;
+        $data['foto_driver'] = $do->logistic->foto;
+        $data['nama_tempat_asal'] = $lokasi['lokasi_asal']['nama'];
+        $data['alamat_tempat_asal'] = $lokasi['lokasi_asal']['alamat'];
+        $data['coordinate_tempat_asal'] = $lokasi['lokasi_asal']['coordinate'];
+        $data['nama_tempat_tujuan'] = $lokasi['lokasi_tujuan']['nama'];
+        $data['alamat_tempat_tujuan'] = $lokasi['lokasi_tujuan']['alamat'];
+        $data['coordinate_tempat_tujuan'] = $lokasi['lokasi_tujuan']['coordinate'];
+        return $data;
     }
 }

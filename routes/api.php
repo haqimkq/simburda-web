@@ -40,6 +40,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['logistic'])->group(function(){
         Route::get('kendaraan/logistic', [KendaraanController::class, 'getKendaraanByLogistic']);
     });
+    Route::middleware(['admin-purchasing-admingudang-logistic'])->group(function(){
+        Route::get('delivery-order/all', [DeliveryOrderController::class, 'getAllDeliveryOrderByUser']);
+        Route::get('delivery-order/active', [DeliveryOrderController::class, 'getSomeActiveDeliveryOrderByUser']);
+        Route::get('delivery-order/active/count', [DeliveryOrderController::class, 'getCountActiveDeliveryOrderByUser']);
+        Route::get('delivery-order/all/dalam-perjalanan', [DeliveryOrderController::class, 'getAllDeliveryOrderDalamPerjalananByUser']);
+        Route::get('delivery-order/{id}', [DeliveryOrderController::class, 'getDeliveryOrderById']);
+    });
 });
 
 Route::post('login', [UserController::class, 'login']);
