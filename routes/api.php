@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\DeliveryOrderController;
 use App\Http\Controllers\Api\KendaraanController;
 use App\Http\Controllers\Api\SuratJalanController;
 use Illuminate\Support\Facades\Route;

@@ -92,15 +92,8 @@ class DeliveryOrderController extends Controller
     public function getSomeActiveDeliveryOrderByUser(Request $request){
         try{
             $user = $request->user();
-            $request->validate([
-                'tipe' => [
-                    'required',
-                    new Enum(DeliveryOrderTipe::class),
-                ],
-            ]);
             $size = $request->query('size') ?? 5;
-            $tipe = $request->query('tipe');
-            $response = DeliveryOrder::getAllDeliveryOrderByUser(true, $user, $tipe, 'active', $size);
+            $response = DeliveryOrder::getAllDeliveryOrderByUser(true, $user, 'active', $size);
             $message = ($response['delivery_order']->isEmpty()) ? 'Tidak ada delivery order' : 'Berhasil Mendapatkan delivery order';
             return ResponseFormatter::success('data', $response,$message);
         }catch(Exception $e){
@@ -117,7 +110,7 @@ class DeliveryOrderController extends Controller
             ]);
 
             $response = DeliveryOrder::find($request->id);
-            $barang = DeliveryOrder::getAllBarang($response->id);
+            $material = DeliveryOrder::getAllPreOrder($response->id);
             
             $admin_gudang = [
                 'nama' => $response->adminGudang->nama,
@@ -148,23 +141,22 @@ class DeliveryOrderController extends Controller
             $lokasi = DeliveryOrder::getLokasiAsalTujuan($response->id);
             $delivery_order = collect([
                 'id' => $response->id,
-                'kode_surat' => $response->kode_surat,
-                'ttd_admin' => $response->ttd_admin,
-                'ttd_driver' => $response->ttd_driver,
-                'ttd_supervisor' => $response->ttd_supervisor,
+                'kode_do' => $response->kode_do,
+                'ttd' => $response->ttd,
                 'foto_bukti' => $response->foto_bukti,
-                'tipe' => $response->tipe,
                 'status' => $response->status,
+                'untuk_perhatian' => $response->untuk_perhatian,
+                'perihal' => $response->perihal,
                 'updated_at' => $response->updated_at,
                 'created_at' => $response->created_at, 
+                'tgl_pengambilan' => $response->tgl_pengambilan, 
                 'kendaraan' => $kendaraan,
                 'admin_gudang' => $admin_gudang,
                 'purchasing' => $purchasing,
                 'logistic' => $logistic,
                 'tempat_asal' => $lokasi['lokasi_asal'],
                 'tempat_tujuan' => $lokasi['lokasi_tujuan'],
-                'barang_habis_pakai' => $barang['barang_habis_pakai'],
-                'barang_tidak_habis_pakai' => $barang['barang_tidak_habis_pakai'],
+                'pre_order' => $material,
             ]);
             $message = ($delivery_order->isEmpty()) ? 'Tidak ada delivery order' : 'Berhasil Mendapatkan delivery order';
             return ResponseFormatter::success('delivery_order', $delivery_order,$message);

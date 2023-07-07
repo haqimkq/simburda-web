@@ -51,6 +51,10 @@ class DeliveryOrder extends Model
     {
         return Date::dateToMillisecond($date);
     }
+    public function getTglPengambilanAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
     public function scopeFilter($query, array $filters){
         $query->when($filters['search'] ?? false, function($query, $search) {
             return $query->where('kode_do', 'like', '%' . $search . '%');
@@ -142,10 +146,10 @@ class DeliveryOrder extends Model
         $lokasiAsal['alamat'] = $do->gudang->alamat;
         $lokasiAsal['coordinate'] = $do->gudang->latitude . "|" . $do->gudang->longitude;
         
-        $lokasiTujuan['nama'] = $do->gudang->nama;
-        $lokasiTujuan['foto'] = $do->gudang->gambar;
-        $lokasiTujuan['alamat'] = $do->gudang->alamat;
-        $lokasiTujuan['coordinate'] = $do->gudang->latitude . "|" . $do->gudang->longitude;
+        $lokasiTujuan['nama'] = $do->perusahaan->nama;
+        $lokasiTujuan['foto'] = $do->perusahaan->gambar;
+        $lokasiTujuan['alamat'] = $do->perusahaan->alamat;
+        $lokasiTujuan['coordinate'] = $do->perusahaan->latitude . "|" . $do->perusahaan->longitude;
 
         $lokasi['lokasi_asal'] = $lokasiAsal;
         $lokasi['lokasi_tujuan'] = $lokasiTujuan;
@@ -154,16 +158,18 @@ class DeliveryOrder extends Model
     public static function getAllPreOrder($delivery_order_id){
         $do = self::findOrFail($delivery_order_id);
         $result = collect();
-        // if($do->tipe == DeliveryOrderTipe::PENGIRIMAN_GUDANG_PROYEK->value){
-        //     $result['barang_habis_pakai'] = Peminjaman::getAllBarang($do->sjPengirimanGp->peminjamanGp->peminjaman->id, 'HABIS_PAKAI');
-        //     $result['barang_tidak_habis_pakai'] = Peminjaman::getAllBarang($do->sjPengirimanGp->peminjamanGp->peminjaman->id, 'TIDAK_HABIS_PAKAI');
-        // }else if($do->tipe == DeliveryOrderTipe::PENGIRIMAN_PROYEK_PROYEK->value){
-        //     $result['barang_habis_pakai'] = Peminjaman::getAllBarang($do->sjPengirimanPp->peminjamanPp->peminjaman->id, 'HABIS_PAKAI');
-        //     $result['barang_tidak_habis_pakai'] = Peminjaman::getAllBarang($do->sjPengirimanPp->peminjamanPp->peminjaman->id, 'TIDAK_HABIS_PAKAI');
-        // }else if($do->tipe == DeliveryOrderTipe::PENGEMBALIAN->value){
-        //     $result['barang_habis_pakai'] = Pengembalian::getAllBarang($do->sjPengembalian->pengembalian->id, 'HABIS_PAKAI');
-        //     $result['barang_tidak_habis_pakai'] = Pengembalian::getAllBarang($do->sjPengembalian->pengembalian->id, 'TIDAK_HABIS_PAKAI');
-        // }
+        $preOrder = $do->preOrder;
+        foreach($preOrder as $pd){
+            $material=array();
+            $material['id'] = $pd->id;
+            $material['kode_po'] = $pd->kode_po;
+            $material['nama_material'] = $pd->nama_material;
+            $material['satuan'] = $pd->satuan;
+            $material['ukuran'] = $pd->ukuran;
+            $material['jumlah'] = $pd->jumlah;
+            $material['keterangan'] = $pd->keterangan;
+            $result->push($material);
+        }
         return $result;
     }
     public static function getAllDeliveryOrderDalamPerjalananByAdmin(){
@@ -177,17 +183,6 @@ class DeliveryOrder extends Model
     }
     public static function getAllDeliveryOrderDalamPerjalananByPurchasing($purchasingId){
         return self::where('status', DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value)->whereRelation('purchasing_id', 'id', $purchasingId)->get();
-    }
-    public static function getAllDeliveryOrderDalamPerjalananByPM($pmId,$tipeRelasi){
-        $response = self::where('status', DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value);
-        if($tipeRelasi=='sjPengirimanGp'){
-            $delivery_order = $response->has('sjPengirimanGp')->whereRelation('sjPengirimanGp.peminjamanGp.peminjaman.menangani.proyek.projectManager', 'id', $pmId)->get();
-        }else if($tipeRelasi=='sjPengirimanPp'){
-            $delivery_order = $response->has('sjPengirimanPp')->whereRelation('sjPengirimanPp.peminjamanPp.peminjaman.menangani.proyek.projectManager', 'id', $pmId)->get();
-        }else if($tipeRelasi=='sjPengembalian'){
-            $delivery_order = $response->has('sjPengembalian')->whereRelation('sjPengembalian.pengembalian.peminjaman.menangani.proyek.projectManager', 'id', $pmId)->get();
-        }
-        return $delivery_order;
     }
     public static function getAllDeliveryOrderByUser($with_total,$user,$status,$size=10, $date_start=null, $date_end=null, $srch=null){
         $result = collect();
@@ -261,10 +256,9 @@ class DeliveryOrder extends Model
         $data['id'] = $do->id;
         $data['kode_surat'] = $do->kode_surat;
         $data['status'] = $do->status;
-        $data['tipe'] = $do->tipe;
         $data['updated_at'] = $do->updated_at;
         $data['nama_purchasing'] = $do->purchasing->nama;
-        $data['foto_purchasing'] = $do->purchasing->nama;
+        $data['foto_purchasing'] = $do->purchasing->foto;
         $data['nama_admin_gudang'] = $do->adminGudang->nama;
         $data['foto_admin_gudang'] = $do->adminGudang->foto;
         $data['nama_driver'] = $do->logistic->nama;
