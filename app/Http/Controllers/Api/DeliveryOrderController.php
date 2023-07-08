@@ -124,11 +124,11 @@ class DeliveryOrderController extends Controller
             $response = DeliveryOrder::find($request->id);
             $material = DeliveryOrder::getAllPreOrder($response->id);
             
-            $admin_gudang = [
+            $admin_gudang = ($response->adminGudang) ? [
                 'nama' => $response->adminGudang->nama,
                 'no_hp' => $response->adminGudang->no_hp,
                 'foto' => $response->adminGudang->foto,
-            ];
+            ] : null;
 
             $purchasing = [
                 'nama' => $response->purchasing->nama,
@@ -136,19 +136,19 @@ class DeliveryOrderController extends Controller
                 'foto' => $response->purchasing->foto,
             ];
 
-            $kendaraan = [
+            $kendaraan = ($response->kendaraan) ? [
                 'merk' => $response->kendaraan->merk,
                 'plat_nomor' => $response->kendaraan->plat_nomor,
                 'gambar' => $response->kendaraan->gambar,
                 'jenis' => $response->kendaraan->jenis,
-            ];
+            ] : null;
 
-            $logistic = [
+            $logistic = ($response->logistic) ? [
                 'id' => $response->logistic->id,
                 'nama' => $response->logistic->nama,
                 'no_hp' => $response->logistic->no_hp,
                 'foto' => $response->logistic->foto,
-            ];
+            ] : null;
             
             $lokasi = DeliveryOrder::getLokasiAsalTujuan($response->id);
             $delivery_order = collect([

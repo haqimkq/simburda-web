@@ -192,7 +192,7 @@ class DeliveryOrder extends Model
         return self::where('status', DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value)->where('logistic_id', $logisticId)->get();
     }
     public static function getAllDeliveryOrderDalamPerjalananByPurchasing($purchasingId){
-        return self::where('status', DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value)->whereRelation('purchasing_id', 'id', $purchasingId)->get();
+        return self::where('status', DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value)->where('purchasing_id', $purchasingId)->get();
     }
     public static function getAllDeliveryOrderByUser($with_total,$user,$status,$size=10, $date_start=null, $date_end=null, $srch=null){
         $result = collect();
@@ -202,11 +202,8 @@ class DeliveryOrder extends Model
         $response->where('kode_do', 'LIKE', "%$srch%");
 
         if($user->role == 'ADMIN') {
-            if($status != DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value && $size!='all'){
-                $delivery_order = ($size!='all') ? 
-                $response->orderBy('created_at')->paginate($size)->withQueryString()
-                : $response->orderBy('created_at')->get();
-                foreach($delivery_order as $do){
+            if($size!='all'){
+                $delivery_order = $response->orderBy('created_at')->paginate($size)->withQueryString();foreach($delivery_order as $do){
                     $result->push(self::getSimpleDataDeliveryOrderByUser($do));
                 }
             }else if($status == DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value && $size=='all'){
@@ -215,10 +212,18 @@ class DeliveryOrder extends Model
                 }
             }
         }else if($user->role == 'ADMIN_GUDANG') {
-            if($status != DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value && $size!='all'){
-                $delivery_order = ($size!='all') ? 
-                $response->where('admin_gudang_id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString()
-                : $response->where('admin_gudang_id', $user->id)->orderBy('created_at')->get();
+            if($size!='all'){
+                $delivery_order = $response->where(function ($query) use ($user, $status, $srch, $date_end, $date_start) {
+                    $query->where('admin_gudang_id', null)->where('gudang_id', $user->adminGudang->gudang_id);
+                    if($status=='active') $query->where('status', '!=', 'SELESAI');
+                    $query->where('kode_do', 'LIKE', "%$srch%");
+                    if($date_start!=null && $date_end!=null) $query->whereBetween('updated_at', [$date_start, $date_end]);
+                })->orWhere(function ($query) use ($user, $status, $srch, $date_end, $date_start) {
+                    $query->where('admin_gudang_id', $user->id)->where('gudang_id', $user->adminGudang->gudang_id);
+                    if($status=='active') $query->where('status', '!=', 'SELESAI');
+                    $query->where('kode_do', 'LIKE', "%$srch%");
+                    if($date_start!=null && $date_end!=null) $query->whereBetween('updated_at', [$date_start, $date_end]);
+                })->orderBy('created_at')->paginate($size)->withQueryString();
                 foreach($delivery_order as $do){
                     $result->push(self::getSimpleDataDeliveryOrderByUser($do));
                 }
@@ -228,10 +233,8 @@ class DeliveryOrder extends Model
                 }
             }
         }else if($user->role == 'LOGISTIC') {
-            if($status != DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value && $size!='all'){
-                $delivery_order = ($size!='all') ? 
-                $response->where('logistic_id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString()
-                : $response->where('logistic_id', $user->id)->orderBy('created_at')->get();
+            if($size!='all'){
+                $delivery_order = $response->where('logistic_id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString();
                 foreach($delivery_order as $do){
                     $result->push(self::getSimpleDataDeliveryOrderByUser($do));
                 }
@@ -241,10 +244,8 @@ class DeliveryOrder extends Model
                 }
             }
         }else if($user->role == 'PURCHASING'){
-            if($status != DeliveryOrderStatus::DRIVER_DALAM_PERJALANAN->value && $size!='all'){
-                $delivery_order = ($size!='all') ? 
-                $response->where('purchasing_id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString()
-                : $response->where('purchasing_id', $user->id)->orderBy('created_at')->get();
+            if($size!='all'){
+                $delivery_order =$response->where('purchasing_id', $user->id)->orderBy('created_at')->paginate($size)->withQueryString();
                 foreach($delivery_order as $do){
                     $result->push(self::getSimpleDataDeliveryOrderByUser($do));
                 }
@@ -262,17 +263,16 @@ class DeliveryOrder extends Model
     public static function getSimpleDataDeliveryOrderByUser($do){
         $data = collect();
         $lokasi = self::getLokasiAsalTujuan($do->id);
-
         $data['id'] = $do->id;
-        $data['kode_surat'] = $do->kode_surat;
+        $data['kode_do'] = $do->kode_do;
         $data['status'] = $do->status;
         $data['updated_at'] = $do->updated_at;
         $data['nama_purchasing'] = $do->purchasing->nama;
         $data['foto_purchasing'] = $do->purchasing->foto;
-        $data['nama_admin_gudang'] = $do->adminGudang->nama;
-        $data['foto_admin_gudang'] = $do->adminGudang->foto;
-        $data['nama_driver'] = $do->logistic->nama;
-        $data['foto_driver'] = $do->logistic->foto;
+        $data['nama_admin_gudang'] = ($do->adminGudang) ? $do->adminGudang->nama : null;
+        $data['foto_admin_gudang'] = ($do->adminGudang) ? $do->adminGudang->foto : null;
+        $data['nama_driver'] = ($do->logistic) ? $do->logistic->nama : null;
+        $data['foto_driver'] = ($do->logistic) ? $do->logistic->foto : null;
         $data['nama_tempat_asal'] = $lokasi['lokasi_asal']['nama'];
         $data['alamat_tempat_asal'] = $lokasi['lokasi_asal']['alamat'];
         $data['coordinate_tempat_asal'] = $lokasi['lokasi_asal']['coordinate'];
