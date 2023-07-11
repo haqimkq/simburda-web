@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Helpers\Date;
 use App\Models\AksesBarang;
+use App\Models\BarangHabisPakai;
+use App\Models\BarangTidakHabisPakai;
+use App\Models\Gudang;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -40,7 +43,9 @@ class BarangController extends Controller
      */
     public function create()
     {
-        return view('barang.create');
+        return view('barang.create',[
+            'gudangs' => Gudang::all()
+        ]);
     }
 
     /**
@@ -51,58 +56,40 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-                'nama' => 'required|string|unique:barangs',
-                'jenis' => 'required|string',
-                'jumlah' => 'required|numeric',
-                'gambar' => 'required|image|max:2048',
-                'alamat' => 'required|string',
-                'latitude' => 'required|numeric',
-                'longitude' => 'required|numeric',
-                'satuan' => 'required|string',
-                'detail' => 'required|string',
-            ],[
-                'nama.required' => 'Nama wajib diisi',
-                'nama.unique' => 'Barang dengan nama ini sudah tersedia',
-                'jenis.required' => 'Jenis wajib diisi',
-                'jumlah.required' => 'Jumlah wajib diisi',
-                'gambar.required' => 'Gambar wajib diisi',
-                'alamat.required' => 'Alamat wajib diisi',
-                'latitude.required' => 'Latitude wajib diisi',
-                'longitude.required' => 'Longitude wajib diisi',
-                'satuan.required' => 'Satuan wajib diisi',
-                'detail.required' => 'Detail wajib diisi',
-                'gambar.mimes' => 'Gambar tidak sesuai format',
-                'gambar.max' => 'Ukuran gambar lebih dari 2mb',
-            ]
-        );
-        if ($validator->fails()) {
-            return redirect('barang/tambah')
-                ->withErrors($validator)
-                ->with('createBarangFailed', 'Gagal Menambah Barang!')
-                ->withInput();
+        if($request->jenis == "TIDAK_HABIS_PAKAI"){
+            dd($request);
+            $validate = $request->validate([
+                'nama' => 'required',
+                'jenis' => 'required',
+                'kondisi' => 'required',
+                'gudang_id' => 'required',
+                'merk' => 'required',
+                'detail' => 'required',
+                'keterangan' => 'nullable',
+                'gambar' => 'nullable',
+            ]);
+        }else{
+            $validate = $request->validate([
+                'nama' => 'required',
+                'jenis' => 'required',
+                'gudang_id' => 'required',
+                'merk' => 'required',
+                'detail' => 'required',
+                'jumlah' => 'required',
+                'ukuran' => 'required',
+                'satuan' => 'required',
+                'gambar' => 'nullable',
+            ]);
         }
-        $gambar = $request->file('gambar')->store('assets/barang', 'public');
-        for ($x = 1; $x <= $request->jumlah; $x++) {
-            $data = [
-                'gambar' => $gambar,
-                'jenis' => $request->jenis,
-                'nomor_seri' => $x,
-                'nama' => $request->nama,
-                'alamat' => $request->alamat,
-                'latitude' => $request->latitude,
-                'longitude' => $request->longitude,
-                'satuan' => $request->satuan,
-                'detail' => $request->detail,
-                'excerpt' => Str::words($request->detail,10)
-            ];
-            $barang = Barang::create($data);
-            if($barang->jenis == 'tidak habis pakai'){
-                $image = QrCode::size(1280)->format('png')->errorCorrection('H')->generate($barang->id);
-                $output_file = 'assets/qr-code/['.$barang->nomor_seri. ']-' . $barang->nama . '.png';
-                Storage::disk('public')->put($output_file, $image);
-                Barang::where('id', $barang->id)->update(['qrcode' => $output_file]);
-            }
+        if($request->file('gambar')){
+            $validate['gambar'] = $request->file('gambar')->store('assets/barang', 'public');
+        }
+        $barang = Barang::create($validate);
+        $validate['barang_id'] = $barang->id;
+        if($request->jenis == "TIDAK_HABIS_PAKAI"){
+            BarangTidakHabisPakai::create($validate);
+        }else{
+            BarangHabisPakai::create($validate);
         }
         return redirect('barang')->with('createBarangSuccess','Berhasil Menambahkan Barang ('.$barang->nama.')');
     }

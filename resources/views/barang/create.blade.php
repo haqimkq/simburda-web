@@ -40,59 +40,60 @@
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 					required>
 					<option disabled selected value="{{ old('jenis') }}">Pilih Jenis Barang</option>
-					<option value="tidak habis pakai">Tidak Habis Pakai</option>
-					<option value="habis pakai">Habis Pakai</option>
+					<option value="TIDAK_HABIS_PAKAI">Tidak Habis Pakai</option>
+					<option value="HABIS_PAKAI">Habis Pakai</option>
 				</select>
 				@error('jenis') @include('shared.errorText') @enderror
 			</div>
 			<div style="display: none" id="kondisi-field">
-				<label for="jenis" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Kondisi Barang</label>
-				<select id="jenis" name="jenis"
+				<label for="kondisi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Kondisi Barang</label>
+				<select id="kondisi" name="kondisi"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-					required>
-					<option disabled selected value="{{ old('jenis') }}">Pilih Kondisi Barang</option>
-					<option value="Baru">Baru</option>
-					<option value="Bekas">Bekas</option>
+					>
+					<option disabled selected value="{{ old('kondisi') }}">Pilih Kondisi Barang</option>
+					<option value="BARU">Baru</option>
+					<option value="BEKAS">Bekas</option>
 				</select>
-				@error('jenis') @include('shared.errorText') @enderror
+				@error('kondisi') @include('shared.errorText') @enderror
 			</div>
 			<div >
-				<label for="jenis" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Gudang</label>
-				<select id="jenis" name="jenis"
+				<label for="gudang" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Gudang</label>
+				<select id="gudang" name="gudang_id"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-					required>
-					<option disabled selected value="{{ old('jenis') }}">Pilih Gudang</option>
-					<option value="tidak habis pakai">Baru</option>
-					<option value="habis pakai">Bekas</option>
+					>
+					<option disabled selected value="{{ old('gudang') }}">Pilih Gudang</option>
+					@foreach ($gudangs as $gudang)
+						<option value="{{ $gudang->id }}">{{ $gudang->nama }}</option>
+					@endforeach
 				</select>
-				@error('jenis') @include('shared.errorText') @enderror
+				@error('gudang') @include('shared.errorText') @enderror
 			</div>
 			<div id="merk-field">
 				<label for="merk" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Merk</label>
 				<input type="text" id="merk" min="1" name="merk" value="{{ old('merk') }}"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-					placeholder="Masukkan Merk Barang" required>
+					placeholder="Masukkan Merk Barang" >
 				@error('merk') @include('shared.errorText') @enderror
 			</div>
 			<div style="display: none" id="jumlah-field">
 				<label for="jumlah" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Jumlah Barang</label>
 				<input type="number" id="jumlah" min="1" name="jumlah" value="{{ old('jumlah') }}"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-					placeholder="Masukkan Jumlah Barang" required>
+					placeholder="Masukkan Jumlah Barang" >
 				@error('jumlah') @include('shared.errorText') @enderror
 			</div>
 			<div style="display: none" id="ukuran-field">
 				<label for="ukuran" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Ukuran Barang</label>
 				<input type="text" id="ukuran" min="1" name="ukuran" value="{{ old('ukuran') }}"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-					placeholder="Masukkan Ukuran Barang" required>
+					placeholder="Masukkan Ukuran Barang" >
 				@error('ukuran') @include('shared.errorText') @enderror
 			</div>
 			<div style="display: none" id="satuan-field">
 				<label for="satuan" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Satuan Barang</label>
 				<select id="satuan" name="satuan"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-					required>
+					>
 					<option disabled selected value="{{ old('satuan') }}">Pilih Satuan Barang</option>
 					<option value="buah">Buah</option>
 					<option value="kilogram">Kilogram</option>
@@ -106,14 +107,14 @@
 				<label for="detail" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Detail Barang</label>
 				<textarea name="detail" id="detail" rows="1"
 				 class="block w-full resize-y min-h-[3em] rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-				 placeholder="Masukkan Detail Barang" required>{{ old('detail') }}</textarea>
+				 placeholder="Masukkan Detail Barang" >{{ old('detail') }}</textarea>
 				 @error('detail') @include('shared.errorText') @enderror
 			</div>
 			<div  class="col-span-2" id="keterangan-field" style="display: none">
 				<label for="keterangan" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Keterangan</label>
 				<textarea name="keterangan" id="keterangan" rows="1"
 				 class="block w-full resize-y min-h-[3em] rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-				 placeholder="Masukkan Keterangan Barang" required>{{ old('keterangan') }}</textarea>
+				 placeholder="Masukkan Keterangan Barang" >{{ old('keterangan') }}</textarea>
 				 @error('keterangan') @include('shared.errorText') @enderror
 			</div>
 			<div class="col-span-2">
@@ -139,14 +140,14 @@
 	<script type="text/javascript">
 	var e = document.getElementById("jenis");
 	$('#jenis').change(function(){
-		if(e.value == 'habis pakai'){
+		if(e.value == 'HABIS_PAKAI'){
 			document.getElementById('jumlah-field').style.display = 'block';
 			document.getElementById('satuan-field').style.display = 'block';
 			document.getElementById('ukuran-field').style.display = 'block';
 			document.getElementById('keterangan-field').style.display = 'none';
 			document.getElementById('kondisi-field').style.display = 'none';
 		}
-		if(e.value == 'tidak habis pakai'){
+		if(e.value == 'TIDAK_HABIS_PAKAI'){
 			document.getElementById('jumlah-field').style.display = 'none';
 			document.getElementById('satuan-field').style.display = 'none';
 			document.getElementById('ukuran-field').style.display = 'none';
