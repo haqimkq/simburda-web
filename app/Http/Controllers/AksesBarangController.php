@@ -29,17 +29,17 @@ class AksesBarangController extends Controller
             //     ->orderBy('proyeks.created_at','DESC')
             //     ->orderBy('peminjamans.created_at')
             //     ->filter(request(['search', 'filter', 'orderBy']))
-            //     ->paginate(40)
+            //     ->paginate(200)
             //     ->withQueryString();
             $aksesBarangs = AksesBarang::
-                with(['peminjaman.menangani.proyek' => function ($q){
+                with(['peminjamanDetail.peminjaman.menangani.proyek' => function ($q){
                         $q->orderBy('created_at','DESC');
-                }, 'peminjaman' => function ($q){
+                }, 'peminjamanDetail.peminjaman' => function ($q){
                         $q->orderBy('created_at');
-                }, 'peminjaman.peminjamanDetail'])
-                ->whereRelation('peminjaman.menangani.proyek.projectManager', 'id', $authUser->id)  
+                }, 'peminjamanDetail'])
+                ->whereRelation('peminjamanDetail.peminjaman.menangani.proyek.projectManager', 'id', $authUser->id)  
                 ->filter(request(['search', 'filter', 'orderBy']))
-                ->paginate(40)
+                ->paginate(200)
                 ->withQueryString();
         } else if($authUser->role == 'SUPERVISOR') {
             // $aksesBarangs = AksesBarang::select('*', 'akses_barangs.id as id')->join('peminjamans', 'akses_barangs.peminjaman_id', '=', 'peminjamans.id')
@@ -50,17 +50,17 @@ class AksesBarangController extends Controller
             //     ->where('peminjamans.menanganis.supervisor_id',$authUser->id)
             //     ->orderBy('peminjamans.created_at')
             //     ->filter(request(['search', 'filter', 'orderBy']))
-            //     ->paginate(40)
+            //     ->paginate(200)
             //     ->withQueryString();
             $aksesBarangs = AksesBarang::
-                with(['peminjaman.menangani.proyek' => function ($q){
+                with(['peminjamanDetail.peminjaman.menangani.proyek' => function ($q){
                         $q->orderBy('created_at','DESC');
-                }, 'peminjaman' => function ($q){
+                }, 'peminjamanDetail.peminjaman' => function ($q){
                         $q->orderBy('created_at');
-                }, 'peminjaman.peminjamanDetail'])
-                ->whereRelation('peminjaman.menangani.supervisor', 'id', $authUser->id) 
+                }, 'peminjamanDetail'])
+                ->whereRelation('peminjamanDetail.peminjaman.menangani.supervisor', 'id', $authUser->id) 
                 ->filter(request(['search', 'filter', 'orderBy']))
-                ->paginate(40)
+                ->paginate(200)
                 ->withQueryString();
         }else{
             // $aksesBarangs = AksesBarang::select('*', 'akses_barangs.id as id')->join('peminjamans', 'akses_barangs.peminjaman_id', '=', 'peminjamans.id')
@@ -70,16 +70,16 @@ class AksesBarangController extends Controller
             //     ->orderBy('proyeks.created_at','DESC')
             //     ->orderBy('peminjamans.created_at')
             //     ->filter(request(['search', 'filter', 'orderBy']))
-            //     ->paginate(40)
+            //     ->paginate(200)
             //     ->withQueryString();
             $aksesBarangs = AksesBarang::
-                with(['peminjaman.menangani.proyek' => function ($q){
+                with(['peminjamanDetail.peminjaman.menangani.proyek' => function ($q){
                         $q->orderBy('created_at','DESC');
-                }, 'peminjaman' => function ($q){
+                }, 'peminjamanDetail.peminjaman' => function ($q){
                         $q->orderBy('created_at');
-                }, 'peminjaman.peminjamanDetail'])
+                }, 'peminjamanDetail'])
                 ->filter(request(['search', 'filter', 'orderBy']))
-                ->paginate(40)
+                ->paginate(200)
                 ->withQueryString();
         }
         return view('aksesbarang.index',[
