@@ -19,7 +19,7 @@ class AksesBarangFactory extends Factory
     public function definition()
     {
         $peminjamanDetail = PeminjamanDetail::doesntHave('aksesBarang')->get()->random();
-        $meminjamId = $peminjamanDetail->peminjaman->id;
+        $meminjamId = $peminjamanDetail->id;
         $admin_gudang_id = User::where('role','ADMIN_GUDANG')->get()->random()->id;
         $menangani = Menangani::where('id', $peminjamanDetail->peminjaman->menangani->id)->first();
         $set_manager_id = $menangani->proyek->setManager->id;
@@ -44,13 +44,14 @@ class AksesBarangFactory extends Factory
             'disetujui_sm' => $disetujui_sm,
         ];
     }
-    public function needAccessWithPeminjamanDetailDetail(){
+    public function needAccessWithPeminjamanDetail(){
         return $this->state(function (array $attributes, PeminjamanDetail $peminjamanDetail){
             return [
                 'disetujui_admin' => NULL,
                 'disetujui_sm' => NULL,
                 'admin_gudang_id' => NULL,
-                'set_manager_id' => $peminjamanDetail->peminjaman->menangani->proyek->setManager->id, 'peminjaman_id' => $peminjamanDetail->peminjaman->id,
+                'set_manager_id' => $peminjamanDetail->peminjaman->menangani->proyek->setManager->id, 
+                'peminjaman_detail_id' => $peminjamanDetail->id,
                 'updated_at' => $peminjamanDetail->peminjaman->created_at,
                 'created_at' => $peminjamanDetail->peminjaman->created_at
             ];
@@ -67,7 +68,7 @@ class AksesBarangFactory extends Factory
                 'keterangan_admin' => fake()->text(),
                 'admin_gudang_id' => $admin_gudang_id,
                 'set_manager_id' => $peminjamanDetail->peminjaman->menangani->proyek->setManager->id,
-                'peminjaman_id' => $peminjamanDetail->peminjaman->id,
+                'peminjaman_detail_id' => $peminjamanDetail->id,
                 'updated_at' => $peminjamanDetail->peminjaman->created_at,
                 'created_at' => $peminjamanDetail->peminjaman->created_at
             ];
@@ -81,7 +82,7 @@ class AksesBarangFactory extends Factory
                 'disetujui_sm' => true,
                 'admin_gudang_id' => $admin_gudang_id,
                 'set_manager_id' => $peminjamanDetail->peminjaman->menangani->proyek->setManager->id,
-                'peminjaman_id' => $peminjamanDetail->peminjaman->id,
+                'peminjaman_detail_id' => $peminjamanDetail->id,
                 'updated_at' => $peminjamanDetail->peminjaman->created_at,
                 'created_at' => $peminjamanDetail->peminjaman->created_at
             ];

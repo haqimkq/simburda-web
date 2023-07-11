@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Helpers\IDGenerator;
 use App\Models\AdminGudang;
 use App\Models\LogisticFirebase;
+use App\Models\PengembalianPenggunaanDetail;
+use App\Models\PenggunaanDetail;
 use App\Models\User;
 use App\Models\Barang;
 use App\Models\Proyek;
@@ -13,12 +15,14 @@ use App\Models\PreOrder;
 use App\Models\Kendaraan;
 use App\Models\menangani;
 use App\Models\BarangHabisPakai;
+use App\Models\BarangTidakHabisPakai;
 use App\Models\DeliveryOrder;
 use App\Models\Gudang;
 use App\Models\Peminjaman;
 use App\Models\PeminjamanDetail;
 use App\Models\Pengembalian;
 use App\Models\PengembalianDetail;
+use App\Models\PengembalianPenggunaan;
 use App\Models\Perusahaan;
 use App\Models\ProjectManager;
 use App\Models\Purchasing;
@@ -108,9 +112,9 @@ class DatabaseSeeder extends Seeder
                 ]
         )->create();
 
-        $PM1 = User::factory()->state([
+        $SM1 = User::factory()->state([
             'id'=>'02e6804b-9d38-3075-bbc3-69b8cc29da8c',
-            'role'=>'PROJECT_MANAGER',
+            'role'=>'SET_MANAGER',
             'nama' => 'Novita Cahyanintyas, ST.',
             'email' => 'novitacahya@gmail.com',
             'foto' => 'assets/users/Project Manager_Novita Cahyanintyas, ST.jpeg',
@@ -321,7 +325,7 @@ class DatabaseSeeder extends Seeder
             'kota' => 'Bekasi',
             'latitude' => '-6.2813794',
             'longitude' => '107.0118061',
-        ])->for($PM1, 'projectManager')->create();
+        ])->for($SM1, 'setManager')->create();
 
         Proyek::factory(9)
         ->state(new Sequence(
@@ -415,7 +419,7 @@ class DatabaseSeeder extends Seeder
                 'latitude' => '-6.1091684',
                 'longitude' => '106.7404088',
             ],
-        ))->for($PM1, 'projectManager')->create();
+        ))->for($SM1, 'setManager')->create();
 
         Kendaraan::factory(7)->state(new Sequence(
             [
@@ -561,43 +565,43 @@ class DatabaseSeeder extends Seeder
         ])->create();
 
         Peminjaman::factory(40)->menungguAksesGp()
-        ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
+        ->has(PeminjamanDetail::factory(8)->resetData()->menungguAksesGp(), 'peminjamanDetail')
         ->create();
         
         Peminjaman::factory(40)->aksesDitolakGp()
-        ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
+        ->has(PeminjamanDetail::factory(8)->resetData()->aksesDitolakGp(), 'peminjamanDetail')
         ->create();
         
         Peminjaman::factory(40)->menungguSuratJalanGp()
-        ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
+        ->has(PeminjamanDetail::factory(8)->resetData()->menungguSuratJalanGp(), 'peminjamanDetail')
         ->create();
 
         Peminjaman::factory(40)->menungguPengirimanGp()
-        ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
+        ->has(PeminjamanDetail::factory(8)->resetData()->menungguPengirimanGp(), 'peminjamanDetail')
         ->create();
 
         Peminjaman::factory(40)->sedangDikirimGp()
-        ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
+        ->has(PeminjamanDetail::factory(8)->resetData()->sedangDikirimGp(), 'peminjamanDetail')
         ->create();
 
         Peminjaman::factory(40)->dipinjamGp()
-        ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
+        ->has(PeminjamanDetail::factory(8)->resetData()->dipinjamGp(), 'peminjamanDetail')
         ->create();
         
         Peminjaman::factory(40)->selesaiGpWithPengembalianMenungguSuratJalan()
-        ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
+        ->has(PeminjamanDetail::factory(8)->resetData()->selesaiGpWithPengembalianMenungguSuratJalan(), 'peminjamanDetail')
         ->create();
 
         Peminjaman::factory(40)->selesaiGpWithPengembalianSedangDikembalikan()
-        ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
+        ->has(PeminjamanDetail::factory(8)->resetData()->selesaiGpWithPengembalianSedangDikembalikan(), 'peminjamanDetail')
         ->create();
 
         Peminjaman::factory(40)->selesaiGpWithPengembalianMenungguPengembalian()
-        ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
+        ->has(PeminjamanDetail::factory(8)->resetData()->selesaiGpWithPengembalianMenungguPengembalian(), 'peminjamanDetail')
         ->create();
 
         Peminjaman::factory(40)->selesaiGpWithPengembalianSelesai()
-        ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
+        ->has(PeminjamanDetail::factory(8)->resetData()->selesaiGpWithPengembalianSelesai(), 'peminjamanDetail')
         ->create();
 
         do{
@@ -605,28 +609,37 @@ class DatabaseSeeder extends Seeder
             $peminjaman = ($pengembalian!=NULL) ? PeminjamanDetail::where('peminjaman_id', $pengembalian->peminjaman_id)->get() : NULL;
             if ($peminjaman!=NULL){
                 foreach($peminjaman as $peminjamanDetail){
-                    $satuan = NULL;
-                    $jumlah = NULL;
-                    $kode_pengembalian = Pengembalian::generateKodePengembalian($peminjamanDetail->peminjaman->menangani->proyek->client, $peminjamanDetail->peminjaman->menangani->supervisor->nama);
+                    $kode_pengembalian = Pengembalian::generateKodePengembalian($peminjamanDetail->peminjaman->menangani->proyek->client, $peminjamanDetail->peminjaman->menangani->user->nama);
                     Pengembalian::where('id',$pengembalian->id)->update(['kode_pengembalian' => $kode_pengembalian]);
-                    $barang = Barang::find($peminjamanDetail->barang_id);
-                    if($barang->jenis == 'TIDAK_HABIS_PAKAI') {
-                        $satuan = 'Unit';
-                        $jumlah = 1;
-                    }else{
-                        $barang_habis_pakai = BarangHabisPakai::where('barang_id', $barang->id)->first();
-                        $satuan = $barang_habis_pakai->satuan;
-                        $jumlah = fake()->numberBetween(1, $barang_habis_pakai->jumlah);
-                    }
-                    $jumlah_satuan = "$jumlah $satuan";
                     PengembalianDetail::factory()->state([
                         "barang_id" => $peminjamanDetail->barang_id,
                         "pengembalian_id" => $pengembalian->id,
-                        "jumlah_satuan" => $jumlah_satuan
                     ])->create();
                 }
             }
         }while($pengembalian!=NULL);
+
+        // do{
+        //     $pengembalian = PengembalianPenggunaan::doesntHave('pengembalianPenggunaanDetail')->first();
+        //     $penggunaan = ($pengembalian!=NULL) ? PenggunaanDetail::where('penggunaan_id', $pengembalian->penggunaan_id)->get() : NULL;
+        //     if ($penggunaan!=NULL){
+        //         foreach($penggunaan as $penggunaanDetail){
+        //             $satuan = NULL;
+        //             $jumlah = NULL;
+        //             $kode_pengembalian = PengembalianPenggunaan::generateKodePengembalian($penggunaanDetail->penggunaan->menangani->proyek->client, $penggunaanDetail->penggunaan->menangani->user->nama);
+        //             PengembalianPenggunaan::where('id',$pengembalian->id)->update(['kode_pengembalian' => $kode_pengembalian]);
+        //             $barang = BarangHabisPakai::find($penggunaanDetail->barang_id);
+        //             $satuan = $barang->satuan;
+        //             $jumlah = fake()->numberBetween(1, $barang->jumlah);
+        //             $jumlah_satuan = "$jumlah $satuan";
+        //             PengembalianPenggunaanDetail::factory()->state([
+        //                 "barang_id" => $penggunaanDetail->barang_id,
+        //                 "pengembalian_id" => $pengembalian->id,
+        //                 "jumlah_satuan" => $jumlah_satuan
+        //             ])->create();
+        //         }
+        //     }
+        // }while($pengembalian!=NULL);
         
         DeliveryOrder::factory(20)->has(PreOrder::factory()->count(10))->create();
 

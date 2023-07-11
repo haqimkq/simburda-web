@@ -7,6 +7,7 @@ use App\Enum\SuratJalanTipe;
 use App\Models\Pengembalian;
 use App\Models\SjPengembalian;
 use App\Models\SuratJalan;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class SjPengembalianFactory extends Factory
@@ -28,14 +29,13 @@ class SjPengembalianFactory extends Factory
         return $this->afterCreating(function (SjPengembalian $sjPengembalian) {
             $peminjaman = $sjPengembalian->pengembalian->peminjaman;
             $proyek = $peminjaman->menangani->proyek;
-            $supervisor = $peminjaman->menangani->supervisor;
+            $user = $peminjaman->menangani->user;
             if($peminjaman->tipe == PeminjamanTipe::GUDANG_PROYEK->value){
-                $peminjamanGp = $sjPengembalian->pengembalian->peminjaman->peminjamanGp;
-                $admin_gudang_id = $peminjamanGp->gudang->adminGudang->random(1)->all()[0]->user_id;
+                $admin_gudang_id = User::where('role','ADMIN_GUDANG')->get()->random()->id;
                 SuratJalan::find($sjPengembalian->suratJalan->id)->update([
                     'tipe' => SuratJalanTipe::PENGEMBALIAN->value,
                     'admin_gudang_id' => $admin_gudang_id,
-                    'kode_surat' => SuratJalan::generateKodeSurat(SuratJalanTipe::PENGEMBALIAN->value, $proyek->client, $supervisor->nama),
+                    'kode_surat' => SuratJalan::generateKodeSurat(SuratJalanTipe::PENGEMBALIAN->value, $proyek->client, $user->nama),
                     'updated_at' => $peminjaman->created_at,
                     'created_at' => $peminjaman->created_at,
                 ]);

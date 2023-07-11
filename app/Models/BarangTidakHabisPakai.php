@@ -25,10 +25,10 @@ class BarangTidakHabisPakai extends Model
         return $this->belongsTo(Peminjaman::class);
     }
     public function peminjamanDetail(){
-        return $this->hasMany(PeminjamanDetail::class);
+        return $this->hasMany(PeminjamanDetail::class,'barang_id');
     }
     public function pengembalianDetail(){
-        return $this->hasMany(PengembalianDetail::class);
+        return $this->hasMany(PengembalianDetail::class,'barang_id');
     }
     public function getCreatedAtAttribute($date)
     {

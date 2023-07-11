@@ -30,7 +30,7 @@ class ProyekFactory extends Factory
         return [
             'id' => fake()->uuid(),
             // 'project_manager_id' => $project_manager->id,
-            'project_manager_id' => $project_manager,
+            'set_manager_id' => $project_manager,
             'nama_proyek' => fake()->words(3, true),
             'alamat' => fake()->streetAddress(),
             'kota' => fake()->city(),

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\AksesBarang;
 use App\Models\Barang;
 use App\Models\BarangHabisPakai;
 use App\Models\BarangTidakHabisPakai;
@@ -30,7 +31,7 @@ class PeminjamanDetailFactory extends Factory
         $satuan = NULL;
         $jumlah = NULL;
         $status = NULL;
-        $barang = Barang::get()->random();
+        $barang = BarangTidakHabisPakai::get()->random();
         $jumlah_satuan = $jumlah . ' ' . $satuan;
         return [
             'id' => $id,
@@ -38,7 +39,6 @@ class PeminjamanDetailFactory extends Factory
             'peminjaman_proyek_lain_id' => NULL,
             'status' => $status,
             'peminjaman_id' => $peminjaman->id,
-            'jumlah_satuan' => $jumlah_satuan
         ];
     }
     public function resetData(){
@@ -47,8 +47,6 @@ class PeminjamanDetailFactory extends Factory
             $barang = BarangTidakHabisPakai::whereDoesntHave('peminjamanDetail', function (Builder $query) use ($peminjaman){
                 $query->where('peminjaman_id', $peminjaman->id);
             })->get()->random();
-            $satuan = 'Unit';
-            $jumlah = 1;
             if($peminjaman->status == "DIPINJAM"){
                 BarangTidakHabisPakai::where('id', $barang->id)->update(['peminjaman_id' => $peminjaman->id]);
                 $status = "DIGUNAKAN";
@@ -58,13 +56,86 @@ class PeminjamanDetailFactory extends Factory
             }else if($peminjaman->status == "MENUNGGU_AKSES" || $peminjaman->status == "AKSES_DITOLAK" || $peminjaman->status == "MENUNGGU_SURAT_JALAN" || $peminjaman->status == "MENUNGGU_PENGIRIMAN" || $peminjaman->status == "SEDANG_DIKIRIM"){
                 $status = "MENUNGGU_AKSES";
             }
-            $jumlah_satuan = $jumlah . ' ' . $satuan;
             return [
                 'barang_id' => $barang->id,
                 'status' => $status,
                 'peminjaman_id' => $peminjaman->id,
-                'jumlah_satuan' => $jumlah_satuan
+                // 'penanggung_jawab_id' => ($status!='MENUNGGU_AKSES') ? ,
             ];
         });
+    }
+    public function menungguAksesGp(){
+        return $this->state(function (array $attributes){
+            return [
+            ];
+        })
+        ->has(AksesBarang::factory()->needAccessWithPeminjamanDetail());
+    }
+    public function aksesDitolakGp(){
+        return $this->state(function (array $attributes){
+            return [
+                
+            ];
+        })
+        ->has(AksesBarang::factory()->accessNotGrantedWithPeminjamanDetail());
+    }
+    public function menungguSuratJalanGp(){
+        return $this->state(function (array $attributes){
+            return [
+                
+            ];
+        })
+        ->has(AksesBarang::factory()->accessGrantedWithPeminjamanDetail());
+    }
+    public function menungguPengirimanGp(){
+        return $this->state(function (array $attributes){
+            return [
+                
+            ];
+        })
+        ->has(AksesBarang::factory()->accessGrantedWithPeminjamanDetail());
+    }
+    public function sedangDikirimGp(){
+        return $this->state(function (array $attributes){
+            return [
+            ];
+        })
+        ->has(AksesBarang::factory()->accessGrantedWithPeminjamanDetail());
+    }
+    public function dipinjamGp(){
+        return $this->state(function (array $attributes){
+            return [
+            ];
+        })
+        ->has(AksesBarang::factory()->accessGrantedWithPeminjamanDetail());
+    }
+    public function selesaiGpWithPengembalianMenungguSuratJalan(){
+        return $this->state(function (array $attributes){
+            return [
+            ];
+        })
+        ->has(AksesBarang::factory()->accessGrantedWithPeminjamanDetail());
+    }
+
+    public function selesaiGpWithPengembalianSedangDikembalikan(){
+        return $this->state(function (array $attributes){
+            return [
+            ];
+        })
+        ->has(AksesBarang::factory()->accessGrantedWithPeminjamanDetail());
+    }
+    public function selesaiGpWithPengembalianMenungguPengembalian(){
+        return $this->state(function (array $attributes){
+            return [
+            ];
+        })
+        ->has(AksesBarang::factory()->accessGrantedWithPeminjamanDetail());
+    }
+    public function selesaiGpWithPengembalianSelesai(){
+        return $this->state(function (array $attributes){
+            return [
+            ];
+        })
+        ->has(AksesBarang::factory()->accessGrantedWithPeminjamanDetail());
     }
 }

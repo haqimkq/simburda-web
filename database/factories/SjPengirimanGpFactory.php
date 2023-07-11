@@ -10,6 +10,7 @@ use App\Models\PeminjamanGp;
 use App\Models\SjPengembalian;
 use App\Models\SjPengirimanGp;
 use App\Models\SuratJalan;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Log;
 
@@ -32,13 +33,13 @@ class SjPengirimanGpFactory extends Factory
             $peminjamanGp = $sjPengirimanGp->peminjamanGp;
             $peminjaman = $sjPengirimanGp->peminjamanGp->peminjaman;
             $proyek = $peminjaman->menangani->proyek;
-            $supervisor = $peminjaman->menangani->supervisor;
+            $user = $peminjaman->menangani->user;
             if($peminjaman->tipe == PeminjamanTipe::GUDANG_PROYEK->value){
-                $admin_gudang_id = $peminjamanGp->gudang->adminGudang->random(1)->all()[0]->user_id;
+                $admin_gudang_id = User::where('role','ADMIN_GUDANG')->get()->random()->id;
                 SuratJalan::find($sjPengirimanGp->suratJalan->id)->update([
                     'tipe' => SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value,
                     'admin_gudang_id' => $admin_gudang_id,
-                    'kode_surat' => SuratJalan::generateKodeSurat(SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value, $proyek->client, $supervisor->nama),
+                    'kode_surat' => SuratJalan::generateKodeSurat(SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value, $proyek->client, $user->nama),
                     'updated_at' => $peminjaman->created_at,
                     'created_at' => $peminjaman->created_at,
                 ]);
@@ -55,7 +56,7 @@ class SjPengirimanGpFactory extends Factory
             //         'tipe' => SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value,
             //         'admin_gudang_id' => $admin_gudang_id,
             //         'updated_at' => $peminjaman->created_at,
-            //         'kode_surat' => SuratJalan::generateKodeSurat(SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value, $proyek->client, $supervisor->nama),
+            //         'kode_surat' => SuratJalan::generateKodeSurat(SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value, $proyek->client, $user->nama),
             //         'created_at' => $peminjaman->created_at,
             //     ]);
             //     $peminjamanPp->update([

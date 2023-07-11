@@ -23,7 +23,7 @@ return new class extends Migration
         Schema::table('peminjaman_details', function (Blueprint $table) {
             $table->foreignUuid('peminjaman_proyek_lain_id')->nullable()->constrained('peminjaman_pps')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('barang_id')->constrained('barang_tidak_habis_pakais')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('penanggung_jawab_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('penanggung_jawab_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('peminjaman_id')->constrained('peminjamans')->onUpdate('cascade')->onDelete('cascade');
         });
     }

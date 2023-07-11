@@ -64,12 +64,12 @@ class TtdVerification extends Model
     }
     public static function updateTtdSjVerificationFromSuratJalan($sj){
         if($sj->sjPengirimanGp!=null && $sj->ttd_supervisor!=null){
-            $supervisor = $sj->sjPengirimanGp->peminjamanGp->peminjaman->menangani->supervisor;
+            $user = $sj->sjPengirimanGp->peminjamanGp->peminjaman->menangani->user;
         }else if($sj->sjPengembalian!=null){
-            $supervisor = $sj->sjPengembalian->pengembalian->peminjaman->menangani->supervisor;
+            $user = $sj->sjPengembalian->pengembalian->peminjaman->menangani->user;
         }else if($sj->sjPengirimanPp!=null){
-            $supervisor_peminjam = $sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->supervisor;
-            $supervisor = $sj->sjPengirimanPp->peminjamanPp->peminjamanAsal->menangani->supervisor;
+            $user_peminjam = $sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->user;
+            $user = $sj->sjPengirimanPp->peminjamanPp->peminjamanAsal->menangani->user;
         }
         if($sj->ttd_admin!=null){
             TtdVerification::find($sj->ttd_admin)->update([
@@ -83,15 +83,15 @@ class TtdVerification extends Model
             ]);
         if($sj->ttd_supervisor!=null){
             TtdVerification::where('id', $sj->ttd_supervisor)->update([
-                'user_id' => $supervisor->id,
-                'sebagai' => self::setSebagaiTtdSjVerification($supervisor, $sj)
+                'user_id' => $user->id,
+                'sebagai' => self::setSebagaiTtdSjVerification($user, $sj)
             ]);
         }
         if($sj->sjPengirimanPp!=null){
             if($sj->sjPengirimanPp->ttdSupervisorPeminjam!=null){
                 TtdVerification::where('id', $sj->sjPengirimanPp->ttdSupervisorPeminjam)->update([
-                    'user_id' => $supervisor_peminjam->id,
-                    'sebagai' => self::setSebagaiTtdSjVerification($supervisor, $sj)
+                    'user_id' => $user_peminjam->id,
+                    'sebagai' => self::setSebagaiTtdSjVerification($user, $sj)
                 ]);
             }
         }
@@ -99,13 +99,13 @@ class TtdVerification extends Model
     public static function setSebagaiTtdSjVerification($user, $sj){
         if($user->role=='LOGISTIC'){
             $sebagai = "PENGIRIM";
-        }else if($user->role=='SUPERVISOR'){
+        }else if($user->role=='SUPERVISOR' || $user->role=='SET_MANAGER'){
             if($sj->sjPengirimanGp!=null){
                 $sebagai = "PENERIMA";
             }else if($sj->sjPengembalian!=null){
                 $sebagai = "PEMBERI";
             }else if($sj->sjPengirimanPp!=null){
-                $check_user=$sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->supervisor;
+                $check_user=$sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->user;
                 if($check_user->id == $user->id) $sebagai = "PENERIMA";
                 else $sebagai = "PEMBERI";
             }

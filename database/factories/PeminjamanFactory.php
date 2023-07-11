@@ -60,27 +60,6 @@ class PeminjamanFactory extends Factory
                 $status = 'SELESAI';
             }
         }
-        // do {
-        //     $peminjamanGpId = PeminjamanGp::all()->random()->id;
-        //     $peminjamanGpIdExist = Peminjaman::where('peminjaman_type','App\Models\PeminjamanGp')->where('peminjaman_id', $peminjamanGpId)->exists();
-        // } while ($peminjamanGpIdExist);
-        // do {
-        //     $peminjamanPpId = PeminjamanPp::all()->random()->id;
-        //     $peminjamanPpIdExist = Peminjaman::where('peminjaman_type','App\Models\PeminjamanPp')->where('peminjaman_id', $peminjamanPpId)->exists();
-        // } while ($peminjamanPpIdExist);
-        // $random = mt_rand(1,2);
-        // return [
-        //     'id' => $id,
-        //     'menangani_id' => $menangani->id,
-        //     'kode_peminjaman' => $kode_peminjaman,
-        //     'peminjaman_type' => ($random == 1) ? "App\Models\PeminjamanGp" : "App\Models\PeminjamanPp",
-        //     'peminjaman_id' => ($random == 1) ? $peminjamanGpId : $peminjamanPpId,
-        //     'tgl_peminjaman' => $tgl_peminjaman,
-        //     'created_at' => $tgl_peminjaman,
-        //     'updated_at' => $tgl_peminjaman,
-        //     'tgl_berakhir' => $tgl_berakhir,
-        //     'status' => $status,
-        // ];
         return [
             'id' => $id,
             'menangani_id' => $menangani->id,
@@ -122,7 +101,8 @@ class PeminjamanFactory extends Factory
                 'status' => 'MENUNGGU_AKSES',
             ];
         })->has(PeminjamanGp::factory()->withPeminjaman())
-        ->has(AksesBarang::factory()->needAccessWithPeminjaman());
+        // ->has(AksesBarang::factory()->needAccessWithPeminjaman())
+        ;
     }
     public function aksesDitolakGp(){
         return $this->state(function (array $attributes){
@@ -140,7 +120,8 @@ class PeminjamanFactory extends Factory
                 'status' => 'AKSES_DITOLAK',
             ];
         })->has(PeminjamanGp::factory()->withPeminjaman())
-        ->has(AksesBarang::factory()->accessNotGrantedWithPeminjaman());
+        // ->has(AksesBarang::factory()->accessNotGrantedWithPeminjaman())
+        ;
     }
     public function menungguSuratJalanGp(){
         return $this->state(function (array $attributes){
@@ -158,7 +139,8 @@ class PeminjamanFactory extends Factory
                 'status' => 'MENUNGGU_SURAT_JALAN',
             ];
         })->has(PeminjamanGp::factory()->withPeminjaman())
-        ->has(AksesBarang::factory()->accessGrantedWithPeminjaman());
+        // ->has(AksesBarang::factory()->accessGrantedWithPeminjaman())
+        ;
     }
     public function menungguPengirimanGp(){
         return $this->state(function (array $attributes){
@@ -180,7 +162,8 @@ class PeminjamanFactory extends Factory
             ->has(SjPengirimanGp::factory()->menunggu())
             // ->has(SuratJalan::factory()->pengirimanGp()->menunggu()->has(SjPengirimanGp::factory()->menunggu()))
         )
-        ->has(AksesBarang::factory()->accessGrantedWithPeminjaman());
+        // ->has(AksesBarang::factory()->accessGrantedWithPeminjaman())
+        ;
     }
     public function sedangDikirimGp(){
         return $this->state(function (array $attributes){
@@ -201,7 +184,8 @@ class PeminjamanFactory extends Factory
         ->has(PeminjamanGp::factory()->withPeminjaman()
             ->has(SjPengirimanGp::factory()->dalamPerjalanan())
         )
-        ->has(AksesBarang::factory()->accessGrantedWithPeminjaman());
+        // ->has(AksesBarang::factory()->accessGrantedWithPeminjaman())
+        ;
     }
     public function dipinjamGp(){
         return $this->state(function (array $attributes){
@@ -222,7 +206,8 @@ class PeminjamanFactory extends Factory
         ->has(PeminjamanGp::factory()->withPeminjaman()
             ->has(SjPengirimanGp::factory()->selesai())
         )
-        ->has(AksesBarang::factory()->accessGrantedWithPeminjaman());
+        // ->has(AksesBarang::factory()->accessGrantedWithPeminjaman())
+        ;
     }
     public function selesaiGpWithPengembalianMenungguSuratJalan(){
         return $this->state(function (array $attributes){
@@ -244,7 +229,8 @@ class PeminjamanFactory extends Factory
             ->has(SjPengirimanGp::factory()->selesai())
         )
         ->has(Pengembalian::factory()->menungguSuratJalan())
-        ->has(AksesBarang::factory()->accessGrantedWithPeminjaman());
+        // ->has(AksesBarang::factory()->accessGrantedWithPeminjaman())
+        ;
     }
 
     public function selesaiGpWithPengembalianSedangDikembalikan(){
@@ -267,7 +253,8 @@ class PeminjamanFactory extends Factory
             ->has(SjPengirimanGp::factory()->selesai())
         )
         ->has(Pengembalian::factory()->sedangDikembalikan())
-        ->has(AksesBarang::factory()->accessGrantedWithPeminjaman());
+        // ->has(AksesBarang::factory()->accessGrantedWithPeminjaman())
+        ;
     }
     public function selesaiGpWithPengembalianMenungguPengembalian(){
         return $this->state(function (array $attributes){
@@ -289,7 +276,8 @@ class PeminjamanFactory extends Factory
             ->has(SjPengirimanGp::factory()->selesai())
         )
         ->has(Pengembalian::factory()->menungguPengembalian())
-        ->has(AksesBarang::factory()->accessGrantedWithPeminjaman());
+        // ->has(AksesBarang::factory()->accessGrantedWithPeminjaman())
+        ;
     }
     public function selesaiGpWithPengembalianSelesai(){
         return $this->state(function (array $attributes){
@@ -311,7 +299,8 @@ class PeminjamanFactory extends Factory
             ->has(SjPengirimanGp::factory()->selesai())
         )
         ->has(Pengembalian::factory()->selesai())
-        ->has(AksesBarang::factory()->accessGrantedWithPeminjaman());
+        // ->has(AksesBarang::factory()->accessGrantedWithPeminjaman())
+        ;
     }
 }
 
