@@ -16,6 +16,11 @@ class isAdmin
      */
     public function handle(Request $request, Closure $next)
     {
+        // $a=[];
+        // foreach(auth()->user()->role as $r){
+        //     array_push($a, $r->nama_role);
+        // }
+        // if(in_array($a,['setManager','Admin']))
         if(auth()->guest()||auth()->user()->role!='ADMIN'){
             return redirect('/home');
             // abort(403);
