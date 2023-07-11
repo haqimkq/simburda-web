@@ -73,12 +73,7 @@ class DatabaseSeeder extends Seeder
                     'email' => 'ghanipratama@gmail.com',
                     'ttd' => 'assets/ttd/hjgawedyahwdh2837289371jh.png'
                 ]
-        )->has(AdminGudang::factory()->state(function(array $attributes, User $user) use ($gudang){
-            return [
-                'user_id' => $user->id,
-                'gudang_id' => $gudang->id,
-            ];
-        }))->create();
+        )->create();
 
         User::factory()->state(
                 [
@@ -563,9 +558,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory(2)->state([
             'role' => 'ADMIN_GUDANG'
-        ])->has(AdminGudang::factory()->state(function (array $attributes, User $user){
-            return ['user_id' => $user->id];
-        }))->create();
+        ])->create();
 
         Peminjaman::factory(40)->menungguAksesGp()
         ->has(PeminjamanDetail::factory(8)->resetData(), 'peminjamanDetail')
