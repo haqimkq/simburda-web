@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamps();
         });
         Schema::create('sj_penggunaan_gps', function (Blueprint $table) {
+            $table->foreignUuid('surat_jalan_id')->constrained('surat_jalans')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('penggunaan_id')->constrained('penggunaan_gps')->onUpdate('cascade')->onDelete('cascade');
         });
     }

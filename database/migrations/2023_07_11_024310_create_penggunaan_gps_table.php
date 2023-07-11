@@ -21,6 +21,7 @@ return new class extends Migration
         });
         Schema::create('penggunaan_gps', function (Blueprint $table) {
             $table->foreignUuid('gudang_id')->constrained('gudangs')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('penggunaan_id')->constrained('penggunaans')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

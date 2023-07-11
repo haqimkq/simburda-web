@@ -21,7 +21,7 @@ return new class extends Migration
             $table->softDeletes();
         });
         Schema::table('sj_pengiriman_pps', function (Blueprint $table) {
-            // $table->foreignUuid('surat_jalan_id')->constrained('surat_jalans')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('surat_jalan_id')->constrained('surat_jalans')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('peminjaman_id')->constrained('peminjaman_pps')->onUpdate('cascade')->onDelete('cascade');
         });
     }

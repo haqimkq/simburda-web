@@ -18,6 +18,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('gambar');
             $table->string('nama');
+            $table->string('tipe');
             $table->string('merk')->nullable();
             $table->text('detail');
             $table->timestamps();

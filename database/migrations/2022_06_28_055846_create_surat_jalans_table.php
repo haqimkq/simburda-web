@@ -18,8 +18,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             // $table->string('ttd_admin');
             $table->string('kode_surat');
-            $table->string('kode_surat_id');
-            $table->string('kode_surat_type');
+            $table->string('tipe');
             // $table->string('ttd_driver')->nullable();
             // $table->string('ttd_penerima')->nullable();
 
