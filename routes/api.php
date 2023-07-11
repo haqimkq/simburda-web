@@ -31,7 +31,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('surat-jalan', [SuratJalanController::class, 'create']);
         Route::put('surat-jalan/{surat_jalan_id}', [SuratJalanController::class, 'update']);
     });
-    Route::middleware(['admin-projectmanager-supervisor-admingudang-logistic'])->group(function(){
+    Route::middleware(['admin-setmanager-supervisor-admingudang-logistic'])->group(function(){
         Route::get('surat-jalan/all', [SuratJalanController::class, 'getAllSuratJalanByUser']);
         Route::get('surat-jalan/active', [SuratJalanController::class, 'getSomeActiveSuratJalanByUser']);
         Route::get('surat-jalan/active/count', [SuratJalanController::class, 'getCountActiveSuratJalanByUser']);

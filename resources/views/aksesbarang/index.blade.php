@@ -45,10 +45,10 @@
 						>
 							<option value="akses-belum-ditentukan"  @if(request('filter') == 'akses-belum-ditentukan') selected @endif>Akses Belum Ditentukan</option>
 							<option value='semua-akses'  @if(request('filter') == 'semua-akses') selected @endif>Semua Akses</option>
-							<option value='disetujui-admin-dan-pm'  @if(request('filter') == 'disetujui-admin-dan-pm') selected @endif>Disetujui Admin Gudang dan PM</option>
-							<option value="disetujui-pm"  @if(request('filter') == 'disetujui-pm') selected @endif>Disetujui PM</option>
-							<option value="ditolak-pm"  @if(request('filter') == 'ditolak-pm') selected @endif>Ditolak PM</option>
-							<option value="akses-belum-ditentukan-pm"  @if(request('filter') == 'akses-belum-ditentukan-pm') selected @endif>PM Belum Menentukan Akses</option>
+							<option value='disetujui-admin-dan-sm'  @if(request('filter') == 'disetujui-admin-dan-sm') selected @endif>Disetujui Admin Gudang dan SM</option>
+							<option value="disetujui-sm"  @if(request('filter') == 'disetujui-sm') selected @endif>Disetujui SM</option>
+							<option value="ditolak-sm"  @if(request('filter') == 'ditolak-sm') selected @endif>Ditolak SM</option>
+							<option value="akses-belum-ditentukan-sm"  @if(request('filter') == 'akses-belum-ditentukan-sm') selected @endif>SM Belum Menentukan Akses</option>
 							<option value='disetujui-admin' @if(request('filter') == 'disetujui-admin') selected @endif>Disetujui Admin Gudang</option>
 							<option value="ditolak-admin"  @if(request('filter') == 'ditolak-admin') selected @endif>Ditolak Admin Gudang</option>
 							<option value="akses-belum-ditentukan-admin"  @if(request('filter') == 'akses-belum-ditentukan-admin') selected @endif>Admin Gudang Belum Menentukan Akses</option>
@@ -80,13 +80,13 @@
 						<p class="">Project Manager</p>
 					</div>
 				</div>
-				@canany(['ADMIN', 'ADMIN_GUDANG', 'PROJECT_MANAGER'])
+				@canany(['ADMIN', 'ADMIN_GUDANG', 'SET_MANAGER'])
 				<div class="flex items-center mt-3 ">
 					<input type="checkbox" id="selectAllProyek" class="cursor-pointer selectAllProyek rounded-md border-green border w-5 h-5 focus:ring-green checked:bg-green mr-2">
 					<label  for="selectAllProyek" class="cursor-pointer">Pilih Semua Proyek</label>
 				</div>
 				@endcanany
-				@canany(['ADMIN', 'ADMIN_GUDANG', 'PROJECT_MANAGER'])
+				@canany(['ADMIN', 'ADMIN_GUDANG', 'SET_MANAGER'])
 				<form action="{{route('akses-barang.store')}}" method="POST" id="" class="formPemberianAkses">
 					@csrf
 				@endcanany
@@ -95,9 +95,9 @@
 					@if (!isset($nama_proyek_before) || $aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->nama_proyek != $nama_proyek_before)
 						@php $nama_proyek_before = $aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->nama_proyek @endphp
 						<div class="flex flex-col mt-5 lg:col-span-2 xl:col-span-3">
-							@canany(['ADMIN', 'ADMIN_GUDANG', 'PROJECT_MANAGER'])
+							@canany(['ADMIN', 'ADMIN_GUDANG', 'SET_MANAGER'])
 							<div class="flex items-center">
-									@if (!$aksesbarang->disetujui_pm || !$aksesbarang->disetujui_admin)
+									@if (!$aksesbarang->disetujui_sm || !$aksesbarang->disetujui_admin)
 									<input id="{{$aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->id}}" type="checkbox" data-id-proyek-peminjaman="{{$aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->id}}" class="cursor-pointer selectProyek rounded-md border-green border w-5 h-5 focus:ring-green checked:bg-green mr-2">
 									@endif
 									<label for="{{$aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->id}}" class="cursor-pointer text-xl font-semibold line-clamp-1">{{ucfirst($aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->nama_proyek)}}</label>
@@ -124,8 +124,8 @@
 					<a href="{{ route('akses-barang.show', $aksesbarang->id) }}" class="p-2 group flex flex-col shadow-md shadow-gray-100 rounded-xl hover:rounded-b-none">
 						<div class="flex flex-col p-2">
 							<div class="flex items-center mb-2">
-									@if (isset($aksesbarang->disetujui_pm))
-										@if ($aksesbarang->disetujui_pm)
+									@if (isset($aksesbarang->disetujui_sm))
+										@if ($aksesbarang->disetujui_sm)
 											<svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 fill-green-600 mr-1">
 												<path fill-rule="evenodd" clip-rule="evenodd" d="M22 12.5C22 17.7467 17.7467 22 12.5 22C7.25329 22 3 17.7467 3 12.5C3 7.25329 7.25329 3 12.5 3C17.7467 3 22 7.25329 22 12.5ZM25 12.5C25 19.4036 19.4036 25 12.5 25C5.59644 25 0 19.4036 0 12.5C0 5.59644 5.59644 0 12.5 0C19.4036 0 25 5.59644 25 12.5ZM18.5607 11.0607C19.1464 10.4749 19.1464 9.52513 18.5607 8.93934C17.9749 8.35355 17.0251 8.35355 16.4393 8.93934L11.4215 13.9571L8.97619 11.8611C8.3472 11.322 7.40025 11.3948 6.86111 12.0238C6.32198 12.6528 6.39482 13.5998 7.02381 14.1389L10.5238 17.1389C11.1189 17.649 12.0064 17.6149 12.5607 17.0607L18.5607 11.0607Z"/>
 											</svg>
@@ -134,12 +134,12 @@
 												<path fill-rule="evenodd" clip-rule="evenodd" d="M12.5 22C17.7467 22 22 17.7467 22 12.5C22 7.25329 17.7467 3 12.5 3C7.25329 3 3 7.25329 3 12.5C3 17.7467 7.25329 22 12.5 22ZM12.5 25C19.4036 25 25 19.4036 25 12.5C25 5.59644 19.4036 0 12.5 0C5.59644 0 0 5.59644 0 12.5C0 19.4036 5.59644 25 12.5 25ZM8.25733 17.2426C7.67155 16.6569 7.67155 15.7071 8.25733 15.1213L10.3787 13L8.25733 10.8787C7.67155 10.2929 7.67155 9.34314 8.25733 8.75736C8.84312 8.17157 9.79287 8.17157 10.3787 8.75736L12.5 10.8787L14.6213 8.75736C15.2071 8.17158 16.1568 8.17158 16.7426 8.75736C17.3284 9.34315 17.3284 10.2929 16.7426 10.8787L14.6213 13L16.7426 15.1213C17.3284 15.7071 17.3284 16.6569 16.7426 17.2426C16.1568 17.8284 15.2071 17.8284 14.6213 17.2426L12.5 15.1213L10.3787 17.2426C9.79287 17.8284 8.84312 17.8284 8.25733 17.2426Z"/>
 											</svg>
 										@endif
-										<p class="text-xs font-normal {{$aksesbarang->disetujui_pm ? 'text-green-600' : 'text-red-600'}} mr-3">{{ ($aksesbarang->disetujui_pm) ? 'PM' : 'PM' }}</p>
+										<p class="text-xs font-normal {{$aksesbarang->disetujui_sm ? 'text-green-600' : 'text-red-600'}} mr-3">{{ ($aksesbarang->disetujui_sm) ? 'SM' : 'SM' }}</p>
 									@else
 										<svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"  class="w-3 h-3 fill-gray-500 mr-1">
 											<path fill-rule="evenodd" clip-rule="evenodd" d="M22 12.5C22 17.7467 17.7467 22 12.5 22C7.25329 22 3 17.7467 3 12.5C3 7.25329 7.25329 3 12.5 3C17.7467 3 22 7.25329 22 12.5ZM25 12.5C25 19.4036 19.4036 25 12.5 25C5.59644 25 0 19.4036 0 12.5C0 5.59644 5.59644 0 12.5 0C19.4036 0 25 5.59644 25 12.5ZM8 11.5C7.17157 11.5 6.5 12.1716 6.5 13C6.5 13.8284 7.17157 14.5 8 14.5H17C17.8284 14.5 18.5 13.8284 18.5 13C18.5 12.1716 17.8284 11.5 17 11.5H8Z"/>
 										</svg>
-										<p class="text-xs font-normal text-gray-500 mr-3">PM</p>
+										<p class="text-xs font-normal text-gray-500 mr-3">SM</p>
 									@endif
 									@if (isset($aksesbarang->disetujui_admin))
 										@if ($aksesbarang->disetujui_admin)
@@ -160,8 +160,8 @@
 									@endif
 								</div>
 								<div class="flex items-center">
-									@canany(['ADMIN', 'ADMIN_GUDANG', 'PROJECT_MANAGER'])
-									@if (!$aksesbarang->disetujui_pm || !$aksesbarang->disetujui_admin)
+									@canany(['ADMIN', 'ADMIN_GUDANG', 'SET_MANAGER'])
+									@if (!$aksesbarang->disetujui_sm || !$aksesbarang->disetujui_admin)
 									<input type="checkbox" name="id[]" data-id-proyek-peminjaman="{{$aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->id}}" value="{{$aksesbarang->id}}" class="cursor-pointer rounded-md border-green border w-5 h-5 focus:ring-green checked:bg-green mr-2">
 									@endif
 									@endcanany
@@ -184,7 +184,7 @@
 						</div>
 					</a>
 				@endforeach
-				@canany(['ADMIN', 'ADMIN_GUDANG', 'PROJECT_MANAGER'])
+				@canany(['ADMIN', 'ADMIN_GUDANG', 'SET_MANAGER'])
 				<input type="radio" name="akses" id="setujui" value="setujui" class="hidden">
 				<input type="radio" name="akses" id="tolak" value="tolak" class="hidden">
 				@endcanany
@@ -200,7 +200,7 @@
 	<div class="mt-5 mb-20">
 		{{ $aksesBarangs->links() }}
 	</div>
-	@canany(['ADMIN', 'ADMIN_GUDANG', 'PROJECT_MANAGER'])
+	@canany(['ADMIN', 'ADMIN_GUDANG', 'SET_MANAGER'])
 	<div class="z-50 bg-white shadow-md bottom-0 right-0 fixed m-4 p-4 items-end justify-end rounded-lg w-auto flex-col buttonAjukanAksesBarang hidden">
 		<p class="w-full mb-3 text-md font-semibold"><span class="jumlahBarang ">0</span> Akses Barang Dipilih</p>
 		<div class="flex">
@@ -220,7 +220,7 @@
 			$("#form").submit();
 		})
 
-		@canany(['ADMIN', 'ADMIN_GUDANG', 'PROJECT_MANAGER'])
+		@canany(['ADMIN', 'ADMIN_GUDANG', 'SET_MANAGER'])
 		$('input:checkbox').change(function(){
 			var countCheckedValue = $('input[name="id[]"]:checked').length;
 			if(countCheckedValue>0){

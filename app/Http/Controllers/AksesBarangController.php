@@ -27,7 +27,7 @@ class AksesBarangController extends Controller
                 }, 'peminjamanDetail.peminjaman' => function ($q){
                         $q->orderBy('created_at');
                 }, 'peminjamanDetail'])
-                ->whereRelation('peminjamanDetail.peminjaman.menangani.proyek.setManager', 'id', $authUser->id)  
+                ->whereRelation('peminjamanDetail.peminjaman.menangani.user', 'id', $authUser->id)  
                 ->filter(request(['search', 'filter', 'orderBy']))
                 ->paginate(40)
                 ->withQueryString();
@@ -59,7 +59,6 @@ class AksesBarangController extends Controller
             'countUndefinedAkses' => $countUndefinedAkses,
         ]);
     }
-
     /**
      * Show the form for creating a new resource.
      *

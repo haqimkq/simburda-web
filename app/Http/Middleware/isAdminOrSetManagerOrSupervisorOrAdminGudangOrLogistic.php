@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class isAdminOrProjectManagerOrSupervisorOrAdminGudangOrLogistic
+class isAdminOrSetManagerOrSupervisorOrAdminGudangOrLogistic
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,7 @@ class isAdminOrProjectManagerOrSupervisorOrAdminGudangOrLogistic
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->user()->role=='ADMIN'||auth()->user()->role=='PROJECT_MANAGER'||auth()->user()->role=='SUPERVISOR'||auth()->user()->role=='ADMIN_GUDANG'||auth()->user()->role=='LOGISTIC'){
+        if(auth()->user()->role=='ADMIN'||auth()->user()->role=='SET_MANAGER'||auth()->user()->role=='SUPERVISOR'||auth()->user()->role=='ADMIN_GUDANG'||auth()->user()->role=='LOGISTIC'){
             return $next($request);
         }
         return redirect('/home');

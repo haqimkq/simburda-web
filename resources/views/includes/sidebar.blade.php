@@ -1,6 +1,6 @@
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
 <div @click.away="open = false"
-	class="md:min-h-[95.5%] bg-primary dark-mode:text-gray-200 dark-mode:bg-gray-800 flex w-full flex-col rounded-lg text-gray-700 md:fixed md:w-[16em]"
+	class="md:min-h-[95.5%] bg-primary dark-mode:text-gray-200 dark-mode:bg-gray-800 flex w-full flex-col rounded-lg text-gray-700 md:fixed md:w-[16em] overflow-y-scroll top-0 bottom-0"
 	x-data="{ open: false }">
 	<div class="flex flex-shrink-0 flex-row items-center justify-between px-8 py-4">
 		<a href="/home"
@@ -38,7 +38,7 @@
 					<span class="ml-3 flex-1 whitespace-nowrap">Kendaraan</span>
 				</a>
 			@endcanany
-			@canany(['ADMIN','SUPERVISOR','PROJECT_MANAGER'])
+			@canany(['ADMIN','SUPERVISOR','SET_MANAGER'])
 			<a href="/proyek" class="sidebar-link text-sm {{ request()->is('proyek*') ? 'bg-primary-light' : '' }}">
 				<span class="ml-3 flex-1 whitespace-nowrap">Proyek</span>
 			</a>
@@ -58,22 +58,22 @@
 					<span class="ml-3 flex-1 whitespace-nowrap">Delivery Order</span>
 				</a>
 			@endcanany
-			@canany(['ADMIN','LOGISTIC','ADMIN_GUDANG', 'PROJECT_MANAGER', 'SUPERVISOR'])
+			@canany(['ADMIN','LOGISTIC','ADMIN_GUDANG', 'SET_MANAGER', 'SUPERVISOR'])
 				<a href="/surat-jalan" class="sidebar-link text-sm {{ request()->is('surat-jalan*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Surat Jalan</span>
 				</a>
 			@endcanany
-			@canany(['ADMIN','ADMIN_GUDANG','PROJECT_MANAGER','SUPERVISOR'])
+			@canany(['ADMIN','ADMIN_GUDANG','SET_MANAGER','SUPERVISOR'])
 				<a href="/peminjaman" class="sidebar-link text-sm {{ request()->is('peminjaman*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Peminjaman</span>
 				</a>
 			@endcanany
-			@canany(['ADMIN','ADMIN_GUDANG','PROJECT_MANAGER','SUPERVISOR'])
+			@canany(['ADMIN','ADMIN_GUDANG','SET_MANAGER','SUPERVISOR'])
 				<a href="/pengembalian" class="sidebar-link text-sm {{ request()->is('pengembalian*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Pengembalian</span>
 				</a>
 			@endcanany
-			@canany(['ADMIN','ADMIN_GUDANG','PROJECT_MANAGER'])
+			@canany(['ADMIN','ADMIN_GUDANG','SET_MANAGER'])
 				<a href="/akses-barang" class="sidebar-link text-sm {{ request()->is('akses-barang*') ? 'bg-primary-light' : '' }}">
 				<span class="ml-3 flex-1 whitespace-nowrap">Akses Barang</span>
 				<span

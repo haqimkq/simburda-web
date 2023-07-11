@@ -235,22 +235,22 @@ class SuratJalan extends Model
     public static function getProjectManager($surat_jalan_id){
         $sj = self::findOrFail($surat_jalan_id);
         if($sj->tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
-            return $sj->sjPengirimanGp->peminjamanGp->peminjaman->menangani->proyek->projectManager;
+            return $sj->sjPengirimanGp->peminjamanGp->peminjaman->menangani->proyek->setManager;
         }else if($sj->tipe == SuratJalanTipe::PENGEMBALIAN->value){
-            return $sj->sjPengembalian->pengembalian->peminjaman->menangani->proyek->projectManager;
+            return $sj->sjPengembalian->pengembalian->peminjaman->menangani->proyek->setManager;
         }else if($sj->tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value){
-            return $sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->proyek->projectManager;
+            return $sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->proyek->setManager;
         }
     }
     public static function getSupervisor($surat_jalan_id, $sv_peminjam = false){
         $sj = self::findOrFail($surat_jalan_id);
         if($sj->tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
-            return $sj->sjPengirimanGp->peminjamanGp->peminjaman->menangani->supervisor;
+            return $sj->sjPengirimanGp->peminjamanGp->peminjaman->menangani->user;
         }else if($sj->tipe == SuratJalanTipe::PENGEMBALIAN->value){
-            return $sj->sjPengembalian->pengembalian->peminjaman->menangani->supervisor;
+            return $sj->sjPengembalian->pengembalian->peminjaman->menangani->user;
         }else if($sj->tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value){
-            if($sv_peminjam == false) return $sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->supervisor;
-            else return $sj->sjPengirimanPp->peminjamanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->supervisor;
+            if($sv_peminjam == false) return $sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->user;
+            else return $sj->sjPengirimanPp->peminjamanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->user;
         }
     }
     public static function getAllBarang($surat_jalan_id){

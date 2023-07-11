@@ -84,14 +84,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('kendaraan/edit/{id}', 'edit')->name('kendaraan.edit');
         Route::post('kendaraan/delete/{id}', 'destroy')->name('kendaraan.destroy');
     });
-    Route::middleware(['admin-projectmanager'])->controller(ProyekController::class)->group(function () {
+    Route::middleware(['admin-setmanager'])->controller(ProyekController::class)->group(function () {
         Route::get('proyek', 'index')->name('proyek');
         Route::get('proyek/tambah', 'create')->name('proyek.create');
         Route::post('proyek/store', 'store')->name('proyek.store');
         Route::get('proyek/detail/{id}', 'show')->name('proyek.show');
         Route::get('proyek/edit/{id}', 'edit')->name('proyek.edit');
         Route::post('proyek/delete/{id}', 'destroy')->name('proyek.destroy');
-        Route::get('selectProyekManager', 'selectProyekManager')->name('selectProyekManager');
+        Route::get('selectSetManager', 'selectSetManager')->name('selectSetManager');
     });
     Route::middleware(['admin-purchasing-admingudang-logistic'])->controller(DeliveryOrderController::class)->group(function () {
         Route::get('delivery-order', 'index')->name('delivery-order');
@@ -103,7 +103,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('delivery-order/edit/{id}', 'edit')->name('delivery-order.edit');
         Route::post('delivery-order/delete/{id}', 'destroy')->name('delivery-order.destroy');
     });
-    Route::middleware(['admin-projectmanager-supervisor-admingudang'])->controller(AksesBarangController::class)->group(function () {
+    Route::middleware(['admin-setmanager-supervisor-admingudang'])->controller(AksesBarangController::class)->group(function () {
         Route::get('akses-barang', 'index')->name('akses-barang');
         Route::get('akses-barang/tambah', 'create')->name('akses-barang.create');
         Route::post('akses-barang/store', 'store')->name('akses-barang.store');

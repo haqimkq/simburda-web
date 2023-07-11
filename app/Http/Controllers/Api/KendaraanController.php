@@ -17,8 +17,8 @@ class KendaraanController extends Controller
             
             $response = Kendaraan::getKendaraanByLogistic($user->id);
 
-            $message = ($response->isEmpty()) ? 'Tidak ada kendaraan' : 'Berhasil Mendapatkan Kendaraan';
-            $result = ($response->isEmpty()) ? null : $response;
+            $message = ($response==null) ? 'Tidak ada kendaraan' : 'Berhasil Mendapatkan Kendaraan';
+            $result = ($response==null) ? null : $response;
             return ResponseFormatter::success('kendaraaan',$result,$message);
         }catch(Exception $e){
             return ResponseFormatter::error("Gagal Mendapatkan Kendaraan: ". $e->getMessage());

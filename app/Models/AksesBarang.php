@@ -59,7 +59,7 @@ class AksesBarang extends Model
                     return $query->where('disetujui_admin', NULL)->where('disetujui_sm', NULL);
                 if($filter == 'akses-belum-ditentukan' && $authUserRole == 'ADMIN_GUDANG')
                     return $query->where('disetujui_admin', NULL);
-                if($filter == 'akses-belum-ditentukan' && $authUserRole == 'PROJECT_MANAGER')
+                if($filter == 'akses-belum-ditentukan' && $authUserRole == 'SET_MANAGER')
                     return $query->where('disetujui_sm', NULL);
             }
             // });
@@ -70,7 +70,7 @@ class AksesBarang extends Model
         $query->when(!isset($filters['filter']) && ($authUserRole == 'ADMIN' || $authUserRole == 'SUPERVISOR'), function($query){
             return $query->where('disetujui_admin', NULL)->where('disetujui_sm', NULL);
         });
-        $query->when(!isset($filters['filter']) && $authUserRole == 'PROJECT_MANAGER', function($query){
+        $query->when(!isset($filters['filter']) && $authUserRole == 'SET_MANAGER', function($query){
             return $query->where('disetujui_sm', NULL);
         });
         $query->when(!isset($filters['filter']) && $authUserRole == 'ADMIN_GUDANG', function($query){

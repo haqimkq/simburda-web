@@ -143,15 +143,15 @@ class ProyekController extends Controller
         return redirect('proyek')->with('deleteProyekSuccess', 'Berhasil Menghapus Proyek '.$proyek->nama_proyek);
     }
 
-    public function selectProyekManager(Request $request)
+    public function selectSetManager(Request $request)
     {
-    	$proyekManager = [];
+    	$setManager = [];
         $search = $request->q;
-        $proyekManager = User::select("id", "nama")
+        $setManager = User::select("id", "nama")
                 ->where('nama', 'LIKE', "%$search%")
-                ->where('role', 'project manager')
+                ->where('role', 'SET_MANAGER')
                 ->get();
-        return response()->json($proyekManager);
+        return response()->json($setManager);
     }
 
 }
