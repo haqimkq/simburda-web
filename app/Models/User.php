@@ -65,12 +65,12 @@ class User extends Authenticatable
         return $this->hasOne(AdminGudang::class);
     }
     public function proyeks(){
-        return $this->belongsToMany(Proyek::class,'menanganis','supervisor_id','proyek_id');
+        return $this->belongsToMany(Proyek::class,'menanganis','user_id','proyek_id');
     }
     public function menanganiProyek(){
-        return $this->hasMany(Menangani::class,'supervisor_id');
+        return $this->hasMany(Menangani::class,'user_id');
     }
-    public function proyekProjectManager(){
+    public function proyekSetManager(){
         return $this->hasMany(Proyek::class,'set_manager_id');
     }
     public function kendaraan(){
@@ -85,7 +85,7 @@ class User extends Authenticatable
     public function aksesBarangAdminGudang(){
         return $this->hasMany(AksesBarang::class,'admin_gudang_id');
     }
-    public function aksesBarangProjectManager(){
+    public function aksesBarangSetManager(){
         return $this->hasMany(AksesBarang::class,'set_manager_id');
     }
     public function deliveryOrderAdminGudang(){

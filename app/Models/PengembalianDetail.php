@@ -18,7 +18,7 @@ class PengembalianDetail extends Model
         'deleted_at',
     ];
     public function barang(){
-        return $this->belongsTo(Barang::class);
+        return $this->belongsTo(BarangTidakHabisPakai::class, 'barang_id');
     }
     public function pengembalian(){
         return $this->belongsTo(Pengembalian::class);

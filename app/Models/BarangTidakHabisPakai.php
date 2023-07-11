@@ -18,9 +18,8 @@ class BarangTidakHabisPakai extends Model
     protected $hidden = [
         'deleted_at',
     ];
-
-    public function barang():MorphOne{
-        return $this->morphOne(Barang::class, 'barang');
+    public function barang(){
+        return $this->belongsTo(Barang::class);
     }
     public function peminjaman(){
         return $this->belongsTo(Peminjaman::class);

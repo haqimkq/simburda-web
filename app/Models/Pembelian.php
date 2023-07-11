@@ -18,10 +18,10 @@ class Pembelian extends Model
     ];
 
     public function mengajukan(){
-        return $this->belongsTo(User::class,'id','supervisor_id');
+        return $this->belongsTo(User::class,'supervisor_id');
     }
 
     public function menyetujui(){
-        return $this->belongsTo(User::class,'id','set_manager_id');
+        return $this->belongsTo(User::class,'set_manager_id');
     }
 }

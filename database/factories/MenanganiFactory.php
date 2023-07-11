@@ -17,12 +17,12 @@ class MenanganiFactory extends Factory
     public function definition()
     {
         $proyek = Proyek::get()->random();
-        $supervisor = User::where('role','SUPERVISOR')->whereDoesntHave('proyeks', function (Builder $query) use ($proyek){
+        $user = User::where('role','SUPERVISOR')->orWhere('role','SET_MANAGER')->whereDoesntHave('proyeks', function (Builder $query) use ($proyek){
             $query->where('proyek_id', $proyek->id);
         })->get()->random();
         return [
             'id' => fake()->uuid(),
-            'supervisor_id' => $supervisor->id,
+            'user_id' => $user->id,
             'proyek_id' => $proyek->id,
             'created_at' => fake()->dateTimeBetween('-2 years', 'now')
         ];

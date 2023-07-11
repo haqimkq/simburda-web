@@ -17,8 +17,7 @@ return new class extends Migration
         Schema::create('peminjamans', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('kode_peminjaman');
-            $table->string('peminjaman_type');
-            $table->uuid('peminjaman_id');
+            $table->enum('tipe',['GUDANG_PROYEK','PROYEK_PROYEK']);
             $table->enum('status',['MENUNGGU_AKSES','AKSES_DITOLAK','MENUNGGU_SURAT_JALAN','MENUNGGU_PENGIRIMAN', 'SEDANG_DIKIRIM', 'DIPINJAM', 'SELESAI'])->default('MENUNGGU_AKSES');
             $table->timestamps();
             $table->timestamp('tgl_peminjaman');

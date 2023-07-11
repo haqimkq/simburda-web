@@ -22,8 +22,8 @@ class SjPenggunaanPp extends Model
     protected $hidden = [
         'deleted_at',
     ];
-    public function suratJalan():MorphOne{
-        return $this->morphOne(SuratJalan::class,'surat_jalan');
+    public function suratJalan(){
+        return $this->belongsTo(SuratJalan::class);
     }
     public function peminjamanPp(){
         return $this->belongsTo(PeminjamanPp::class, 'peminjaman_id');
@@ -92,7 +92,7 @@ class SjPenggunaanPp extends Model
         }
     }
     public static function updateKodeSurat(Request $request){
-        $supervisor = Peminjaman::getSupervisor($request->peminjamanId)->nama;
+        $supervisor = Peminjaman::getMenanganiUser($request->peminjamanId)->nama;
         $client = Peminjaman::getProyek($request->peminjamanId)->client;
         SuratJalan::where('id', $request->surat_jalan_id)->update(['kode_surat'=>SuratJalan::generateKodeSurat($request->tipe, $client, $supervisor)]);
     }

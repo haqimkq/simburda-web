@@ -40,8 +40,8 @@ class PeminjamanFactory extends Factory
         $id = fake()->uuid();
         $menangani = Menangani::get()->random();
         $proyek = $menangani->proyek;
-        $supervisor = $menangani->supervisor;
-        $kode_peminjaman = Peminjaman::generateKodePeminjaman("GUDANG_PROYEK", $proyek->client, $supervisor->nama);
+        $user = $menangani->user;
+        $kode_peminjaman = Peminjaman::generateKodePeminjaman("GUDANG_PROYEK", $proyek->client, $user->nama);
         $proyek_created_at = Carbon::createFromTimestampMs($proyek->created_at);
         if($proyek->selesai==1){
             $status = 'SELESAI';
@@ -55,12 +55,32 @@ class PeminjamanFactory extends Factory
             $start_date = Carbon::parse($tgl_peminjaman);
             $end_date = Carbon::parse($tgl_berakhir);
             if($now->between($start_date,$end_date)){
-                // $status = fake()->randomElement(['DIPINJAM']);
                 $status = fake()->randomElement(['DIPINJAM','MENUNGGU_AKSES','AKSES_DITOLAK','MENUNGGU_SURAT_JALAN','MENUNGGU_PENGIRIMAN','SEDANG_DIKIRIM']);
             }else if($now->isAfter($end_date)){
                 $status = 'SELESAI';
             }
         }
+        // do {
+        //     $peminjamanGpId = PeminjamanGp::all()->random()->id;
+        //     $peminjamanGpIdExist = Peminjaman::where('peminjaman_type','App\Models\PeminjamanGp')->where('peminjaman_id', $peminjamanGpId)->exists();
+        // } while ($peminjamanGpIdExist);
+        // do {
+        //     $peminjamanPpId = PeminjamanPp::all()->random()->id;
+        //     $peminjamanPpIdExist = Peminjaman::where('peminjaman_type','App\Models\PeminjamanPp')->where('peminjaman_id', $peminjamanPpId)->exists();
+        // } while ($peminjamanPpIdExist);
+        // $random = mt_rand(1,2);
+        // return [
+        //     'id' => $id,
+        //     'menangani_id' => $menangani->id,
+        //     'kode_peminjaman' => $kode_peminjaman,
+        //     'peminjaman_type' => ($random == 1) ? "App\Models\PeminjamanGp" : "App\Models\PeminjamanPp",
+        //     'peminjaman_id' => ($random == 1) ? $peminjamanGpId : $peminjamanPpId,
+        //     'tgl_peminjaman' => $tgl_peminjaman,
+        //     'created_at' => $tgl_peminjaman,
+        //     'updated_at' => $tgl_peminjaman,
+        //     'tgl_berakhir' => $tgl_berakhir,
+        //     'status' => $status,
+        // ];
         return [
             'id' => $id,
             'menangani_id' => $menangani->id,
@@ -73,251 +93,10 @@ class PeminjamanFactory extends Factory
             'status' => $status,
         ];
     }
-    // public function configure(){
-    //     return $this->afterCreating(function (Peminjaman $peminjaman) {
-    //         $proyek = $peminjaman->menangani->proyek;
-    //         $supervisor = $peminjaman->menangani->supervisor;
-    //         if($peminjaman->tipe == PeminjamanTipe::GUDANG_PROYEK->value){
-    //             $peminjamanGp = PeminjamanGp::find('peminjaman_id', $peminjaman->id);
-    //             $sjPengirimanGp = SjPengirimanGp::find('peminjaman_id', $peminjamanGp->id);
-    //             $admin_gudang_id = $peminjamanGp->gudang->adminGudang->random(1)->all()[0]->user_id;
-    //             SuratJalan::find($sjPengirimanGp->suratJalan->id)->update([
-    //                 'tipe' => SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value,
-    //                 'admin_gudang_id' => $admin_gudang_id,
-    //                 'updated_at' => $peminjaman->created_at,
-    //                 'created_at' => $peminjaman->created_at,
-    //             ]);
-    //             $peminjamanGp->update([
-    //                 'updated_at' => $peminjaman->created_at,
-    //                 'created_at' => $peminjaman->created_at,
-    //             ]);
-    //             if($peminjaman->status == PeminjamanStatus::SELESAI->value){
-    //                 $sjPengembalian = SjPengembalian::find('peminjaman_id', $peminjaman->id);
-    //                 SuratJalan::find($sjPengembalian->suratJalan->id)->update([
-    //                     'tipe' => SuratJalanTipe::PENGEMBALIAN->value,
-    //                     'admin_gudang_id' => $admin_gudang_id,
-    //                     'updated_at' => $peminjaman->created_at,
-    //                     'created_at' => $peminjaman->created_at,
-    //                 ]);
-    //             }
-    //         }
-    //         if($peminjaman->tipe == PeminjamanTipe::PROYEK_PROYEK->value){
-    //             $peminjamanPp = PeminjamanPp::find('peminjaman_id', $peminjaman->id);
-    //             $sjPengirimanPp = SjPengirimanPp::find('peminjaman_id', $peminjamanPp->id);
-    //             $admin_gudang_id = $peminjamanPp->peminjamanAsal->gudang->adminGudang->random(1)->all()[0]->user_id;
-    //             SuratJalan::find($sjPengirimanPp->suratJalan->id)->update([
-    //                 'tipe' => SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value,
-    //                 'admin_gudang_id' => $admin_gudang_id,
-    //                 'updated_at' => $peminjaman->created_at,
-    //                 'kode_surat' => SuratJalan::generateKodeSurat(SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value, $proyek->client, $supervisor->nama),
-    //                 'created_at' => $peminjaman->created_at,
-    //             ]);
-    //             $peminjamanPp->update([
-    //                 'updated_at' => $peminjaman->created_at,
-    //                 'created_at' => $peminjaman->created_at,
-    //             ]);
-    //         }
-    //     });
-    // }
-    // public function configure()
-    // {
-    //     return $this->afterCreating(function (Peminjaman $peminjaman) {
-    //         $now = Carbon::now();
-    //         $start_date = Carbon::createFromTimestampMs($peminjaman->tgl_peminjaman);
-    //         $end_date = Carbon::createFromTimestampMs($peminjaman->tgl_berakhir);
-    //         $created_at = fake()->dateTimeBetween($start_date, $end_date);
-    //         $menangani = Menangani::find($peminjaman->menangani_id);
-    //         $gudang = Gudang::find($peminjaman->gudang_id);
-    //         $admin_gudang = AdminGudang::where('gudang_id',$gudang->id)->get()->random();
-    //         $proyek = $menangani->proyek;
-    //         $supervisor = $menangani->supervisor;
-    //         $project_manager = $menangani->proyek->projectManager;
-    //         $status = $peminjaman->status;
-    //         if($status=='SELESAI'){
-    //             SuratJalan::factory()->state([
-    //                 'id' => fake()->uuid(),
-    //                 'admin_gudang_id' => $admin_gudang->user->id,
-    //                 'tipe' => 'PENGIRIMAN_GUDANG_PROYEK',
-    //                 'kode_surat' => SuratJalan::generateKodeSurat("PENGIRIMAN_GUDANG_PROYEK", $proyek->client, $supervisor->nama),
-    //                 'updated_at' => $created_at,
-    //                 'created_at' => $created_at
-    //             ])->selesai()->has(SjPengirimanGp::factory()->state(function (array $attributes, SuratJalan $surat_jalan) use ($peminjaman , $created_at) {
-    //                 return [
-    //                     'surat_jalan_id' => $surat_jalan->id,
-    //                     'peminjaman_id' => $peminjaman->id,
-    //                     'updated_at' => $created_at,
-    //                     'created_at' => $created_at
-    //                 ]; 
-    //             }))->create();
-    //             $pengembalian_status = fake()->randomElement(['MENUNGGU_SURAT_JALAN','MENUNGGU_PENGEMBALIAN', 'SEDANG_DIKEMBALIKAN', 'SELESAI']);
-    //             if($pengembalian_status == 'SEDANG_DIKEMBALIKAN'){
-    //                 Pengembalian::factory()->state([
-    //                     'peminjaman_id' => $peminjaman->id,
-    //                     'status' => $pengembalian_status,
-    //                     'updated_at' => $created_at,
-    //                     'created_at' => $created_at,
-    //                 ])->has(
-    //                     SjPengembalian::factory()->state(function (array $attributes, Pengembalian $pengembalian) use ($created_at) {
-    //                         return [
-    //                             'pengembalian_id' => $pengembalian->id,
-    //                             'updated_at' => $created_at,    
-    //                             'created_at' => $created_at,
-    //                         ];
-    //                     })->for(SuratJalan::factory()->state([
-    //                         'id' => fake()->uuid(),
-    //                         'admin_gudang_id' => $admin_gudang->user->id,
-    //                         'tipe' => 'PENGEMBALIAN',
-    //                         'kode_surat' => SuratJalan::generateKodeSurat("PENGEMBALIAN", $proyek->client, $supervisor->nama),
-    //                         'updated_at' => $created_at,
-    //                         'created_at' => $created_at
-    //                     ])->dalamPerjalanan())
-    //                 , 'sjPengembalian')->create();
-    //             }else if($pengembalian_status == 'SELESAI'){
-    //                 Pengembalian::factory()->state([
-    //                     'peminjaman_id' => $peminjaman->id,
-    //                     'status' => $pengembalian_status,
-    //                     'updated_at' => $created_at,
-    //                     'created_at' => $created_at
-    //                 ])->has(
-    //                     SjPengembalian::factory()->state(function (array $attributes, Pengembalian $pengembalian) use ($created_at) {
-    //                         return [
-    //                             'pengembalian_id' => $pengembalian->id,
-    //                             'updated_at' => $created_at,    
-    //                             'created_at' => $created_at
-    //                         ];
-    //                     })->for(SuratJalan::factory()->state([
-    //                         'id' => fake()->uuid(),
-    //                         'admin_gudang_id' => $admin_gudang->user->id,
-    //                         'tipe' => 'PENGEMBALIAN',
-    //                         'kode_surat' => SuratJalan::generateKodeSurat("PENGEMBALIAN", $proyek->client, $supervisor->nama),
-    //                         'updated_at' => $created_at,
-    //                         'created_at' => $created_at
-    //                     ])->selesai())
-    //                 , 'sjPengembalian')->create();
-    //             }
-    //             else if($pengembalian_status == 'MENUNGGU_SURAT_JALAN'){
-    //                 Pengembalian::factory()->state([
-    //                     'peminjaman_id' => $peminjaman->id,
-    //                     'status' => $pengembalian_status,
-    //                     'updated_at' => $created_at,
-    //                     'created_at' => $created_at
-    //                 ])->create();
-    //             }else{
-    //                 Pengembalian::factory()->state([
-    //                     'peminjaman_id' => $peminjaman->id,
-    //                     'status' => $pengembalian_status,
-    //                     'updated_at' => $created_at,
-    //                     'created_at' => $created_at
-    //                 ])->has(
-    //                     SjPengembalian::factory()->state(function (array $attributes, Pengembalian $pengembalian) use ($created_at) {
-    //                         return [
-    //                             'pengembalian_id' => $pengembalian->id,
-    //                             'updated_at' => $created_at,    
-    //                             'created_at' => $created_at
-    //                         ];
-    //                     })->for(SuratJalan::factory()->state([
-    //                         'id' => fake()->uuid(),
-    //                         'admin_gudang_id' => $admin_gudang->user->id,
-    //                         'tipe' => 'PENGEMBALIAN',
-    //                         'kode_surat' => SuratJalan::generateKodeSurat("PENGEMBALIAN", $proyek->client, $supervisor->nama),
-    //                         'updated_at' => $created_at,
-    //                         'created_at' => $created_at
-    //                     ])->menunggu())
-    //                 , 'sjPengembalian')->create();
-    //             }
-    //         }
-    //         else if($now->between($start_date,$end_date)){
-    //             if($status == 'DIPINJAM'){
-    //                 SuratJalan::factory()->state([
-    //                     'id' => fake()->uuid(),
-    //                     'admin_gudang_id' => $admin_gudang->user->id,
-    //                     'tipe' => 'PENGIRIMAN_GUDANG_PROYEK',
-    //                     'kode_surat' => SuratJalan::generateKodeSurat("PENGIRIMAN_GUDANG_PROYEK", $proyek->client, $supervisor->nama),
-    //                     'updated_at' => $created_at,
-    //                     'created_at' => $created_at
-    //                 ])->selesai()->has(SjPengirimanGp::factory()->state(function (array $attributes, SuratJalan $surat_jalan) use ($peminjaman, $created_at) {
-    //                     return [
-    //                         'surat_jalan_id' => $surat_jalan->id,
-    //                         'peminjaman_id' => $peminjaman->id,
-    //                         'updated_at' => $created_at,
-    //                         'created_at' => $created_at
-    //                     ];
-    //                 }))->create();
-    //             }
-    //             else if($status == 'MENUNGGU_AKSES'){
-    //                 AksesBarang::factory()->state([
-    //                     'disetujui_admin' => NULL,
-    //                     'disetujui_pm' => NULL,
-    //                     'admin_gudang_id' => NULL,
-    //                     'project_manager_id' => $project_manager->id,
-    //                     'peminjaman_id' => $peminjaman->id,
-    //                     'updated_at' => $created_at,
-    //                     'created_at' => $created_at
-    //                 ])->create();
-    //             }else if($status == 'AKSES_DITOLAK'){
-    //                 $ditolak_pm = fake()->boolean();
-    //                 AksesBarang::factory()->state([
-    //                     'disetujui_admin' => false,
-    //                     'disetujui_pm' => $ditolak_pm,
-    //                     'keterangan_pm' => (!$ditolak_pm) ? fake()->text() : null,
-    //                     'keterangan_admin' => fake()->text(),
-    //                     'admin_gudang_id' => NULL,
-    //                     'project_manager_id' => $project_manager->id,
-    //                     'peminjaman_id' => $peminjaman->id,
-    //                     'updated_at' => $created_at,
-    //                     'created_at' => $created_at
-    //                 ])->create();
-    //             }else{
-    //                 AksesBarang::factory()->state([
-    //                     'disetujui_admin' => true,
-    //                     'disetujui_pm' => true,
-    //                     'admin_gudang_id' => $admin_gudang->user->id,
-    //                     'project_manager_id' => $project_manager->id,
-    //                     'peminjaman_id' => $peminjaman->id,
-    //                     'updated_at' => $created_at,
-    //                     'created_at' => $created_at
-    //                 ])->create();
-    //                 if($status == 'MENUNGGU_PENGIRIMAN'){
-    //                     SuratJalan::factory()->state([
-    //                         'id' => fake()->uuid(),
-    //                         'admin_gudang_id' => $admin_gudang->user->id,
-    //                         'tipe' => 'PENGIRIMAN_GUDANG_PROYEK',
-    //                         'kode_surat' => SuratJalan::generateKodeSurat("PENGIRIMAN_GUDANG_PROYEK", $proyek->client, $supervisor->nama),
-    //                         'updated_at' => $created_at,
-    //                         'created_at' => $created_at
-    //                     ])->menunggu()->has(SjPengirimanGp::factory()->state(function (array $attributes, SuratJalan $surat_jalan) use ($peminjaman, $created_at) {
-    //                         return [
-    //                             'surat_jalan_id' => $surat_jalan->id,
-    //                             'peminjaman_id' => $peminjaman->id,
-    //                             'updated_at' => $created_at,    
-    //                             'created_at' => $created_at
-    //                         ];
-    //                     }))->create();
-    //                 }else if($status == 'SEDANG_DIKIRIM'){
-    //                     SuratJalan::factory()->state([
-    //                         'id' => fake()->uuid(),
-    //                         'admin_gudang_id' => $admin_gudang->user->id,
-    //                         'tipe' => 'PENGIRIMAN_GUDANG_PROYEK',
-    //                         'kode_surat' => SuratJalan::generateKodeSurat("PENGIRIMAN_GUDANG_PROYEK", $proyek->client, $supervisor->nama),
-    //                         'updated_at' => $created_at,
-    //                         'created_at' => $created_at
-    //                     ])->dalamPerjalanan()->has(SjPengirimanGp::factory()->state(function (array $attributes, SuratJalan $surat_jalan) use ($peminjaman, $created_at) {
-    //                         return [
-    //                             'surat_jalan_id' => $surat_jalan->id,
-    //                             'peminjaman_id' => $peminjaman->id,
-    //                             'updated_at' => $created_at,    
-    //                             'created_at' => $created_at
-    //                         ];
-    //                     }))->create();
-    //                 }
-    //             }
-    //         }
-    //     });
-    // }
     public function initialData($menangani){
         $proyek = $menangani->proyek;
-        $supervisor = $menangani->supervisor;
-        $kode_peminjaman = Peminjaman::generateKodePeminjaman("GUDANG_PROYEK", $proyek->client, $supervisor->nama);
+        $user = $menangani->user;
+        $kode_peminjaman = Peminjaman::generateKodePeminjaman("GUDANG_PROYEK", $proyek->client, $user->nama);
         $proyek_created_at = Carbon::createFromTimestampMs($proyek->created_at);
         $tgl_peminjaman = fake()->dateTimeBetween($proyek_created_at->format('Y-m-d H:i:s'), $proyek_created_at->format('Y-m-d H:i:s').' +2 months');
         $tgl_berakhir = fake()->dateTimeBetween($tgl_peminjaman->format('Y-m-d H:i:s'), $tgl_peminjaman->format('Y-m-d H:i:s').' +2 months');

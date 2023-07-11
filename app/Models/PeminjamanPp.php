@@ -22,12 +22,12 @@ class PeminjamanPp extends Model
     public function peminjamanPp(){
         return $this->belongsTo(PeminjamanPp::class, 'peminjaman_id');
     }
-    // public function peminjamanAsal(){
-    //     return $this->belongsTo(Peminjaman::class, 'peminjaman_asal_id');
-    // }
-    public function peminjaman(){
-        return $this->morphOne(Peminjaman::class, 'peminjaman');
+    public function peminjamanAsal(){
+        return $this->belongsTo(Peminjaman::class, 'peminjaman_asal_id');
     }
+    // public function peminjaman(){
+    //     return $this->morphOne(Peminjaman::class, 'peminjaman');
+    // }
     public function sjPengirimanPp(){
         return $this->hasOne(SjPengirimanPp::class, 'peminjaman_id');
     }

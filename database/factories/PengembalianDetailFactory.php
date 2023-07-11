@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Barang;
 use App\Models\BarangHabisPakai;
+use App\Models\BarangTidakHabisPakai;
 use App\Models\PeminjamanDetail;
 use App\Models\Pengembalian;
 use App\Models\PengembalianDetail;
@@ -24,10 +25,7 @@ class PengembalianDetailFactory extends Factory
         // $peminjaman_detail = PeminjamanDetail::where('status', 'DIKEMBALIKAN')->get()->random();
         $satuan = NULL;
         $jumlah = NULL;
-        // $barang = Barang::where('id', $peminjaman_detail->barang_id)->whereDoesntHave('pengembalianDetail', function (Builder $query) use ($pengembalian){
-        //     $query->where('pengembalian_id', $pengembalian->id);
-        // })->get()->random();
-        $barang = Barang::get()->random();
+        $barang = BarangTidakHabisPakai::get()->random();
         if($barang->jenis == 'TIDAK_HABIS_PAKAI') {
             $satuan = 'Unit';
             $jumlah = 1;

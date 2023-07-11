@@ -46,11 +46,4 @@ class BarangFactory extends Factory
             ];
         })->has(BarangTidakHabisPakai::factory(), 'barangTidakHabisPakai');
     }
-    public function tidakHabisPakaiRandom(){
-        return $this->state(function(array $attributes){
-            return [
-                'jenis' => 'TIDAK_HABIS_PAKAI'
-            ];
-        })->has(BarangTidakHabisPakai::factory(), 'barangTidakHabisPakai');
-    }
 }

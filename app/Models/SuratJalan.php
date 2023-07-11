@@ -40,9 +40,23 @@ class SuratJalan extends Model
     public function adminGudang(){
         return $this->belongsTo(User::class, 'admin_gudang_id');
     }
-    
-    public function suratJalanMorph():MorphTo{
-        return $this->morphTo();
+    public function sjPengirimanGp(){
+        return $this->hasOne(SjPengirimanGp::class);
+    }
+    public function sjPengirimanPp(){
+        return $this->hasOne(SjPengirimanPp::class);
+    }
+    public function sjPengembalian(){
+        return $this->hasOne(SjPengembalian::class);
+    }
+    public function sjPenggunaanGp(){
+        return $this->hasOne(SjPenggunaanGp::class);
+    }
+    public function sjPenggunaanPp(){
+        return $this->hasOne(SjPenggunaanPp::class);
+    }
+    public function sjPengembalianPenggunaan(){
+        return $this->hasOne(SjPengembalianPenggunaan::class);
     }
     public function ttdSjAdmin(){
         return $this->belongsTo(TtdVerification::class,'ttd_admin');

@@ -22,13 +22,13 @@ class PeminjamanGp extends Model
     public function sjPengirimanGp(){
         return $this->hasOne(SjPengirimanGp::class, 'peminjaman_id');
     }
-    // public function peminjaman(){
-    //     return $this->belongsTo(Peminjaman::class);
-    // }
-
     public function peminjaman(){
-        return $this->morphOne(Peminjaman::class, 'peminjaman');
+        return $this->belongsTo(Peminjaman::class);
     }
+
+    // public function peminjaman(){
+    //     return $this->morphOne(Peminjaman::class, 'peminjaman');
+    // }
     public function gudang(){
         return $this->belongsTo(Gudang::class);
     }

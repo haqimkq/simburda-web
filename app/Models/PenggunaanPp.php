@@ -13,22 +13,19 @@ class PenggunaanPp extends Model
     use Uuids;
     use SoftDeletes;
     use HasFactory;
-    protected $table = 'peminjaman_pps';
+    protected $table = 'penggunaan_pps';
     protected $guarded = ['id'];
     protected $hidden = [
         'deleted_at',
     ];
-    public function penggunaanPp(){
+    public function sjPenggunaanPp(){
         return $this->belongsTo(SjPenggunaanPp::class, 'penggunaan_id');
     }
-    // public function peminjamanAsal(){
-    //     return $this->belongsTo(Peminjaman::class, 'peminjaman_asal_id');
-    // }
-    public function peminjaman(){
-        return $this->morphOne(Penggunaan::class, 'penggunaan');
+    public function penggunaanAsal(){
+        return $this->belongsTo(Penggunaan::class, 'penggunaan_asal_id');
     }
-    public function sjPengirimanPp(){
-        return $this->hasOne(SjPengirimanPp::class, 'peminjaman_id');
+    public function penggunaan(){
+        return $this->belongsTo(Penggunaan::class);
     }
     public function getCreatedAtAttribute($date)
     {

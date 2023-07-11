@@ -13,7 +13,7 @@ class PenggunaanGp extends Model
     use Uuids;
     use SoftDeletes;
     use HasFactory;
-    protected $table = 'peminjaman_gps';
+    protected $table = 'penggunaan_gps';
     protected $guarded = ['id'];
     protected $hidden = [
         'deleted_at',
@@ -22,12 +22,8 @@ class PenggunaanGp extends Model
     public function sjPenggunaanGp(){
         return $this->hasOne(SjPenggunaanGp::class, 'penggunaan_id');
     }
-    // public function peminjaman(){
-    //     return $this->belongsTo(Peminjaman::class);
-    // }
-
     public function penggunaan(){
-        return $this->morphOne(Penggunaan::class, 'penggunaan');
+        return $this->belongsTo(Penggunaan::class);
     }
     public function gudang(){
         return $this->belongsTo(Gudang::class);

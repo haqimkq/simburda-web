@@ -17,12 +17,11 @@ return new class extends Migration
         Schema::create('pengembalian_penggunaan_details', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('jumlah_satuan');
-            $table->string('satuan');
             $table->timestamps();
             $table->softDeletes();
         });
         Schema::create('pengembalian_penggunaan_details', function (Blueprint $table) {
-            $table->foreignUuid('barang_id')->constrained('barangs')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('barang_id')->constrained('barang_habis_pakais')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('pengembalian_penggunaan_id')->constrained('pengembalian_penggunaans')->onUpdate('cascade')->onDelete('cascade');
         });
     }

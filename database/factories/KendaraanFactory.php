@@ -19,13 +19,10 @@ class KendaraanFactory extends Factory
     {
         $randomImage = 'https://picsum.photos/640/640?random='.mt_rand(1,92392);
         $jenis = fake()->randomElement(['MOTOR', 'MOBIL','PICKUP', 'TRUCK', 'TRONTON', 'MINIBUS']);
-        $logisticId = User::where('role', 'LOGISTIC')->get()->random()->id;
-        $logisticNoKendaraan = Kendaraan::where('logistic_id', $logisticId)->doesntExist();
-        $logistic_id = $logisticNoKendaraan ? $logisticId : NULL;
         return [
             'id' => fake()->uuid(),
             'logistic_id' => null,
-            'gudang_id' => Gudang::first()->id,
+            'gudang_id' => Gudang::get()->random()->id,
             'jenis' => $jenis,
             'merk' => Fake()->word(),
             'plat_nomor' => $this->generateKodeKendaraan($jenis),

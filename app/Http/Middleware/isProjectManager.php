@@ -18,7 +18,6 @@ class isProjectManager
     {
         if(auth()->guest()||auth()->user()->role!='PROJECT_MANAGER'){
             return redirect('/home');
-            // abort(403);
         }
         return $next($request);
     }

@@ -30,16 +30,16 @@ class Peminjaman extends Model
     public function aksesBarang(){
         return $this->hasOne(AksesBarang::class);
     }
-    // public function peminjamanPp(){
-    //     return $this->hasOne(PeminjamanPp::class);
-    // }
-    // public function peminjamanGp(){
-    //     return $this->hasOne(PeminjamanGp::class);
-    // }
-
-    public function peminjamanMorph():MorphTo{
-        return $this->morphTo();
+    public function peminjamanPp(){
+        return $this->hasOne(PeminjamanPp::class);
     }
+    public function peminjamanGp(){
+        return $this->hasOne(PeminjamanGp::class);
+    }
+
+    // public function peminjamanMorph():MorphTo{
+    //     return $this->morphTo();
+    // }
     
     public function pengembalian(){
         return $this->hasMany(Pengembalian::class);
@@ -50,20 +50,18 @@ class Peminjaman extends Model
     public static function getProyek($id){
         return self::find($id)->menangani->proyek;
     }
-    public static function doesntHaveSjPengirimanGpByAdminGudang($admin_gudang_id){
-        $user = User::find($admin_gudang_id);
+    public static function doesntHaveSjPengirimanGpByAdminGudang(){
         return self::where('tipe', PeminjamanTipe::GUDANG_PROYEK->value)
         ->where('status',PeminjamanStatus::MENUNGGU_SURAT_JALAN->value)
         ->doesntHave('peminjamanGp.sjPengirimanGp')->get();
     }
-    public static function doesntHaveSjPengirimanPpByAdminGudang($admin_gudang_id){
-        $user = User::find($admin_gudang_id);
+    public static function doesntHaveSjPengirimanPpByAdminGudang(){
         return self::where('tipe', PeminjamanTipe::PROYEK_PROYEK->value)
         ->where('status',PeminjamanStatus::MENUNGGU_SURAT_JALAN->value)
         ->doesntHave('peminjamanPp.sjPengirimanPp')->get();
     }
-    public static function getSupervisor($id){
-        return self::find($id)->menangani->supervisor;
+    public static function getMenanganiUser($id){
+        return self::find($id)->menangani->user;
     }
     public static function getAllBarang($peminjaman_id, $tipe_barang=null){
         $result = collect();

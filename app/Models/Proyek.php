@@ -20,12 +20,12 @@ class Proyek extends Model
         'deleted_at',
     ];
 
-    public function supervisors(){
-        return $this->belongsToMany(User::class,'menanganis','proyek_id','supervisor_id');
+    public function users(){
+        return $this->belongsToMany(User::class,'menanganis','proyek_id','user_id');
     }
 
-    public function projectManager(){
-        return $this->belongsTo(User::class, 'project_manager_id');
+    public function setManager(){
+        return $this->belongsTo(User::class, 'set_manager_id');
     }
 
     public static function filterBetweenDate($start_date, $end_date){
@@ -54,8 +54,8 @@ class Proyek extends Model
         $query->when($filters['orderBy'] ?? false, function($query, $orderBy) {
             if($orderBy == 'terbaru') return $query->orderBy('created_at', 'DESC');
             if($orderBy == 'terlama') return $query->orderBy('created_at', 'ASC');
-            if($orderBy == 'jumlah tersedikit') return $query->orderBy('jumlah', 'ASC');
-            if($orderBy == 'jumlah terbanyak') return $query->orderBy('jumlah', 'DESC');
+            // if($orderBy == 'jumlah tersedikit') return $query->orderBy('jumlah', 'ASC');
+            // if($orderBy == 'jumlah terbanyak') return $query->orderBy('jumlah', 'DESC');
         });
         $query->when($filters['date'] ?? false, function($query, $date) {
             return $query->whereBetween('nama_proyek', 'like', '%' . $date . '%');

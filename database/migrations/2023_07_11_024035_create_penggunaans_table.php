@@ -17,9 +17,8 @@ return new class extends Migration
         Schema::create('penggunaans', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('kode_penggunaan');
-            $table->string('penggunaan_type');
-            $table->uuid('penggunaan_id');
-            $table->enum('status',['MENUNGGU_SURAT_JALAN','MENUNGGU_PENGIRIMAN', 'SEDANG_DIKIRIM', 'DIPINJAM', 'SELESAI'])->default('MENUNGGU_AKSES');
+            $table->enum('tipe',['GUDANG_PROYEK','PROYEK_PROYEK']);
+            $table->enum('status',['MENUNGGU_SURAT_JALAN','MENUNGGU_PENGIRIMAN', 'SEDANG_DIKIRIM', 'DIGUNAKAN', 'SELESAI'])->default('MENUNGGU_AKSES');
             $table->timestamps();
             $table->softDeletes();
         });
