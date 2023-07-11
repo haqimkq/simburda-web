@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('ttd')->nullable();
             $table->string('pin')->nullable();
             $table->string('no_hp');
-            $table->enum('role', ['PROJECT_MANAGER', 'SUPERVISOR', 'ADMIN_GUDANG', 'LOGISTIC', 'PURCHASING', 'ADMIN', 'USER'])->default('USER');
+            $table->enum('role', ['PROJECT_MANAGER', 'SUPERVISOR', 'ADMIN_GUDANG', 'LOGISTIC', 'PURCHASING', 'ADMIN', 'USER','SET_MANAGER'])->default('USER');
             $table->string('password');
             $table->string('device_token')->nullable();
             $table->rememberToken();

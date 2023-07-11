@@ -18,6 +18,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->enum('sebagai', ['PEMBUAT', 'PEMBERI', 'PENGIRIM','PENERIMA']);
             $table->enum('tipe',['SURAT_JALAN','DELIVERY_ORDER']);
+            $table->text('keterangan');
             $table->timestamps();
         });
         Schema::table('ttd_verifications', function (Blueprint $table) {

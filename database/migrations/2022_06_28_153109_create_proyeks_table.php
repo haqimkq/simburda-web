@@ -30,7 +30,7 @@ return new class extends Migration
             $table->softDeletes();
         });
         Schema::table('proyeks', function (Blueprint $table) {
-            $table->foreignUuid('project_manager_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('set_manager_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
