@@ -23,11 +23,14 @@ class PeminjamanDetail extends Model
     public function peminjamanProyekLain(){
         return $this->belongsTo(PeminjamanPp::class, 'peminjaman_proyek_lain_id');
     }
+    public function aksesBarang(){
+        return $this->hasOne(AksesBarang::class);
+    }
     public function peminjaman(){
         return $this->belongsTo(Peminjaman::class);
     }
     public function penanggungJawab(){
-        return $this->belongsTo(User::class, 'id', 'penanggung_jawab_id');
+        return $this->belongsTo(User::class, 'penanggung_jawab_id');
     }
     public function getCreatedAtAttribute($date)
     {

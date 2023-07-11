@@ -4,8 +4,8 @@ namespace Database\Factories;
 
 use App\Models\AksesBarang;
 use App\Models\Menangani;
-use App\Models\Peminjaman;
-use App\Models\PeminjamanGp;
+use App\Models\PeminjamanDetail;
+use App\Models\PeminjamanDetailGp;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,10 +18,10 @@ class AksesBarangFactory extends Factory
      */
     public function definition()
     {
-        $peminjaman = Peminjaman::doesntHave('aksesBarang')->get()->random();
-        $meminjamId = $peminjaman->id;
+        $peminjamanDetail = PeminjamanDetail::doesntHave('aksesBarang')->get()->random();
+        $meminjamId = $peminjamanDetail->peminjaman->id;
         $admin_gudang_id = User::where('role','ADMIN_GUDANG')->get()->random()->id;
-        $menangani = Menangani::where('id', $peminjaman->menangani->id)->first();
+        $menangani = Menangani::where('id', $peminjamanDetail->peminjaman->menangani->id)->first();
         $set_manager_id = $menangani->proyek->setManager->id;
         $disetujui_admin = fake()->optional()->boolean(50);
         $disetujui_sm = fake()->optional()->boolean(50);
@@ -44,20 +44,20 @@ class AksesBarangFactory extends Factory
             'disetujui_sm' => $disetujui_sm,
         ];
     }
-    public function needAccessWithPeminjaman(){
-        return $this->state(function (array $attributes, Peminjaman $peminjaman){
+    public function needAccessWithPeminjamanDetailDetail(){
+        return $this->state(function (array $attributes, PeminjamanDetail $peminjamanDetail){
             return [
                 'disetujui_admin' => NULL,
                 'disetujui_sm' => NULL,
                 'admin_gudang_id' => NULL,
-                'set_manager_id' => $peminjaman->menangani->proyek->setManager->id, 'peminjaman_id' => $peminjaman->id,
-                'updated_at' => $peminjaman->created_at,
-                'created_at' => $peminjaman->created_at
+                'set_manager_id' => $peminjamanDetail->peminjaman->menangani->proyek->setManager->id, 'peminjaman_id' => $peminjamanDetail->peminjaman->id,
+                'updated_at' => $peminjamanDetail->peminjaman->created_at,
+                'created_at' => $peminjamanDetail->peminjaman->created_at
             ];
         });
     }
-    public function accessNotGrantedWithPeminjaman(){
-        return $this->state(function (array $attributes, Peminjaman $peminjaman){
+    public function accessNotGrantedWithPeminjamanDetail(){
+        return $this->state(function (array $attributes, PeminjamanDetail $peminjamanDetail){
             $ditolak_sm = fake()->boolean();
             $admin_gudang_id = User::where('role', 'ADMIN_GUDANG')->get()->random()->id;
             return [
@@ -66,24 +66,24 @@ class AksesBarangFactory extends Factory
                 'keterangan_sm' => (!$ditolak_sm) ? fake()->text() : null,
                 'keterangan_admin' => fake()->text(),
                 'admin_gudang_id' => $admin_gudang_id,
-                'set_manager_id' => $peminjaman->menangani->proyek->setManager->id,
-                'peminjaman_id' => $peminjaman->id,
-                'updated_at' => $peminjaman->created_at,
-                'created_at' => $peminjaman->created_at
+                'set_manager_id' => $peminjamanDetail->peminjaman->menangani->proyek->setManager->id,
+                'peminjaman_id' => $peminjamanDetail->peminjaman->id,
+                'updated_at' => $peminjamanDetail->peminjaman->created_at,
+                'created_at' => $peminjamanDetail->peminjaman->created_at
             ];
         });
     }
-    public function accessGrantedWithPeminjaman(){
-        return $this->state(function (array $attributes, Peminjaman $peminjaman){
+    public function accessGrantedWithPeminjamanDetail(){
+        return $this->state(function (array $attributes, PeminjamanDetail $peminjamanDetail){
             $admin_gudang_id = User::where('role', 'ADMIN_GUDANG')->get()->random()->id;
             return [
                 'disetujui_admin' => true,
                 'disetujui_sm' => true,
                 'admin_gudang_id' => $admin_gudang_id,
-                'set_manager_id' => $peminjaman->menangani->proyek->setManager->id,
-                'peminjaman_id' => $peminjaman->id,
-                'updated_at' => $peminjaman->created_at,
-                'created_at' => $peminjaman->created_at
+                'set_manager_id' => $peminjamanDetail->peminjaman->menangani->proyek->setManager->id,
+                'peminjaman_id' => $peminjamanDetail->peminjaman->id,
+                'updated_at' => $peminjamanDetail->peminjaman->created_at,
+                'created_at' => $peminjamanDetail->peminjaman->created_at
             ];
         });
     }

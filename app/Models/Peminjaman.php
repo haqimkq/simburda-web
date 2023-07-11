@@ -27,19 +27,12 @@ class Peminjaman extends Model
     public function peminjamanDetail(){
         return $this->hasMany(PeminjamanDetail::class);
     }
-    public function aksesBarang(){
-        return $this->hasOne(AksesBarang::class);
-    }
     public function peminjamanPp(){
         return $this->hasOne(PeminjamanPp::class);
     }
     public function peminjamanGp(){
         return $this->hasOne(PeminjamanGp::class);
     }
-
-    // public function peminjamanMorph():MorphTo{
-    //     return $this->morphTo();
-    // }
     
     public function pengembalian(){
         return $this->hasMany(Pengembalian::class);
