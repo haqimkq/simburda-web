@@ -94,7 +94,7 @@ class AksesBarang extends Model
         $authUser = Auth::user();
         if($authUser->role=='ADMIN'){
             return self::where('disetujui_admin', NULL)->orWhere('disetujui_sm',NULL)->count();
-        }else if($authUser->role=='PROJECT_MANAGER'){
+        }else if($authUser->role=='SET_MANAGER'){
             return self::whereHas('peminjaman.menangani.proyek', fn($q) => $q->where('set_manager_id',$authUser->id))->where('disetujui_sm',NULL)->count();
         }else if($authUser->role=='ADMIN_GUDANG'){
             return self::where('disetujui_admin',NULL)->count();
