@@ -55,8 +55,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('barang/detail/{id}', 'show')->name('barang.show');
         Route::post('barang/tambah-seri-baru/{nama}', 'tambahSeriBaru')->name('barang.tambahSeriBaru');
         Route::get('barang/seri/{nama}', 'showNamaBarang')->name('barang.seri');
-        Route::get('barang/edit/{id}', 'edit')->name('barang.edit');
+        Route::get('barang/edit/{barang}', 'edit')->name('barang.edit');
         Route::post('barang/delete/{id}', 'destroy')->name('barang.destroy');
+        Route::post('barang/update/{id}', 'update')->name('barang.update');
     });
     Route::middleware(['admin'])->controller(PenggunaController::class)->group(function () {
         Route::get('pengguna', 'index')->name('pengguna');
