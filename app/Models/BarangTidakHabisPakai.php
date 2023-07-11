@@ -24,6 +24,12 @@ class BarangTidakHabisPakai extends Model
     public function peminjaman(){
         return $this->belongsTo(Peminjaman::class);
     }
+    public function peminjamanDetail(){
+        return $this->hasMany(PeminjamanDetail::class);
+    }
+    public function pengembalianDetail(){
+        return $this->hasMany(PengembalianDetail::class);
+    }
     public function getCreatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);

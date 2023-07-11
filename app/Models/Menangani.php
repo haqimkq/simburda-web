@@ -19,8 +19,8 @@ class Menangani extends Model
         'deleted_at',
     ];
 
-    public function supervisor(){
-        return $this->belongsTo(User::class, 'supervisor_id');
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
     }
     public function proyek(){
         return $this->belongsTo(Proyek::class, 'proyek_id');

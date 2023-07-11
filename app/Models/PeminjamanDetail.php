@@ -18,7 +18,7 @@ class PeminjamanDetail extends Model
         'deleted_at',
     ];
     public function barang(){
-        return $this->belongsTo(Barang::class, 'barang_id');
+        return $this->belongsTo(BarangTidakHabisPakai::class, 'barang_id');
     }
     public function peminjamanProyekLain(){
         return $this->belongsTo(PeminjamanPp::class, 'peminjaman_proyek_lain_id');
@@ -26,11 +26,13 @@ class PeminjamanDetail extends Model
     public function peminjaman(){
         return $this->belongsTo(Peminjaman::class);
     }
+    public function penanggungJawab(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
     public function getCreatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);
     }
-
     public function getUpdatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);

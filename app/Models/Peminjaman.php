@@ -48,14 +48,12 @@ class Peminjaman extends Model
         $user = User::find($admin_gudang_id);
         return self::where('tipe', PeminjamanTipe::GUDANG_PROYEK->value)
         ->where('status',PeminjamanStatus::MENUNGGU_SURAT_JALAN->value)
-        ->whereRelation('peminjamanGp', 'gudang_id', $user->adminGudang->gudang_id)
         ->doesntHave('peminjamanGp.sjPengirimanGp')->get();
     }
     public static function doesntHaveSjPengirimanPpByAdminGudang($admin_gudang_id){
         $user = User::find($admin_gudang_id);
         return self::where('tipe', PeminjamanTipe::PROYEK_PROYEK->value)
         ->where('status',PeminjamanStatus::MENUNGGU_SURAT_JALAN->value)
-        ->whereRelation('peminjamanPp', 'gudang_id', $user->adminGudang->gudang_id)
         ->doesntHave('peminjamanPp.sjPengirimanPp')->get();
     }
     public static function getSupervisor($id){

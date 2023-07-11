@@ -21,6 +21,12 @@ class BarangHabisPakai extends Model
     public function barang(){
         return $this->belongsTo(Barang::class);
     }
+    public function penggunaanDetail(){
+        return $this->hasMany(PenggunaanDetail::class);
+    }
+    public function pengembalianPenggunaanDetail(){
+        return $this->hasMany(PengembalianPenggunaanDetail::class);
+    }
     public function getCreatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);

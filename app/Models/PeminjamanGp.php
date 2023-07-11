@@ -32,7 +32,6 @@ class PeminjamanGp extends Model
     {
         return Date::dateToMillisecond($date);
     }
-
     public function getUpdatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);

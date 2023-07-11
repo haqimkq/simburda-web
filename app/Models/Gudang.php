@@ -17,10 +17,6 @@ class Gudang extends Model
     protected $hidden = [
         'deleted_at',
     ];
-
-    public function adminGudang(){
-        return $this->hasMany(AdminGudang::class);
-    }
     public function getCreatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);

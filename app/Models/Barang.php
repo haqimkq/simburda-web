@@ -19,13 +19,6 @@ class Barang extends Model
     protected $hidden = [
         'deleted_at',
     ];
-
-    public function peminjamanDetail(){
-        return $this->hasMany(PeminjamanDetail::class);
-    }
-    public function pengembalianDetail(){
-        return $this->hasMany(PengembalianDetail::class);
-    }
     public function barangTidakHabisPakai(){
         return $this->hasOne(BarangTidakHabisPakai::class);
     }
