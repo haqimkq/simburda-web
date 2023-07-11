@@ -29,7 +29,7 @@ class AksesBarangController extends Controller
                 }, 'peminjamanDetail'])
                 ->whereRelation('peminjamanDetail.peminjaman.menangani.proyek.setManager', 'id', $authUser->id)  
                 ->filter(request(['search', 'filter', 'orderBy']))
-                ->paginate(200)
+                ->paginate(40)
                 ->withQueryString();
         } else if($authUser->role == 'SUPERVISOR') {
             $aksesBarangs = AksesBarang::
@@ -40,7 +40,7 @@ class AksesBarangController extends Controller
                 }, 'peminjamanDetail'])
                 ->whereRelation('peminjamanDetail.peminjaman.menangani.supervisor', 'id', $authUser->id) 
                 ->filter(request(['search', 'filter', 'orderBy']))
-                ->paginate(200)
+                ->paginate(40)
                 ->withQueryString();
         }else{
             $aksesBarangs = AksesBarang::
@@ -50,7 +50,7 @@ class AksesBarangController extends Controller
                         $q->orderBy('created_at');
                 }, 'peminjamanDetail'])
                 ->filter(request(['search', 'filter', 'orderBy']))
-                ->paginate(200)
+                ->paginate(40)
                 ->withQueryString();
         }
         return view('aksesbarang.index',[
