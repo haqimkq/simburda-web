@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-        Schema::create('pengembalian_penggunaans', function (Blueprint $table) {
+        Schema::table('pengembalian_penggunaans', function (Blueprint $table) {
             $table->foreignUuid('penggunaan_id')->constrained('penggunaans')->onUpdate('cascade')->onDelete('cascade');
         });
     }

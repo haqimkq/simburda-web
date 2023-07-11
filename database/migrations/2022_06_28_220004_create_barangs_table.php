@@ -18,7 +18,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('gambar');
             $table->string('nama');
-            $table->string('tipe');
+            $table->enum('jenis',['HABIS_PAKAI', 'TIDAK_HABIS_PAKAI']);
             $table->string('merk')->nullable();
             $table->text('detail');
             $table->timestamps();

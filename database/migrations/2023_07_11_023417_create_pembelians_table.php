@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
-        Schema::create('pembelians', function (Blueprint $table) {
+        Schema::table('pembelians', function (Blueprint $table) {
             $table->foreignUuid('set_manager_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('supervisor_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
         });

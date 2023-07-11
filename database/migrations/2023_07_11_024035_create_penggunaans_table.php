@@ -18,11 +18,11 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('kode_penggunaan');
             $table->enum('tipe',['GUDANG_PROYEK','PROYEK_PROYEK']);
-            $table->enum('status',['MENUNGGU_SURAT_JALAN','MENUNGGU_PENGIRIMAN', 'SEDANG_DIKIRIM', 'DIGUNAKAN', 'SELESAI'])->default('MENUNGGU_AKSES');
+            $table->enum('status',['MENUNGGU_SURAT_JALAN','MENUNGGU_PENGIRIMAN', 'SEDANG_DIKIRIM', 'DIGUNAKAN', 'SELESAI'])->default('MENUNGGU_SURAT_JALAN');
             $table->timestamps();
             $table->softDeletes();
         });
-        Schema::create('penggunaans', function (Blueprint $table) {
+        Schema::table('penggunaans', function (Blueprint $table) {
             $table->foreignUuid('menangani_id')->constrained('menanganis')->onUpdate('cascade')->onDelete('cascade');
         });
     }
