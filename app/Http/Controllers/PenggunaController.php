@@ -37,7 +37,7 @@ class PenggunaController extends Controller
      */
     public function create()
     {
-        //
+        return view('pengguna.create');
     }
 
     /**
@@ -48,7 +48,20 @@ class PenggunaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate = $request->validate([
+            'nama' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'foto' => 'nullable|file',
+            'no_hp' => 'required|numeric',
+            'role' => 'required',
+            'password' => 'required'
+        ]);
+
+        $validate['password'] = bcrypt($validate['password']);
+
+        User::create($validate);
+
+        return redirect()->route("pengguna");
     }
 
     /**

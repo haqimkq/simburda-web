@@ -82,6 +82,7 @@
 							<option value="USER" @if (request('filter') == 'USER') selected @endif>User</option>
 							<option value="ADMIN_GUDANG" @if (request('filter') == 'ADMIN_GUDANG') selected @endif>Admin Gudang</option>
 							<option value="PURCHASING" @if (request('filter') == 'PURCHASING') selected @endif>Purchasing</option>
+							<option value="SET_MANAGER" @if (request('filter') == 'SET_MANAGER') selected @endif>Set Manager</option>
 						</select>
 					</div>
 				@endsection
@@ -92,7 +93,6 @@
 			@foreach ($allUser as $user)
 				<div
 					class="group flex flex-col items-center justify-center rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
-					<a href="{{ route('pengguna.show', $user->id) }}" class="p-2">
 						<div class="mb-2 h-[6em] w-[6em] rounded-full bg-cover md:h-[5em] md:w-[5em] lg:h-[7em] lg:w-[7em]"
 							style="background-image: url('{{ asset($user->foto) }}')">
 						</div>
@@ -102,7 +102,6 @@
 							</span>
 							<p class="mb-1 text-sm font-normal line-clamp-1">{{ $user->nama }}</p>
 							<p class="mb-1 text-xs font-normal text-gray-500">{{ $user->no_hp }}</p>
-					</a>
 					@can('ADMIN')
 						<div class="relative hidden h-full w-full items-center justify-center group-hover:flex">
 							<div class="absolute top-0 left-0 z-10 flex h-auto w-full rounded-b-xl bg-white px-2 pt-0 pb-2 shadow-md">

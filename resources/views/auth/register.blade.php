@@ -40,11 +40,6 @@
                     <input id="no_hp" name="no_hp" type="tel" value="{{ old('no_hp') }}" class="input-field @error('no_hp') border-red-500 @enderror @error('registerError') border-red-500 @enderror" placeholder="Masukkan Nomor Handphone Anda">
                     @error('no_hp')  @include('shared.errorText')  @enderror
                 </label>
-                <label for="companycode" class="col-span-2">
-                    <p class="font-medium text-slate-700 pb-2">Kode Perusahaan</p>
-                    <input id="companycode" name="companycode" type="text" class="input-field @error('companycode') border-red-500 @enderror @error('registerError') border-red-500 @enderror" placeholder="Masukkan Kode Perusahaan">
-                    @error('companycode')  @include('shared.errorText')  @enderror
-                </label>
             </div>
             <button type="submit" class="w-full py-3 font-medium text-white bg-primary hover:bg-primary-light rounded-lg border-primary-light hover:shadow inline-flex space-x-2 items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

@@ -84,8 +84,8 @@
 								<p class="mb-2 text-xs font-normal">{{ $barang->created_at }}</p>
 								@php
 									$jumlahBarang = \App\Models\Barang::where('nama', $barang->nama)->count();
-									$barangTersedia = \App\Models\Barang::where('nama',$barang->nama)->where('tersedia',1)->count();
-									$barangDipinjam = $jumlahBarang - $barangTersedia ;
+									$barangTersedia = \App\Models\BarangTidakHabisPakai::where('barang_id',$barang->id)->whereNull('peminjaman_id')->count();
+									$barangDipinjam = $jumlahBarang - $barangTersedia;
 								@endphp
 								<div class="flex items-center md:flex-col lg:flex-row">
 									<p class="border-green mb-2 self-start rounded-full border px-2 py-1 text-xs text-black">

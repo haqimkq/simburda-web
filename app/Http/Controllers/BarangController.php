@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Helpers\Date;
 use App\Models\AksesBarang;
-use App\Models\Meminjam;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -142,24 +141,24 @@ class BarangController extends Controller
     public function show($id)
     {
         $barang = Barang::find($id);
-        $barangDalamPinjaman = Meminjam::with('barang','user','proyek', 'suratJalan','proyek.proyekManager')
-            ->where('barang_id', $barang->id)
-            ->where('dipinjam', 1)
-            ->orderBy('tgl_berakhir', 'DESC')
-            // ->whereHas('proyek', fn($q) => $q->where('selesai',1))
-            ->get();
-        $historyPeminjamanBarang = Meminjam::with('barang','user','proyek', 'suratJalan','proyek.proyekManager')
-            ->where('barang_id', $barang->id)
-            ->where('dipinjam', 1)
-            ->orderBy('tgl_berakhir', 'DESC')
-            // ->whereHas('proyek', fn($q) => $q->where('selesai',1))
-            ->paginate(2)->withQueryString();
+        // $barangDalamPinjaman = Meminjam::with('barang','user','proyek', 'suratJalan','proyek.proyekManager')
+        //     ->where('barang_id', $barang->id)
+        //     ->where('dipinjam', 1)
+        //     ->orderBy('tgl_berakhir', 'DESC')
+        //     // ->whereHas('proyek', fn($q) => $q->where('selesai',1))
+        //     ->get();
+        // $historyPeminjamanBarang = Meminjam::with('barang','user','proyek', 'suratJalan','proyek.proyekManager')
+        //     ->where('barang_id', $barang->id)
+        //     ->where('dipinjam', 1)
+        //     ->orderBy('tgl_berakhir', 'DESC')
+        //     // ->whereHas('proyek', fn($q) => $q->where('selesai',1))
+        //     ->paginate(2)->withQueryString();
 
-        return view('barang.detail',[
-            'barang' => $barang,
-            'barangPinjaman' => $barangDalamPinjaman,
-            'historyPeminjamanBarang' => $historyPeminjamanBarang,
-        ]);
+        // return view('barang.detail',[
+        //     'barang' => $barang,
+        //     'barangPinjaman' => $barangDalamPinjaman,
+        //     'historyPeminjamanBarang' => $historyPeminjamanBarang,
+        // ]);
     }
 
     public function showNamaBarang($nama)
