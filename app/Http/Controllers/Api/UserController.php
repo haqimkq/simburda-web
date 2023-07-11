@@ -8,9 +8,14 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
+use App\Mail\ForgetPasswordMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -57,6 +62,58 @@ class UserController extends Controller
             return ResponseFormatter::success(null, null, 'Logout Successfully');
         }catch (Exception $error){
             return ResponseFormatter::error("Logout Failed:". $error->getMessage());
+        }
+    }
+
+    public function showResetPasswordForm($token, $email) { 
+        return view('resetpassword.resetPasswordForm', ['token' => $token,'email' => $email]);
+    }
+
+    public function submitResetPasswordForm(Request $request){
+          $request->validate([
+              'password' => 'required|string|min:8|confirmed',
+              'password_confirmation' => 'required|same:password'
+          ]);
+  
+          $updatePassword = DB::table('password_resets')
+                              ->where([
+                                'email' => $request->email, 
+                                'token' => $request->token
+                              ])
+                              ->first();
+  
+          if(!$updatePassword){
+              return back()->withInput()->with('error', 'Invalid token!');
+          }
+  
+          $user = User::where('email', $request->email)
+                      ->update(['password' => bcrypt($request->password)]);
+ 
+          DB::table('password_resets')->where(['email'=> $request->email])->delete();
+  
+          return view('resetPassword.successChangePassword');
+      }
+
+    public function forgetPassword(Request $request){
+        try{
+            $request->validate([
+                'email' => 'required|email'
+            ]);
+            if(collect(User::where('email',$request->email)->first())->isEmpty()){
+                return ResponseFormatter::error("Unregistered Email");
+            }
+            $token = Str::random(64);
+            DB::table('password_resets')->insert([
+                'email' => $request->email, 
+                'token' => $token, 
+                'created_at' => Carbon::now()
+            ]);
+            Mail::to($request->email)->send(new ForgetPasswordMail($token, $request->email));
+
+            return ResponseFormatter::success(null,null,"Email Successfully sent");
+            
+        } catch (Exception $error){
+            return ResponseFormatter::error("Authentication Failed:". $error->getMessage());
         }
     }
 

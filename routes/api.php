@@ -51,6 +51,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 Route::post('login', [UserController::class, 'login']);
+Route::post('forget-password',[UserController::class, 'forgetPassword']);
 Route::post('register', [UserController::class, 'register']);
 
 

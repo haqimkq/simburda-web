@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AksesBarangController;
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\DeliveryOrderController;
 use App\Http\Controllers\Firebase\LogisticController;
@@ -121,3 +122,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('surat-jalan/delete/{id}', 'destroy')->name('surat-jalan.destroy');
     });
 });
+
+Route::get('reset-password/{token}/{email}', [UserController::class, 'showResetPasswordForm'])->name('reset.password.get');
+Route::post('reset-password', [UserController::class, 'submitResetPasswordForm'])->name('reset.password.post');
