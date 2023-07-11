@@ -11,6 +11,7 @@ use App\Traits\Uuids;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -40,16 +41,8 @@ class SuratJalan extends Model
         return $this->belongsTo(User::class, 'admin_gudang_id');
     }
     
-    public function sjPengirimanPp(){
-        return $this->hasOne(SjPengirimanPp::class);
-    }
-
-    public function sjPengirimanGp(){
-        return $this->hasOne(SjPengirimanGp::class);
-    }
-
-    public function sjPengembalian(){
-        return $this->hasOne(SjPengembalian::class);
+    public function suratJalanMorph():MorphTo{
+        return $this->morphTo();
     }
     public function ttdSjAdmin(){
         return $this->belongsTo(TtdVerification::class,'ttd_admin');

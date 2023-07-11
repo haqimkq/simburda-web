@@ -16,4 +16,12 @@ class Pembelian extends Model
     protected $hidden = [
         'deleted_at',
     ];
+
+    public function mengajukan(){
+        return $this->belongsTo(User::class,'id','supervisor_id');
+    }
+
+    public function menyetujui(){
+        return $this->belongsTo(User::class,'id','set_manager_id');
+    }
 }

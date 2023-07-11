@@ -6,6 +6,7 @@ use App\Enum\PengembalianStatus;
 use App\Helpers\Date;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -21,8 +22,8 @@ class SjPengembalian extends Model
         'deleted_at',
     ];
     
-    public function suratJalan(){
-        return $this->belongsTo(SuratJalan::class);
+    public function suratJalan():MorphOne{
+        return $this->morphOne(SuratJalan::class,'surat_jalan');
     }
     public function pengembalian(){
         return $this->belongsTo(Pengembalian::class);

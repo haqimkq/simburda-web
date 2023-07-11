@@ -8,6 +8,7 @@ use App\Helpers\Date;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -23,8 +24,8 @@ class SjPengirimanPp extends Model
     protected $hidden = [
         'deleted_at',
     ];
-    public function suratJalan(){
-        return $this->belongsTo(SuratJalan::class);
+    public function suratJalan():MorphOne{
+        return $this->morphOne(SuratJalan::class,'surat_jalan');
     }
     public function peminjamanPp(){
         return $this->belongsTo(PeminjamanPp::class, 'peminjaman_id');

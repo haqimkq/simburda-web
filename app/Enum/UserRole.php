@@ -12,4 +12,5 @@ enum UserRole:string
     case PURCHASING = 'PURCHASING';
     case ADMIN = 'ADMIN';
     case USER = 'USER';
+    case SET_MANAGER = 'SET_MANAGER';
 }

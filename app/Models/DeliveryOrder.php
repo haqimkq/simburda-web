@@ -25,9 +25,6 @@ class DeliveryOrder extends Model
     public function logistic(){
         return $this->belongsTo(User::class, 'logistic_id');
     }
-    public function adminGudang(){
-        return $this->belongsTo(User::class, 'admin_gudang_id');
-    }
     public function purchasing(){
         return $this->belongsTo(User::class,'purchasing_id');
     }

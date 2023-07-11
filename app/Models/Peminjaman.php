@@ -10,6 +10,7 @@ use App\Helpers\IDGenerator;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Peminjaman extends Model
@@ -29,12 +30,17 @@ class Peminjaman extends Model
     public function aksesBarang(){
         return $this->hasOne(AksesBarang::class);
     }
-    public function peminjamanPp(){
-        return $this->hasOne(PeminjamanPp::class);
+    // public function peminjamanPp(){
+    //     return $this->hasOne(PeminjamanPp::class);
+    // }
+    // public function peminjamanGp(){
+    //     return $this->hasOne(PeminjamanGp::class);
+    // }
+
+    public function peminjamanMorph():MorphTo{
+        return $this->morphTo();
     }
-    public function peminjamanGp(){
-        return $this->hasOne(PeminjamanGp::class);
-    }
+    
     public function pengembalian(){
         return $this->hasMany(Pengembalian::class);
     }

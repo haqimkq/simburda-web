@@ -27,7 +27,7 @@ class PeminjamanDetail extends Model
         return $this->belongsTo(Peminjaman::class);
     }
     public function penanggungJawab(){
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'id', 'penanggung_jawab_id');
     }
     public function getCreatedAtAttribute($date)
     {

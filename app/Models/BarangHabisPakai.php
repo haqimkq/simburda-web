@@ -6,6 +6,7 @@ use App\Helpers\Date;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BarangHabisPakai extends Model
@@ -18,9 +19,13 @@ class BarangHabisPakai extends Model
         'deleted_at',
     ];
 
-    public function barang(){
-        return $this->belongsTo(Barang::class);
+    public function barang():MorphOne{
+        return $this->morphOne(Barang::class, 'barang');
     }
+
+    // public function barang(){
+    //     return $this->belongsTo(Barang::class);
+    // }
     public function penggunaanDetail(){
         return $this->hasMany(PenggunaanDetail::class);
     }

@@ -7,6 +7,7 @@ use App\Traits\Uuids;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Barang extends Model
@@ -24,6 +25,10 @@ class Barang extends Model
     }
     public function barangHabisPakai(){
         return $this->hasOne(BarangHabisPakai::class);
+    }
+
+    public function barangMorp(): MorphTo{
+        return $this->morphTo();
     }
 
     public function scopeFilter($query, array $filters){
