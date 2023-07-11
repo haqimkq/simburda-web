@@ -37,8 +37,10 @@ class Barang extends Model
         });
         $query->when($filters['filter'] ?? false, function($query, $filter) {
         //    return $query->where(function($query) use ($filter) {
-            if($filter != 'semua jenis')
-                return $query->where('jenis', '=', $filter);
+            if($filter == 'tidak habis pakai')
+                    return $query->where('jenis', '=', 'TIDAK_HABIS_PAKAI');
+            if($filter == 'habis pakai')
+                return $query->where('jenis', '=', 'HABIS_PAKAI');
             // });
         });
         $query->when(!isset($filters['orderBy']), function($query){

@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Database\Eloquent\Builder;
+
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,6 +37,11 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Carbon::setLocale('id');
+        // Builder::macro('whereRelationIn', function ($relation, $column, $array) {
+        //     $this->whereHas(
+        //         $relation, fn($q) => $q->whereIn($column, $array)
+        //     );
+        // });
         // if (!empty( env('NGROK_URL') ) && $request->server->has('HTTP_X_ORIGINAL_HOST')) {
         //     $this->app['url']->forceRootUrl(env('NGROK_URL'));
         // }

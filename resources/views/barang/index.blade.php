@@ -11,7 +11,7 @@
 				@include('shared.alerts.success')
 			@endif
 			@section('headerName', 'Barang')
-			@section('role', $authUser->role)
+			@section('role', App\Helpers\Utils::underscoreToNormal($authUser->role))
 			@if ($authUser->foto)
 				@section('foto', asset($authUser->foto))
 			@endif
@@ -77,11 +77,11 @@
 								style="background-image: url('{{ asset($barang->gambar) }}')"></div>
 							<div class="flex flex-col">
 								<span
-									class="{{ $barang->jenis == 'tidak habis pakai' ? 'bg-green-200 text-green-600 border-green-600' : 'text-primary border-primary bg-primary-30' }} mb-2 self-start rounded-full border px-1.5 text-xs">
-									{{ ucfirst($barang->jenis) }}
+									class="{{ $barang->jenis == 'TIDAK_HABIS_PAKAI' ? 'bg-green-200 text-green-600 border-green-600' : 'text-primary border-primary bg-primary-30' }} mb-2 self-start rounded-full border px-1.5 text-xs">
+									{{ App\Helpers\Utils::underscoreToNormal($barang->jenis) }}
 								</span>
 								<p class="mb-2 font-medium line-clamp-1">{{ $barang->nama }}</p>
-								<p class="mb-2 text-xs font-normal">{{ $barang->created_at }}</p>
+								<p class="mb-2 text-xs font-normal">{{ \App\Helpers\Date::parseMilliseconds($barang->created_at) }}</p>
 								@php
 									$jumlahBarang = \App\Models\Barang::where('nama', $barang->nama)->count();
 									$barangTersedia = \App\Models\BarangTidakHabisPakai::where('barang_id',$barang->id)->whereNull('peminjaman_id')->count();

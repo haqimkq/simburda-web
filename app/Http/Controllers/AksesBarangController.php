@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AksesBarang;
+use App\Models\Menangani;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,17 +18,20 @@ class AksesBarangController extends Controller
     {
         //
         $authUser = Auth::user();
-
+        $menanganis = Menangani::where('user_id',$authUser->id)->get('id')->all();
         $countUndefinedAkses = AksesBarang::countUndefinedAkses();
 
-        if($authUser->role == 'SET_MANAGER' ){
+        if($authUser->role == 'SET_MANAGER'){
             $aksesBarangs = AksesBarang::
                 with(['peminjamanDetail.peminjaman.menangani.proyek' => function ($q){
                         $q->orderBy('created_at','DESC');
                 }, 'peminjamanDetail.peminjaman' => function ($q){
                         $q->orderBy('created_at');
                 }, 'peminjamanDetail'])
-                ->whereRelation('peminjamanDetail.peminjaman.menangani.user', 'id', $authUser->id)  
+                ->whereHas(
+                    'peminjamanDetail.peminjaman.menangani', fn($q) => $q->whereIn('id', $menanganis->id)
+                )
+                // ->whereRelation('peminjamanDetail.peminjaman.menangani.user', 'id', $authUser->id)
                 ->filter(request(['search', 'filter', 'orderBy']))
                 ->paginate(40)
                 ->withQueryString();
