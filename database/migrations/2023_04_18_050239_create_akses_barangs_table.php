@@ -17,15 +17,15 @@ return new class extends Migration
         Schema::create('akses_barangs', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->boolean('disetujui_admin')->nullable();
-            $table->boolean('disetujui_pm')->nullable();
-            $table->string('keterangan_pm')->nullable();
+            $table->boolean('disetujui_sm')->nullable();
+            $table->string('keterangan_sm')->nullable();
             $table->string('keterangan_admin')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
         Schema::table('akses_barangs', function (Blueprint $table) {
             $table->foreignUuid('peminjaman_detail_id')->constrained('peminjaman_details')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('project_manager_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('set_manager_id')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('admin_gudang_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
         });
     }

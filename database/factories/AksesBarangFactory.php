@@ -35,7 +35,7 @@ class AksesBarangFactory extends Factory
         }
         return [
             'id' => fake()->uuid(),
-            'peminjaman_id' => $meminjamId,
+            'peminjaman_detail_id' => $meminjamId,
             'disetujui_admin' => $disetujui_admin,
             'keterangan_admin' => $keterangan_admin,
             'keterangan_sm' => $keterangan_sm,
