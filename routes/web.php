@@ -14,6 +14,7 @@ use App\Http\Controllers\ProyekController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SignatureController;
 use App\Http\Controllers\SuratJalanController;
+use App\Http\Controllers\PerusahaanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +59,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('barang/edit/{barang}', 'edit')->name('barang.edit');
         Route::post('barang/delete/{id}', 'destroy')->name('barang.destroy');
         Route::post('barang/update/{id}', 'update')->name('barang.update');
+    });
+    Route::middleware((['admin-setmanager-supervisor-admingudang']))->controller(PerusahaanController::class)->group(function (){
+        Route::get('perusahaan', 'index')->name('perusahaan');
+        
     });
     Route::middleware(['admin'])->controller(PenggunaController::class)->group(function () {
         Route::get('pengguna', 'index')->name('pengguna');

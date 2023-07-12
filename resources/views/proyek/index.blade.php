@@ -78,9 +78,9 @@
 								</p>
 							</div>
 							<div class="flex ">
-								<svg class="mr-1 h-4 w-4 fill-blue-600" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+								{{-- <svg class="mr-1 h-4 w-4 fill-blue-600" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 									<path  fill-rule="evenodd" clip-rule="evenodd" d="M9.36364 0C5.29681 0 2 3.29681 2 7.36364C2 11.4305 9.36364 18 9.36364 18C9.36364 18 16.7273 11.4305 16.7273 7.36364C16.7273 3.29681 13.4305 0 9.36364 0ZM9.36364 9.81818C10.7192 9.81818 11.8182 8.71924 11.8182 7.36364C11.8182 6.00803 10.7192 4.90909 9.36364 4.90909C8.00803 4.90909 6.90909 6.00803 6.90909 7.36364C6.90909 8.71924 8.00803 9.81818 9.36364 9.81818Z"/>
-								</svg>
+								</svg> --}}
 								<p class="font-normal text-sm mb-2 line-clamp-1 text-gray-700">{{ucfirst($proyek->alamat)}}</p>
 							</div>
 							<p class="mb-2 text-xs font-normal text-gray-500">{{ \App\Helpers\Date::parseMilliseconds($proyek->created_at) }} @if ($proyek->tgl_selesai)-{{ \App\Helpers\Date::parseMilliseconds($proyek->tgl_selesai) }}@endif</p>
