@@ -31,7 +31,6 @@ class SjPengembalian extends Model
     {
         return Date::dateToMillisecond($date);
     }
-
     public function getUpdatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);
@@ -76,7 +75,7 @@ class SjPengembalian extends Model
         }
     }
     public static function updateKodeSurat(Request $request){
-        $pengembalian = Pengembalian::find($request->pengembalian_id)->pengembalian;
+        $pengembalian = Pengembalian::find($request->pengembalian_id);
         $supervisor = Peminjaman::getMenanganiUser($pengembalian->peminjaman->id)->nama;
         $client = Peminjaman::getProyek($pengembalian->peminjaman->id)->client;
         SuratJalan::where('id', $request->surat_jalan_id)->update(['kode_surat'=>SuratJalan::generateKodeSurat($request->tipe, $client, $supervisor)]);

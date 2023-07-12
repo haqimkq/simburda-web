@@ -30,8 +30,8 @@ class SjPengirimanPp extends Model
     public function peminjamanPp(){
         return $this->belongsTo(PeminjamanPp::class, 'peminjaman_id');
     }
-    public function ttdSupervisorPeminjam(){
-        return $this->belongsTo(TtdVerification::class, 'ttd_supervisor_peminjam');
+    public function ttdPenanggungJawab(){
+        return $this->belongsTo(TtdVerification::class, 'ttd_tgg_jwb');
     }
     public function getCreatedAtAttribute($date)
     {

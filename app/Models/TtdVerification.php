@@ -30,11 +30,14 @@ class TtdVerification extends Model
     public function ttdSjDriver(){
         return $this->hasOne(SuratJalan::class,'ttd_driver');
     }
-    public function ttdSjSupervisor(){
-        return $this->hasOne(SuratJalan::class,'ttd_supervisor');
+    public function ttdSjPenanggungJawab(){
+        return $this->hasOne(SuratJalan::class,'ttd_tgg_jwb');
     }
-    public function ttdSjSupervisorPeminjam(){
-        return $this->hasOne(SjPengirimanPp::class,'ttd_supervisor_peminjam');
+    public function ttdSjPenanggungJawabPeminjam(){
+        return $this->hasOne(SjPengirimanPp::class,'ttd_tgg_jwb');
+    }
+    public function ttdSjPenanggungJawabPengguna(){
+        return $this->hasOne(SjPenggunaanPp::class,'ttd_tgg_jwb');
     }
     public function getCreatedAtAttribute($date)
     {
@@ -63,13 +66,16 @@ class TtdVerification extends Model
         return $ttd_verification->id;
     }
     public static function updateTtdSjVerificationFromSuratJalan($sj){
-        if($sj->sjPengirimanGp!=null && $sj->ttd_supervisor!=null){
+        if($sj->sjPengirimanGp!=null && $sj->ttd_tgg_jwb!=null){
             $user = $sj->sjPengirimanGp->peminjamanGp->peminjaman->menangani->user;
         }else if($sj->sjPengembalian!=null){
             $user = $sj->sjPengembalian->pengembalian->peminjaman->menangani->user;
         }else if($sj->sjPengirimanPp!=null){
             $user_peminjam = $sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->user;
             $user = $sj->sjPengirimanPp->peminjamanPp->peminjamanAsal->menangani->user;
+        }else if($sj->sjPenggunaanPp!=null){
+            $user_peminjam = $sj->sjPenggunaanPp->penggunaanPp->penggunaan->menangani->user;
+            $user = $sj->sjPenggunaanPp->penggunaanPp->penggunaanAsal->menangani->user;
         }
         if($sj->ttd_admin!=null){
             TtdVerification::find($sj->ttd_admin)->update([
@@ -81,15 +87,23 @@ class TtdVerification extends Model
             TtdVerification::where('id', $sj->ttd_driver)->update([
                 'user_id' => $sj->logistic->id
             ]);
-        if($sj->ttd_supervisor!=null){
-            TtdVerification::where('id', $sj->ttd_supervisor)->update([
+        if($sj->ttd_tgg_jwb!=null){
+            TtdVerification::where('id', $sj->ttd_tgg_jwb)->update([
                 'user_id' => $user->id,
                 'sebagai' => self::setSebagaiTtdSjVerification($user, $sj)
             ]);
         }
         if($sj->sjPengirimanPp!=null){
-            if($sj->sjPengirimanPp->ttdSupervisorPeminjam!=null){
-                TtdVerification::where('id', $sj->sjPengirimanPp->ttdSupervisorPeminjam)->update([
+            if($sj->sjPengirimanPp->ttd_tgg_jwb!=null){
+                TtdVerification::where('id', $sj->sjPengirimanPp->ttd_tgg_jwb)->update([
+                    'user_id' => $user_peminjam->id,
+                    'sebagai' => self::setSebagaiTtdSjVerification($user, $sj)
+                ]);
+            }
+        }
+        if($sj->sjPenggunaanPp!=null){
+            if($sj->sjPenggunaanPp->ttd_tgg_jwb!=null){
+                TtdVerification::where('id', $sj->sjPenggunaanPp->ttd_tgg_jwb)->update([
                     'user_id' => $user_peminjam->id,
                     'sebagai' => self::setSebagaiTtdSjVerification($user, $sj)
                 ]);
@@ -108,13 +122,17 @@ class TtdVerification extends Model
                 $check_user=$sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->user;
                 if($check_user->id == $user->id) $sebagai = "PENERIMA";
                 else $sebagai = "PEMBERI";
+            }else if($sj->sjPenggunaanPp!=null){
+                $check_user=$sj->sjPenggunaanPp->penggunaanPp->penggunaan->menangani->user;
+                if($check_user->id == $user->id) $sebagai = "PENERIMA";
+                else $sebagai = "PEMBERI";
             }
         }else if($user->role=='ADMIN_GUDANG'){
             if($sj->sjPengirimanGp !=null){
                 $sebagai = "PEMBERI";
             }else if($sj->sjPengembalian !=null){
                 $sebagai = "PENERIMA";
-            }else if($sj->sjPengirimanPp!=null){
+            }else if($sj->sjPengirimanPp!=null || $sj->sjPenggunaanPp!=null){
                 $sebagai = "PEMBUAT";
             }
         }
@@ -126,10 +144,10 @@ class TtdVerification extends Model
             $sj = $ttd_verification->ttdSjAdmin;
         }else if($ttd_verification->ttdSjDriver != null){
             $sj = $ttd_verification->ttdSjDriver;
-        }else if($ttd_verification->ttdSjSupervisor != null){
-            $sj = $ttd_verification->ttdSjSupervisor;
-        }else if($ttd_verification->ttdSjSupervisorPeminjam != null){
-            $sj = $ttd_verification->ttdSjSupervisorPeminjam->suratJalan;
+        }else if($ttd_verification->ttdSjPenanggungJawab != null){
+            $sj = $ttd_verification->ttdSjPenanggungJawab;
+        }else if($ttd_verification->ttdSjPenanggungJawabPeminjam != null){
+            $sj = $ttd_verification->ttdSjPenanggungJawabPeminjam->suratJalan;
         }
         return $sj;
     }

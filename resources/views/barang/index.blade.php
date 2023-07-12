@@ -73,8 +73,10 @@
 					@foreach ($barangs as $barang)
 					<div class="relative group flex flex-col rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
 						<a href="" class="flex p-2">
-							<div class="mr-2 h-[6em] w-[6em] rounded-xl bg-cover md:h-[5em] md:w-[5em] lg:h-[7em] lg:w-[7em]"
+							@if (isset($barang->gambar))
+									<div class="mr-2 h-[6em] w-[6em] rounded-xl bg-cover md:h-[5em] md:w-[5em] lg:h-[7em] lg:w-[7em]"
 								style="background-image: url('{{ asset($barang->gambar) }}')"></div>
+							@endif
 							<div class="flex flex-col">
 								<span
 									class="{{ $barang->jenis == 'TIDAK_HABIS_PAKAI' ? 'bg-green-200 text-green-600 border-green-600' : 'text-primary border-primary bg-primary-30' }} mb-2 self-start rounded-full border px-1.5 text-xs">

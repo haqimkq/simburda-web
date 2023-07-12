@@ -61,8 +61,8 @@ class SuratJalan extends Model
     public function ttdSjAdmin(){
         return $this->belongsTo(TtdVerification::class,'ttd_admin');
     }
-    public function ttdSjSupervisor(){
-        return $this->belongsTo(TtdVerification::class,'ttd_supervisor');
+    public function ttdSjPenanggungJawab(){
+        return $this->belongsTo(TtdVerification::class,'ttd_penanggung_jawab');
     }
     public function ttdSjDriver(){
         return $this->belongsTo(TtdVerification::class,'ttd_driver');
