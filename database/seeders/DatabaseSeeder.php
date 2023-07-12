@@ -58,6 +58,44 @@ class DatabaseSeeder extends Seeder
                 'gambar' => 'assets/gudang/Gudang Jakarta 1.jpg'
             ]
         )->create();
+        Gudang::factory()->count(4)->state(new Sequence(
+            [
+                'nama' => 'Gudang Jaksel 1',
+                'alamat' => 'Jl. Hang Lekiu IV, RT.6/RW.4, Gunung, Kec. Kby. Baru, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12120',
+                'latitude' => '-6.2341379',
+                'longitude' => '106.7938248',
+                'kota' => 'Jakarta Selatan',
+                'provinsi' => 'DKI Jakarta',
+                'gambar' => 'assets/gudang/Gudang Jaksel 1.jpg'
+            ],
+            [
+                'nama' => 'Gudang Jogja 1',
+                'alamat' => 'Jl. Malioboro No.143, Sosromenduran, Gedong Tengen, Kota Yogyakarta, Daerah Istimewa Yogyakarta 55271',
+                'latitude' => '-7.7918055',
+                'longitude' => '110.3650972',
+                'kota' => 'Yogyakarta',
+                'provinsi' => 'Daerah Istimewa Yogyakarta',
+                'gambar' => 'assets/gudang/Gudang Jogja 1.jpg'
+            ],
+            [
+                'nama' => 'Gudang Surabaya 1',
+                'alamat' => 'Jl. Mayjend. Jonosewojo, Pradahkalikendal, Kec. Dukuhpakis, Kota SBY, Jawa Timur 60227',
+                'latitude' => '-7.2881631',
+                'longitude' => '112.6783636',
+                'kota' => 'Surabaya',
+                'provinsi' => 'Jawa Timur',
+                'gambar' => 'assets/gudang/Gudang Surabaya 1.jpg'
+            ],
+            [
+                'nama' => 'Gudang Jakpus 1',
+                'alamat' => 'Jl. Kramat Raya No.116, RT.2/RW.9, Kwitang, Kec. Senen, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10420',
+                'latitude' => '6.1849776',
+                'longitude' => '106.8436491',
+                'kota' => 'Surabaya',
+                'provinsi' => 'Jawa Timur',
+                'gambar' => 'assets/gudang/Gudang Jakpus 1.jpg'
+            ],
+        ))->create();
         User::factory()->state(
             [
                 'id'=>'ab7e7da6-9333-35dd-8ae9-021c8a0232d4',
@@ -111,6 +149,33 @@ class DatabaseSeeder extends Seeder
                     'ttd' => 'assets/ttd/83719273uawey02938he.png'
                 ]
         )->create();
+
+        User::factory(10)->state([
+            'role' => 'SUPERVISOR'
+        ])->create();
+        
+        User::factory(4)->state([
+            'role' => 'LOGISTIC'
+        ])->has(Logistic::factory()->state(function (array $attributes, User $user){
+            return ['user_id' => $user->id];
+        }))->create();
+
+        User::factory(10)->state([
+            'role' => 'PROJECT_MANAGER'
+        ])->create();
+        
+        User::factory(10)->state([
+            'role' => 'SET_MANAGER'
+        ])->create();
+
+        User::factory(10)->state([
+            'role' => 'PURCHASING',
+            'ttd' => 'assets/ttd/83719273uawey02938he.png'
+        ])->create();
+
+        User::factory(10)->state([
+            'role' => 'ADMIN_GUDANG'
+        ])->create();
 
         $SM1 = User::factory()->state([
             'id'=>'02e6804b-9d38-3075-bbc3-69b8cc29da8c',
@@ -419,7 +484,9 @@ class DatabaseSeeder extends Seeder
                 'latitude' => '-6.1091684',
                 'longitude' => '106.7404088',
             ],
-        ))->for($SM1, 'setManager')->create();
+        ))
+        // ->for($SM1, 'setManager')
+        ->create();
 
         Kendaraan::factory(7)->state(new Sequence(
             [
@@ -539,30 +606,7 @@ class DatabaseSeeder extends Seeder
             ],
         ))->tronton()->create();
 
-        User::factory(2)->state([
-            'role' => 'SUPERVISOR'
-        ])->create();
-
-        Menangani::factory(35)->create();
-        
-        User::factory(2)->state([
-            'role' => 'LOGISTIC'
-        ])->has(Logistic::factory()->state(function (array $attributes, User $user){
-            return ['user_id' => $user->id];
-        }))->create();
-
-        User::factory(2)->state([
-            'role' => 'PROJECT_MANAGER'
-        ])->create();
-
-        User::factory(2)->state([
-            'role' => 'PURCHASING',
-            'ttd' => 'assets/ttd/83719273uawey02938he.png'
-        ])->create();
-
-        User::factory(2)->state([
-            'role' => 'ADMIN_GUDANG'
-        ])->create();
+        Menangani::factory(50)->create();
 
         Peminjaman::factory(40)->menungguAksesGp()
         ->has(PeminjamanDetail::factory(8)->resetData()->menungguAksesGp(), 'peminjamanDetail')

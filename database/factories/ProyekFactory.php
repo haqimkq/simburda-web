@@ -26,7 +26,7 @@ class ProyekFactory extends Factory
             $tgl_selesai = fake()->dateTimeBetween($date, 'now');
             $updated_at = $tgl_selesai;
         } else $tgl_selesai = NULL;
-        $project_manager = User::factory();
+        $project_manager = User::where('role', 'SET_MANAGER')->get()->random()->id;
         return [
             'id' => fake()->uuid(),
             // 'project_manager_id' => $project_manager->id,

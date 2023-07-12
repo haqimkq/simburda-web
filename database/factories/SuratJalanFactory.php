@@ -53,7 +53,7 @@ class SuratJalanFactory extends Factory
             'kode_surat' => $kode_surat,
             'ttd_admin' => null,
             'ttd_driver' => null,
-            'ttd_supervisor' => null,
+            'ttd_tgg_jwb' => null,
             'foto_bukti' => $foto_bukti,
         ];
     }
@@ -77,7 +77,7 @@ class SuratJalanFactory extends Factory
                 'tipe' => "SURAT_JALAN",
                 'sebagai' => "PEMBERI",
             ]);
-            $ttdSupervisor = TtdVerification::create([
+            $ttdTggJwb = TtdVerification::create([
                 "id" => fake()->uuid(),
                 "user_id" => User::get()->random()->id,
                 'tipe' => "SURAT_JALAN",
@@ -87,7 +87,7 @@ class SuratJalanFactory extends Factory
                 'status' => $status,
                 'ttd_admin' => $ttdAdminGudang,
                 'ttd_driver' => $ttdDriver,
-                'ttd_supervisor' => $ttdSupervisor,
+                'ttd_tgg_jwb' => $ttdTggJwb,
                 'foto_bukti' => $foto_bukti,
             ];
         });
@@ -97,7 +97,7 @@ class SuratJalanFactory extends Factory
         return $this->state(function (array $attributes) {
             $status = 'MENUNGGU_KONFIRMASI_DRIVER';
             $ttdDriver = NULL;
-            $ttdSupervisor = NULL;
+            $ttdTggJwb = NULL;
             $foto_bukti = NULL;
             $ttdAdminGudang = TtdVerification::create([
                 "id" => fake()->uuid(),
@@ -113,7 +113,7 @@ class SuratJalanFactory extends Factory
                 'status' => $status,
                 'ttd_admin' => $ttdAdminGudang,
                 'ttd_driver' => $ttdDriver,
-                'ttd_supervisor' => $ttdSupervisor,
+                'ttd_tgg_jwb' => $ttdTggJwb,
                 'foto_bukti' => $foto_bukti,
             ];
         });
@@ -134,7 +134,7 @@ class SuratJalanFactory extends Factory
                 'tipe' => "SURAT_JALAN",
                 'sebagai' => "PEMBERI",
             ]);
-            $ttdSupervisor = NULL;
+            $ttdTggJwb = NULL;
             $foto_bukti = NULL;
             // Kendaraan::where('logistic_id', $attributes['logistic_id'])->update(['logistic_id'=>null]);
             // Kendaraan::where('id', $attributes['kendaraan_id'])->update([
@@ -144,7 +144,7 @@ class SuratJalanFactory extends Factory
                 'status' => $status,
                 'ttd_admin' => $ttdAdminGudang,
                 'ttd_driver' => $ttdDriver,
-                'ttd_supervisor' => $ttdSupervisor,
+                'ttd_tgg_jwb' => $ttdTggJwb,
                 'foto_bukti' => $foto_bukti,
             ];
         });
