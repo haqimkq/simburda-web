@@ -11,7 +11,7 @@ class LogisticFirebase
 {
     public static $logisticFirebase = 'logistic/';
     public static function getData(Request $request){
-        self::getDatabase()->getReference(self::$logisticFirebase.$request->user_id)->getValue();
+        self::getDatabase()->getReference(self::$logisticFirebase.$request->user_id)->getSnapshot()->getValue();
     }
     public static function setData(Request $request){
         $setData = [
