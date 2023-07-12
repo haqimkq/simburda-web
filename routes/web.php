@@ -82,8 +82,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('kendaraan/tambah', 'create')->name('kendaraan.create');
         Route::post('kendaraan/store', 'store')->name('kendaraan.store');
         Route::get('kendaraan/detail/{id}', 'show')->name('kendaraan.show');
-        Route::get('kendaraan/edit/{id}', 'edit')->name('kendaraan.edit');
-        Route::post('kendaraan/delete/{id}', 'destroy')->name('kendaraan.destroy');
+        Route::get('kendaraan/edit/{kendaraan}', 'edit')->name('kendaraan.edit');
+        Route::post('kendaraan/delete/{kendaraan}', 'destroy')->name('kendaraan.destroy');
+        Route::post('kendaraan/update/{kendaraan}', 'update')->name('kendaraan.update');
     });
     Route::middleware(['admin-setmanager'])->controller(ProyekController::class)->group(function () {
         Route::get('proyek', 'index')->name('proyek');

@@ -91,16 +91,9 @@
 			</div>
 			<div style="display: none" id="satuan-field">
 				<label for="satuan" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Satuan Barang</label>
-				<select id="satuan" name="satuan"
+				<input type="text" id="satuan" min="1" name="satuan" value="{{ old('satuan') }}"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-					>
-					<option disabled selected value="{{ old('satuan') }}">Pilih Satuan Barang</option>
-					<option value="buah">Buah</option>
-					<option value="kilogram">Kilogram</option>
-					<option value="meter">Meter</option>
-					<option value="batang">Batang</option>
-					<option value="lembar">Lembar</option>
-				</select>
+					placeholder="Masukkan Satuan Barang" >
 				@error('satuan') @include('shared.errorText') @enderror
 			</div>
 			<div  class="col-span-2">

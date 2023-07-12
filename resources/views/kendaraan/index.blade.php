@@ -28,12 +28,12 @@
 @section('content')
 	<div class="w-full md:ml-[16em]">
 		<div class="w-full pl-4">
-			@if (session('createPenggunaSuccess'))
-				@section('alertMessage', session('createPenggunaSuccess'))
+			@if (session('createKendaraanSuccess'))
+				@section('alertMessage', session('createKendaraanSuccess'))
 				@include('shared.alerts.success')
 			@endif
-			@if (session('deletePenggunaSuccess'))
-				@section('alertMessage', session('deletePenggunaSuccess'))
+			@if (session('deleteKendaraanSuccess'))
+				@section('alertMessage', session('deleteKendaraanSuccess'))
 				@include('shared.alerts.success')
 			@endif
 			@section('headerName', 'Kendaraan')

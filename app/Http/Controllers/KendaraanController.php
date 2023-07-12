@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorekendaraanRequest;
-use App\Http\Requests\UpdatekendaraanRequest;
 use App\Models\AksesBarang;
+use App\Models\Gudang;
 use App\Models\Kendaraan;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class KendaraanController extends Controller
 {
@@ -35,18 +36,34 @@ class KendaraanController extends Controller
      */
     public function create()
     {
-        //
+        return view('kendaraan.create',[
+            'gudangs' => Gudang::all()
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StorekendaraanRequest  $request
+     * @param  \App\Http\Requests\  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorekendaraanRequest $request)
+    public function store(Request $request)
     {
-        //
+        $validate = $request->validate([
+            'jenis' => 'required',
+            'merk' => 'required',
+            'plat_nomor' => 'required',
+            'gambar' => 'nullable',
+            'gudang_id' => 'nullable',
+        ]);
+
+        if($request->file('gambar')){
+                $validate['gambar'] = $request->file('gambar')->store('assets/kendaraan', 'public');
+        }
+
+        $kendaraan = Kendaraan::create($validate);
+
+        return redirect()->route('kendaraan')->with('createKendaraanSuccess','Berhasil Menambahkan Kendaraan ('.$kendaraan->merk.')');
     }
 
     /**
@@ -66,9 +83,12 @@ class KendaraanController extends Controller
      * @param  \App\Models\kendaraan  $kendaraan
      * @return \Illuminate\Http\Response
      */
-    public function edit(kendaraan $kendaraan)
+    public function edit(Kendaraan $kendaraan)
     {
-        //
+        return view('kendaraan.edit',[
+            'gudangs' => Gudang::all(),
+            'kendaraan' => $kendaraan
+        ]);
     }
 
     /**
@@ -78,9 +98,26 @@ class KendaraanController extends Controller
      * @param  \App\Models\kendaraan  $kendaraan
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatekendaraanRequest $request, kendaraan $kendaraan)
+    public function update(Request $request, kendaraan $kendaraan)
     {
-        //
+        $validate = $request->validate([
+            'jenis' => 'required',
+            'merk' => 'required',
+            'plat_nomor' => 'required',
+            'gambar' => 'nullable',
+            'gudang_id' => 'nullable',
+        ]);
+
+        if($request->file('gambar')){
+            if($request->oldImage){
+                Storage::delete($request->oldImage);
+            }
+            $validate['gambar'] = $request->file('gambar')->store('assets/kendaraan', 'public');
+        }
+
+        Kendaraan::where('id',$kendaraan->id)->update($validate);
+
+        return redirect()->route('kendaraan')->with('createKendaraanSuccess','Berhasil Merubah Data Kendaraan ('.$kendaraan->merk.')');
     }
 
     /**
@@ -91,6 +128,11 @@ class KendaraanController extends Controller
      */
     public function destroy(kendaraan $kendaraan)
     {
-        //
+        if($kendaraan->gambar){
+            Storage::delete($kendaraan->gambar);
+        }
+        Kendaraan::destroy($kendaraan->id);
+
+        return redirect()->route('kendaraan')->with('deleteKendaraanSuccess', 'Berhasil Menghapus Kendaraan ('.$kendaraan->merk.')');
     }
 }

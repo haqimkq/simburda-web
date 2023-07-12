@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\AksesBarang;
+use App\Models\LogisticFirebase;
+use App\Models\ProvincesFirebase;
 use App\Models\Proyek;
 use App\Models\User;
 use Illuminate\Http\Request;

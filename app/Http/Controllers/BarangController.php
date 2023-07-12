@@ -257,6 +257,9 @@ class BarangController extends Controller
             $detail = BarangHabisPakai::where('barang_id', $barang->id)->first();
             BarangHabisPakai::destroy($detail->id);
         }
+        if($barang->gambar){
+            Storage::delete($barang->gambar);
+        }
         Barang::destroy($id);
         return redirect('/barang')->with('deleteBarangSuccess','Berhasil Menghapus Barang ('.$barang->nama.')');
     }
