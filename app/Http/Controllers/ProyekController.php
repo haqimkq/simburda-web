@@ -38,7 +38,7 @@ class ProyekController extends Controller
      */
     public function create()
     {
-        $province = collect(ProvincesFirebase::getProvince()) ;
+        $province = collect(ProvincesFirebase::getProvince());
         return view('proyek.create',[
             'provinces' => $province->keys()
         ]);

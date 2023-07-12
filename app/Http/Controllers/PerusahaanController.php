@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AksesBarang;
 use App\Models\Perusahaan;
+use App\Models\ProvincesFirebase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,6 +21,13 @@ class PerusahaanController extends Controller
             'countUndefinedAkses' => $countUndefinedAkses,
             'provinsis' => $provinsis,
             'perusahaans' => $perusahaan
+        ]);
+    }
+
+    public function create(){
+        $province = collect(ProvincesFirebase::getProvince());
+        return view('perusahaan.create',[
+            'provinces' => $province
         ]);
     }
 }
