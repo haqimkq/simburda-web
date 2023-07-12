@@ -33,28 +33,28 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('user/update/password', [UserController::class, 'updatePassword']);
     Route::post('user/update/pin', [UserController::class, 'updatePIN']);
 
-    Route::middleware(['admin-admingudang'])->group(function () {
+    Route::middleware(['role:ADMIN_GUDANG'])->group(function () {
         Route::post('surat-jalan', [SuratJalanController::class, 'create']);
         Route::put('surat-jalan/{surat_jalan_id}', [SuratJalanController::class, 'update']);
     });
-    Route::middleware(['admin-setmanager-supervisor-admingudang-logistic'])->group(function(){
+    Route::middleware(['role:SET_MANAGER,SUPERVISOR,ADMIN_GUDANG,LOGISTIC'])->group(function(){
         Route::get('surat-jalan/all', [SuratJalanController::class, 'getAllSuratJalanByUser']);
         Route::get('surat-jalan/active', [SuratJalanController::class, 'getSomeActiveSuratJalanByUser']);
         Route::get('surat-jalan/active/count', [SuratJalanController::class, 'getCountActiveSuratJalanByUser']);
         Route::get('surat-jalan/all/dalam-perjalanan', [SuratJalanController::class, 'getAllSuratJalanDalamPerjalananByUser']);
         Route::get('surat-jalan/{id}', [SuratJalanController::class, 'getSuratJalanById']);
     });
-    Route::middleware(['logistic'])->group(function(){
+    Route::middleware(['role:LOGISTIC'])->group(function(){
         Route::get('kendaraan/logistic', [KendaraanController::class, 'getKendaraanByLogistic']);
     });
-    Route::middleware(['admin-setmanager-supervisor'])->group(function(){
+    Route::middleware(['role:SET_MANAGER,SUPERVISOR'])->group(function(){
         Route::get('barang/tanggung-jawab', [BarangController::class, 'getBarangTanggungJawab']);
         Route::get('barang/tidak-habis-pakai', [BarangController::class, 'getBarangTidakHabisPakai']);
         Route::get('barang/habis-pakai', [BarangController::class, 'barangHabisPakai']);
         Route::get('barang/tidak-habis-pakai/tersedia', [BarangController::class, 'barangTidakHabisPakaiTersedia']);
         Route::get('proyek/yang-dikerjakan', [ProyekController::class, 'proyekYangDiKerjakan']);
     });
-    Route::middleware(['admin-purchasing-admingudang-logistic'])->group(function(){
+    Route::middleware(['role:PURCHASING,ADMIN_GUDANG,LOGISTIC'])->group(function(){
         Route::get('delivery-order/all', [DeliveryOrderController::class, 'getAllDeliveryOrderByUser']);
         Route::get('delivery-order/active', [DeliveryOrderController::class, 'getSomeActiveDeliveryOrderByUser']);
         Route::get('delivery-order/active/count', [DeliveryOrderController::class, 'getCountActiveDeliveryOrderByUser']);
