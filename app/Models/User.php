@@ -55,6 +55,22 @@ class User extends Authenticatable
     public function projectManager(){
         return $this->hasOne(ProjectManager::class);
     }
+    public function isAdmin()
+    {
+        if($this->role === 'ADMIN'){ 
+            return true; 
+        } else { 
+            return false; 
+        }
+    }
+    public function hasRole($role)
+    {
+        if($this->role === $role){ 
+            return true; 
+        } else { 
+            return false; 
+        }
+    }
     public function supervisor(){
         return $this->hasOne(Supervisor::class);
     }

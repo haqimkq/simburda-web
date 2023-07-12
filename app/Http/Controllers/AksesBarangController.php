@@ -19,8 +19,11 @@ class AksesBarangController extends Controller
         //
         $authUser = Auth::user();
         $menanganis = Menangani::where('user_id',$authUser->id)->get('id')->all();
+        $menanganis_id = array();
+        foreach($menanganis as $m){
+            array_push($menanganis_id,$m->id);
+        }
         $countUndefinedAkses = AksesBarang::countUndefinedAkses();
-
         if($authUser->role == 'SET_MANAGER'){
             $aksesBarangs = AksesBarang::
                 with(['peminjamanDetail.peminjaman.menangani.proyek' => function ($q){
@@ -29,7 +32,7 @@ class AksesBarangController extends Controller
                         $q->orderBy('created_at');
                 }, 'peminjamanDetail'])
                 ->whereHas(
-                    'peminjamanDetail.peminjaman.menangani', fn($q) => $q->whereIn('id', $menanganis->id)
+                    'peminjamanDetail.peminjaman.menangani', fn($q) => $q->whereIn('id', $menanganis_id)
                 )
                 // ->whereRelation('peminjamanDetail.peminjaman.menangani.user', 'id', $authUser->id)
                 ->filter(request(['search', 'filter', 'orderBy']))
@@ -81,48 +84,35 @@ class AksesBarangController extends Controller
      */
     public function store(Request $request)
     {
-        $authUserRole = Auth::user()->role;
-        if($authUserRole == 'ADMIN' && $request->akses == 'setujui'){
+        $authUser = Auth::user();
+        if($authUser->role == 'SET_MANAGER' && $request->akses == 'setujui'){
+            foreach($request->id as $idAksesBarang){
+                $aksesBarang=AksesBarang::find($idAksesBarang);
+                $aksesBarang->disetujui_sm = true;
+                $aksesBarang->save();
+            }
+        }
+        if($authUser->role == 'ADMIN_GUDANG' && $request->akses == 'setujui'){
             foreach($request->id as $idAksesBarang){
                 $aksesBarang=AksesBarang::find($idAksesBarang);
                 $aksesBarang->disetujui_admin = true;
-                $aksesBarang->disetujui_pm = true;
-                $aksesBarang->save();
-            }
-        }
-        if($authUserRole == 'SET_MANAGER' && $request->akses == 'setujui'){
-            foreach($request->id as $idAksesBarang){
-                $aksesBarang=AksesBarang::find($idAksesBarang);
-                $aksesBarang->disetujui_pm = true;
-                $aksesBarang->save();
-            }
-        }
-        if($authUserRole == 'ADMIN_GUDANG' && $request->akses == 'setujui'){
-            foreach($request->id as $idAksesBarang){
-                $aksesBarang=AksesBarang::find($idAksesBarang);
                 $aksesBarang->disetujui_admin = true;
                 $aksesBarang->save();
             }
         }
-        if($authUserRole == 'ADMIN' && $request->akses == 'tolak'){
+        if($authUser->role == 'SET_MANAGER' && $request->akses == 'tolak'){
             foreach($request->id as $idAksesBarang){
                 $aksesBarang=AksesBarang::find($idAksesBarang);
-                $aksesBarang->disetujui_admin = false;
-                $aksesBarang->disetujui_pm = false;
-                $aksesBarang->save();
-            }
-        }
-        if($authUserRole == 'SET_MANAGER' && $request->akses == 'tolak'){
-            foreach($request->id as $idAksesBarang){
-                $aksesBarang=AksesBarang::find($idAksesBarang);
-                $aksesBarang->disetujui_pm = false;
+                $aksesBarang->disetujui_sm = false;
+                $aksesBarang->set_manager_id = $authUser->id;
                 $aksesBarang->save();
             }   
         }
-        if($authUserRole == 'ADMIN_GUDANG' && $request->akses == 'tolak'){
+        if($authUser->role == 'ADMIN_GUDANG' && $request->akses == 'tolak'){
             foreach($request->id as $idAksesBarang){
                 $aksesBarang=AksesBarang::find($idAksesBarang);
-                $aksesBarang->disetujui_pm = false;
+                $aksesBarang->disetujui_admin = false;
+                $aksesBarang->admin_gudang_id = $authUser->id;
                 $aksesBarang->save();
             }
         }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\UserRole;
 use App\Models\AksesBarang;
 use App\Models\LogisticFirebase;
 use App\Models\ProvincesFirebase;
@@ -22,8 +23,14 @@ class ProyekController extends Controller
     public function index()
     {
         $countUndefinedAkses = AksesBarang::countUndefinedAkses();
-        $proyek = Proyek::filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
         $authUser = Auth::user();
+        if($authUser->role == UserRole::ADMIN->value || $authUser->role == UserRole::PROJECT_MANAGER->value){
+            $proyek = Proyek::filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
+        }else if($authUser->role == UserRole::SET_MANAGER->value){
+            $proyek = Proyek::whereRelation('users','users.id',$authUser->id)->orWhere('set_manager_id', $authUser->id)->filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
+        }else if($authUser->role == UserRole::SUPERVISOR->value){
+            $proyek = Proyek::whereRelation('users','users.id',$authUser->id)->filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
+        }
         return view('proyek.index',[
             'countUndefinedAkses' => $countUndefinedAkses,
             'proyeks' => $proyek,

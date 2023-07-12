@@ -80,13 +80,13 @@
 						<p class="">Project Manager</p>
 					</div>
 				</div>
-				@canany(['ADMIN', 'ADMIN_GUDANG', 'SET_MANAGER'])
+				@canany(['ADMIN_GUDANG', 'SET_MANAGER'])
 				<div class="flex items-center mt-3 ">
 					<input type="checkbox" id="selectAllProyek" class="cursor-pointer selectAllProyek rounded-md border-green border w-5 h-5 focus:ring-green checked:bg-green mr-2">
 					<label  for="selectAllProyek" class="cursor-pointer">Pilih Semua Proyek</label>
 				</div>
 				@endcanany
-				@canany(['ADMIN', 'ADMIN_GUDANG', 'SET_MANAGER'])
+				@canany(['ADMIN_GUDANG', 'SET_MANAGER'])
 				<form action="{{route('akses-barang.store')}}" method="POST" id="" class="formPemberianAkses">
 					@csrf
 				@endcanany
@@ -95,7 +95,7 @@
 					@if (!isset($nama_proyek_before) || $aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->nama_proyek != $nama_proyek_before)
 						@php $nama_proyek_before = $aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->nama_proyek @endphp
 						<div class="flex flex-col mt-5 lg:col-span-2 xl:col-span-3">
-							@canany(['ADMIN', 'ADMIN_GUDANG', 'SET_MANAGER'])
+							@canany(['ADMIN_GUDANG', 'SET_MANAGER'])
 							<div class="flex items-center">
 									@if (!$aksesbarang->disetujui_sm || !$aksesbarang->disetujui_admin)
 									<input id="{{$aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->id}}" type="checkbox" data-id-proyek-peminjaman="{{$aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->id}}" class="cursor-pointer selectProyek rounded-md border-green border w-5 h-5 focus:ring-green checked:bg-green mr-2">
@@ -121,8 +121,8 @@
 							</div>
 						</div>
 					@endif
-					<a href="{{ route('akses-barang.show', $aksesbarang->id) }}" class="p-2 group flex flex-col shadow-md shadow-gray-100 rounded-xl hover:rounded-b-none">
-						<div class="flex flex-col p-2">
+					{{-- <a href="{{ route('akses-barang.show', $aksesbarang->id) }}" class="p-2 group flex flex-col shadow-md shadow-gray-100 rounded-xl hover:rounded-b-none"> --}}
+						<div class="flex flex-col p-2 group shadow-md shadow-gray-100 rounded-xl hover:rounded-b-none">
 							<div class="flex items-center mb-2">
 									@if (isset($aksesbarang->disetujui_sm))
 										@if ($aksesbarang->disetujui_sm)
@@ -160,10 +160,10 @@
 									@endif
 								</div>
 								<div class="flex items-center">
-									@canany(['ADMIN', 'ADMIN_GUDANG', 'SET_MANAGER'])
-									@if (!$aksesbarang->disetujui_sm || !$aksesbarang->disetujui_admin)
-									<input type="checkbox" name="id[]" data-id-proyek-peminjaman="{{$aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->id}}" value="{{$aksesbarang->id}}" class="cursor-pointer rounded-md border-green border w-5 h-5 focus:ring-green checked:bg-green mr-2">
-									@endif
+									@canany(['ADMIN_GUDANG', 'SET_MANAGER'])
+										@if (($authUser->role=='SET_MANAGER' && !$aksesbarang->disetujui_sm) || ($authUser->role=='ADMIN_GUDANG' && !$aksesbarang->disetujui_admin))
+											<input type="checkbox" name="id[]" data-id-proyek-peminjaman="{{$aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->id}}" value="{{$aksesbarang->id}}" class="cursor-pointer rounded-md border-green border w-5 h-5 focus:ring-green checked:bg-green mr-2">
+										@endif
 									@endcanany
 									{{-- <img  src="{{asset($aksesbarang->peminjamanDetail->peminjaman->barang->gambar)}}" alt="" class="w-20 h-20 object-fit object-center rounded-md mr-2"> --}}
 									<div class="flex flex-col">
@@ -184,9 +184,9 @@
 									</div>
 								</div>
 						</div>
-					</a>
+					{{-- </a> --}}
 				@endforeach
-				@canany(['ADMIN', 'ADMIN_GUDANG', 'SET_MANAGER'])
+				@canany(['ADMIN_GUDANG', 'SET_MANAGER'])
 				<input type="radio" name="akses" id="setujui" value="setujui" class="hidden">
 				<input type="radio" name="akses" id="tolak" value="tolak" class="hidden">
 				@endcanany
@@ -202,7 +202,7 @@
 	<div class="mt-5 mb-20">
 		{{ $aksesBarangs->links() }}
 	</div>
-	@canany(['ADMIN', 'ADMIN_GUDANG', 'SET_MANAGER'])
+	@canany(['ADMIN_GUDANG', 'SET_MANAGER'])
 	<div class="z-50 bg-white shadow-md bottom-0 right-0 fixed m-4 p-4 items-end justify-end rounded-lg w-auto flex-col buttonAjukanAksesBarang hidden">
 		<p class="w-full mb-3 text-md font-semibold"><span class="jumlahBarang ">0</span> Akses Barang Dipilih</p>
 		<div class="flex">
@@ -222,7 +222,7 @@
 			$("#form").submit();
 		})
 
-		@canany(['ADMIN', 'ADMIN_GUDANG', 'SET_MANAGER'])
+		@canany(['ADMIN_GUDANG', 'SET_MANAGER'])
 		$('input:checkbox').change(function(){
 			var countCheckedValue = $('input[name="id[]"]:checked').length;
 			if(countCheckedValue>0){

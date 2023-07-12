@@ -74,4 +74,9 @@ class Proyek extends Model
     {
         if($date) return Date::dateToMillisecond($date);
     }
+    // public static function getMenanganiByUser($user_id){
+    //     $user = User::find($user_id);
+    //     self::whereRelation('users','id',$user_id);
+    //     return;
+    // }
 }
