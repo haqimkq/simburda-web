@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\DeliveryOrderController;
 use App\Http\Controllers\Firebase\LogisticController;
+use App\Http\Controllers\GudangController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KendaraanController;
@@ -83,6 +84,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('kendaraan/detail/{id}', 'show')->name('kendaraan.show');
         Route::get('kendaraan/edit/{id}', 'edit')->name('kendaraan.edit');
         Route::post('kendaraan/delete/{id}', 'destroy')->name('kendaraan.destroy');
+    });
+    Route::middleware(['admin-admingudang'])->controller(GudangController::class)->group(function () {
+        Route::get('gudang', 'index')->name('gudang');
+        Route::get('gudang/tambah', 'create')->name('gudang.create');
+        Route::post('gudang/store', 'store')->name('gudang.store');
+        Route::get('gudang/detail/{id}', 'show')->name('gudang.show');
+        Route::get('gudang/edit/{id}', 'edit')->name('gudang.edit');
+        Route::post('gudang/delete/{id}', 'destroy')->name('gudang.destroy');
     });
     Route::middleware(['admin-setmanager'])->controller(ProyekController::class)->group(function () {
         Route::get('proyek', 'index')->name('proyek');

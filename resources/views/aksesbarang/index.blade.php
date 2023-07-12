@@ -178,7 +178,9 @@
 											</svg>
 											<p class="font-normal line-clamp-1 text-sm">{{ucfirst($aksesbarang->peminjamanDetail->peminjaman->menangani->user->nama)}} </p>
 										</div>
-										<p class="mt-2 text-xs font-normal">{{ \App\Helpers\Date::parseMilliseconds($aksesbarang->peminjamanDetail->peminjaman->tgl_peminjaman) }} s/d {{ \App\Helpers\Date::parseMilliseconds($aksesbarang->peminjamanDetail->peminjaman->tgl_berakhir) }}</p>
+										<p class="mt-2 text-xs font-normal">{{ \App\Helpers\Date::parseMilliseconds($aksesbarang->peminjamanDetail->peminjaman->tgl_peminjaman) }}</p>
+										<p class="mt-2 text-xs font-normal">{{ \App\Helpers\Date::parseMilliseconds($aksesbarang->peminjamanDetail->peminjaman->tgl_berakhir) }}</p>
+										<p class="mt-2 text-xs font-normal">{{ \App\Helpers\Date::diffInDaysMillis($aksesbarang->peminjamanDetail->peminjaman->tgl_peminjaman,$aksesbarang->peminjamanDetail->peminjaman->tgl_berakhir)}} Hari</p>
 									</div>
 								</div>
 						</div>

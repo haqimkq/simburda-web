@@ -12,10 +12,14 @@ class Date{
         ->setTimezone(session('timezone'))
         ->locale('id')->isoFormat($format);
   }
-  public static function parseMilliseconds($milli, $format='dddd, D MMM YYYY H:mm'){
+  public static function parseMilliseconds($milli, $format='dddd, D MMM YYYY H:mm', $showHours = true){
+    $format = ($showHours) ? 'dddd, D MMM YYYY' : 'dddd, D MMM YYYY H:mm';
     return Carbon::createFromTimestampMs($milli)
     ->setTimezone(session('timezone'))
     ->locale('id')->IsoFormat($format);
+  }
+  public static function diffInDaysMillis($firstMillis, $secondMillis){
+    return Carbon::parse(Carbon::createFromTimestampMs($firstMillis))->diffInDays(Carbon::parse(Carbon::createFromTimestampMs($secondMillis)));
   }
   public static function dateToMillisecond($date){
     return Carbon::parse($date)->getTimestampMs();
