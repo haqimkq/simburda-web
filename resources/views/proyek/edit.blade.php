@@ -22,28 +22,27 @@
 			<li aria-current="page">
 				<div class="flex items-center">
 					<svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-					<span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Tambah</span>
+					<span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Edit</span>
 				</div>
 			</li>
 		</ol>
 	</nav>
-<h1 class="text-lg font-bold uppercase my-6 w-full text-center">Tambah Proyek</h1>
-	<form method="POST" action="{{ route('proyek.store') }}">
+<h1 class="text-lg font-bold uppercase my-6 w-full text-center">Edit Proyek</h1>
+	<form method="POST" action="{{ route('proyek.update', $proyek->id) }}" enctype="multipart/form-data">
 		@csrf
 		<div class="mb-6 grid gap-6 md:grid-cols-2 w-[80vw]">
 			<div>
-				<label for="nama" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Nama Proyek</label>
-				<input type="text" id="nama" name="nama_proyek"
-					value="{{ old('nama') }}"
+				<label for="nama_proyek" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Nama Proyek</label>
+				<input type="text" id="nama_proyek" name="nama_proyek"
+					value="{{ old('nama_proyek',$proyek->nama_proyek) }}"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
 					placeholder="Masukkan Nama Proyek" required>
-					@error('nama') @include('shared.errorText') @enderror
+					@error('nama_proyek') @include('shared.errorText') @enderror
 			</div>
 			<div class="@can('admin') block @elsecan('project-manager') hidden @endcan">
 				<label for="proyek_manager_id" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Set Manager</label>
-				<select id="searchProyekManager" name="set_manager_id"
-					class="searchProyekManager block w-full"
-					required></select>
+				<select id="searchSetManager" name="set_manager_id"
+					class="searchSetManager block w-full"></select>
 				@error('proyek_manager_id') @include('shared.errorText') @enderror
 			</div>
 			<div class="flex flex-col w-full">
@@ -52,7 +51,7 @@
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900  focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark: dark:focus:ring-green"
 					>
 					@foreach ($provinces as $province)
-						<option value="{{ $province }}">{{ $province }}</option>
+						<option value="{{ $province }}" {{ ($province == $proyek->provinsi) ? 'selected' : '' }}>{{ $province }}</option>
 					@endforeach
 				</select>
 			</div>
@@ -61,6 +60,7 @@
 				<select name="kota" id='city'
 					class="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900  focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark: dark:focus:ring-green"
 					>
+					<option value="{{ $proyek->kota }}" selected>{{ $proyek->kota }}</option>
 				</select>
 			</div>
 			<div>
@@ -70,7 +70,7 @@
 				</label>
 				<input type="number" id="latitude" name="latitude" step="any"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
-					placeholder="-6.2501422" required value="{{ old('latitude') }}">
+					placeholder="-6.2501422" required value="{{ old('latitude',$proyek->latitude) }}">
 				@error('latitude') @include('shared.errorText') @enderror
 			</div>
 			<div>
@@ -78,7 +78,7 @@
 					<a class="inline-block cursor-pointer text-green hover:text-green font-normal rounded-lg text-sm" type="button" data-modal-toggle="latitude-longitde">
   				Cara Mengambil Longitude</a>
 				</label>
-				<input type="number" id="longitude" step="any" value="{{ old('longitude') }}" name="longitude"
+				<input type="number" id="longitude" step="any" value="{{ old('longitude', $proyek->longitude) }}" name="longitude"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
 					placeholder="106.8543034" required>
 				@error('longitude') @include('shared.errorText') @enderror
@@ -87,9 +87,10 @@
 				<label for="alamat" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Alamat Proyek</label>
 				<textarea name="alamat" id="alamat" @can('admin') rows="3" @elsecan('project-manager') rows="1" @endcan
 				 class="block w-full resize-y min-h-[3em] rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
-				 placeholder="Masukkan Alamat Proyek" required>{{ old('alamat') }}</textarea>
+				 placeholder="Masukkan Alamat Proyek" required>{{ old('alamat',$proyek->alamat) }}</textarea>
 				 @error('alamat') @include('shared.errorText') @enderror
 			</div>
+			<input type="hidden" value="{{ $proyek->gambar }}">
 			<div class="col-span-2">
 				<label class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300" for="gambar">Gambar</label>
 				<div class="flex items-center flex-col md:flex-row">
@@ -200,16 +201,16 @@
 
 @push('prepend-script')
 	<script>
-		$('#searchProyekManager').select2({
+		$('#searchSetManager').select2({
 				width: null,
-        placeholder: 'Pilih Proyek Manager',
+        placeholder: "{{ $proyek->setManager->nama }}",
 				language: {
 					inputTooShort: function() {
 						return 'Masukkan 1 atau lebih karakter';
 					},
 					formatNoMatches: function () { return "Tidak ditemukan"; },
 					noResults: function(){
-        		return "Proyek Manager tidak ditemukan";
+        		return "Set tidak ditemukan";
        		},
 					searching: function(){
         		return "Sedang mencari...";

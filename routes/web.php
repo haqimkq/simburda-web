@@ -63,12 +63,17 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::middleware((['admin-setmanager-supervisor-admingudang']))->controller(PerusahaanController::class)->group(function (){
         Route::get('perusahaan', 'index')->name('perusahaan');
+<<<<<<< HEAD
         Route::get('perusahaan/tambah', 'create')->name('perusahaan.create');
         Route::post('perusahaan/store', 'store')->name('perusahaan.store');
         Route::get('perusahaan/edit/{id}', 'edit')->name('perusahaan.edit');
         Route::post('perusahaan/update/{id}', 'update')->name('perusahaan.update');
         Route::get('perusahaan/detail/{id}', 'show')->name('perusahaan.show');
         Route::post('perusahaan/delete/{id}', 'destroy')->name('perusahaan.destroy');
+=======
+        Route::get('perusahaan', 'create')->name('perusahaan.create');
+        
+>>>>>>> d39d210d890a0685000ebfa97f5b00bf1b51e0bb
     });
     Route::middleware(['admin'])->controller(PenggunaController::class)->group(function () {
         Route::get('pengguna', 'index')->name('pengguna');
@@ -110,8 +115,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('proyek/tambah', 'create')->name('proyek.create');
         Route::post('proyek/store', 'store')->name('proyek.store');
         Route::get('proyek/detail/{id}', 'show')->name('proyek.show');
-        Route::get('proyek/edit/{id}', 'edit')->name('proyek.edit');
+        Route::get('proyek/edit/{proyek}', 'edit')->name('proyek.edit');
         Route::post('proyek/delete/{id}', 'destroy')->name('proyek.destroy');
+        Route::post('proyek/update/{id}', 'update')->name('proyek.update');
         Route::get('selectSetManager', 'selectSetManager')->name('selectSetManager');
     });
     Route::middleware(['admin-purchasing-admingudang-logistic'])->controller(DeliveryOrderController::class)->group(function () {

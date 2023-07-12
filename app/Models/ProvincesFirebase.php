@@ -13,10 +13,10 @@ class ProvincesFirebase extends Model
 
     public static $provinceFirebase = 'provinsi/';
     public static function getProvince(){
-        self::getDatabase()->getReference(self::$provinceFirebase)->getValue();
+        return self::getDatabase()->getReference(self::$provinceFirebase)->getValue();
     }
-    public function getCityByProvince(Request $request){
-        self::getDatabase()->getReference(self::$provinceFirebase.$request->provinsi)->getValue();
+    public static function getCityByProvince(Request $request){
+        return self::getDatabase()->getReference(self::$provinceFirebase.$request->provinsi)->getValue();
     }
     public static function getDatabase(){
         $firebase = (new Factory)
