@@ -25,11 +25,16 @@ class Menangani extends Model
     public function proyek(){
         return $this->belongsTo(Proyek::class, 'proyek_id');
     }
+    public function peminjaman(){
+        return $this->hasMany(Peminjaman::class);
+    }
+    public function pembelian(){
+        return $this->hasMany(Pembelian::class);
+    }
     public function getCreatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);
     }
-
     public function getUpdatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);

@@ -17,8 +17,8 @@ class Pembelian extends Model
         'deleted_at',
     ];
 
-    public function mengajukan(){
-        return $this->belongsTo(User::class,'supervisor_id');
+    public function menangani(){
+        return $this->belongsTo(Menangani::class,'menangani_id');
     }
 
     public function menyetujui(){
