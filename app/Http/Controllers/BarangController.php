@@ -124,15 +124,10 @@ class BarangController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Barang $barang)
     {
-        $barang = Barang::find($id);
-        // $barangDalamPinjaman = Meminjam::with('barang','user','proyek', 'suratJalan','proyek.proyekManager')
-        //     ->where('barang_id', $barang->id)
-        //     ->where('dipinjam', 1)
-        //     ->orderBy('tgl_berakhir', 'DESC')
-        //     // ->whereHas('proyek', fn($q) => $q->where('selesai',1))
-        //     ->get();
+        
+        // $barangDalamPinjaman = 
         // $historyPeminjamanBarang = Meminjam::with('barang','user','proyek', 'suratJalan','proyek.proyekManager')
         //     ->where('barang_id', $barang->id)
         //     ->where('dipinjam', 1)
@@ -140,11 +135,11 @@ class BarangController extends Controller
         //     // ->whereHas('proyek', fn($q) => $q->where('selesai',1))
         //     ->paginate(2)->withQueryString();
 
-        // return view('barang.detail',[
-        //     'barang' => $barang,
-        //     'barangPinjaman' => $barangDalamPinjaman,
-        //     'historyPeminjamanBarang' => $historyPeminjamanBarang,
-        // ]);
+        return view('barang.detail',[
+            'barang' => $barang,
+            // 'barangPinjaman' => $barangDalamPinjaman,
+            // 'historyPeminjamanBarang' => $historyPeminjamanBarang,
+        ]);
     }
 
     public function showNamaBarang($nama)

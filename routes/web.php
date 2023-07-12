@@ -54,7 +54,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('barang', 'index')->name('barang');
         Route::get('barang/tambah', 'create')->name('barang.create');
         Route::post('barang/store', 'store')->name('barang.store');
-        Route::get('barang/detail/{id}', 'show')->name('barang.show');
+        Route::get('barang/detail/{barang}', 'show')->name('barang.show');
         Route::post('barang/tambah-seri-baru/{nama}', 'tambahSeriBaru')->name('barang.tambahSeriBaru');
         Route::get('barang/seri/{nama}', 'showNamaBarang')->name('barang.seri');
         Route::get('barang/edit/{barang}', 'edit')->name('barang.edit');

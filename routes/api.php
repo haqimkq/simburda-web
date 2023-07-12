@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\Api\BarangController;
 use App\Http\Controllers\Api\DeliveryOrderController;
 use App\Http\Controllers\Api\KendaraanController;
 use App\Http\Controllers\Api\ProvinceController;
+use App\Http\Controllers\Api\ProyekController;
 use App\Http\Controllers\Api\SuratJalanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
+use App\Models\Proyek;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +30,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', [UserController::class, 'logout']);
     Route::get('currentAccessToken', [UserController::class, 'currentAccessToken']);
     Route::get('user/ttd', [UserController::class, 'getTtd']);
+    Route::post('user/update/password', [UserController::class, 'updatePassword']);
+    Route::post('user/update/pin', [UserController::class, 'updatePIN']);
 
     Route::middleware(['admin-admingudang'])->group(function () {
         Route::post('surat-jalan', [SuratJalanController::class, 'create']);
@@ -42,6 +47,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['logistic'])->group(function(){
         Route::get('kendaraan/logistic', [KendaraanController::class, 'getKendaraanByLogistic']);
     });
+    Route::middleware(['admin-setmanager-supervisor'])->group(function(){
+        Route::get('barang/tanggung-jawab', [BarangController::class, 'getBarangTanggungJawab']);
+        Route::get('barang/tidak-habis-pakai', [BarangController::class, 'getBarangTidakHabisPakai']);
+        Route::get('barang/habis-pakai', [BarangController::class, 'barangHabisPakai']);
+        Route::get('barang/tidak-habis-pakai/tersedia', [BarangController::class, 'barangTidakHabisPakaiTersedia']);
+        Route::get('proyek/yang-dikerjakan', [ProyekController::class, 'proyekYangDiKerjakan']);
+    });
     Route::middleware(['admin-purchasing-admingudang-logistic'])->group(function(){
         Route::get('delivery-order/all', [DeliveryOrderController::class, 'getAllDeliveryOrderByUser']);
         Route::get('delivery-order/active', [DeliveryOrderController::class, 'getSomeActiveDeliveryOrderByUser']);
@@ -52,6 +64,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 Route::post('login', [UserController::class, 'login']);
+Route::post('loginPIN', [UserController::class, 'loginPIN']);
 Route::post('forget-password',[UserController::class, 'forgetPassword']);
 Route::post('register', [UserController::class, 'register']);
 

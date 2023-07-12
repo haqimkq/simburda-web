@@ -43,7 +43,7 @@
 			</p>
 		</div>
 	
-	@if (!$historyPeminjamanBarang->isEmpty())
+	{{-- @if (!$historyPeminjamanBarang->isEmpty())
 	<div class="flex items-center align-content-center my-5">
 		<h1 class="text-[1.5em] font-medium">
 			Riwayat Penggunaan Barang
@@ -94,5 +94,5 @@
 	<div class="mt-5">
 		{{ $historyPeminjamanBarang->links() }}
 	</div>
-	@endif
+	@endif --}}
 @endsection
