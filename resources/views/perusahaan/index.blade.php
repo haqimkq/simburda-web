@@ -29,15 +29,6 @@
             </div>
         </div>
         @if (!$perusahaans->isEmpty())
-            @if (request('search'))
-                <div class="flex items-center">
-                    <button
-                        class="bg-red-600 py-1 px-2 mb-2 mr-2 text-center font-normal text-sm delete_search text-white rounded-md"
-                        onclick="">Hapus pencarian</button>
-                    <h1 class="mb-2 text-center font-medium text-md">Hasil Pencarian Perusahaan {{ request('search') }}
-                    </h1>
-                </div>
-            @endif
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
                 @foreach ($perusahaans as $perusahaan)
                     <div class="group flex flex-col shadow-md shadow-gray-100 rounded-xl hover:rounded-b-none">
