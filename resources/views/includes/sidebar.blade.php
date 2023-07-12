@@ -44,7 +44,7 @@
 			</a>
 			@endcanany
 			@canany(['ADMIN','PURCHASING'])
-				<a href="{{ route('perusahaan') }}" class="sidebar-link text-sm {{ request()->is('perusahaan*') ? 'bg-primary-light' : '' }}">
+				<a href="/perusahaan" class="sidebar-link text-sm {{ request()->is('perusahaan*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Perusahaan</span>
 				</a>
 			@endcanany
