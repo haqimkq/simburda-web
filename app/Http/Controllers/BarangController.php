@@ -57,7 +57,6 @@ class BarangController extends Controller
     public function store(Request $request)
     {
         if($request->jenis == "TIDAK_HABIS_PAKAI"){
-            dd($request);
             $validate = $request->validate([
                 'nama' => 'required',
                 'jenis' => 'required',
@@ -116,7 +115,7 @@ class BarangController extends Controller
             Storage::disk('public')->put($output_file, $image);
             Barang::where('id', $barang->id)->update(['qrcode' => $output_file]);
         }
-        return redirect()->back()->with('createSeriBaruSuccess', 'Berhasil Menambahkan Seri Barang #'.$barang->nomor_seri.' '.$barang->nama);   
+        return redirect()->back()->with('createBarangSuccess', 'Berhasil Menambahkan Barang'.$barang->nama);   
     }
 
     /**
@@ -168,9 +167,17 @@ class BarangController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Barang $barang)
     {
-        //
+        if($barang->jenis == "TIDAK_HABIS_PAKAI"){
+            $detail = BarangTidakHabisPakai::where('barang_id', $barang->id)->first();
+        }else{
+            $detail = BarangHabisPakai::where('barang_id', $barang->id)->first();
+        }
+        return view('barang.edit',[
+            'gudangs' => Gudang::all(),
+            'barang' => $detail
+        ]);
     }
 
     /**
@@ -182,7 +189,55 @@ class BarangController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if($request->jenis == "TIDAK_HABIS_PAKAI"){
+            $validate = $request->validate([
+                'nama' => 'required',
+                'jenis' => 'required',
+                'kondisi' => 'required',
+                'gudang_id' => 'required',
+                'merk' => 'required',
+                'detail' => 'required',
+                'keterangan' => 'nullable',
+                'gambar' => 'nullable',
+            ]);
+        }else{
+            $validate = $request->validate([
+                'nama' => 'required',
+                'jenis' => 'required',
+                'gudang_id' => 'required',
+                'merk' => 'required',
+                'detail' => 'required',
+                'jumlah' => 'required',
+                'ukuran' => 'required',
+                'satuan' => 'required',
+                'gambar' => 'nullable',
+            ]);
+        }
+        if($request->file('gambar')){
+            if($request->oldImage){
+                Storage::delete($request->oldImage);
+            }
+            $validate['gambar'] = $request->file('gambar')->store('assets/barang', 'public');
+        }
+
+        if($request->jenis == "HABIS_PAKAI"){
+            $data['jumlah'] = $validate['jumlah'];
+            $data['ukuran'] = $validate['ukuran'];
+            $data['satuan'] = $validate['satuan'];
+            BarangHabisPakai::where('barang_id',$id)->update($data);
+        }else{
+            $dataTidakHabis['kondisi'] = $validate['kondisi'];
+            $dataTidakHabis['keterangan'] = $validate['keterangan'];
+            BarangTidakHabisPakai::where('barang_id',$id)->update($dataTidakHabis);
+        }
+        unset($validate['jumlah']);
+        unset($validate['ukuran']);
+        unset($validate['satuan']);
+        unset($validate['kondisi']);
+        unset($validate['keterangan']);
+        Barang::where('id',$id)->update($validate);
+
+        return redirect()->route('barang')->with('createBarangSuccess', 'Berhasil Merubah Barang '.$request->nama); 
     }
 
     /**
@@ -193,7 +248,18 @@ class BarangController extends Controller
      */
     public function destroy($id)
     {
+        
         $barang = Barang::find($id);
+        if($barang->jenis == "TIDAK_HABIS_PAKAI"){
+            $detail = BarangTidakHabisPakai::where('barang_id', $barang->id)->first();
+            BarangTidakHabisPakai::destroy($detail->id);
+        }else{
+            $detail = BarangHabisPakai::where('barang_id', $barang->id)->first();
+            BarangHabisPakai::destroy($detail->id);
+        }
+        if($barang->gambar){
+            Storage::delete($barang->gambar);
+        }
         Barang::destroy($id);
         return redirect('/barang')->with('deleteBarangSuccess','Berhasil Menghapus Barang ('.$barang->nama.')');
     }

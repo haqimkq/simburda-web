@@ -72,7 +72,7 @@
 				<div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
 					@foreach ($barangs as $barang)
 					<div class="relative group flex flex-col rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
-						<a href="{{ route('barang.seri', $barang->nama) }}" class="flex p-2">
+						<a href="" class="flex p-2">
 							<div class="mr-2 h-[6em] w-[6em] rounded-xl bg-cover md:h-[5em] md:w-[5em] lg:h-[7em] lg:w-[7em]"
 								style="background-image: url('{{ asset($barang->gambar) }}')"></div>
 							<div class="flex flex-col">

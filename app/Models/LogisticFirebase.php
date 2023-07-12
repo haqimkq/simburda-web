@@ -10,7 +10,7 @@ use Kreait\Firebase\Factory;
 class LogisticFirebase
 {
     public static $logisticFirebase = 'logistic/';
-    public function getData(Request $request){
+    public static function getData(Request $request){
         self::getDatabase()->getReference(self::$logisticFirebase.$request->user_id)->getValue();
     }
     public static function setData(Request $request){

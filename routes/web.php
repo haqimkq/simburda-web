@@ -56,8 +56,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('barang/detail/{id}', 'show')->name('barang.show');
         Route::post('barang/tambah-seri-baru/{nama}', 'tambahSeriBaru')->name('barang.tambahSeriBaru');
         Route::get('barang/seri/{nama}', 'showNamaBarang')->name('barang.seri');
-        Route::get('barang/edit/{id}', 'edit')->name('barang.edit');
+        Route::get('barang/edit/{barang}', 'edit')->name('barang.edit');
         Route::post('barang/delete/{id}', 'destroy')->name('barang.destroy');
+        Route::post('barang/update/{id}', 'update')->name('barang.update');
     });
     Route::middleware(['admin'])->controller(PenggunaController::class)->group(function () {
         Route::get('pengguna', 'index')->name('pengguna');
@@ -82,8 +83,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('kendaraan/tambah', 'create')->name('kendaraan.create');
         Route::post('kendaraan/store', 'store')->name('kendaraan.store');
         Route::get('kendaraan/detail/{id}', 'show')->name('kendaraan.show');
-        Route::get('kendaraan/edit/{id}', 'edit')->name('kendaraan.edit');
-        Route::post('kendaraan/delete/{id}', 'destroy')->name('kendaraan.destroy');
+        Route::get('kendaraan/edit/{kendaraan}', 'edit')->name('kendaraan.edit');
+        Route::post('kendaraan/delete/{kendaraan}', 'destroy')->name('kendaraan.destroy');
+        Route::post('kendaraan/update/{kendaraan}', 'update')->name('kendaraan.update');
     });
     Route::middleware(['admin-admingudang'])->controller(GudangController::class)->group(function () {
         Route::get('gudang', 'index')->name('gudang');

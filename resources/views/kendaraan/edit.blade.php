@@ -17,18 +17,18 @@
 			<li aria-current="page">
 				<div class="flex items-center">
 					<svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-					<span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Tambah</span>
+					<span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Edit</span>
 				</div>
 			</li>
 		</ol>
 	</nav>
-<h1 class="text-lg font-bold uppercase my-6 w-full text-center">Tambah Kendaraan</h1>
-	<form method="POST" action="{{ route('kendaraan.store') }}" enctype="multipart/form-data">
+<h1 class="text-lg font-bold uppercase my-6 w-full text-center">Edit Kendaraan</h1>
+	<form method="POST" action="{{ route('kendaraan.update',$kendaraan->id) }}" enctype="multipart/form-data">
 		@csrf
 		<div class="mb-6 grid gap-6 md:grid-cols-2 w-[80vw]">
 			<div id="merk-field">
 				<label for="merk" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Merk</label>
-				<input type="text" id="merk" min="1" name="merk" value="{{ old('merk') }}"
+				<input type="text" id="merk" min="1" name="merk" value="{{ old('merk',$kendaraan->merk) }}"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 					placeholder="Masukkan Merk Kendaraan" >
 				@error('merk') @include('shared.errorText') @enderror
@@ -38,13 +38,13 @@
 				<select id="jenis" name="jenis"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 					required>
-					<option disabled selected value="{{ old('jenis') }}">Pilih Jenis Kendaraan</option>
-					<option value="MOTOR">Motor</option>
-					<option value="MOBIL">Mobil</option>
-					<option value="PICKUP">Pickup</option>
-					<option value="TRUCK">Truck</option>
-					<option value="TRONTON">Tronton</option>
-					<option value="MINIBUS">Minibus</option>
+					<option disabled>Pilih Jenis Kendaraan</option>
+					<option value="MOTOR" {{ ($kendaraan->jenis == "MOTOR") ? 'selected' : '' }}>Motor</option>
+					<option value="MOBIL" {{ ($kendaraan->jenis == "MOBIL") ? 'selected' : '' }}>Mobil</option>
+					<option value="PICKUP" {{ ($kendaraan->jenis == "PICKUP") ? 'selected' : '' }}>Pickup</option>
+					<option value="TRUCK" {{ ($kendaraan->jenis == "TRUCK") ? 'selected' : '' }}>Truck</option>
+					<option value="TRONTON" {{ ($kendaraan->jenis == "TRONTON") ? 'selected' : '' }}>Tronton</option>
+					<option value="MINIBUS" {{ ($kendaraan->jenis == "MINIBUS") ? 'selected' : '' }}>Minibus</option>
 				</select>
 				@error('jenis') @include('shared.errorText') @enderror
 			</div>
@@ -55,7 +55,7 @@
 					>
 					<option disabled selected value="{{ old('gudang') }}">Pilih Gudang</option>
 					@foreach ($gudangs as $gudang)
-						<option value="{{ $gudang->id }}">{{ $gudang->nama }}</option>
+						<option value="{{ $gudang->id }}" {{ ($kendaraan->gudang_id == $gudang->id) ? 'selected' : '' }}>{{ $gudang->nama }}</option>
 					@endforeach
 				</select>
 				@error('gudang') @include('shared.errorText') @enderror
@@ -64,9 +64,10 @@
 				<label for="plat_nomor" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Plat Nomor</label>
 				<textarea name="plat_nomor" id="plat_nomor" rows="1"
 				 class="block w-full resize-y min-h-[3em] rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-				 placeholder="Masukkan Plat Nomor Kendaraan" >{{ old('plat_nomor') }}</textarea>
+				 placeholder="Masukkan Plat Nomor Kendaraan" >{{ old('plat_nomor', $kendaraan->plat_nomor) }}</textarea>
 				 @error('plat_nomor') @include('shared.errorText') @enderror
 			</div>
+			<input type="hidden" name="oldImage" value="{{ $kendaraan->gambar }}">
 			<div class="col-span-2">
 				<label class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300" for="gambar">Gambar</label>
 				<div class="flex items-center flex-col md:flex-row">

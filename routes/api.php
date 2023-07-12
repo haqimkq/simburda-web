@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\DeliveryOrderController;
 use App\Http\Controllers\Api\KendaraanController;
+use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\SuratJalanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\UserController;
@@ -53,6 +54,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::post('login', [UserController::class, 'login']);
 Route::post('forget-password',[UserController::class, 'forgetPassword']);
 Route::post('register', [UserController::class, 'register']);
+
+Route::get('province', [ProvinceController::class, 'getProvince']);
 
 
 
