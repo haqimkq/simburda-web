@@ -21,6 +21,7 @@ return new class extends Migration
         });
         Schema::table('penggunaan_pps', function (Blueprint $table) {
             $table->foreignUuid('penggunaan_asal_id')->constrained('penggunaans')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('ttd_tgg_jwb')->constrained('ttd_verifications')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('penggunaan_id')->constrained('penggunaans')->onUpdate('cascade')->onDelete('cascade');
         });
     }

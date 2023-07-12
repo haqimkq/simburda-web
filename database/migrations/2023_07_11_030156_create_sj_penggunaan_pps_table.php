@@ -16,12 +16,12 @@ return new class extends Migration
     {
         Schema::create('sj_penggunaan_pps', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('ttd_supervisor_peminjam')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
         Schema::table('sj_penggunaan_pps', function (Blueprint $table) {
             $table->foreignUuid('surat_jalan_id')->constrained('surat_jalans')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('ttd_tgg_jwb')->constrained('ttd_verifications')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('penggunaan_id')->constrained('penggunaan_pps')->onUpdate('cascade')->onDelete('cascade');
         });
     }

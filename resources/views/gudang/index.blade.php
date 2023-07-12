@@ -71,8 +71,9 @@
                                 </span>
                                 <p class="mb-2 font-medium line-clamp-1 md:line-clamp-2 xl:line-clamp-3">{{ $gudang->nama }}</p>
                                 <p class="font-normal text-sm mb-2 line-clamp-1 md:line-clamp-2 xl:line-clamp-3 text-gray-700">{{ucfirst($gudang->alamat)}}</p>
-                                @if (\App\Models\Gudang::getActiveDeliveryOrder($gudang->id)!=0)
-                                    <div class="flex items-center md:flex-col lg:flex-row">
+                                <div class="flex flex-wrap">
+																	@if (\App\Models\Gudang::getActiveDeliveryOrder($gudang->id)!=0)
+                                    <div class="flex items-center md:flex-col lg:flex-row mr-2">
                                         <p class="border-green-600 mb-2 self-start rounded-full border px-2 py-1 text-xs text-gray-600 bg-green-200">
                                             {{ \App\Models\Gudang::getActiveDeliveryOrder($gudang->id) }}
                                             DO Aktif
@@ -80,7 +81,7 @@
                                     </div>
                                 @endif
 																@if (\App\Models\Gudang::getActiveSjGp($gudang->id)!=0)
-                                    <div class="flex items-center md:flex-col lg:flex-row">
+                                    <div class="flex items-center md:flex-col lg:flex-row mr-2">
                                         <p class="border-green-600 mb-2 self-start rounded-full border px-2 py-1 text-xs text-gray-600 bg-green-200">
                                             {{ \App\Models\Gudang::getActiveSjGp($gudang->id) }}
                                             SJGP Aktif
@@ -88,13 +89,14 @@
                                     </div>
                                 @endif
 																@if (\App\Models\Gudang::getActiveSjPg($gudang->id)!=0)
-                                    <div class="flex items-center md:flex-col lg:flex-row">
+                                    <div class="flex items-center md:flex-col lg:flex-row mr-2">
                                         <p class="border-green-600 mb-2 self-start rounded-full border px-2 py-1 text-xs text-gray-600 bg-green-200">
                                             {{ \App\Models\Gudang::getActiveSjPg($gudang->id) }}
                                             SJPG Aktif
                                         </p>
                                     </div>
                                 @endif
+																</div>
                             </div>
                         </a>
                         <div class="relative hidden justify-center items-center group-hover:flex w-full h-full">

@@ -25,11 +25,11 @@ class SjPenggunaanPp extends Model
     public function suratJalan(){
         return $this->belongsTo(SuratJalan::class);
     }
-    public function peminjamanPp(){
-        return $this->belongsTo(PeminjamanPp::class, 'peminjaman_id');
+    public function penggunaanPp(){
+        return $this->belongsTo(PenggunaanPp::class, 'penggunaan_id');
     }
-    public function ttdSupervisorPeminjam(){
-        return $this->belongsTo(TtdVerification::class, 'ttd_supervisor_peminjam');
+    public function ttdPenanggungJawab(){
+        return $this->belongsTo(TtdVerification::class, 'ttd_tgg_jwb');
     }
     public function getCreatedAtAttribute($date)
     {
@@ -46,25 +46,25 @@ class SjPenggunaanPp extends Model
             $request->validate([
                 'surat_jalan_id' => 'required|exists:surat_jalans,id',
             ]);
-            $old_peminjaman_pp_id = SuratJalan::find($request->surat_jalan_id)->sjPengirimanPp->peminjamanPp->id;
-            if($old_peminjaman_pp_id!=$request->peminjaman_id) self::validate($request);
+            $old_penggunaan_pp_id = SuratJalan::find($request->surat_jalan_id)->sjPengirimanPp->penggunaanPp->id;
+            if($old_penggunaan_pp_id!=$request->penggunaan_id) self::validate($request);
         }else{
             self::validate($request);
         }
     }
     public static function validate(Request $request){
         $request->validate([
-            'peminjaman_id' => [
+            'penggunaan_id' => [
                 'required',
-                Rule::unique('sj_pengiriman_pps', 'peminjaman_id'),
-                Rule::exists('peminjaman_pps', 'id')
+                Rule::unique('sj_pengiriman_pps', 'penggunaan_id'),
+                Rule::exists('penggunaan_pps', 'id')
             ]
         ]);
-        $request->merge(['peminjamanId' => PeminjamanPp::find($request->peminjaman_id)->peminjaman->id]);
+        $request->merge(['penggunaanId' => PenggunaanPp::find($request->penggunaan_id)->penggunaan->id]);
         $request->validate([
-            'peminjamanId' => [
+            'penggunaanId' => [
                 'required',
-                Rule::exists('peminjamans', 'id')
+                Rule::exists('penggunaans', 'id')
                 ->where('status', PenggunaanStatus::MENUNGGU_SURAT_JALAN->value)
                 ->where('tipe', PenggunaanTipe::PROYEK_PROYEK->value),
             ]
@@ -74,26 +74,26 @@ class SjPenggunaanPp extends Model
         self::validateCreate($request);
         self::updateKodeSurat($request);
         SuratJalan::setTtdAdmin($request->surat_jalan_id, $request->admin_gudang_id);
-        Peminjaman::updateStatus($request->peminjamanId, PenggunaanStatus::MENUNGGU_PENGIRIMAN->value);
+        Penggunaan::updateStatus($request->penggunaanId, PenggunaanStatus::MENUNGGU_PENGIRIMAN->value);
         return self::create([
-            'peminjaman_id' => $request->peminjaman_id,
+            'penggunaan_id' => $request->penggunaan_id,
             'surat_jalan_id' => $request->surat_jalan_id,
         ]);
     }
     public static function updateData(Request $request){
-        $old_peminjaman_id = SuratJalan::find($request->surat_jalan_id)->sjPengirimanPp->peminjamanPp->peminjaman->id;
-        if($old_peminjaman_id!=$request->peminjamanId){
+        $old_penggunaan_id = SuratJalan::find($request->surat_jalan_id)->sjPengirimanPp->penggunaanPp->penggunaan->id;
+        if($old_penggunaan_id!=$request->penggunaanId){
             self::updateKodeSurat($request);
-            Peminjaman::updateStatus($old_peminjaman_id, PenggunaanStatus::MENUNGGU_SURAT_JALAN->value);
-            Peminjaman::updateStatus($request->peminjamanId, PenggunaanStatus::MENUNGGU_PENGIRIMAN->value);
+            Penggunaan::updateStatus($old_penggunaan_id, PenggunaanStatus::MENUNGGU_SURAT_JALAN->value);
+            Penggunaan::updateStatus($request->penggunaanId, PenggunaanStatus::MENUNGGU_PENGIRIMAN->value);
             self::where('surat_jalan_id', $request->surat_jalan_id)->update([
-                'peminjaman_id' => $request->peminjaman_id,
+                'penggunaan_id' => $request->penggunaan_id,
             ]);
         }
     }
     public static function updateKodeSurat(Request $request){
-        $supervisor = Peminjaman::getMenanganiUser($request->peminjamanId)->nama;
-        $client = Peminjaman::getProyek($request->peminjamanId)->client;
+        $supervisor = Penggunaan::getMenanganiUser($request->penggunaanId)->nama;
+        $client = Penggunaan::getProyek($request->penggunaanId)->client;
         SuratJalan::where('id', $request->surat_jalan_id)->update(['kode_surat'=>SuratJalan::generateKodeSurat($request->tipe, $client, $supervisor)]);
     }
 }
