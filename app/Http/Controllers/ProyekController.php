@@ -9,7 +9,8 @@ use App\Models\Proyek;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\validate;
 
 class ProyekController extends Controller
 {
@@ -37,7 +38,10 @@ class ProyekController extends Controller
      */
     public function create()
     {
-        return view('proyek.create');
+        $province = collect(ProvincesFirebase::getProvince()) ;
+        return view('proyek.create',[
+            'provinces' => $province->keys()
+        ]);
     }
 
     /**
@@ -49,27 +53,27 @@ class ProyekController extends Controller
     public function store(Request $request)
     {
         $userAuth = Auth::user();
-        if($userAuth->role == 'admin') {
-            $validator = Validator::make($request->all(), [
-                'nama_proyek' => 'required|string',
-                'proyek_manager_id' => 'required|string',
-                'alamat' => 'required|string',
-                'latitude' => 'required|numeric',
-                'longitude' => 'required|numeric',
-            ],[
-                'nama_proyek.required' => 'Nama Proyek wajib diisi',
-                'proyek_manager_id.required' => 'Proyek Manager wajib diisi',
-                'alamat.required' => 'Alamat wajib diisi',
-                'latitude.required' => 'Latitude wajib diisi',
-                'longitude.required' => 'Longitude wajib diisi',
-                ]
-            );
+        if($userAuth->role == 'ADMIN') {
+            $validate = $request->validate([
+                'nama_proyek' => 'required',
+                'set_manager_id' => 'required',
+                'provinsi' => 'required',
+                'kota' => 'required',
+                'gambar' => 'nullable',
+                'alamat' => 'required',
+                'latitude' => 'required',
+                'longitude' => 'required',
+            ]);
+            
         }else {
-            $validator = Validator::make($request->all(), [
+            $validate = $request->validate([
                 'nama_proyek' => 'required|string',
                 'alamat' => 'required|string',
                 'latitude' => 'required|numeric',
                 'longitude' => 'required|numeric',
+                'provinsi' => 'required',
+                'kota' => 'required',
+                'gambar' => 'nullable',
             ],[
                     'nama_proyek.required' => 'Nama Proyek wajib diisi',
                     'alamat.required' => 'Alamat wajib diisi',
@@ -77,25 +81,13 @@ class ProyekController extends Controller
                     'longitude.required' => 'Longitude wajib diisi',
                     ]
                 );
-            }
-            
-            if ($validator->fails()) {
-                return redirect('proyek/tambah')
-                ->withErrors($validator)
-                ->with('createProyekFailed', 'Gagal Menambah Proyek!')
-                ->withInput();
-            }
-            $proyekManagerId = $userAuth->role == 'project manager' ? $userAuth->id : $request->proyek_manager_id;
-            
-            $proyek = Proyek::create([
-                'nama_proyek' => $request->nama_proyek,
-                'alamat' => $request->alamat,
-                'latitude' => $request->latitude,
-                'longitude' => $request->longitude,
-                'proyek_manager_id' => $proyekManagerId,
-            ]
-        );
-        return redirect('proyek')->with('createProyekSuccess', 'Berhasil Menambah Proyek'. $proyek->nama_proyek);
+            $validate['set_manager_id'] = $userAuth->id;
+        }
+        if($request->file('gambar')){
+            $validate['gambar'] = $request->file('gambar')->store('assets/proyek', 'public');
+        }
+        $proyek = Proyek::create($validate);
+        return redirect('proyek')->with('createProyekSuccess', 'Berhasil Menambah Proyek ('. $proyek->nama_proyek.')');
     }
 
     /**
@@ -115,9 +107,13 @@ class ProyekController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Proyek $proyek)
     {
-        //
+        $province = collect(ProvincesFirebase::getProvince());
+        return view('proyek.edit',[
+            'proyek' => $proyek,
+            'provinces' => $province->keys()
+        ]);
     }
 
     /**
@@ -129,7 +125,45 @@ class ProyekController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $userAuth = Auth::user();
+        if($userAuth->role == 'ADMIN') {
+            $validate = $request->validate([
+                'nama_proyek' => 'required',
+                'set_manager_id' => 'nullable',
+                'provinsi' => 'required',
+                'kota' => 'required',
+                'gambar' => 'nullable',
+                'alamat' => 'required',
+                'latitude' => 'required',
+                'longitude' => 'required',
+            ]);
+            
+        }else {
+            $validate = $request->validate([
+                'nama_proyek' => 'required|string',
+                'alamat' => 'required|string',
+                'latitude' => 'required|numeric',
+                'longitude' => 'required|numeric',
+                'provinsi' => 'required',
+                'kota' => 'required',
+                'gambar' => 'nullable',
+            ],[
+                    'nama_proyek.required' => 'Nama Proyek wajib diisi',
+                    'alamat.required' => 'Alamat wajib diisi',
+                    'latitude.required' => 'Latitude wajib diisi',
+                    'longitude.required' => 'Longitude wajib diisi',
+                    ]
+                );
+            $validate['set_manager_id'] = $userAuth->id;
+        }
+        if($request->file('gambar')){
+            if($request->oldImage){
+                Storage::delete($request->oldImage);
+            }
+            $validate['gambar'] = $request->file('gambar')->store('assets/proyek', 'public');
+        }
+        Proyek::where('id',$id)->update($validate);
+        return redirect('proyek')->with('createProyekSuccess', 'Berhasil Merubah Proyek ('. $request->nama_proyek.')');
     }
 
     /**

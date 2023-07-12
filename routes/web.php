@@ -63,6 +63,7 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::middleware((['admin-setmanager-supervisor-admingudang']))->controller(PerusahaanController::class)->group(function (){
         Route::get('perusahaan', 'index')->name('perusahaan');
+        Route::get('perusahaan', 'create')->name('perusahaan.create');
         
     });
     Route::middleware(['admin'])->controller(PenggunaController::class)->group(function () {
@@ -105,8 +106,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('proyek/tambah', 'create')->name('proyek.create');
         Route::post('proyek/store', 'store')->name('proyek.store');
         Route::get('proyek/detail/{id}', 'show')->name('proyek.show');
-        Route::get('proyek/edit/{id}', 'edit')->name('proyek.edit');
+        Route::get('proyek/edit/{proyek}', 'edit')->name('proyek.edit');
         Route::post('proyek/delete/{id}', 'destroy')->name('proyek.destroy');
+        Route::post('proyek/update/{id}', 'update')->name('proyek.update');
         Route::get('selectSetManager', 'selectSetManager')->name('selectSetManager');
     });
     Route::middleware(['admin-purchasing-admingudang-logistic'])->controller(DeliveryOrderController::class)->group(function () {

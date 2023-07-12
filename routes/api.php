@@ -56,6 +56,7 @@ Route::post('forget-password',[UserController::class, 'forgetPassword']);
 Route::post('register', [UserController::class, 'register']);
 
 Route::get('province', [ProvinceController::class, 'getProvince']);
+Route::get('city/{city}', [ProvinceController::class, 'getCityByProvince']);
 
 
 

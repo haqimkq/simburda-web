@@ -9,7 +9,12 @@ use Illuminate\Http\Request;
 class ProvinceController extends Controller
 {
     public function getProvince(){
-        $province = ProvincesFirebase::getProvince();
-        return response()->json($province);
+        $city = collect(ProvincesFirebase::getProvince());
+        return $city->keys();
+    }
+
+    public function getCityByProvince($city){
+        $city = ProvincesFirebase::getCityByProvince(new Request(['provinsi' => $city]));
+        return response()->json($city);
     }
 }
