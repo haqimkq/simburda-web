@@ -32,8 +32,6 @@ class Gudang extends Model
         $query->when($filters['orderBy'] ?? false, function($query, $orderBy) {
             if($orderBy == 'terbaru') return $query->orderBy('created_at', 'DESC');
             if($orderBy == 'terlama') return $query->orderBy('created_at', 'ASC');
-            if($orderBy == 'jumlah tersedikit') return $query->orderBy('jumlah', 'ASC');
-            if($orderBy == 'jumlah terbanyak') return $query->orderBy('jumlah', 'DESC');
         });
     }
     public function getCreatedAtAttribute($date)
@@ -43,5 +41,18 @@ class Gudang extends Model
     public function getUpdatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);
+    }
+    public static function getActiveDeliveryOrder($id){
+        return DeliveryOrder::where('gudang_id',$id)->where('status', '!=', 'SELESAI')->get()->count();
+    }
+    public static function getActiveSjGp($id){
+        $sjPengirimanGp = SjPengirimanGp::whereRelation('peminjamanGp', 'gudang_id', $id)->whereRelation('suratJalan','status','!=','SELESAI')->get()->count();
+        $sjPenggunaanGp = SjPenggunaanGp::whereRelation('penggunaanGp', 'gudang_id', $id)->whereRelation('suratJalan','status','!=','SELESAI')->get()->count();
+        return $sjPengirimanGp+$sjPenggunaanGp;
+    }
+    public static function getActiveSjPg($id){
+        $sjPengembalian = SjPengembalian::whereRelation('pengembalian.peminjaman.peminjamanGp', 'gudang_id', $id)->whereRelation('suratJalan','status','!=','SELESAI')->get()->count();
+        $sjPengembalianPenggunaan = SjPengembalianPenggunaan::whereRelation('pengembalianPenggunaan.penggunaan.penggunaanGp', 'gudang_id', $id)->whereRelation('suratJalan','status','!=','SELESAI')->get()->count();
+        return $sjPengembalian+$sjPengembalianPenggunaan;
     }
 }

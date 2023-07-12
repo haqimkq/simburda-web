@@ -114,7 +114,7 @@
 									</svg>
 									<p class="font-normal text-sm mb-2 line-clamp-1 text-gray-700">[{{ucfirst($deliveryOrder->kendaraan->plat_nomor)}}] {{ucfirst($deliveryOrder->kendaraan->merk)}}</p>
 								</div>
-								<p class="mb-2 text-xs font-normal text-gray-500">{{ \App\Helpers\Date::parseMilliseconds($deliveryOrder->updated_at) }}</p>
+								<p class="mb-2 text-xs font-normal text-gray-500">{{ \App\Helpers\Date::parseMilliseconds($deliveryOrder->created_at) }}</p>
 								@else
 								<p class="font-normal text-sm mb-2 line-clamp-2 text-gray-700">Driver belum dipilih admin gudang</p>
 							@endif

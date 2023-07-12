@@ -20,8 +20,8 @@ class PengembalianPenggunaanDetail extends Model
     public function barang(){
         return $this->belongsTo(BarangHabisPakai::class, 'barang_id');
     }
-    public function pengembalian(){
-        return $this->belongsTo(PengembalianPenggunaan::class);
+    public function pengembalianPenggunaan(){
+        return $this->belongsTo(PengembalianPenggunaan::class,'pengembalian_bahan_id');
     }
     public function getCreatedAtAttribute($date)
     {

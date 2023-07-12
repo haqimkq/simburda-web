@@ -25,8 +25,8 @@ class SjPengembalianPenggunaan extends Model
     public function suratJalan(){
         return $this->belongsTo(SuratJalan::class);
     }
-    public function pengembalian(){
-        return $this->belongsTo(Pengembalian::class);
+    public function pengembalianPenggunaan(){
+        return $this->belongsTo(PengembalianPenggunaan::class, 'pengembalian_penggunaan_id');
     }
     public function getCreatedAtAttribute($date)
     {

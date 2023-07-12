@@ -12,11 +12,14 @@ class PerusahaanController extends Controller
     public function index(){
         $authUser = Auth::user();
         $countUndefinedAkses = AksesBarang::countUndefinedAkses();
+        $perusahaan = Perusahaan::filter(request(['search', 'filter', 'orderBy']))->paginate(12)->withQueryString();
+        $provinsis = Perusahaan::groupBy('provinsi')->get('provinsi')->all();
+        $countUndefinedAkses = AksesBarang::countUndefinedAkses();
         return view('perusahaan.index',[
             'authUser' => $authUser,
             'countUndefinedAkses' => $countUndefinedAkses,
-            'perusahaans' => Perusahaan::all()
-        ]    
-        );
+            'provinsis' => $provinsis,
+            'perusahaans' => $perusahaan
+        ]);
     }
 }

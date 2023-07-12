@@ -63,7 +63,12 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::middleware((['admin-setmanager-supervisor-admingudang']))->controller(PerusahaanController::class)->group(function (){
         Route::get('perusahaan', 'index')->name('perusahaan');
-        
+        Route::get('perusahaan/tambah', 'create')->name('perusahaan.create');
+        Route::post('perusahaan/store', 'store')->name('perusahaan.store');
+        Route::get('perusahaan/edit/{id}', 'edit')->name('perusahaan.edit');
+        Route::post('perusahaan/update/{id}', 'update')->name('perusahaan.update');
+        Route::get('perusahaan/detail/{id}', 'show')->name('perusahaan.show');
+        Route::post('perusahaan/delete/{id}', 'destroy')->name('perusahaan.destroy');
     });
     Route::middleware(['admin'])->controller(PenggunaController::class)->group(function () {
         Route::get('pengguna', 'index')->name('pengguna');

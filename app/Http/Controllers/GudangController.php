@@ -13,7 +13,7 @@ class GudangController extends Controller
     {
         $authUser = Auth::user();
         $gudangs = Gudang::filter(request(['search', 'filter', 'orderBy']))
-                ->paginate(40)
+                ->paginate(10)
                 ->withQueryString();
         $provinsis = Gudang::groupBy('provinsi')->get('provinsi')->all();
         $countUndefinedAkses = AksesBarang::countUndefinedAkses();
