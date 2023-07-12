@@ -3,12 +3,12 @@
 @section('content')
     <div class="md:ml-[16em] w-full">
         <div class="w-full pl-4">
-            @if (session('createProyekSuccess'))
-                @section('alertMessage', session('createProyekSuccess'))
+            @if (session('createPerusahaaanSuccess'))
+                @section('alertMessage', session('createPerusahaaanSuccess'))
                 @include('shared.alerts.success')
             @endif
-            @if (session('deleteProyekSuccess'))
-                @section('alertMessage', session('deleteProyekSuccess'))
+            @if (session('deletePerusahaanSuccess'))
+                @section('alertMessage', session('deletePerusahaanSuccess'))
                 @include('shared.alerts.success')
             @endif
             @section('headerName', 'Perusahaan')
