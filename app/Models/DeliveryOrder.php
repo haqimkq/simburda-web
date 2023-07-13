@@ -58,22 +58,32 @@ class DeliveryOrder extends Model
         });
         $query->when($filters['filter'] ?? false, function($query, $filter) {
         //    return $query->where(function($query) use ($filter) {
-            if($filter != 'semua status'){
-                if($filter == 'SELESAI')
-                    return $query->where('status', 'Selesai');
-                if($filter == 'DRIVER_DALAM_PERJALANAN')
-                    return $query->where('status', 'DRIVER_DALAM_PERJALANAN');
-                if($filter == 'MENUNGGU_KONFIRMASI_DRIVER')
-                    return $query->where('status', 'MENUNGGU_KONFIRMASI_DRIVER');
-            }
+            if($filter == 'selesai')
+                return $query->where('status', 'SELESAI');
+            if($filter == 'driver dalam perjalanan')
+                return $query->where('status', 'DRIVER_DALAM_PERJALANAN');
+            if($filter == 'menunggu konfirmasi driver')
+                return $query->where('status', 'MENUNGGU_KONFIRMASI_DRIVER');
+            if($filter == 'menunggu konfirmasi admin gudang')
+                return $query->where('status', 'MENUNGGU_KONFIRMASI_ADMIN_GUDANG');
             // });
         });
         $query->when(!isset($filters['orderBy']), function($query){
             return $query->orderBy('created_at', 'DESC');
         });
+        // $query->when(!isset($filters['datestart']), function($query){
+        //     return $query->orderBy('created_at', 'DESC');
+        // });
         $query->when($filters['orderBy'] ?? false, function($query, $orderBy) {
             if($orderBy == 'terbaru') return $query->orderBy('created_at', 'DESC');
             if($orderBy == 'terlama') return $query->orderBy('created_at', 'ASC');
+        });
+        $query->when($filters['datestart'] ?? false, function($query, $datestart) use ($filters){
+            $date_start = $datestart." 00:00:00";
+            $query->when($filters['dateend'] ?? false, function($query, $dateend) use ($date_start) {
+                $date_end = $dateend." 23:59:59";
+                return $query->whereBetween('created_at', [$date_start, $date_end]);
+            });
         });
     }
     public static function generateKodeDO($nama_perusahaan, $tgl_pengambilan){

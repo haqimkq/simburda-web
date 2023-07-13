@@ -25,11 +25,11 @@ class DeliveryOrderController extends Controller
         $authUser = Auth::user();
         $countUndefinedAkses = AksesBarang::countUndefinedAkses();
         if($authUser->role=='PURCHASING'){
-            $deliveryOrders = DeliveryOrder::where('purchasing_id',$authUser->id)->filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
+            $deliveryOrders = DeliveryOrder::where('purchasing_id',$authUser->id)->filter(request(['search','orderBy','filter', 'datestart','dateend']))->paginate(12)->withQueryString();
         }else if ($authUser->role=='ADMIN_GUDANG'){
-            $deliveryOrders = DeliveryOrder::where('admin_gudang_id',$authUser->id)->orWhere('admin_gudang_id', null)->filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
+            $deliveryOrders = DeliveryOrder::where('admin_gudang_id',$authUser->id)->orWhere('admin_gudang_id', null)->filter(request(['search','orderBy','filter','datestart','dateend']))->paginate(12)->withQueryString();
         }else{
-            $deliveryOrders = DeliveryOrder::filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
+            $deliveryOrders = DeliveryOrder::filter(request(['search','orderBy','filter','datestart','dateend']))->paginate(12)->withQueryString();
         }
         return view('deliveryorder.index',[
             'deliveryOrders' => $deliveryOrders,
