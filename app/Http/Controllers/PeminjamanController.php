@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
 use App\Models\BarangTidakHabisPakai;
 use App\Models\Gudang;
 use App\Models\Menangani;
@@ -121,6 +122,10 @@ class PeminjamanController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getBarangByGudang(Gudang $gudang){
+        return response()->json(Barang::where('jenis','TIDAK_HABIS_PAKAI')->where('gudang_id',$gudang->id)->get());
     }
 }
 ?>

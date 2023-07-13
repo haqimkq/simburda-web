@@ -80,6 +80,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('peminjaman/update/{peminjaman}', 'update')->name('peminjaman.update');
         Route::get('peminjaman/detail/{id}', 'show')->name('peminjaman.show');
         Route::post('peminjaman/delete/{peminjaman}', 'destroy')->name('peminjaman.destroy');
+        Route::get('peminjaman/tambah/barangByGudang/{gudang}', 'getBarangByGudang');
     });
     Route::middleware(['role:ADMIN_GUDANG,SUPERVISOR,SET_MANAGER,PROJECT_MANAGER'])->controller(PengembalianController::class)->group(function(){
         Route::get('pengembalian', 'index')->name('pengembalian');

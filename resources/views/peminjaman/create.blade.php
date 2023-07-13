@@ -103,27 +103,19 @@
                     <option value="PROYEK_PROYEK">Proyek Ke Proyek</option>
                 </select>
             </div>
-			<div class="w-full flex-col hidden">
+			<div class="w-full flex-col hidden" id="gudang-field">
                 <label for="orderBy" class="mb-2 block text-sm font-normal text-gray-700">Gudang</label>
-                <select name="gudang_id" id="country"
+                <select name="gudang_id" id="gudang"
                     class="dark: w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green">
+					<option value="" selected>Tipe</option>
 					@foreach ($gudangs as $gudang)
 						<option value="{{ $gudang->id }}">{{ $gudang->nama }}</option>
 					@endforeach
                 </select>
             </div>
         </div>
-        @if (!$barangs->isEmpty())
-            @if (request('search'))
-                <div class="flex items-center mb-5">
-                    <button
-                        class="bg-red-600 py-1 px-2 mr-2 text-center font-normal text-sm delete_search text-white rounded-md"
-                        onclick="">Hapus pencarian</button>
-                    <h1 class="text-center font-normal text-md">Hasil Pencarian Barang "{{ request('search') }}"</h1>
-                </div>
-            @endif
-            <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-                @foreach ($barangs as $barang)
+		<div id="barang"></div>
+                {{-- @foreach ($barangs as $barang)
                     <div class="relative group flex flex-col rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
                         <div class="flex p-2 align-items-center">
 							<input id="default-checkbox" type="checkbox" name="barang[]" value="{{ $barang->id }}" class=" text-blue-600 bg-gray-100 rounded dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 p-3 m-3 checked:bg-green mr-2  border-green border w-5 h-5 focus:ring-green">
@@ -142,17 +134,7 @@
                             </div>
                         </div>
                     </div>
-                @endforeach
-            </div>
-        @else
-            <div class="flex justify-center items-center text-center md:h-[65vh] mb-2 font-medium text-md text-red-600">
-                @if (request('search'))
-                    <h1>Tidak ada Barang {{ request('search') }}</h1>
-                @else
-                    <h1>Belum ada Barang</h1>
-                @endif
-            </div>
-        @endif
+                @endforeach --}}
 		<div class="flex justify-center">
 			<button type="submit"
 				class="content-center w-full mt-5 self-center rounded-lg bg-green px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-green dark:hover:bg-green dark:focus:ring-green sm:w-auto">Submit</button>
@@ -160,7 +142,56 @@
     </form>
 	<script>
 		$("#tipe").change(function() {
-			
+			var tipe = $("#tipe option:selected").val();
+			var gudang = document.getElementById("gudang-field");
+			if(tipe == "GUDANG_PROYEK"){
+				gudang.classList.remove("hidden");
+			}else if(tipe == "PROYEK_PROYEK"){
+				if(!gudang.classList.contains('hidden')){
+					console.log('p');
+					gudang.classList.add("hidden");
+				}
+			}
+		}); 
+		$("#gudang").change(function() {
+			$.getJSON('http://127.0.0.1:8000/' + "/peminjaman/tambah/barangByGudang/" + $("#gudang option:selected").val(), function(data) {
+				console.log(data);
+				var temp = [];
+				//CONVERT INTO ARRAY
+				$.each(data, function(key, value) {
+					temp.push({v:value, k: key});
+				});
+				//SORT THE ARRAY
+				temp.sort(function(a,b){
+					if(a.v > b.v){ return 1}
+					if(a.v < b.v){ return -1}
+						return 0;
+				});
+				//APPEND INTO SELECT BOX
+				$('#barang').empty();
+				$.each(temp, function(key, obj) {
+					// $('#barang').append(`
+					// 	<div class="relative group flex flex-col rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
+                    //     <div class="flex p-2 align-items-center">
+					// 		<input id="default-checkbox" type="checkbox" name="barang[]" value="{{ $barang->id }}" class=" text-blue-600 bg-gray-100 rounded dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 p-3 m-3 checked:bg-green mr-2  border-green border w-5 h-5 focus:ring-green">
+                    //         @if (isset(`+obj+`))
+                    //             <div class="mr-2 h-[6em] w-[6em] rounded-xl bg-cover md:h-[5em] md:w-[5em] lg:h-[7em] lg:w-[7em]"
+                    //                 style="background-image: url('{{ asset($barang->barang->gambar) }}')"></div>
+                    //         @endif
+                    //         <div class="flex flex-col">
+                    //             <span
+                    //                 class="{{ $barang->kondisi == 'BARU' ? 'bg-green-200 text-green-600 border-green-600' : 'text-primary border-primary bg-primary-30' }} mb-2 self-start rounded-full border px-1.5 text-xs">
+                    //                 {{ App\Helpers\Utils::underscoreToNormal($barang->kondisi) }}
+                    //             </span>
+                    //             <p class="mb-2 font-medium line-clamp-1">{{ $barang->barang->nama }}</p>
+                    //             <p class="mb-2 text-xs font-normal">
+                    //                 {{ \App\Helpers\Date::parseMilliseconds($barang->barang->created_at) }}</p>
+                    //         </div>
+                    //     </div>
+                    // </div>
+					// `);           
+				});            
+			});   
 		}); 
 	</script>
 @endsection
