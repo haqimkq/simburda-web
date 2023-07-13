@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\ProyekController;
 use App\Http\Controllers\RegisterController;
@@ -70,7 +72,24 @@ Route::middleware(['auth'])->group(function () {
         Route::get('perusahaan/detail/{id}', 'show')->name('perusahaan.show');
         Route::post('perusahaan/delete/{perusahaan}', 'destroy')->name('perusahaan.destroy');
     });
-    Route::middleware(['role:ADMIN_GUDANG,SUPERVISOR,SET_MANAGER,PROJECT_MANAGER'])->controller()->group(function(){});
+    Route::middleware(['role:ADMIN_GUDANG,SUPERVISOR,SET_MANAGER,PROJECT_MANAGER'])->controller(PeminjamanController::class)->group(function(){
+        Route::get('peminjaman', 'index')->name('peminjaman');
+        Route::get('peminjaman/tambah', 'create')->name('peminjaman.create');
+        Route::post('peminjaman/store', 'store')->name('peminjaman.store');
+        Route::get('peminjaman/edit/{peminjaman}', 'edit')->name('peminjaman.edit');
+        Route::post('peminjaman/update/{peminjaman}', 'update')->name('peminjaman.update');
+        Route::get('peminjaman/detail/{id}', 'show')->name('peminjaman.show');
+        Route::post('peminjaman/delete/{peminjaman}', 'destroy')->name('peminjaman.destroy');
+    });
+    Route::middleware(['role:ADMIN_GUDANG,SUPERVISOR,SET_MANAGER,PROJECT_MANAGER'])->controller(PengembalianController::class)->group(function(){
+        Route::get('pengembalian', 'index')->name('pengembalian');
+        Route::get('pengembalian/tambah', 'create')->name('pengembalian.create');
+        Route::post('pengembalian/store', 'store')->name('pengembalian.store');
+        Route::get('pengembalian/edit/{pengembalian}', 'edit')->name('pengembalian.edit');
+        Route::post('pengembalian/update/{pengembalian}', 'update')->name('pengembalian.update');
+        Route::get('pengembalian/detail/{id}', 'show')->name('pengembalian.show');
+        Route::post('pengembalian/delete/{pengembalian}', 'destroy')->name('pengembalian.destroy');
+    });
     Route::middleware(['role:ADMIN'])->controller(PenggunaController::class)->group(function () {
         Route::get('pengguna', 'index')->name('pengguna');
         Route::get('pengguna/tambah', 'create')->name('pengguna.create');

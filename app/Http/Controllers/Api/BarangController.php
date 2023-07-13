@@ -106,7 +106,6 @@ class BarangController extends Controller
     public function barangTidakHabisPakaiTersedia(Request $request){
         try {
             $json = [];
-            $user = $request->user();
             $datas = BarangTidakHabisPakai::whereNull('peminjaman_id')->orWhereHas('peminjamanDetail', function($query){
                 $query->where('status','TIDAK_DIGUNAKAN');
             })->get();

@@ -2,7 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BarangTidakHabisPakai;
+use App\Models\Gudang;
+use App\Models\Menangani;
+use App\Models\Peminjaman;
+use App\Models\Proyek;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PeminjamanController extends Controller
 {
@@ -13,7 +19,7 @@ class PeminjamanController extends Controller
      */
     public function index()
     {
-        //
+        return view('peminjaman.index');
     }
 
     /**
@@ -23,7 +29,25 @@ class PeminjamanController extends Controller
      */
     public function create()
     {
-        //
+        $proyeks = [];
+        $authUser = Auth::user();
+        if($authUser->role = "ADMIN"){
+            $proyeks = Proyek::all();
+        }else{
+            $menanganis = Menangani::where("user_id",Auth::id())->get();
+            foreach($menanganis as $menangani){
+                array_push($proyek, $menangani->proyek);
+            }
+        }
+        $datas = BarangTidakHabisPakai::whereNull('peminjaman_id')->orWhereHas('peminjamanDetail', function($query){
+            $query->where('status','TIDAK_DIGUNAKAN');
+        })->get(); 
+        $gudangs = Gudang::all();
+        return view('peminjaman.create',[
+            'proyeks' => $proyeks,
+            'barangs' => $datas,
+            'gudangs' => $gudangs
+        ]);
     }
 
     /**
@@ -34,7 +58,24 @@ class PeminjamanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate = $request->validate([
+            'proyek' => 'required',
+            'tgl_peminjaman' => 'required',
+            'tgl_berakhir' => 'required',
+            'barang' => 'required'
+        ],[
+            'proyek.required' => 'Proyek wajib diisi',
+            'tgl_peminjaman.required' => 'Tanggal Peminjaman Wajib diisi',
+            'tgl_berakhir.required' => 'Tanggal Berakhir Wajib diisi',
+            'barang.required' => 'Barang Wajib diisi'
+        ]);
+        //membuat peminjaman
+        // =>generate kode peminjaman
+        // $validate['kode_peminjaman'] = Peminjaman::generateKodePeminjaman();
+        Peminjaman::create($validate);
+        //membuat peminjaman detail
+        //membuat akses barang
+        
     }
 
     /**
@@ -45,7 +86,7 @@ class PeminjamanController extends Controller
      */
     public function show($id)
     {
-        //
+        return view('peminjaman.detail');
     }
 
     /**
@@ -56,7 +97,7 @@ class PeminjamanController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('peminjaman.edit');
     }
 
     /**
@@ -82,3 +123,4 @@ class PeminjamanController extends Controller
         //
     }
 }
+?>
