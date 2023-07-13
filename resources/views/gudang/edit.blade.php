@@ -16,7 +16,7 @@
 			<li>
 				<div class="flex items-center">
 					<svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-					<a href="/perusahaan" class="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white">Perusahaan</a>
+					<a href="/gudang" class="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white">Gudang</a>
 				</div>
 			</li>
 			<li aria-current="page">
@@ -27,16 +27,16 @@
 			</li>
 		</ol>
 	</nav>
-<h1 class="text-lg font-bold uppercase my-6 w-full text-center">Edit Perusahaan</h1>
-	<form method="POST" action="{{ route('perusahaan.update', $perusahaan->id) }}" enctype="multipart/form-data">
+<h1 class="text-lg font-bold uppercase my-6 w-full text-center">Edit Gudang</h1>
+	<form method="POST" action="{{ route('gudang.update', $gudang->id) }}" enctype="multipart/form-data">
 		@csrf
 		<div class="mb-6 grid gap-6 md:grid-cols-2 w-[80vw]">
 			<div class="col-span-2">
-				<label for="nama" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Nama Perusahaan</label>
+				<label for="nama" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Nama Gudang</label>
 				<input type="text" id="nama" name="nama"
-					value="{{ old('nama',$perusahaan->nama) }}"
+					value="{{ old('nama',$gudang->nama) }}"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
-					placeholder="Masukkan Nama Perusahaan" required>
+					placeholder="Masukkan Nama Gudang" required>
 					@error('nama') @include('shared.errorText') @enderror
 			</div>
 			<div class="flex flex-col w-full">
@@ -45,7 +45,7 @@
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900  focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark: dark:focus:ring-green"
 					>
 					@foreach ($provinces as $province)
-						<option value="{{ $province }}" {{ ($perusahaan->provinsi == $province) ? 'selected' : '' }}>{{ $province }}</option>
+						<option value="{{ $province }}" {{ ($gudang->provinsi == $province) ? 'selected' : '' }}>{{ $province }}</option>
 					@endforeach
 				</select>
 			</div>
@@ -54,7 +54,7 @@
 				<select name="kota" id='city'
 					class="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900  focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark: dark:focus:ring-green"
 					>
-					<option value="{{ $perusahaan->kota }}" selected>{{ $perusahaan->kota }}</option>
+					<option value="{{ $gudang->kota }}" selected>{{ $gudang->kota }}</option>
 				</select>
 			</div>
 			<div>
@@ -64,7 +64,7 @@
 				</label>
 				<input type="number" id="latitude" name="latitude" step="any"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
-					placeholder="-6.2501422" required value="{{ old('latitude',$perusahaan->latitude) }}">
+					placeholder="-6.2501422" required value="{{ old('latitude',$gudang->latitude) }}">
 				@error('latitude') @include('shared.errorText') @enderror
 			</div>
 			<div>
@@ -72,23 +72,23 @@
 					<a class="inline-block cursor-pointer text-green hover:text-green font-normal rounded-lg text-sm" type="button" data-modal-toggle="latitude-longitde">
   				Cara Mengambil Longitude</a>
 				</label>
-				<input type="number" id="longitude" step="any" value="{{ old('longitude',$perusahaan->longitude) }}" name="longitude"
+				<input type="number" id="longitude" step="any" value="{{ old('longitude',$gudang->longitude) }}" name="longitude"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
 					placeholder="106.8543034" required>
 				@error('longitude') @include('shared.errorText') @enderror
 			</div>
 			<div class="@can('admin') block md:col-span-2 @elsecan('project-manager')  @endcan">
-				<label for="alamat" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Alamat Perusahaan</label>
+				<label for="alamat" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Alamat Proyek</label>
 				<textarea name="alamat" id="alamat" @can('admin') rows="3" @elsecan('project-manager') rows="1" @endcan
 				 class="block w-full resize-y min-h-[3em] rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
-				 placeholder="Masukkan Alamat Perusahaan" required>{{ old('alamat',$perusahaan->alamat) }}</textarea>
+				 placeholder="Masukkan Alamat Proyek" required>{{ old('alamat',$gudang->alamat) }}</textarea>
 				 @error('alamat') @include('shared.errorText') @enderror
 			</div>
-			<input type="hidden" name="oldImage" value="{{ $perusahaan->gambar }}">
+			<input type="hidden" name="oldImage" value="{{ $gudang->gambar }}">
 			<div class="col-span-2">
 				<label class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300" for="gambar">Gambar</label>
 				<div class="flex items-center flex-col md:flex-row">
-					<img class="border md:mr-2 border-gray-200 rounded-lg mb-2 md:mb-0 max-w-[40%]" id="preview-image" src="{{  asset($perusahaan->gambar) ?? 'https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?w=740&t=st=1662267352~exp=1662267952~hmac=f0385ce0a49bd1243809578d71f8efef2a35d44a28cb49ff48186f6c1e7834a8 '}}"
+					<img class="border md:mr-2 border-gray-200 rounded-lg mb-2 md:mb-0 max-w-[40%]" id="preview-image" src="{{  asset($gudang->gambar) ?? 'https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?w=740&t=st=1662267352~exp=1662267952~hmac=f0385ce0a49bd1243809578d71f8efef2a35d44a28cb49ff48186f6c1e7834a8 '}}"
 							alt="preview image" >
 					<input
 						class="self-center block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
@@ -142,53 +142,6 @@
         </div>
     </div>
 </div>
-{{-- <div class="container">
-
-    <div class="row">
-
-        <div class="col-md-10 col-md-offset-1">
-
-            <div class="panel panel-default">
-
-                <div class="panel-heading">Chained Dropdown</div>
-
-
-                <div class="panel-body">                            
-
-                    <label>Country</label>
-
-                        <select name="state_province" id="country">
-
-                            <option value="">Select Country</option>
-
-                            @foreach($csc_countrie as $csc_countries)
-
-                                <option value="{{$csc_countries}}">{{$csc_countries}}</option>
-
-                            @endforeach
-
-                        </select>
-
-                    <br>
-
-
-                    <label>City</label>
-
-					<select name="city" id="city">
-
-						<option value="">NA</option>
-
-					</select>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div> --}}
 
 <script type="text/javascript" src='{{ url("csc.js")}}'></script>
 @endsection

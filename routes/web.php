@@ -70,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('perusahaan/detail/{id}', 'show')->name('perusahaan.show');
         Route::post('perusahaan/delete/{perusahaan}', 'destroy')->name('perusahaan.destroy');
     });
+    Route::middleware(['role:ADMIN_GUDANG,SUPERVISOR,SET_MANAGER,PROJECT_MANAGER'])->controller()->group(function(){});
     Route::middleware(['role:ADMIN'])->controller(PenggunaController::class)->group(function () {
         Route::get('pengguna', 'index')->name('pengguna');
         Route::get('pengguna/tambah', 'create')->name('pengguna.create');
@@ -101,9 +102,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('gudang', 'index')->name('gudang');
         Route::get('gudang/tambah', 'create')->name('gudang.create');
         Route::post('gudang/store', 'store')->name('gudang.store');
-        Route::get('gudang/detail/{id}', 'show')->name('gudang.show');
-        Route::get('gudang/edit/{id}', 'edit')->name('gudang.edit');
-        Route::post('gudang/delete/{id}', 'destroy')->name('gudang.destroy');
+        Route::get('gudang/detail/{gudang}', 'show')->name('gudang.show');
+        Route::get('gudang/edit/{gudang}', 'edit')->name('gudang.edit');
+        Route::post('gudang/delete/{gudang}', 'destroy')->name('gudang.destroy');
+        Route::post('gudang/update/{gudang}', 'update')->name('gudang.update');
     });
     Route::middleware(['role:ADMIN_GUDANG,SET_MANAGER,SUPERVISOR,PROJECT_MANAGER'])->controller(ProyekController::class)->group(function () {
         Route::get('proyek', 'index')->name('proyek');

@@ -36,7 +36,7 @@
 				<input type="text" id="nama" name="nama"
 					value="{{ old('nama') }}"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
-					placeholder="Masukkan Nama Proyek" required>
+					placeholder="Masukkan Nama Gudang" required>
 					@error('nama') @include('shared.errorText') @enderror
 			</div>
 			<div class="flex flex-col w-full">
@@ -77,10 +77,10 @@
 				@error('longitude') @include('shared.errorText') @enderror
 			</div>
 			<div class="@can('admin') block md:col-span-2 @elsecan('project-manager')  @endcan">
-				<label for="alamat" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Alamat Proyek</label>
+				<label for="alamat" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Alamat Perusahaan</label>
 				<textarea name="alamat" id="alamat" @can('admin') rows="3" @elsecan('project-manager') rows="1" @endcan
 				 class="block w-full resize-y min-h-[3em] rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
-				 placeholder="Masukkan Alamat Proyek" required>{{ old('alamat') }}</textarea>
+				 placeholder="Masukkan Alamat Gudang" required>{{ old('alamat') }}</textarea>
 				 @error('alamat') @include('shared.errorText') @enderror
 			</div>
 			<div class="col-span-2">
@@ -140,90 +140,6 @@
         </div>
     </div>
 </div>
-{{-- <div class="container">
-
-    <div class="row">
-
-        <div class="col-md-10 col-md-offset-1">
-
-            <div class="panel panel-default">
-
-                <div class="panel-heading">Chained Dropdown</div>
-
-
-                <div class="panel-body">                            
-
-                    <label>Country</label>
-
-                        <select name="state_province" id="country">
-
-                            <option value="">Select Country</option>
-
-                            @foreach($csc_countrie as $csc_countries)
-
-                                <option value="{{$csc_countries}}">{{$csc_countries}}</option>
-
-                            @endforeach
-
-                        </select>
-
-                    <br>
-
-
-                    <label>City</label>
-
-					<select name="city" id="city">
-
-						<option value="">NA</option>
-
-					</select>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div> --}}
 
 <script type="text/javascript" src='{{ url("csc.js")}}'></script>
 @endsection
-
-@push('prepend-script')
-	<script>
-		$('#searchProyekManager').select2({
-				width: null,
-        placeholder: 'Pilih Proyek Manager',
-				language: {
-					inputTooShort: function() {
-						return 'Masukkan 1 atau lebih karakter';
-					},
-					formatNoMatches: function () { return "Tidak ditemukan"; },
-					noResults: function(){
-        		return "Proyek Manager tidak ditemukan";
-       		},
-					searching: function(){
-        		return "Sedang mencari...";
-       		}
-				},
-        ajax: {
-            url: '/selectSetManager',
-            dataType: 'json',
-						delay: 100,
-            processResults: function (data) {
-                return {
-                    results: $.map(data, function (item) {
-                        return {
-                            text: item.nama,
-                            id: item.id,
-                        }
-                    })
-                };
-            },
-            cache: true
-        }
-    });
-	</script>
-@endpush
