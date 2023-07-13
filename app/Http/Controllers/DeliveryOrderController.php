@@ -45,7 +45,9 @@ class DeliveryOrderController extends Controller
      */
     public function create()
     {
-        //
+       return view('deliveryorder.create',[
+        
+        ]);
     }
 
     /**

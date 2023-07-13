@@ -35,7 +35,7 @@ class AksesBarang extends Model
 
     public function scopeFilter($query, array $filters){
         $query->when($filters['search'] ?? false, function($query, $search) {
-            return $query->whereRelation('peminjaman.menangani.proyek','nama_proyek', 'like', '%' . $search . '%');
+            return $query->whereRelation('peminjamanDetail.peminjaman.menangani.proyek','nama_proyek', 'like', '%' . $search . '%');
         });
         $authUserRole = Auth::user()->role;
         $query->when($filters['filter'] ?? false, function($query, $filter) use ($authUserRole) {

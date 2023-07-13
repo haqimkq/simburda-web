@@ -71,9 +71,9 @@ class DeliveryOrder extends Model
         $query->when(!isset($filters['orderBy']), function($query){
             return $query->orderBy('created_at', 'DESC');
         });
-        // $query->when(!isset($filters['datestart']), function($query){
-        //     return $query->orderBy('created_at', 'DESC');
-        // });
+        $query->when(!isset($filters['datestart']), function($query){
+            return $query->whereBetween('created_at', [date('Y-m-d 00:00:00', strtotime("-3 years")),date('Y-m-d 23:59:59')]);
+        });
         $query->when($filters['orderBy'] ?? false, function($query, $orderBy) {
             if($orderBy == 'terbaru') return $query->orderBy('created_at', 'DESC');
             if($orderBy == 'terlama') return $query->orderBy('created_at', 'ASC');

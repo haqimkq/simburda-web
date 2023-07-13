@@ -95,14 +95,14 @@
 					@if (!isset($nama_proyek_before) || $aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->nama_proyek != $nama_proyek_before)
 						@php $nama_proyek_before = $aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->nama_proyek @endphp
 						<div class="flex flex-col mt-5 lg:col-span-2 xl:col-span-3">
-							@canany(['ADMIN_GUDANG', 'SET_MANAGER'])
 							<div class="flex items-center">
-									@if (!$aksesbarang->disetujui_sm || !$aksesbarang->disetujui_admin)
+								@if (!$aksesbarang->disetujui_sm || !$aksesbarang->disetujui_admin)
+									@canany(['ADMIN_GUDANG', 'SET_MANAGER'])
 									<input id="{{$aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->id}}" type="checkbox" data-id-proyek-peminjaman="{{$aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->id}}" class="cursor-pointer selectProyek rounded-md border-green border w-5 h-5 focus:ring-green checked:bg-green mr-2">
+									@endcanany
 									@endif
-									<label for="{{$aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->id}}" class="cursor-pointer text-xl font-semibold line-clamp-1">{{ucfirst($aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->nama_proyek)}}</label>
+									<label for="{{$aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->id}}" class="text-xl font-semibold line-clamp-1">{{ucfirst($aksesbarang->peminjamanDetail->peminjaman->menangani->proyek->nama_proyek)}}</label>
 								</div>
-							@endcanany
 							<div class="mt-1 flex sm:flex-col lg:flex lg:flex-row">
 								<div class="flex">
 									<svg class="fill-blue-600 h-4 w-4 mr-1" width="24" height="26" viewBox="0 0 24 26" xmlns="http://www.w3.org/2000/svg">

@@ -87,11 +87,11 @@ class SuratJalanController extends Controller
                 $request->validate([
                     'date_start' => [
                         'required',
-                        'date_format:Y-m-d'
+                        'date_format:Y-M-D'
                     ],
                     'date_end' => [
                         'required',
-                        'date_format:Y-m-d',
+                        'date_format:Y-M-D',
                     ]
                 ]);
             }

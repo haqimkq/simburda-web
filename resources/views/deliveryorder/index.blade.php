@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @push('prepend-style')
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
-	
+		<link rel="stylesheet"
+				href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
 @endpush
 @section('content')
 		<div class="w-full md:ml-[16em]">
@@ -24,7 +24,8 @@
 				<div class="my-5 flex w-full items-center justify-items-center">
 						<div class="flex w-full">
 								@section('last-search')
-										<a href="{{ route('delivery-order.create') }}" class="button-custom !h-auto !w-auto px-5">
+										<a href="{{ route('delivery-order.create') }}"
+												class="button-custom !h-auto !w-auto px-5 md:col-span-2 xl:col-span-4">
 												+ Tambah DO
 										</a>
 								@endsection
@@ -56,12 +57,15 @@
 												</select>
 										</div>
 										<div id="reportrange" class="flex w-full flex-col">
-												<label for="filterDate" class="mb-1 block text-sm font-normal text-gray-700">Filter Tanggal</label>
-												<div
-														class="flex dark:block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green">
-														<span class="datevalue"></span> <i class="fa fa-caret-down"></i>
-														<button type="submit" class="p-2.5 ml-2 text-sm font-medium text-white bg-green rounded-lg border border-green focus:ring-4 focus:outline-none focus:ring-green-light">
-															<span class="material-symbols-outlined">calendar_month</span>	
+												<label for="filterDate" class="mb-1 block text-sm font-normal text-gray-700">Filter Tanggal Dibuat</label>
+												<div class="flex">
+														<div
+																class="align-items-center flex w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 align-middle text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green">
+																<span class="datevalue self-center">Tanggal</span>
+														</div>
+														<button type="submit"
+																class="ml-2 flex rounded-lg border border-green bg-green p-2 text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-green-light">
+																<span class="material-symbols-outlined self-center">calendar_month</span>
 														</button>
 												</div>
 												<input type="hidden" name="datestart" id="datestart" value="{{ request('datestart') }}">
@@ -80,29 +84,18 @@
 										<h1 class="text-md mb-2 text-center font-medium">Hasil Pencarian Delivery Order {{ request('search') }}</h1>
 								</div>
 						@endif
-						<div class="mb-2 flex items-center">
-								<div class="all-status flex items-center">
-										<div class="mr-1 h-5 w-5 rounded-full border border-green"></div>
-										<p class="text-sm">Banyak Jenis Barang Preorder</p>
-								</div>
-								<div class="borrow-status ml-2 flex items-center">
-										<div class="mr-1 h-5 w-5 rounded-full border border-gray-500"></div>
-										<p class="text-sm">Total Kuantitas Barang Preorder</p>
-								</div>
-						</div>
 						<div class="grid grid-cols-2 gap-5 md:grid-cols-2 xl:grid-cols-4">
 								@foreach ($deliveryOrders as $deliveryOrder)
 										<div
 												class="@if ($deliveryOrder->user)  @endif group flex flex-col rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
 												<a href="{{ route('delivery-order.show', $deliveryOrder->id) }}" class="p-2">
 														<div class="flex w-full flex-col">
-																{{-- @if (isset($deliveryOrder->diambil)) --}}
 																<span
 																		class="@if ($deliveryOrder->status == 'SELESAI') bg-green-200 text-green-600 border-green-600
-										@elseif ($deliveryOrder->status == 'DRIVER_DALAM_PERJALANAN')
-											bg-yellow-200 text-yellow-600 border-yellow-600
-										@else 
-											bg-red-200 text-red-600 border-red-600 @endif my-1 self-start rounded-full border px-1.5 text-xs">
+																			@elseif ($deliveryOrder->status == 'DRIVER_DALAM_PERJALANAN')
+																				bg-yellow-200 text-yellow-600 border-yellow-600
+																			@else 
+																				bg-red-200 text-red-600 border-red-600 @endif my-1 self-start rounded-full border px-1.5 text-xs">
 																		@if ($deliveryOrder->status == 'SELESAI')
 																				Sudah Diambil
 																		@elseif ($deliveryOrder->status == 'DRIVER_DALAM_PERJALANAN')
@@ -112,13 +105,15 @@
 																		@endif
 																</span>
 																<p class="my-2 font-bold line-clamp-2">{{ ucfirst($deliveryOrder->kode_do) }} </p>
-																<div class="flex items-center">
-																		<p class="mb-2 self-start rounded-full border border-green px-2 py-1 text-xs text-black">
-																				{{ count($deliveryOrder->preOrder) }}
-																		</p>
-																		<p class="mb-2 ml-2 self-start rounded-full border border-gray-500 px-2 py-1 text-xs text-black">
-																				{{ $deliveryOrder->preOrder->sum('jumlah') }}
-																		</p>
+																<div class="mb-2 flex flex-wrap">
+																		@if (!$deliveryOrder->preOrder->isEmpty())
+																				@foreach ($deliveryOrder->preOrder as $key => $row)
+																						<p
+																								class="mr-1 mt-1 w-[8em] overflow-hidden break-words rounded-md border border-gray-500 p-1 text-[0.5em] text-gray-500">
+																								{{ $row->jumlah }} {{ $row->satuan }} {{ $row->nama_material }}</p>
+																						@php if (++$key == 3) break; @endphp
+																				@endforeach
+																		@endif
 																</div>
 																@if ($deliveryOrder->logistic)
 																		<div class="flex">
@@ -136,15 +131,15 @@
 																						<path
 																								d="M13.8536 4.5708L13.6813 4.50909L12.222 1.77309C11.9479 1.25892 11.5392 0.828921 11.0396 0.52908C10.5401 0.229238 9.96837 0.0708318 9.38571 0.0708008H5.71114C5.03637 0.0707732 4.37869 0.283106 3.83133 0.67771C3.28396 1.07231 2.87466 1.62917 2.66143 2.26937L1.96586 4.35609C1.38311 4.60171 0.885769 5.01377 0.536089 5.54069C0.186409 6.06761 -6.89867e-05 6.68598 1.91447e-08 7.31837V8.74937C1.91447e-08 9.66223 0.543857 10.4465 1.32429 10.8001C1.42535 11.3791 1.72176 11.9061 2.16413 12.2932C2.6065 12.6802 3.16814 12.9041 3.75549 12.9274C4.34284 12.9507 4.92044 12.772 5.39209 12.4212C5.86373 12.0704 6.20095 11.5686 6.34757 10.9994H11.6524C11.799 11.5686 12.1363 12.0704 12.6079 12.4212C13.0796 12.772 13.6572 12.9507 14.2445 12.9274C14.8319 12.9041 15.3935 12.6802 15.8359 12.2932C16.2782 11.9061 16.5746 11.3791 16.6757 10.8001C17.0704 10.6219 17.4052 10.3337 17.6401 9.96994C17.875 9.60618 18 9.18238 18 8.74937V8.31352C17.9999 7.64999 17.7945 7.00275 17.4119 6.46063C17.0293 5.91851 16.4883 5.50807 15.8631 5.28566L13.9217 4.59523V4.5708H13.8536ZM3.88029 2.67566C4.00828 2.29137 4.25402 1.95714 4.58264 1.72036C4.91127 1.48358 5.3061 1.35628 5.71114 1.35652H7.07143V4.5708H3.249L3.88029 2.67566ZM12.2567 4.5708H8.35714V1.35652H9.38571C9.73534 1.35639 10.0784 1.45131 10.3783 1.63113C10.6781 1.81095 10.9234 2.06889 11.088 2.37737L12.258 4.5708H12.2567ZM2.57143 10.3565C2.57143 10.0155 2.70689 9.6885 2.94801 9.44738C3.18912 9.20626 3.51615 9.0708 3.85714 9.0708C4.19814 9.0708 4.52516 9.20626 4.76628 9.44738C5.0074 9.6885 5.14286 10.0155 5.14286 10.3565C5.14286 10.6975 5.0074 11.0245 4.76628 11.2657C4.52516 11.5068 4.19814 11.6422 3.85714 11.6422C3.51615 11.6422 3.18912 11.5068 2.94801 11.2657C2.70689 11.0245 2.57143 10.6975 2.57143 10.3565ZM14.1429 9.0708C14.4838 9.0708 14.8109 9.20626 15.052 9.44738C15.2931 9.6885 15.4286 10.0155 15.4286 10.3565C15.4286 10.6975 15.2931 11.0245 15.052 11.2657C14.8109 11.5068 14.4838 11.6422 14.1429 11.6422C13.8019 11.6422 13.4748 11.5068 13.2337 11.2657C12.9926 11.0245 12.8571 10.6975 12.8571 10.3565C12.8571 10.0155 12.9926 9.6885 13.2337 9.44738C13.4748 9.20626 13.8019 9.0708 14.1429 9.0708Z" />
 																				</svg>
-																				<p class="mb-2 text-sm font-normal text-gray-700 line-clamp-1">
+																				<p class="mb-2 text-sm font-normal text-gray-700 line-clamp-2">
 																						[{{ ucfirst($deliveryOrder->kendaraan->plat_nomor) }}]
 																						{{ ucfirst($deliveryOrder->kendaraan->merk) }}</p>
 																		</div>
-																		<p class="mb-2 text-xs font-normal text-gray-500">
-																				{{ \App\Helpers\Date::parseMilliseconds($deliveryOrder->created_at) }}</p>
 																@else
 																		<p class="mb-2 text-sm font-normal text-gray-700 line-clamp-2">Driver belum dipilih admin gudang</p>
 																@endif
+																<p class="mb-2 text-xs font-normal text-gray-500">
+																		{{ \App\Helpers\Date::parseMilliseconds($deliveryOrder->created_at) }}</p>
 												</a>
 												@can('ADMIN')
 														<div class="relative hidden h-full w-full items-center justify-center group-hover:flex">
@@ -167,7 +162,8 @@
 		</div>
 @else
 		@if (request('search'))
-				<h1 class="text-md mb-2 text-center font-medium text-red-600">Tidak ada Delivery Order {{ request('search') }}</h1>
+				<h1 class="text-md mb-2 text-center font-medium text-red-600">Tidak ada Delivery Order {{ request('search') }}
+				</h1>
 		@else
 				<h1 class="text-md mb-2 text-center font-medium text-red-600">Belum ada Delivery Order</h1>
 		@endif
@@ -184,34 +180,36 @@
 @include('includes.moment-date-range')
 <script>
 		$(function() {
-
-				var start = moment().subtract(29, 'days');
-				var end = moment();
+				const pathname = window.location.href;
+				console.log(pathname);
+				var start = (pathname.includes("datestart")) ? moment('{{ request('datestart') }}') : moment().subtract(3,
+						'years');
+				var end = (pathname.includes("dateend")) ? moment('{{ request('dateend') }}') : moment();
 
 				function cb(start, end) {
-						$("#datestart").val(start.format('Y-m-d'))
-						$("#dateend").val(end.format('Y-m-d'))
+						$("#datestart").val(start.format('Y-M-D'))
+						$("#dateend").val(end.format('Y-M-D'))
 						$('#reportrange .datevalue').html(start.format('D MMMM, YYYY') + ' - ' + end.format('D MMMM, YYYY'));
-						
-						if(start==null)$('#reportrange .datevalue').html(start.format('D MMMM, YYYY') + ' - ' + end.format('D MMMM, YYYY'));
-						// $("#form").submit();
 				}
 				$('#reportrange').daterangepicker({
 						startDate: start,
 						endDate: end,
 						ranges: {
-								'Today': [moment(), moment()],
-								'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-								'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-								'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-								'This Month': [moment().startOf('month'), moment().endOf('month')],
-								'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf(
-								'month')]
+								'Hari ini': [moment(), moment()],
+								'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+								'7 Hari lalu': [moment().subtract(6, 'days'), moment()],
+								'30 Hari lalu': [moment().subtract(29, 'days'), moment()],
+								'1 Tahun lalu': [moment().subtract(1, 'year'), moment()],
+								'2 Tahun lalu': [moment().subtract(2, 'years'), moment()],
+								'3 Tahun lalu': [moment().subtract(3, 'years'), moment()],
+								'Bulan ini': [moment().startOf('month'), moment().endOf('month')],
+								'Bulan lalu': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf(
+										'month')],
+								'Tahun lalu': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf(
+										'year')]
 						}
 				}, cb);
-
 				cb(start, end);
-
 		});
 		$('.show_confirm').click(function(event) {
 				var form = $(this).closest("form");
@@ -232,11 +230,9 @@
 						}
 				})
 		});
-
 		$('.delete_search').click(function(e) {
 				$("#searchbox").val('');
 				$("#form").submit();
 		})
-		
 </script>
 @endpush
