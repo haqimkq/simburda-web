@@ -18,6 +18,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->integer('nomor_seri');
             $table->enum('kondisi', ['BARU', 'BEKAS'])->default('BARU');
+            $table->enum('status', ['DIPESAN', 'DIPINJAM', 'TERSEDIA'])->default('TERSEDIA');
             $table->string('keterangan');
             $table->timestamps();
             $table->softDeletes();

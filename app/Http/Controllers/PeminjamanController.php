@@ -152,7 +152,7 @@ class PeminjamanController extends Controller
 
     public function getBarangByGudang(Gudang $gudang){
         $json=[];
-        $barangs = Barang::where('jenis','TIDAK_HABIS_PAKAI')->where('gudang_id',$gudang->id)->get();
+        $barangs = Barang::where('jenis','TIDAK_HABIS_PAKAI')->where('gudang_id',$gudang->id)->whereRelation('barangTidakHabisPakai', 'peminjaman_id', null)->get();
         foreach($barangs as $barang){
             $detail = [
                 'id' => $barang->barangTidakHabisPakai->id,

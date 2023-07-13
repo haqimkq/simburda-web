@@ -96,7 +96,6 @@ class AksesBarangController extends Controller
             foreach($request->id as $idAksesBarang){
                 $aksesBarang=AksesBarang::find($idAksesBarang);
                 $aksesBarang->disetujui_admin = true;
-                $aksesBarang->disetujui_admin = true;
                 $aksesBarang->save();
             }
         }
