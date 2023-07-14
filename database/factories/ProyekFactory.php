@@ -26,11 +26,11 @@ class ProyekFactory extends Factory
             $tgl_selesai = fake()->dateTimeBetween($date, 'now');
             $updated_at = $tgl_selesai;
         } else $tgl_selesai = NULL;
-        $project_manager = User::where('role', 'SET_MANAGER')->get()->random()->id;
+        $project_manager = User::where('role', 'SITE_MANAGER')->get()->random()->id;
         return [
             'id' => fake()->uuid(),
             // 'project_manager_id' => $project_manager->id,
-            'set_manager_id' => $project_manager,
+            'site_manager_id' => $project_manager,
             'nama_proyek' => fake()->words(3, true),
             'alamat' => fake()->streetAddress(),
             'kota' => fake()->city(),

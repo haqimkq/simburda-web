@@ -55,7 +55,7 @@ class PeminjamanFactory extends Factory
             $start_date = Carbon::parse($tgl_peminjaman);
             $end_date = Carbon::parse($tgl_berakhir);
             if($now->between($start_date,$end_date)){
-                $status = fake()->randomElement(['DIPINJAM','MENUNGGU_AKSES','AKSES_DITOLAK','MENUNGGU_SURAT_JALAN','MENUNGGU_PENGIRIMAN','SEDANG_DIKIRIM']);
+                $status = fake()->randomElement(['DIPINJAM','MENUNGGU_AKSES','MENUNGGU_SURAT_JALAN','MENUNGGU_PENGIRIMAN','SEDANG_DIKIRIM']);
             }else if($now->isAfter($end_date)){
                 $status = 'SELESAI';
             }
@@ -102,25 +102,6 @@ class PeminjamanFactory extends Factory
             ];
         })->has(PeminjamanGp::factory()->withPeminjaman())
         // ->has(AksesBarang::factory()->needAccessWithPeminjaman())
-        ;
-    }
-    public function aksesDitolakGp(){
-        return $this->state(function (array $attributes){
-            $menangani = Menangani::whereRelation('proyek', 'selesai', 0)->get()->random();
-            $result = $this->initialData($menangani);
-            return [
-                'id' => fake()->uuid(),
-                'menangani_id' => $menangani->id,
-                'kode_peminjaman' => $result['kode_peminjaman'],
-                'tipe' => 'GUDANG_PROYEK',
-                'tgl_peminjaman' => $result['tgl_peminjaman'],
-                'created_at' => $result['tgl_peminjaman'],
-                'updated_at' => $result['tgl_peminjaman'],
-                'tgl_berakhir' => $result['tgl_berakhir'],
-                'status' => 'AKSES_DITOLAK',
-            ];
-        })->has(PeminjamanGp::factory()->withPeminjaman())
-        // ->has(AksesBarang::factory()->accessNotGrantedWithPeminjaman())
         ;
     }
     public function menungguSuratJalanGp(){

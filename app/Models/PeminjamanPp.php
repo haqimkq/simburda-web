@@ -25,9 +25,6 @@ class PeminjamanPp extends Model
     public function peminjamanAsal(){
         return $this->belongsTo(Peminjaman::class, 'peminjaman_asal_id');
     }
-    // public function peminjaman(){
-    //     return $this->morphOne(Peminjaman::class, 'peminjaman');
-    // }
     public function sjPengirimanPp(){
         return $this->hasOne(SjPengirimanPp::class, 'peminjaman_id');
     }

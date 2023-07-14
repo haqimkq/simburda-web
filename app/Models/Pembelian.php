@@ -22,6 +22,6 @@ class Pembelian extends Model
     }
 
     public function menyetujui(){
-        return $this->belongsTo(User::class,'set_manager_id');
+        return $this->belongsTo(User::class,'site_manager_id');
     }
 }

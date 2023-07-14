@@ -38,7 +38,7 @@
 					<span class="ml-3 flex-1 whitespace-nowrap">Kendaraan</span>
 				</a>
 			@endcanany
-			@canany(['ADMIN','SUPERVISOR','SET_MANAGER'])
+			@canany(['ADMIN','SUPERVISOR','SITE_MANAGER'])
 			<a href="/proyek" class="sidebar-link text-sm {{ request()->is('proyek*') ? 'bg-primary-light' : '' }}">
 				<span class="ml-3 flex-1 whitespace-nowrap">Proyek</span>
 			</a>
@@ -58,22 +58,22 @@
 					<span class="ml-3 flex-1 whitespace-nowrap">Delivery Order</span>
 				</a>
 			@endcanany
-			@canany(['ADMIN','LOGISTIC','ADMIN_GUDANG', 'SET_MANAGER', 'SUPERVISOR'])
+			@canany(['ADMIN','LOGISTIC','ADMIN_GUDANG', 'SITE_MANAGER', 'SUPERVISOR'])
 				<a href="/surat-jalan" class="sidebar-link text-sm {{ request()->is('surat-jalan*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Surat Jalan</span>
 				</a>
 			@endcanany
-			@canany(['ADMIN','ADMIN_GUDANG','SET_MANAGER','SUPERVISOR'])
+			@canany(['ADMIN','ADMIN_GUDANG','SITE_MANAGER','SUPERVISOR'])
 				<a href="/peminjaman" class="sidebar-link text-sm {{ request()->is('peminjaman*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Peminjaman</span>
 				</a>
 			@endcanany
-			@canany(['ADMIN','ADMIN_GUDANG','SET_MANAGER','SUPERVISOR'])
+			@canany(['ADMIN','ADMIN_GUDANG','SITE_MANAGER','SUPERVISOR'])
 				<a href="/pengembalian" class="sidebar-link text-sm {{ request()->is('pengembalian*') ? 'bg-primary-light' : '' }}">
 					<span class="ml-3 flex-1 whitespace-nowrap">Pengembalian</span>
 				</a>
 			@endcanany
-			@canany(['ADMIN','ADMIN_GUDANG','SET_MANAGER'])
+			@canany(['ADMIN','ADMIN_GUDANG','SITE_MANAGER'])
 				<a href="/akses-barang" class="sidebar-link text-sm {{ request()->is('akses-barang*') ? 'bg-primary-light' : '' }}">
 				<span class="ml-3 flex-1 whitespace-nowrap">Akses Barang</span>
 				<span

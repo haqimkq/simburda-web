@@ -21,12 +21,12 @@ return new class extends Migration
             $table->string('ukuran');
             $table->integer('jumlah');
             $table->string('status');
-            $table->enum('status_set_manager',['DITERIMA','DITOLAK','BELUM DIKONFIRMASI'])->default('BELUM DIKONFIRMASI');
+            $table->enum('status_site_manager',['DITERIMA','DITOLAK','BELUM DIKONFIRMASI'])->default('BELUM DIKONFIRMASI');
             $table->timestamps();
             $table->softDeletes();
         });
         Schema::table('pembelians', function (Blueprint $table) {
-            $table->foreignUuid('set_manager_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('site_manager_id')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignUuid('menangani_id')->constrained('menanganis')->onUpdate('cascade')->onDelete('cascade');
         });
     }

@@ -18,15 +18,13 @@ class AksesBarangController extends Controller
     {
         //
         $authUser = Auth::user();
-        $menanganis = Menangani::where('user_id',$authUser->id)->get('id')->all();
-        $menanganis_id = array();
+        $menanganis = Menangani::where('user_id',$authUser->id)->get(['id','proyek_id'])->all();
         $proyeks_id = array();
         foreach($menanganis as $m){
-            array_push($menanganis_id,$m->id);
             array_push($proyeks_id,$m->proyek_id);
         }
         $countUndefinedAkses = AksesBarang::countUndefinedAkses();
-        if($authUser->role == 'SET_MANAGER'){
+        if($authUser->role == 'SITE_MANAGER'){
             $aksesBarangs = AksesBarang::
                 with(['peminjamanDetail.peminjaman.menangani.proyek' => function ($q){
                         $q->orderBy('created_at','DESC');
@@ -90,7 +88,7 @@ class AksesBarangController extends Controller
     public function store(Request $request)
     {
         $authUser = Auth::user();
-        if($authUser->role == 'SET_MANAGER' && $request->akses == 'setujui'){
+        if($authUser->role == 'SITE_MANAGER' && $request->akses == 'setujui'){
             foreach($request->id as $idAksesBarang){
                 $aksesBarang=AksesBarang::find($idAksesBarang);
                 $aksesBarang->disetujui_sm = true;
@@ -104,7 +102,7 @@ class AksesBarangController extends Controller
                 $aksesBarang->save();
             }
         }
-        if($authUser->role == 'SET_MANAGER' && $request->akses == 'tolak'){
+        if($authUser->role == 'SITE_MANAGER' && $request->akses == 'tolak'){
             foreach($request->id as $idAksesBarang){
                 $aksesBarang=AksesBarang::find($idAksesBarang);
                 $aksesBarang->disetujui_sm = false;

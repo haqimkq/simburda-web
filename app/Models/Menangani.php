@@ -31,6 +31,23 @@ class Menangani extends Model
     public function pembelian(){
         return $this->hasMany(Pembelian::class);
     }
+    public static function getProyekIdFromUser($user_id){
+        $menanganis = Self::where('user_id',$user_id)->get(['proyek_id'])->all();
+        $proyeks_id = array();
+        foreach($menanganis as $m){
+            array_push($proyeks_id,$m->proyek_id);
+        }
+        return $proyeks_id;
+    }
+    public static function getMenanganiIdFromUser($user_id){
+        $menanganis = Self::where('user_id',$user_id)->get(['id'])->all();
+        $menangani_id = array();
+        foreach($menanganis as $m){
+            array_push($menangani_id,$m->id);
+        }
+        return $menangani_id;
+
+    }
     public function getCreatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);

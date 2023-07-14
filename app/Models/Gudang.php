@@ -47,12 +47,10 @@ class Gudang extends Model
     }
     public static function getActiveSjGp($id){
         $sjPengirimanGp = SjPengirimanGp::whereRelation('peminjamanGp', 'gudang_id', $id)->whereRelation('suratJalan','status','!=','SELESAI')->get()->count();
-        $sjPenggunaanGp = SjPenggunaanGp::whereRelation('penggunaanGp', 'gudang_id', $id)->whereRelation('suratJalan','status','!=','SELESAI')->get()->count();
-        return $sjPengirimanGp+$sjPenggunaanGp;
+        return $sjPengirimanGp;
     }
     public static function getActiveSjPg($id){
         $sjPengembalian = SjPengembalian::whereRelation('pengembalian.peminjaman.peminjamanGp', 'gudang_id', $id)->whereRelation('suratJalan','status','!=','SELESAI')->get()->count();
-        $sjPengembalianPenggunaan = SjPengembalianPenggunaan::whereRelation('pengembalianPenggunaan.penggunaan.penggunaanGp', 'gudang_id', $id)->whereRelation('suratJalan','status','!=','SELESAI')->get()->count();
-        return $sjPengembalian+$sjPengembalianPenggunaan;
+        return $sjPengembalian;
     }
 }

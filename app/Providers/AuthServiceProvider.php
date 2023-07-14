@@ -49,8 +49,8 @@ class AuthServiceProvider extends ServiceProvider
             return $user->role === 'PROJECT_MANAGER';
         });
         
-        Gate::define('SET_MANAGER', function (User $user) {
-            return $user->role === 'SET_MANAGER';
+        Gate::define('SITE_MANAGER', function (User $user) {
+            return $user->role === 'SITE_MANAGER';
         });
 
         Gate::define('PURCHASING', function (User $user) {

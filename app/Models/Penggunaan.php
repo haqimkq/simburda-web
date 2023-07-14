@@ -59,32 +59,18 @@ class Penggunaan extends Model
     public static function getMenanganiUser($id){
         return self::find($id)->menangani->user;
     }
-    public static function getAllBarang($penggunaan_id, $tipe_barang=null){
+    public static function getAllBarang($penggunaan_id){
         $result = collect();
         $penggunaan = self::where('id',$penggunaan_id)->first();
         foreach($penggunaan->penggunaanDetail as $pd){
-            $barang=collect();
-            if($tipe_barang!=null){
-                if($pd->barang->jenis == $tipe_barang) {
-                    $barang['id'] = $pd->barang->id;
-                    $barang['gambar'] = $pd->barang->gambar;
-                    $barang['nama'] = $pd->barang->nama;
-                    $barang['merk'] = $pd->barang->merk;
-                    $barang['jumlah_satuan'] = $pd->jumlah_satuan;
-                    if($tipe_barang == 'HABIS_PAKAI') $barang['ukuran'] = $pd->barang->barangHabisPakai->ukuran;
-                    if($tipe_barang == 'TIDAK_HABIS_PAKAI') $barang['nomor_seri'] = $pd->barang->barangTidakHabisPakai->nomor_seri;
-                    $result->push($barang);
-                }
-            }else{
-                $barang['id'] = $pd->barang->id;
-                $barang['gambar'] = $pd->barang->gambar;
-                $barang['nama'] = $pd->barang->nama;
-                $barang['merk'] = $pd->barang->merk;
-                $barang['jumlah_satuan'] = $pd->jumlah_satuan;
-                if($tipe_barang == 'HABIS_PAKAI') $barang['ukuran'] = $pd->barang->barangHabisPakai->ukuran;
-                if($tipe_barang == 'TIDAK_HABIS_PAKAI') $barang['nomor_seri'] = $pd->barang->barangTidakHabisPakai->nomor_seri;
-                $result->push($barang);
-            }
+            $barang = collect();
+            $barang['id'] = $pd->id;
+            $barang['gambar'] = $pd->barang->barang->gambar;
+            $barang['nama'] = $pd->barang->barang->nama;
+            $barang['merk'] = $pd->barang->barang->merk;
+            $barang['jumlah_satuan'] = $pd->barang->jumlah_satuan;
+            $barang['ukuran'] = $pd->barang->barangHabisPakai->ukuran;
+            $result->push($barang);
         }
         return $result;
     }

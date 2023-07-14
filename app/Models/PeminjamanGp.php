@@ -25,10 +25,6 @@ class PeminjamanGp extends Model
     public function peminjaman(){
         return $this->belongsTo(Peminjaman::class);
     }
-
-    // public function peminjaman(){
-    //     return $this->morphOne(Peminjaman::class, 'peminjaman');
-    // }
     public function gudang(){
         return $this->belongsTo(Gudang::class);
     }

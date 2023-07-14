@@ -36,9 +36,6 @@ class TtdVerification extends Model
     public function ttdSjPenanggungJawabPeminjam(){
         return $this->hasOne(SjPengirimanPp::class,'ttd_tgg_jwb');
     }
-    public function ttdSjPenanggungJawabPengguna(){
-        return $this->hasOne(SjPenggunaanPp::class,'ttd_tgg_jwb');
-    }
     public function getCreatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);
@@ -73,9 +70,6 @@ class TtdVerification extends Model
         }else if($sj->sjPengirimanPp!=null){
             $user_peminjam = $sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->user;
             $user = $sj->sjPengirimanPp->peminjamanPp->peminjamanAsal->menangani->user;
-        }else if($sj->sjPenggunaanPp!=null){
-            $user_peminjam = $sj->sjPenggunaanPp->penggunaanPp->penggunaan->menangani->user;
-            $user = $sj->sjPenggunaanPp->penggunaanPp->penggunaanAsal->menangani->user;
         }
         if($sj->ttd_admin!=null){
             TtdVerification::find($sj->ttd_admin)->update([
@@ -101,14 +95,6 @@ class TtdVerification extends Model
                 ]);
             }
         }
-        if($sj->sjPenggunaanPp!=null){
-            if($sj->sjPenggunaanPp->ttd_tgg_jwb!=null){
-                TtdVerification::where('id', $sj->sjPenggunaanPp->ttd_tgg_jwb)->update([
-                    'user_id' => $user_peminjam->id,
-                    'sebagai' => self::setSebagaiTtdSjVerification($user, $sj)
-                ]);
-            }
-        }
     }
     public static function setSebagaiTtdSjVerification($user, $sj){
         if($user->role=='LOGISTIC'){
@@ -122,17 +108,13 @@ class TtdVerification extends Model
                 $check_user=$sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->user;
                 if($check_user->id == $user->id) $sebagai = "PENERIMA";
                 else $sebagai = "PEMBERI";
-            }else if($sj->sjPenggunaanPp!=null){
-                $check_user=$sj->sjPenggunaanPp->penggunaanPp->penggunaan->menangani->user;
-                if($check_user->id == $user->id) $sebagai = "PENERIMA";
-                else $sebagai = "PEMBERI";
             }
         }else if($user->role=='ADMIN_GUDANG'){
             if($sj->sjPengirimanGp !=null){
                 $sebagai = "PEMBERI";
             }else if($sj->sjPengembalian !=null){
                 $sebagai = "PENERIMA";
-            }else if($sj->sjPengirimanPp!=null || $sj->sjPenggunaanPp!=null){
+            }else if($sj->sjPengirimanPp!=null){
                 $sebagai = "PEMBUAT";
             }
         }
@@ -146,8 +128,6 @@ class TtdVerification extends Model
             $sj = $ttd_verification->ttdSjDriver;
         }else if($ttd_verification->ttdSjPenanggungJawab != null){
             $sj = $ttd_verification->ttdSjPenanggungJawab;
-        }else if($ttd_verification->ttdSjPenanggungJawabPeminjam != null){
-            $sj = $ttd_verification->ttdSjPenanggungJawabPeminjam->suratJalan;
         }
         return $sj;
     }

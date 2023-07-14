@@ -27,32 +27,17 @@ class Pengembalian extends Model
     public function sjPengembalian(){
         return $this->hasOne(SjPengembalian::class);
     }
-    public static function getAllBarang($pengembalian_id, $tipe_barang=null){
+    public static function getAllBarang($pengembalian_id){
         $result = collect();
         $pengembalian = self::where('id',$pengembalian_id)->first();
         foreach($pengembalian->pengembalianDetail as $pd){
             $barang = collect();
-            if($tipe_barang!=null){
-                if($pd->barang->jenis == $tipe_barang) {
-                    $barang['id'] = $pd->barang->id;
-                    $barang['gambar'] = $pd->barang->gambar;
-                    $barang['nama'] = $pd->barang->nama;
-                    $barang['merk'] = $pd->barang->merk;
-                    $barang['jumlah_satuan'] = $pd->jumlah_satuan;
-                    if($tipe_barang == 'TIDAK_HABIS_PAKAI') $barang['nomor_seri'] = $pd->barang->barangTidakHabisPakai->nomor_seri;
-                    if($tipe_barang == 'HABIS_PAKAI') $barang['ukuran'] = $pd->barang->barangHabisPakai->ukuran;
-                    $result->push($barang);
-                }
-            }else{
-                $barang['id'] = $pd->barang->id;
-                $barang['gambar'] = $pd->barang->gambar;
-                $barang['nama'] = $pd->barang->nama;
-                $barang['merk'] = $pd->barang->merk;
-                $barang['jumlah_satuan'] = $pd->jumlah_satuan;
-                if($tipe_barang == 'TIDAK_HABIS_PAKAI') $barang['nomor_seri'] = $pd->barang->barangTidakHabisPakai->nomor_seri;
-                if($tipe_barang == 'HABIS_PAKAI') $barang['ukuran'] = $pd->barang->barangHabisPakai->ukuran;
-                $result->push($barang);
-            }
+            $barang['id'] = $pd->barang->id;
+            $barang['gambar'] = $pd->barang->gambar;
+            $barang['nama'] = $pd->barang->nama;
+            $barang['merk'] = $pd->barang->merk;
+            $barang['nomor_seri'] = $pd->barang->barangTidakHabisPakai->nomor_seri;
+            $result->push($barang);
         }
         return $result;
     }

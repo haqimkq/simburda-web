@@ -25,8 +25,8 @@ class AksesBarang extends Model
         return $this->belongsTo(PeminjamanDetail::class);
     }
 
-    public function setManager(){
-        return $this->belongsTo(User::class, 'set_manager_id');
+    public function siteManager(){
+        return $this->belongsTo(User::class, 'site_manager_id');
     }
 
     public function adminGudang(){
@@ -59,7 +59,7 @@ class AksesBarang extends Model
                     return $query->where('disetujui_admin', NULL)->where('disetujui_sm', NULL);
                 if($filter == 'akses-belum-ditentukan' && $authUserRole == 'ADMIN_GUDANG')
                     return $query->where('disetujui_admin', NULL);
-                if($filter == 'akses-belum-ditentukan' && $authUserRole == 'SET_MANAGER')
+                if($filter == 'akses-belum-ditentukan' && $authUserRole == 'SITE_MANAGER')
                     return $query->where('disetujui_sm', NULL);
             }
             // });
@@ -70,7 +70,7 @@ class AksesBarang extends Model
         $query->when(!isset($filters['filter']) && ($authUserRole == 'ADMIN' || $authUserRole == 'SUPERVISOR'), function($query){
             return $query->where('disetujui_admin', NULL)->where('disetujui_sm', NULL);
         });
-        $query->when(!isset($filters['filter']) && $authUserRole == 'SET_MANAGER', function($query){
+        $query->when(!isset($filters['filter']) && $authUserRole == 'SITE_MANAGER', function($query){
             return $query->where('disetujui_sm', NULL);
         });
         $query->when(!isset($filters['filter']) && $authUserRole == 'ADMIN_GUDANG', function($query){
@@ -94,7 +94,7 @@ class AksesBarang extends Model
         $authUser = Auth::user();
         if($authUser->role=='ADMIN'){
             return self::where('disetujui_admin', NULL)->orWhere('disetujui_sm',NULL)->count();
-        }else if($authUser->role=='SET_MANAGER'){
+        }else if($authUser->role=='SITE_MANAGER'){
             return self::whereHas('peminjamanDetail.peminjaman.menangani', fn($q) => $q->where('user_id',$authUser->id))->where('disetujui_sm',NULL)->count();
         }else if($authUser->role=='ADMIN_GUDANG'){
             return self::where('disetujui_admin',NULL)->count();

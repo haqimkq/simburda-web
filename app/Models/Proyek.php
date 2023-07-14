@@ -24,8 +24,8 @@ class Proyek extends Model
         return $this->belongsToMany(User::class,'menanganis','proyek_id','user_id');
     }
 
-    public function setManager(){
-        return $this->belongsTo(User::class, 'set_manager_id');
+    public function siteManager(){
+        return $this->belongsTo(User::class, 'site_manager_id');
     }
 
     public static function filterBetweenDate($start_date, $end_date){

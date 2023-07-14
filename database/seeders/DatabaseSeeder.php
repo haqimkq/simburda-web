@@ -165,7 +165,7 @@ class DatabaseSeeder extends Seeder
         ])->create();
         
         User::factory(10)->state([
-            'role' => 'SET_MANAGER'
+            'role' => 'SITE_MANAGER'
         ])->create();
 
         User::factory(10)->state([
@@ -179,7 +179,7 @@ class DatabaseSeeder extends Seeder
 
         $SM1 = User::factory()->state([
             'id'=>'02e6804b-9d38-3075-bbc3-69b8cc29da8c',
-            'role'=>'SET_MANAGER',
+            'role'=>'SITE_MANAGER',
             'nama' => 'Novita Cahyanintyas, ST.',
             'email' => 'novitacahya@gmail.com',
             'foto' => 'assets/users/Project Manager_Novita Cahyanintyas, ST.jpeg',
@@ -390,7 +390,7 @@ class DatabaseSeeder extends Seeder
             'kota' => 'Bekasi',
             'latitude' => '-6.2813794',
             'longitude' => '107.0118061',
-        ])->for($SM1, 'setManager')->create();
+        ])->for($SM1, 'siteManager')->create();
 
         Proyek::factory(9)
         ->state(new Sequence(
@@ -612,9 +612,9 @@ class DatabaseSeeder extends Seeder
         ->has(PeminjamanDetail::factory(8)->resetData()->menungguAksesGp(), 'peminjamanDetail')
         ->create();
         
-        Peminjaman::factory(40)->aksesDitolakGp()
-        ->has(PeminjamanDetail::factory(8)->resetData()->aksesDitolakGp(), 'peminjamanDetail')
-        ->create();
+        // Peminjaman::factory(40)->aksesDitolakGp()
+        // ->has(PeminjamanDetail::factory(8)->resetData()->aksesDitolakGp(), 'peminjamanDetail')
+        // ->create();
         
         Peminjaman::factory(40)->menungguSuratJalanGp()
         ->has(PeminjamanDetail::factory(8)->resetData()->menungguSuratJalanGp(), 'peminjamanDetail')

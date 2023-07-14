@@ -53,7 +53,7 @@ class PeminjamanDetailFactory extends Factory
             }else if($peminjaman->status == "SELESAI"){
                 $status = "DIKEMBALIKAN";
                 BarangTidakHabisPakai::where('id', $barang->id)->update(['peminjaman_id' => NULL]);
-            }else if($peminjaman->status == "MENUNGGU_AKSES" || $peminjaman->status == "AKSES_DITOLAK" || $peminjaman->status == "MENUNGGU_SURAT_JALAN" || $peminjaman->status == "MENUNGGU_PENGIRIMAN" || $peminjaman->status == "SEDANG_DIKIRIM"){
+            }else if($peminjaman->status == "MENUNGGU_AKSES" || $peminjaman->status == "MENUNGGU_SURAT_JALAN" || $peminjaman->status == "MENUNGGU_PENGIRIMAN" || $peminjaman->status == "SEDANG_DIKIRIM"){
                 $status = "MENUNGGU_AKSES";
             }
             return [

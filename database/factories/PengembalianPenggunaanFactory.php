@@ -5,7 +5,7 @@ namespace Database\Factories;
 use App\Models\PengembalianPenggunaan;
 use App\Models\Penggunaan;
 use App\Models\PenggunaanDetail;
-use App\Models\SjPengembalianPenggunaan;
+use App\Models\SjPengembalian;
 use App\Models\SuratJalan;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -42,7 +42,7 @@ class PengembalianPenggunaanFactory extends Factory
                 'created_at' => $penggunaan->created_at
             ];
         })->has(
-            SjPengembalianPenggunaan::factory()->state(function (array $attributes, PengembalianPenggunaan $pengembalian) {
+            SjPengembalian::factory()->state(function (array $attributes, PengembalianPenggunaan $pengembalian) {
                 $sj = SuratJalan::factory()->selesaiSj()->create();
                 return [
                     'id' => fake()->uuid(),
@@ -53,7 +53,7 @@ class PengembalianPenggunaanFactory extends Factory
                 ];
             })
             // ->for(SuratJalan::factory()->selesaiSj())
-        , 'sjPengembalianPenggunaan');
+        , 'sjPengembalian');
     }
     public function menungguPengembalian(){
         return $this->state(function (array $attributes, Penggunaan $penggunaan){
@@ -64,7 +64,7 @@ class PengembalianPenggunaanFactory extends Factory
                 'created_at' => $penggunaan->created_at
             ];
         })->has(
-            SjPengembalianPenggunaan::factory()->state(function (array $attributes, PengembalianPenggunaan $pengembalian) {
+            SjPengembalian::factory()->state(function (array $attributes, PengembalianPenggunaan $pengembalian) {
                 $sj = SuratJalan::factory()->menungguSj()->create();
                 return [
                     'id' => fake()->uuid(),
@@ -75,7 +75,7 @@ class PengembalianPenggunaanFactory extends Factory
                 ];
             })
             // ->for(SuratJalan::factory()->menungguSj())
-        , 'sjPengembalianPenggunaan');
+        , 'sjPengembalian');
     }
     public function sedangDikembalikan(){
         return $this->state(function (array $attributes, Penggunaan $penggunaan){
@@ -86,7 +86,7 @@ class PengembalianPenggunaanFactory extends Factory
                 'created_at' => $penggunaan->created_at
             ];
         })->has(
-            SjPengembalianPenggunaan::factory()->state(function (array $attributes, PengembalianPenggunaan $pengembalian) {
+            SjPengembalian::factory()->state(function (array $attributes, PengembalianPenggunaan $pengembalian) {
                 $sj = SuratJalan::factory()->dalamPerjalananSj()->create();
                 return [
                     'id' => fake()->uuid(),
@@ -97,7 +97,7 @@ class PengembalianPenggunaanFactory extends Factory
                 ];
             })
             // ->for(SuratJalan::factory()->dalamPerjalananSj())
-        , 'sjPengembalianPenggunaan');
+        , 'sjPengembalian');
     }
     public function menungguSuratJalan(){
         return $this->state(function (array $attributes, Penggunaan $penggunaan){
