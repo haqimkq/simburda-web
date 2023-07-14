@@ -53,32 +53,6 @@ class UserController extends Controller
             return ResponseFormatter::error("Authentication Failed:". $error->getMessage());
         }
     }
-    public function loginPIN(Request $request){
-        try{
-            $credentials = $request->validate([
-                'email' => 'required',
-                'pin' => 'required',
-            ]);
-            $user = User::where('email',$credentials['email'])->first();
-            if(Hash::check($credentials['pin'],$user->pin)){
-
-                $user = User::where('email', $request->email)->first();
-                if($request->device_token){
-                    $user->update(['device_token' => $request->device_token]);
-                }
-                $token = $user->createToken('authToken', ["$user->role"])->plainTextToken;
-                $token = $user->createToken('authToken')->plainTextToken;
-                $user['token'] = $token;
-
-                return ResponseFormatter::success('user', $user, 'Login Successfully');
-            } else{
-                return ResponseFormatter::error('Authentication Failed');
-            }
-
-        }catch (Exception $error) {
-            return ResponseFormatter::error("Authentication Failed:". $error->getMessage());
-        }
-    }
     public function logout(Request $request){
         try{
             $request->user()->currentAccessToken()->delete();
@@ -224,9 +198,5 @@ class UserController extends Controller
         }catch (Exception $error){
             return ResponseFormatter::error("Upload TTD Failed:". $error->getMessage());
         }
-    }
-
-    public function updatePassword(Request $request){
-
     }
 }
