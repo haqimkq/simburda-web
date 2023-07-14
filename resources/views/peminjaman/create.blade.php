@@ -115,13 +115,20 @@
             </div>
 			<div class="w-full flex-col hidden" id="proyek-asal-field">
                 <label for="orderBy" class="mb-2 block text-sm font-normal text-gray-700">Proyek Asal Barang</label>
-                <select name="peminjaman_asal_id" id="proyekAsal"
+                <select name="proyek_asal_id" id="proyekAsal"
                     class="dark: w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green">
 					<option value="" selected>Proyek Asal Barang</option>
 					@foreach ($allProyek as $allProyek)
 						<option value="{{ $allProyek->id }}">{{ $allProyek->nama_proyek }}</option>
 					@endforeach
                 </select>
+            </div>
+            <div class="w-full flex-col hidden" id="kode-peminjaman-field">
+                <label for="searchKodePeminjaman" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Kode Peminjaman</label>
+                <select id="searchKodePeminjaman" name="peminjaman_asal_id" class="searchKodePeminjaman block w-full" required></select>
+                @error('kode_peminjaman')
+                        @include('shared.errorText')
+                @enderror
             </div>
         </div>
 		<div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3" id="barang"></div>
@@ -131,15 +138,60 @@
 		</div>
     </form>
 	<script>
+        $('#searchKodePeminjaman').select2({
+						width: null,
+						placeholder: 'Pilih Kode Peminjaman',
+						language: {
+								inputTooShort: function() {
+										return 'Masukkan 1 atau lebih karakter';
+								},
+								formatNoMatches: function() {
+										return "Tidak ditemukan";
+								},
+								noResults: function() {
+										return "Kode Peminjaman tidak ditemukan";
+								},
+								searching: function() {
+										return "Sedang mencari...";
+								}
+						},
+						ajax: {
+								url: '/selectKodePeminjaman',
+								dataType: 'json',
+								delay: 100,
+                                data:function(data){ 
+                                    return {
+                                        proyek_id : $('#proyekAsal').val(), 
+                                        q: data.term
+                                    };
+                                },
+								processResults: function(data) {
+										return {
+												results: $.map(data, function(item) {
+														return {
+																text: item.kode_peminjaman,
+																id: item.id,
+														}
+												})
+										};
+								},
+								cache: true
+						}
+				});
 		$("#tipe").change(function() {
 			var tipe = $("#tipe option:selected").val();
 			var gudang = document.getElementById("gudang-field");
 			var proyekLain = document.getElementById("proyek-asal-field");
+            var kodePeminjaman = document.getElementById("kode-peminjaman-field");
 			if(tipe == "GUDANG_PROYEK"){
 				gudang.classList.remove("hidden");
 				if(!proyekLain.classList.contains('hidden')){
 					gudang.classList.add("hidden");
 				}
+				if(!kodePeminjaman.classList.contains('hidden')){
+					gudang.classList.add("hidden");
+				}
+
 			}else if(tipe == "PROYEK_PROYEK"){
 				proyekLain.classList.remove("hidden");
 				if(!gudang.classList.contains('hidden')){
@@ -149,7 +201,6 @@
 		}); 
 		$("#gudang").change(function() {
 			$.getJSON('http://127.0.0.1:8000/' + "peminjaman/tambah/barangByGudang/" + $("#gudang option:selected").val(), function(data) {
-				console.log(data);
 				var temp = [];
 				//CONVERT INTO ARRAY
 				$.each(data, function(key, value) {
@@ -185,8 +236,11 @@
 			});   
 		}); 
 		$("#proyekAsal").change(function() {
-			$.getJSON('http://127.0.0.1:8000/' + "peminjaman/tambah/barangByGudang/" + $("#gudang option:selected").val(), function(data) {
-				console.log(data);
+            var kodePeminjaman = document.getElementById("kode-peminjaman-field");
+            kodePeminjaman.classList.remove("hidden");   
+		});
+		$("#searchKodePeminjaman").change(function() {
+            $.getJSON('http://127.0.0.1:8000/' + "peminjaman/tambah/barangByKodePeminjaman/" + $("#searchKodePeminjaman option:selected").val(), function(data) {
 				var temp = [];
 				//CONVERT INTO ARRAY
 				$.each(data, function(key, value) {
@@ -221,6 +275,7 @@
 				});            
 			});   
 		});
+
 	</script>
 @endsection
 

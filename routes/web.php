@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\PeminjamanController;
-use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\ProyekController;
 use App\Http\Controllers\RegisterController;
@@ -52,47 +50,28 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(HomeController::class)->group(function () {
         Route::get('home', 'index')->name('home');
     });
-    Route::middleware(['role:ADMIN_GUDANG,PURCHASING'])->controller(BarangController::class)->group(function () {
+    Route::middleware(['admin-admingudang'])->controller(BarangController::class)->group(function () {
         Route::get('barang', 'index')->name('barang');
         Route::get('barang/tambah', 'create')->name('barang.create');
         Route::post('barang/store', 'store')->name('barang.store');
-        Route::get('barang/detail/{barang}', 'show')->name('barang.show');
+        Route::get('barang/detail/{id}', 'show')->name('barang.show');
         Route::post('barang/tambah-seri-baru/{nama}', 'tambahSeriBaru')->name('barang.tambahSeriBaru');
         Route::get('barang/seri/{nama}', 'showNamaBarang')->name('barang.seri');
         Route::get('barang/edit/{barang}', 'edit')->name('barang.edit');
         Route::post('barang/delete/{id}', 'destroy')->name('barang.destroy');
         Route::post('barang/update/{id}', 'update')->name('barang.update');
     });
-    Route::middleware((['role:ADMIN_GUDANG,PURCHASING']))->controller(PerusahaanController::class)->group(function (){
+    Route::middleware((['admin-setmanager-supervisor-admingudang']))->controller(PerusahaanController::class)->group(function (){
         Route::get('perusahaan', 'index')->name('perusahaan');
         Route::get('perusahaan/tambah', 'create')->name('perusahaan.create');
         Route::post('perusahaan/store', 'store')->name('perusahaan.store');
         Route::get('perusahaan/edit/{perusahaan}', 'edit')->name('perusahaan.edit');
         Route::post('perusahaan/update/{perusahaan}', 'update')->name('perusahaan.update');
         Route::get('perusahaan/detail/{id}', 'show')->name('perusahaan.show');
-        Route::post('perusahaan/delete/{perusahaan}', 'destroy')->name('perusahaan.destroy');
+        Route::post('perusahaan/delete/{id}', 'destroy')->name('perusahaan.destroy');
+        Route::get('perusahaan', 'create')->name('perusahaan.create');
     });
-    Route::middleware(['role:ADMIN_GUDANG,SUPERVISOR,SET_MANAGER,PROJECT_MANAGER'])->controller(PeminjamanController::class)->group(function(){
-        Route::get('peminjaman', 'index')->name('peminjaman');
-        Route::get('peminjaman/tambah', 'create')->name('peminjaman.create');
-        Route::post('peminjaman/store', 'store')->name('peminjaman.store');
-        Route::get('peminjaman/edit/{peminjaman}', 'edit')->name('peminjaman.edit');
-        Route::post('peminjaman/update/{peminjaman}', 'update')->name('peminjaman.update');
-        Route::get('peminjaman/detail/{id}', 'show')->name('peminjaman.show');
-        Route::post('peminjaman/delete/{peminjaman}', 'destroy')->name('peminjaman.destroy');
-        Route::get('peminjaman/tambah/barangByGudang/{gudang}', 'getBarangByGudang');
-        Route::get('peminjaman/tambah/barangByProyek/{proyek}', 'getBarangByGudang');
-    });
-    Route::middleware(['role:ADMIN_GUDANG,SUPERVISOR,SET_MANAGER,PROJECT_MANAGER'])->controller(PengembalianController::class)->group(function(){
-        Route::get('pengembalian', 'index')->name('pengembalian');
-        Route::get('pengembalian/tambah', 'create')->name('pengembalian.create');
-        Route::post('pengembalian/store', 'store')->name('pengembalian.store');
-        Route::get('pengembalian/edit/{pengembalian}', 'edit')->name('pengembalian.edit');
-        Route::post('pengembalian/update/{pengembalian}', 'update')->name('pengembalian.update');
-        Route::get('pengembalian/detail/{id}', 'show')->name('pengembalian.show');
-        Route::post('pengembalian/delete/{pengembalian}', 'destroy')->name('pengembalian.destroy');
-    });
-    Route::middleware(['role:ADMIN'])->controller(PenggunaController::class)->group(function () {
+    Route::middleware(['admin'])->controller(PenggunaController::class)->group(function () {
         Route::get('pengguna', 'index')->name('pengguna');
         Route::get('pengguna/tambah', 'create')->name('pengguna.create');
         Route::post('pengguna/store', 'store')->name('pengguna.store');
@@ -110,7 +89,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('signature/verified-do/{id}', 'verifiedTTDDeliveryOrder')->name('signature.verifiedTTDDeliveryOrder');
         Route::get('signature/verified-do/view/{id}', 'viewTTDDeliveryOrder')->name('signature.viewTTDDeliveryOrder');
     });
-    Route::middleware(['role:ADMIN_GUDANG,PURCHASING'])->controller(KendaraanController::class)->group(function () {
+    Route::middleware(['admin-admingudang'])->controller(KendaraanController::class)->group(function () {
         Route::get('kendaraan', 'index')->name('kendaraan');
         Route::get('kendaraan/tambah', 'create')->name('kendaraan.create');
         Route::post('kendaraan/store', 'store')->name('kendaraan.store');
@@ -119,20 +98,16 @@ Route::middleware(['auth'])->group(function () {
         Route::post('kendaraan/delete/{kendaraan}', 'destroy')->name('kendaraan.destroy');
         Route::post('kendaraan/update/{kendaraan}', 'update')->name('kendaraan.update');
     });
-    Route::middleware(['role:ADMIN_GUDANG,PURHASING'])->controller(GudangController::class)->group(function () {
+    Route::middleware(['admin-admingudang'])->controller(GudangController::class)->group(function () {
         Route::get('gudang', 'index')->name('gudang');
         Route::get('gudang/tambah', 'create')->name('gudang.create');
         Route::post('gudang/store', 'store')->name('gudang.store');
-        Route::get('gudang/detail/{gudang}', 'show')->name('gudang.show');
-        Route::get('gudang/edit/{gudang}', 'edit')->name('gudang.edit');
-        Route::post('gudang/delete/{gudang}', 'destroy')->name('gudang.destroy');
-        Route::post('gudang/update/{gudang}', 'update')->name('gudang.update');
+        Route::get('gudang/detail/{id}', 'show')->name('gudang.show');
+        Route::get('gudang/edit/{id}', 'edit')->name('gudang.edit');
+        Route::post('gudang/delete/{id}', 'destroy')->name('gudang.destroy');
     });
-    Route::middleware(['role:ADMIN_GUDANG,SET_MANAGER,SUPERVISOR,PROJECT_MANAGER'])->controller(ProyekController::class)->group(function () {
+    Route::middleware(['admin-setmanager'])->controller(ProyekController::class)->group(function () {
         Route::get('proyek', 'index')->name('proyek');
-        Route::get('proyek/detail/{id}', 'show')->name('proyek.show');
-    });
-    Route::middleware(['role:SET_MANAGER'])->controller(ProyekController::class)->group(function () {
         Route::get('proyek/tambah', 'create')->name('proyek.create');
         Route::post('proyek/store', 'store')->name('proyek.store');
         Route::get('proyek/detail/{id}', 'show')->name('proyek.show');
@@ -141,19 +116,17 @@ Route::middleware(['auth'])->group(function () {
         Route::post('proyek/update/{id}', 'update')->name('proyek.update');
         Route::get('selectSetManager', 'selectSetManager')->name('selectSetManager');
     });
-    Route::middleware(['role:ADMIN_GUDANG,PURCHASING'])->controller(DeliveryOrderController::class)->group(function () {
+    Route::middleware(['admin-purchasing-admingudang-logistic'])->controller(DeliveryOrderController::class)->group(function () {
+        Route::get('delivery-order', 'index')->name('delivery-order');
         Route::get('delivery-order/tambah', 'create')->name('delivery-order.create');
         Route::post('delivery-order/store', 'store')->name('delivery-order.store');
-        Route::get('delivery-order/edit/{id}', 'edit')->name('delivery-order.edit');
-        Route::post('delivery-order/delete/{id}', 'destroy')->name('delivery-order.destroy');
-    });
-    Route::middleware(['role:ADMIN_GUDANG,PURCHASING,LOGISTIC'])->controller(DeliveryOrderController::class)->group(function () {
-        Route::get('delivery-order', 'index')->name('delivery-order');
         Route::get('delivery-order/detail/{id}', 'show')->name('delivery-order.show');
         Route::get('delivery-order/cetak/{id}', 'cetak')->name('delivery-order.cetak');
         Route::get('delivery-order/download-pdf/{id}', 'downloadPDF')->name('delivery-order.downloadPDF');
+        Route::get('delivery-order/edit/{id}', 'edit')->name('delivery-order.edit');
+        Route::post('delivery-order/delete/{id}', 'destroy')->name('delivery-order.destroy');
     });
-    Route::middleware(['role:ADMIN_GUDANG,SET_MANAGER'])->controller(AksesBarangController::class)->group(function () {
+    Route::middleware(['admin-setmanager-supervisor-admingudang'])->controller(AksesBarangController::class)->group(function () {
         Route::get('akses-barang', 'index')->name('akses-barang');
         Route::get('akses-barang/tambah', 'create')->name('akses-barang.create');
         Route::post('akses-barang/store', 'store')->name('akses-barang.store');
@@ -161,17 +134,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('akses-barang/edit/{id}', 'edit')->name('akses-barang.edit');
         Route::post('akses-barang/delete/{id}', 'destroy')->name('akses-barang.destroy');
     });
-    Route::middleware(['role:ADMIN_GUDANG,LOGISTIC,SET_MANAGER,PROJECT_MANAGER,SUPERVISOR'])->controller(SuratJalanController::class)->group(function () {
+    Route::middleware(['admin-admingudang-logistic'])->controller(SuratJalanController::class)->group(function () {
         Route::get('surat-jalan', 'index')->name('surat-jalan');
+        Route::get('surat-jalan/tambah', 'create')->name('surat-jalan.create');
+        Route::post('surat-jalan/store', 'store')->name('surat-jalan.store');
         Route::get('surat-jalan/detail/{id}', 'show')->name('surat-jalan.show');
         Route::get('surat-jalan/download-pdf/{id}', 'downloadPDF')->name('surat-jalan.downloadPDF');
         Route::get('surat-jalan/cetak/{id}', 'cetak')->name('surat-jalan.cetak');
-    });
-    Route::middleware(['role:ADMIN_GUDANG'])->controller(SuratJalanController::class)->group(function () {
-        Route::get('surat-jalan/tambah', 'create')->name('surat-jalan.create');
-        Route::post('surat-jalan/store', 'store')->name('surat-jalan.store');
-        Route::get('surat-jalan/download-pdf/{id}', 'downloadPDF')->name('surat-jalan.downloadPDF');
-        Route::get('surat-jalan/cetak/{id}', 'cetak')->name('surat-jalan.cetak');    
+        Route::get('surat-jalan/edit/{id}', 'edit')->name('surat-jalan.edit');
+        Route::post('surat-jalan/delete/{id}', 'destroy')->name('surat-jalan.destroy');
     });
 });
 
