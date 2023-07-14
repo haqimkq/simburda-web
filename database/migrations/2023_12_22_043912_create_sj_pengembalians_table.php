@@ -14,14 +14,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sj_pengiriman_gps', function (Blueprint $table) {
+        Schema::create('sj_pengembalians', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->timestamps();
             $table->softDeletes();
         });
-        Schema::table('sj_pengiriman_gps', function (Blueprint $table) {
+        Schema::table('sj_pengembalians', function (Blueprint $table) {
             $table->foreignUuid('surat_jalan_id')->constrained('surat_jalans')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignUuid('peminjaman_id')->constrained('peminjaman_gps')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('pengembalian_penggunaan_id')->nullable()->constrained('pengembalian_penggunaans')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignUuid('pengembalian_id')->nullable()->constrained('pengembalians')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
@@ -33,7 +34,7 @@ return new class extends Migration
     public function down()
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        Schema::dropIfExists('sj_pengiriman_gps');
+        Schema::dropIfExists('sj_pengembalians');
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 };

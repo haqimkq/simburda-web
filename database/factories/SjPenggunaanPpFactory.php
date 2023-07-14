@@ -6,16 +6,15 @@ use App\Enum\PenggunaanTipe;
 use App\Enum\SuratJalanTipe;
 use App\Models\PenggunaanGp;
 use App\Models\PenggunaanPp;
-use App\Models\SjPenggunaanGp;
-use App\Models\SjPenggunaanPp;
+use App\Models\SjPengirimanPp;
 use App\Models\SuratJalan;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SjPenggunaanPp>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SjPengirimanPp>
  */
-class SjPenggunaanPpFactory extends Factory
+class SjPengirimanPpFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -30,14 +29,14 @@ class SjPenggunaanPpFactory extends Factory
         ];
     }
     public function configure(){
-        return $this->afterCreating(function (SjPenggunaanGp $sjPenggunaanGp) {
-            $penggunaanPp = $sjPenggunaanGp->penggunaanGp;
-            $penggunaan = $sjPenggunaanGp->penggunaanGp->penggunaan;
+        return $this->afterCreating(function (SjPengirimanPp $sjPengirimanPp) {
+            $penggunaanPp = $sjPengirimanPp->penggunaanGp;
+            $penggunaan = $sjPengirimanPp->penggunaanGp->penggunaan;
             $proyek = $penggunaan->menangani->proyek;
             $user = $penggunaan->menangani->user;
             // if($penggunaan->tipe == PenggunaanTipe::GUDANG_PROYEK->value){
             //     $admin_gudang_id = User::where('role','ADMIN_GUDANG')->get()->random()->id;
-            //     SuratJalan::find($sjPenggunaanGp->suratJalan->id)->update([
+            //     SuratJalan::find($sjPengirimanPp->suratJalan->id)->update([
             //         'tipe' => SuratJalanTipe::PENGGUNAAN_GUDANG_PROYEK->value,
             //         'admin_gudang_id' => $admin_gudang_id,
             //         'kode_surat' => SuratJalan::generateKodeSurat(SuratJalanTipe::PENGGUNAAN_GUDANG_PROYEK->value, $proyek->client, $user->nama),
@@ -51,7 +50,7 @@ class SjPenggunaanPpFactory extends Factory
             // }
             if($penggunaan->tipe == PenggunaanTipe::PROYEK_PROYEK->value){
                 $penggunaanPp = PenggunaanPp::find('penggunaan_id', $penggunaan->id);
-                $sjPengirimanPp = SjPenggunaanPp::find('penggunaan_id', $penggunaanPp->id);
+                $sjPengirimanPp = SjPengirimanPp::find('penggunaan_id', $penggunaanPp->id);
                 $admin_gudang_id = User::where('role','ADMIN_GUDANG')->get()->random()->id;
                 SuratJalan::find($sjPengirimanPp->suratJalan->id)->update([
                     'tipe' => SuratJalanTipe::PENGGUNAAN_PROYEK_PROYEK->value,

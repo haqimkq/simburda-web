@@ -4,13 +4,13 @@ namespace Database\Factories;
 
 use App\Enum\PenggunaanTipe;
 use App\Enum\SuratJalanTipe;
-use App\Models\PengembalianPenggunaan;
-use App\Models\SjPengembalianPenggunaan;
+use App\Models\Pengembalian;
+use App\Models\SjPengembalian;
 use App\Models\SuratJalan;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class SjPengembalianPenggunaanPenggunaanFactory extends Factory
+class SjPengembalianPenggunaanFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -22,16 +22,16 @@ class SjPengembalianPenggunaanPenggunaanFactory extends Factory
         return [
             // 'surat_jalan_id' => SuratJalan::where('tipe','PENGIRIMAN_GUDANG_PROYEK')->get()->random()->id,
             'surat_jalan_id' => SuratJalan::factory(),
-            'pengembalian_id' => PengembalianPenggunaan::factory(),
+            'pengembalian_id' => Pengembalian::factory(),
         ];
     }
     public function configure(){
-        return $this->afterCreating(function (SjPengembalianPenggunaan $sjPengembalian) {
-            $penggunaan = $sjPengembalian->pengembalianPenggunaan->penggunaan;
+        return $this->afterCreating(function (SjPengembalian $sjPengembalian) {
+            $penggunaan = $sjPengembalian->Pengembalian->penggunaan;
             $proyek = $penggunaan->menangani->proyek;
             $user = $penggunaan->menangani->user;
             if($penggunaan->tipe == PenggunaanTipe::GUDANG_PROYEK->value){
-                $penggunaanGp = $sjPengembalian->pengembalianPenggunaan->penggunaan->penggunaanGp;
+                $penggunaanGp = $sjPengembalian->Pengembalian->penggunaan->penggunaanGp;
                 $admin_gudang_id = User::where('role','ADMIN_GUDANG')->get()->random()->id;
                 SuratJalan::find($sjPengembalian->suratJalan->id)->update([
                     'tipe' => SuratJalanTipe::PENGEMBALIAN_PENGGUNAAN->value,

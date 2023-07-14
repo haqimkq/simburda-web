@@ -30,6 +30,9 @@ class SjPengirimanPp extends Model
     public function peminjamanPp(){
         return $this->belongsTo(PeminjamanPp::class, 'peminjaman_id');
     }
+    public function penggunaanPp(){
+        return $this->belongsTo(PenggunaanPp::class, 'penggunaan_id');
+    }
     public function ttdPenanggungJawab(){
         return $this->belongsTo(TtdVerification::class, 'ttd_tgg_jwb');
     }

@@ -160,12 +160,12 @@ class SuratJalanController extends Controller
             $response = SuratJalan::find($request->id);
             $tipe = $response->tipe;
             $barang = SuratJalan::getAllBarang($response->id);
-            $supervisor_peminjam = ($tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value) 
-                ? SuratJalan::getSupervisor($response->id, true) : null;
-            $ttd_supervisor_peminjam = ($tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value) 
-                ? $response->sjPengirimanPp->ttd_supervisor_peminjam : null;
-            $project_manager = SuratJalan::getProjectManager($response->id);
-            $supervisor = SuratJalan::getSupervisor($response->id);
+            $penanggung_jawab_peminjam = ($tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value) 
+                ? SuratJalan::getMenanganiUser($response->id, true) : null;
+            $ttd_penanggung_jawab_peminjam = ($tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value) 
+                ? $response->sjPengirimanPp->ttd_penanggung_jawab_peminjam : null;
+            $project_manager = SuratJalan::getSetManager($response->id);
+            $penanggung_jawab = SuratJalan::getMenanganiUser($response->id);
             
             $admin_gudang = [
                 'nama' => $response->adminGudang->nama,
@@ -187,19 +187,20 @@ class SuratJalanController extends Controller
                 'foto' => $response->logistic->foto,
             ];
             
-            $sv = ($supervisor) ? [
-                'nama' => $supervisor->nama,
-                'no_hp' => $supervisor->no_hp,
-                'foto' => $supervisor->foto,
+            $sv = ($penanggung_jawab) ? [
+                'nama' => $penanggung_jawab->nama,
+                'no_hp' => $penanggung_jawab->no_hp,
+                'foto' => $penanggung_jawab->foto,
             ] : null;
             
-            $sv_p = ($supervisor_peminjam) ? [
-                'nama' => $supervisor_peminjam->nama,
-                'no_hp' => $supervisor_peminjam->no_hp,
-                'foto' => $supervisor_peminjam->foto,
+            $sv_p = ($penanggung_jawab_peminjam) ? [
+                'nama' => $penanggung_jawab_peminjam->nama,
+                'no_hp' => $penanggung_jawab_peminjam->no_hp,
+                'role' => $penanggung_jawab_peminjam->role,
+                'foto' => $penanggung_jawab_peminjam->foto,
             ] : null;
             
-            $pm = [
+            $sm = [
                 'nama' => $project_manager->nama,
                 'foto' => $project_manager->foto,
                 'no_hp' => $project_manager->no_hp,
@@ -210,19 +211,19 @@ class SuratJalanController extends Controller
                 'kode_surat' => $response->kode_surat,
                 'ttd_admin' => $response->ttd_admin,
                 'ttd_driver' => $response->ttd_driver,
-                'ttd_supervisor' => $response->ttd_supervisor,
-                'ttd_supervisor_peminjam' => $ttd_supervisor_peminjam,
+                'ttd_penanggung_jawab' => $response->ttd_penanggung_jawab,
+                'ttd_penanggung_jawab_peminjam' => $ttd_penanggung_jawab_peminjam,
                 'foto_bukti' => $response->foto_bukti,
                 'tipe' => $response->tipe,
                 'status' => $response->status,
                 'updated_at' => $response->updated_at,
-                'created_at' => $response->created_at, 
+                'created_at' => $response->created_at,
                 'kendaraan' => $kendaraan,
                 'admin_gudang' => $admin_gudang,
                 'logistic' => $logistic,
-                'supervisor' => $sv,
-                'supervisor_peminjam' => $sv_p,
-                'project_manager' => $pm,
+                'penanggung_jawab' => $sv,
+                'penanggung_jawab_peminjam' => $sv_p,
+                'set_manager' => $sm,
                 'tempat_asal' => $lokasi['lokasi_asal'],
                 'tempat_tujuan' => $lokasi['lokasi_tujuan'],
                 'barang_habis_pakai' => $barang['barang_habis_pakai'],
