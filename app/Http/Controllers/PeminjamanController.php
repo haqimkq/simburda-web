@@ -102,7 +102,7 @@ class PeminjamanController extends Controller
             $peminjamanGp['gudang_id'] = $request->gudang_id;
             $peminjamanGp['peminjaman_id'] = $peminjaman->id;
             PeminjamanGp::create($peminjamanGp);
-        } if($request->tipe == 'PROYEK_PROYEK'){
+        }else{
             //get id peminjaman asal
             $peminjamanPp['peminjaman_asal_id'] = $request->peminjaman_asal_id;
             $peminjamanPp['peminjaman_id'] = $peminjaman->id;
@@ -111,7 +111,9 @@ class PeminjamanController extends Controller
         //membuat peminjaman detail
         foreach($request->barang as $barang){
             //memperbaharui data barang asal
-            PeminjamanDetail::where('peminjaman_id', $request->peminjaman_asal_id)->where('barang_id',$barang)->update(['peminjaman_proyek_lain_id'=>$peminjamanPP]);
+            if($request->tipe =='PROYEK_PROYEK'){
+                PeminjamanDetail::where('peminjaman_id', $request->peminjaman_asal_id)->where('barang_id',$barang)->update(['peminjaman_proyek_lain_id'=>$peminjamanPP->id]);
+            }
             //membuat peminjaman Detail
             $peminjamanDetailData['barang_id']=$barang;
             $peminjamanDetailData['peminjaman_id']=$peminjaman->id;

@@ -54,10 +54,10 @@
 										@include('shared.errorText')
 								@enderror
 						</div>
-						<div class="@can('ADMIN') block @elsecan('SET_MANAGER') hidden @endcan">
+						<div class="@can('ADMIN') block @elsecan('SITE_MANAGER') hidden @endcan">
 								<label for="proyek_manager_id" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Set
 										Manager</label>
-								<select id="searchProyekManager" name="set_manager_id" class="searchProyekManager block w-full" required></select>
+								<select id="searchSetManager" name="site_manager_id" class="searchProyekManager block w-full"></select>
 								@error('proyek_manager_id')
 										@include('shared.errorText')
 								@enderror

@@ -72,7 +72,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('perusahaan/detail/{id}', 'show')->name('perusahaan.show');
         Route::post('perusahaan/delete/{perusahaan}', 'destroy')->name('perusahaan.destroy');
     });
-    Route::middleware(['role:ADMIN_GUDANG,SUPERVISOR,SET_MANAGER,PROJECT_MANAGER'])->controller(PeminjamanController::class)->group(function(){
+    Route::middleware(['role:ADMIN_GUDANG,SUPERVISOR,SITE_MANAGER,PROJECT_MANAGER'])->controller(PeminjamanController::class)->group(function(){
         Route::get('peminjaman', 'index')->name('peminjaman');
         Route::get('peminjaman/tambah', 'create')->name('peminjaman.create');
         Route::post('peminjaman/store', 'store')->name('peminjaman.store');
@@ -85,7 +85,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('peminjaman/tambah/barangByKodePeminjaman/{kode_peminjaman}', 'getBarangByKodePeminjaman');
         Route::get('selectKodePeminjaman', 'selectKodePeminjaman')->name('selectKodePeminjaman');
     });
-    Route::middleware(['role:ADMIN_GUDANG,SUPERVISOR,SET_MANAGER,PROJECT_MANAGER'])->controller(PengembalianController::class)->group(function(){
+    Route::middleware(['role:ADMIN_GUDANG,SUPERVISOR,SITE_MANAGER,PROJECT_MANAGER'])->controller(PengembalianController::class)->group(function(){
         Route::get('pengembalian', 'index')->name('pengembalian');
         Route::get('pengembalian/tambah', 'create')->name('pengembalian.create');
         Route::post('pengembalian/store', 'store')->name('pengembalian.store');
@@ -130,11 +130,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('gudang/delete/{gudang}', 'destroy')->name('gudang.destroy');
         Route::post('gudang/update/{gudang}', 'update')->name('gudang.update');
     });
-    Route::middleware(['role:ADMIN_GUDANG,SET_MANAGER,SUPERVISOR,PROJECT_MANAGER'])->controller(ProyekController::class)->group(function () {
+    Route::middleware(['role:ADMIN_GUDANG,SITE_MANAGER,SUPERVISOR,PROJECT_MANAGER'])->controller(ProyekController::class)->group(function () {
         Route::get('proyek', 'index')->name('proyek');
         Route::get('proyek/detail/{id}', 'show')->name('proyek.show');
     });
-    Route::middleware(['role:SET_MANAGER'])->controller(ProyekController::class)->group(function () {
+    Route::middleware(['role:SITE_MANAGER'])->controller(ProyekController::class)->group(function () {
         Route::get('proyek/tambah', 'create')->name('proyek.create');
         Route::post('proyek/store', 'store')->name('proyek.store');
         Route::get('proyek/detail/{id}', 'show')->name('proyek.show');
@@ -155,7 +155,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('delivery-order/cetak/{id}', 'cetak')->name('delivery-order.cetak');
         Route::get('delivery-order/download-pdf/{id}', 'downloadPDF')->name('delivery-order.downloadPDF');
     });
-    Route::middleware(['role:ADMIN_GUDANG,SET_MANAGER'])->controller(AksesBarangController::class)->group(function () {
+    Route::middleware(['role:ADMIN_GUDANG,SITE_MANAGER'])->controller(AksesBarangController::class)->group(function () {
         Route::get('akses-barang', 'index')->name('akses-barang');
         Route::get('akses-barang/tambah', 'create')->name('akses-barang.create');
         Route::post('akses-barang/store', 'store')->name('akses-barang.store');
@@ -163,7 +163,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('akses-barang/edit/{id}', 'edit')->name('akses-barang.edit');
         Route::post('akses-barang/delete/{id}', 'destroy')->name('akses-barang.destroy');
     });
-    Route::middleware(['role:ADMIN_GUDANG,LOGISTIC,SET_MANAGER,PROJECT_MANAGER,SUPERVISOR'])->controller(SuratJalanController::class)->group(function () {
+    Route::middleware(['role:ADMIN_GUDANG,LOGISTIC,SITE_MANAGER,PROJECT_MANAGER,SUPERVISOR'])->controller(SuratJalanController::class)->group(function () {
         Route::get('surat-jalan', 'index')->name('surat-jalan');
         Route::get('surat-jalan/detail/{id}', 'show')->name('surat-jalan.show');
         Route::get('surat-jalan/download-pdf/{id}', 'downloadPDF')->name('surat-jalan.downloadPDF');
