@@ -41,7 +41,6 @@ class PeminjamanFactory extends Factory
         $menangani = Menangani::get()->random();
         $proyek = $menangani->proyek;
         $user = $menangani->user;
-        $kode_peminjaman = Peminjaman::generateKodePeminjaman("GUDANG_PROYEK", $proyek->client, $user->nama);
         $proyek_created_at = Carbon::createFromTimestampMs($proyek->created_at);
         if($proyek->selesai==1){
             $status = 'SELESAI';
@@ -60,6 +59,7 @@ class PeminjamanFactory extends Factory
                 $status = 'SELESAI';
             }
         }
+        $kode_peminjaman = Peminjaman::generateKodePeminjaman("GUDANG_PROYEK", $proyek->client, $user->nama, $tgl_peminjaman);
         return [
             'id' => $id,
             'menangani_id' => $menangani->id,
@@ -75,10 +75,10 @@ class PeminjamanFactory extends Factory
     public function initialData($menangani){
         $proyek = $menangani->proyek;
         $user = $menangani->user;
-        $kode_peminjaman = Peminjaman::generateKodePeminjaman("GUDANG_PROYEK", $proyek->client, $user->nama);
         $proyek_created_at = Carbon::createFromTimestampMs($proyek->created_at);
         $tgl_peminjaman = fake()->dateTimeBetween($proyek_created_at->format('Y-m-d H:i:s'), $proyek_created_at->format('Y-m-d H:i:s').' +2 months');
         $tgl_berakhir = fake()->dateTimeBetween($tgl_peminjaman->format('Y-m-d H:i:s'), $tgl_peminjaman->format('Y-m-d H:i:s').' +2 months');
+        $kode_peminjaman = Peminjaman::generateKodePeminjaman("GUDANG_PROYEK", $proyek->client, $user->nama,$proyek->created_at);
         return collect([
             'kode_peminjaman' => $kode_peminjaman,
             'tgl_peminjaman' => $tgl_peminjaman,

@@ -35,7 +35,7 @@ class SjPengembalianFactory extends Factory
                 SuratJalan::find($sjPengembalian->suratJalan->id)->update([
                     'tipe' => SuratJalanTipe::PENGEMBALIAN->value,
                     'admin_gudang_id' => $admin_gudang_id,
-                    'kode_surat' => SuratJalan::generateKodeSurat(SuratJalanTipe::PENGEMBALIAN->value, $proyek->client, $user->nama),
+                    'kode_surat' => SuratJalan::generateKodeSurat(SuratJalanTipe::PENGEMBALIAN->value, $proyek->client, $user->nama, $peminjaman->created_at),
                     'updated_at' => $peminjaman->created_at,
                     'created_at' => $peminjaman->created_at,
                 ]);

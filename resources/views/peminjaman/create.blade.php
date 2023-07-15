@@ -263,10 +263,11 @@
                                     style="background-image: url('{{ asset('') }}${obj.v.gambar}')"></div>
                             <div class="flex flex-col">
                                 <span
-                                    class="bg-green-200 text-green-600 border-green-600 mb-2 self-start rounded-full border px-1.5 text-xs">
+                                    class="bg-gray-200 text-gray-600 border-gray-600 mb-2 self-start rounded-full border px-1.5 text-xs">
                                     ${obj.v.kondisi}
                                 </span>
-                                <p class="mb-2 font-medium line-clamp-1">${obj.v.nama}</p>
+                                <p class="mb-1 font-medium line-clamp-1">#${obj.v.nomor_seri} ${obj.v.nama}</p>
+                                <p class="mb-2 font-small line-clamp-1">${obj.v.merk}</p>
                                 <p class="mb-2 text-xs w-[15em] font-normal">${obj.v.detail}</p>
                             </div>
                         </div>

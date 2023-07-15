@@ -26,10 +26,18 @@ class PeminjamanController extends Controller
     public function index()
     {
         $authUser = Auth::user();
-        $peminjamans = Peminjaman::where()->filter(['filter','datestart','dateend',])
+        $countUndefinedAkses = AksesBarang::countUndefinedAkses();
+        if($authUser->role=='SUPERVISOR'){
+            $peminjamans = Peminjaman::whereRelation('menangani.user','id',$authUser->id)->filter(request(['search','orderBy','filter', 'datestart','dateend']))->paginate(12)->withQueryString();
+        }else if ($authUser->role=='ADMIN_GUDANG'||$authUser->role=='ADMIN'||$authUser->role=='PROJECT_MANAGER'){
+            $peminjamans = Peminjaman::filter(request(['search','orderBy','filter','datestart','dateend']))->paginate(12)->withQueryString();
+        }else{
+            $peminjamans = Peminjaman::filter(request(['search','orderBy','filter','datestart','dateend']))->paginate(12)->withQueryString();
+        }
         return view('peminjaman.index',[
-            "peminjamans" => $peminjamans,
-            "authUser" => $authUser,
+            'peminjamans' => $peminjamans,
+            'authUser' => $authUser,
+            'countUndefinedAkses' => $countUndefinedAkses,
         ]);
     }
 
@@ -186,27 +194,11 @@ class PeminjamanController extends Controller
                 'id' => $barang->barangTidakHabisPakai->id,
                 'gambar' => $barang->gambar,
                 'nama' => $barang->nama,
-
+                'detail' => $barang->detail,
+                'nomor_seri' => $barang->barangTidakHabisPakai->nomor_seri,
+                'merk' => $barang->merk,
                 'jenis' => $barang->jenis,
                 'kondisi' => $barang->barangTidakHabisPakai->kondisi
-            ];
-            array_push($json, $detail);
-        }
-        return response()->json($json);
-    }
-
-    public function getBarangByProyek(Proyek $proyek){
-        $json=[];
-        $barangs = BarangTidakHabisPakai::whereRelation('peminjaman.menangani','proyek_id',$proyek->id)->whereRelation('peminjamanDetail','status','TIDAK_DIGUNAKAN')->get();
-        foreach($barangs as $barang){
-            $detail = [
-                'id' => $barang->id,
-                'gambar' => $barang->barang->gambar,
-                'nama' => $barang->barang->nama,
-                'detail' => $barang->barang->detail,
-                'jenis' => $barang->barang->jenis,
-                'kondisi' => $barang->kondisi,
-                'peminjaman_id' => $barang->peminjaman_id
             ];
             array_push($json, $detail);
         }
@@ -234,6 +226,8 @@ class PeminjamanController extends Controller
                 'nama' => $barang->barang->nama,
                 'detail' => $barang->barang->detail,
                 'jenis' => $barang->barang->jenis,
+                'nomor_seri' => $barang->nomor_seri,
+                'merk' => $barang->barang->merk,
                 'kondisi' => $barang->kondisi,
                 'peminjaman_id' => $barang->peminjaman_id
             ];

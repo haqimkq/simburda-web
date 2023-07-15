@@ -18,11 +18,7 @@ class AksesBarangController extends Controller
     {
         //
         $authUser = Auth::user();
-        $menanganis = Menangani::where('user_id',$authUser->id)->get(['id','proyek_id'])->all();
-        $proyeks_id = array();
-        foreach($menanganis as $m){
-            array_push($proyeks_id,$m->proyek_id);
-        }
+        $proyeks_id = Menangani::getProyekIdFromUser($authUser->id);
         $countUndefinedAkses = AksesBarang::countUndefinedAkses();
         if($authUser->role == 'SITE_MANAGER'){
             $aksesBarangs = AksesBarang::
@@ -31,13 +27,9 @@ class AksesBarangController extends Controller
                 }, 'peminjamanDetail.peminjaman' => function ($q){
                         $q->orderBy('created_at');
                 }, 'peminjamanDetail'])
-                // ->whereHas(
-                //     'peminjamanDetail.peminjaman.menangani', fn($q) => $q->whereIn('id', $menanganis_id)
-                // )
                 ->whereHas(
                     'peminjamanDetail.peminjaman.menangani', fn($q) => $q->whereIn('proyek_id', $proyeks_id)
                 )
-                // ->whereRelation('peminjamanDetail.peminjaman.menangani.user', 'id', $authUser->id)
                 ->filter(request(['search', 'filter', 'orderBy']))
                 ->paginate(40)
                 ->withQueryString();

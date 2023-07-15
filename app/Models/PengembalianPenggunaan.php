@@ -42,11 +42,11 @@ class PengembalianPenggunaan extends Model
         }
         return $result;
     }
-    public static function generateKodePengembalian($client, $supervisor){
+    public static function generateKodePengembalian($client, $supervisor, $date=null){
         $clientAcronym = IDGenerator::getAcronym($client);
         $supervisorAcronym = IDGenerator::getAcronym($supervisor);
-        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber());
-        $year = Date::getYearNumber();
+        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber($date));
+        $year = Date::getYearNumber($date);
         $prefix = "$clientAcronym/$supervisorAcronym/$romanMonth/$year";
         $typePrefix = "RETURN";
         return IDGenerator::generateID(new static,'kode_pengembalian',5,"$typePrefix/$prefix");

@@ -75,11 +75,11 @@ class Peminjaman extends Model
         self::where('id', $id)->update(['status' => $status]);
         PeminjamanDetail::where('peminjaman_id', $id)->update(['status', $peminjaman_detail_status]);
     }
-    public static function generateKodePeminjaman($tipe, $client, $supervisor){
+    public static function generateKodePeminjaman($tipe, $client, $supervisor, $date=null){
         $clientAcronym = IDGenerator::getAcronym($client);
         $supervisorAcronym = IDGenerator::getAcronym($supervisor);
-        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber());
-        $year = Date::getYearNumber();
+        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber($date));
+        $year = Date::getYearNumber($date);
         $prefix = "$clientAcronym/$supervisorAcronym/$romanMonth/$year";
         $typePrefix = NULL;
         if($tipe == "PROYEK_PROYEK"){
@@ -127,15 +127,15 @@ class Peminjaman extends Model
             });
         });
     }
-    // public function getCreatedAtAttribute($date)
-    // {
-    //     return Date::dateToMillisecond($date);
-    // }
+    public function getCreatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
 
-    // public function getUpdatedAtAttribute($date)
-    // {
-    //     return Date::dateToMillisecond($date);
-    // }
+    public function getUpdatedAtAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
     public function getTglPeminjamanAttribute($date)
     {
         return Date::dateToMillisecond($date);

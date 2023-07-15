@@ -97,11 +97,11 @@ class SuratJalan extends Model
             });
         });
     }
-    public static function generateKodeSurat($tipe, $client, $supervisor){
+    public static function generateKodeSurat($tipe, $client, $supervisor, $date=null){
         $clientAcronym = IDGenerator::getAcronym($client);
         $supervisorAcronym = IDGenerator::getAcronym($supervisor);
-        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber());
-        $year = Date::getYearNumber();
+        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber($date));
+        $year = Date::getYearNumber($date);
         $prefix = "$clientAcronym/$supervisorAcronym/$romanMonth/$year";
         $typePrefix = NULL;
         if($tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value){
