@@ -57,7 +57,7 @@
 						<div class="@can('ADMIN') block @elsecan('SITE_MANAGER') hidden @endcan">
 								<label for="proyek_manager_id" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Set
 										Manager</label>
-								<select id="searchSetManager" name="site_manager_id" class="searchProyekManager block w-full"></select>
+								<select id="searchSiteManager" name="site_manager_id" class="searchSiteManager block w-full"></select>
 								@error('proyek_manager_id')
 										@include('shared.errorText')
 								@enderror
@@ -197,7 +197,7 @@
 						}
 						reader.readAsDataURL(this.files[0]);
 				});
-				$('#searchProyekManager').select2({
+				$('#searchSiteManager').select2({
 						width: null,
 						placeholder: 'Pilih Proyek Manager',
 						language: {

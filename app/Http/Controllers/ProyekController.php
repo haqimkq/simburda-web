@@ -192,7 +192,7 @@ class ProyekController extends Controller
         $search = $request->q;
         $setManager = User::select("id", "nama")
                 ->where('nama', 'LIKE', "%$search%")
-                ->where('role', 'SET_MANAGER')
+                ->where('role', 'SITE_MANAGER')
                 ->get();
         return response()->json($setManager);
     }
