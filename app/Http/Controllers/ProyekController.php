@@ -26,8 +26,8 @@ class ProyekController extends Controller
         $authUser = Auth::user();
         if($authUser->role == UserRole::ADMIN->value || $authUser->role == UserRole::PROJECT_MANAGER->value){
             $proyek = Proyek::filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
-        }else if($authUser->role == UserRole::SET_MANAGER->value){
-            $proyek = Proyek::whereRelation('users','users.id',$authUser->id)->orWhere('set_manager_id', $authUser->id)->filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
+        }else if($authUser->role == UserRole::SITE_MANAGER->value){
+            $proyek = Proyek::whereRelation('users','users.id',$authUser->id)->orWhere('site_manager_id', $authUser->id)->filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
         }else if($authUser->role == UserRole::SUPERVISOR->value){
             $proyek = Proyek::whereRelation('users','users.id',$authUser->id)->filter(request(['search','orderBy','filter']))->paginate(12)->withQueryString();
         }
@@ -63,7 +63,7 @@ class ProyekController extends Controller
         if($userAuth->role == 'ADMIN') {
             $validate = $request->validate([
                 'nama_proyek' => 'required',
-                'set_manager_id' => 'required',
+                'site_manager_id' => 'required',
                 'provinsi' => 'required',
                 'kota' => 'required',
                 'gambar' => 'nullable',
@@ -88,7 +88,7 @@ class ProyekController extends Controller
                     'longitude.required' => 'Longitude wajib diisi',
                     ]
                 );
-            $validate['set_manager_id'] = $userAuth->id;
+            $validate['site_manager_id'] = $userAuth->id;
         }
         if($request->file('gambar')){
             $validate['gambar'] = $request->file('gambar')->store('assets/proyek', 'public');

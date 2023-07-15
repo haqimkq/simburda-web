@@ -125,7 +125,7 @@
             </div>
             <div class="w-full flex-col hidden" id="kode-peminjaman-field">
                 <label for="searchKodePeminjaman" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Kode Peminjaman</label>
-                <select id="searchKodePeminjaman" name="peminjaman_asal_id" class="searchKodePeminjaman block w-full" required></select>
+                <select id="searchKodePeminjaman" name="peminjaman_asal_id" class="searchKodePeminjaman block w-full"></select>
                 @error('kode_peminjaman')
                         @include('shared.errorText')
                 @enderror

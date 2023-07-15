@@ -178,6 +178,15 @@ class UserController extends Controller
             return ResponseFormatter::error("Upload Photo Failed:". $error->getMessage());
         }
     }
+
+    public function getDetailUser(Request $request){
+        try{
+            return ResponseFormatter::success('user', $request->user, 'Data Berhasil Didapat');
+        }catch (Exception $error) {
+            return ResponseFormatter::error("Authentication Failed:". $error->getMessage());
+        }
+    }
+
     public function uploadTTD(Request $request){
         try{
             User::validateChangePhoto($request);
