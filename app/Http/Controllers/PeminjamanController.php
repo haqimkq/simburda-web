@@ -25,7 +25,12 @@ class PeminjamanController extends Controller
      */
     public function index()
     {
-        return view('peminjaman.index');
+        $authUser = Auth::user();
+        $peminjamans = Peminjaman::where()->filter(['filter','datestart','dateend',])
+        return view('peminjaman.index',[
+            "peminjamans" => $peminjamans,
+            "authUser" => $authUser,
+        ]);
     }
 
     /**

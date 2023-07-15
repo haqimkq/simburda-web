@@ -89,6 +89,44 @@ class Peminjaman extends Model
         }
         return IDGenerator::generateID(new static,'kode_peminjaman',5,"$typePrefix/$prefix");
     }
+    public function scopeFilter($query, array $filters){
+        $query->when($filters['search'] ?? false, function($query, $search) {
+            return $query->where('kode_peminjaman', 'like', '%' . $search . '%');
+        });
+        $query->when($filters['filter'] ?? false, function($query, $filter) {
+            return $query->where(function($query) use ($filter) {
+                if($filter == 'menunggu akses')
+                    return $query->where('status', 'MENUNGGU_AKSES');
+                if($filter == 'menunggu surat jalan')
+                    return $query->where('status', 'MENUNGGU_SURAT_JALAN');
+                if($filter == 'menunggu pengiriman')
+                    return $query->where('status', 'MENUNGGU_PENGIRIMAN');
+                if($filter == 'sedang dikirim')
+                    return $query->where('status', 'SEDANG_DIKIRIM');
+                if($filter == 'dipinjam')
+                    return $query->where('status', 'DIPINJAM');
+                if($filter == 'selesai')
+                    return $query->where('status', 'SELESAI');
+            });
+        });
+        $query->when(!isset($filters['orderBy']), function($query){
+            return $query->orderBy('created_at', 'DESC');
+        });
+        $query->when(!isset($filters['datestart']), function($query){
+            return $query->whereBetween('created_at', [date('Y-m-d 00:00:00', strtotime("-3 years")),date('Y-m-d 23:59:59')]);
+        });
+        $query->when($filters['orderBy'] ?? false, function($query, $orderBy) {
+            if($orderBy == 'terbaru') return $query->orderBy('created_at', 'DESC');
+            if($orderBy == 'terlama') return $query->orderBy('created_at', 'ASC');
+        });
+        $query->when($filters['datestart'] ?? false, function($query, $datestart) use ($filters){
+            $date_start = $datestart." 00:00:00";
+            $query->when($filters['dateend'] ?? false, function($query, $dateend) use ($date_start) {
+                $date_end = $dateend." 23:59:59";
+                return $query->whereBetween('created_at', [$date_start, $date_end]);
+            });
+        });
+    }
     // public function getCreatedAtAttribute($date)
     // {
     //     return Date::dateToMillisecond($date);

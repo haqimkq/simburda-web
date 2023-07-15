@@ -6,12 +6,12 @@
 @section('content')
 		<div class="w-full md:ml-[16em]">
 				<div class="w-full pl-4">
-						@if (session('createProyekSuccess'))
-								@section('alertMessage', session('createProyekSuccess'))
+						@if (session('createDeliveryOrderSuccess'))
+								@section('alertMessage', session('createDeliveryOrderSuccess'))
 								@include('shared.alerts.success')
 						@endif
-						@if (session('deleteProyekSuccess'))
-								@section('alertMessage', session('deleteProyekSuccess'))
+						@if (session('deleteDeliveryOrderSuccess'))
+								@section('alertMessage', session('deleteDeliveryOrderSuccess'))
 								@include('shared.alerts.success')
 						@endif
 						@section('headerName', 'Delivery Order')
