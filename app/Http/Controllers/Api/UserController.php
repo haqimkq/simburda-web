@@ -181,9 +181,9 @@ class UserController extends Controller
 
     public function getDetailUser(Request $request){
         try{
-            return ResponseFormatter::success('user', $request->user, 'Data Berhasil Didapat');
+            return ResponseFormatter::success('user', $request->user(), 'Data Berhasil Didapat');
         }catch (Exception $error) {
-            return ResponseFormatter::error("Authentication Failed:". $error->getMessage());
+            return ResponseFormatter::error("Server Error:". $error->getMessage());
         }
     }
 

@@ -30,8 +30,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', [UserController::class, 'logout']);
     Route::get('currentAccessToken', [UserController::class, 'currentAccessToken']);
     Route::get('user/ttd', [UserController::class, 'getTtd']);
+    Route::get('user/detail', [UserController::class, 'getDetailUser']);
     Route::post('user/update/password', [UserController::class, 'updatePassword']);
     Route::post('user/update/pin', [UserController::class, 'updatePIN']);
+
 
     Route::middleware(['role:ADMIN_GUDANG'])->group(function () {
         Route::post('surat-jalan', [SuratJalanController::class, 'create']);
