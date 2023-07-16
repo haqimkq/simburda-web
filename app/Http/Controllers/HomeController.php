@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Location;
+use App\Helpers\Utils;
 use App\Models\AksesBarang;
 use App\Models\Barang;
 use App\Models\Proyek;
@@ -40,35 +41,45 @@ class HomeController extends Controller
         ->groupBy('role')
         ->pluck('count', 'role');
 
-        $proyek = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
+        
+        if($authUser->role=='ADMIN'||$authUser->role=='PROJECT_MANAGER'||$authUser->role=='ADMIN_GUDANG'){
+            $proyek = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
+                ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
+                ->orderBy('created_at')
+                ->pluck('count', 'date');
+                $proyekSelesai = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
+                ->where('selesai', 1)
+                ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
+                ->orderBy('created_at')
+                ->pluck('count', 'date');
+            $proyekBelumSelesai = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
+                ->where('selesai', 0)
+                ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
+                ->orderBy('created_at')
+                ->pluck('count', 'date');
+        }else if($authUser->role=='SITE_MANAGER'){
+            $proyek = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
+            ->whereRelation('menangani.user','id',$authUser->id)
             ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
             ->orderBy('created_at')
             ->pluck('count', 'date');
-
-        $proyekSelesai = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
+            $proyekSelesai = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
             ->where('selesai', 1)
+            ->whereRelation('menangani.user','id',$authUser->id)
             ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
             ->orderBy('created_at')
             ->pluck('count', 'date');
-        $proyekBelumSelesai = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
+            $proyekBelumSelesai = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
             ->where('selesai', 0)
+            ->whereRelation('menangani.user','id',$authUser->id)
             ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
             ->orderBy('created_at')
             ->pluck('count', 'date');
-        // if (Gate::allows('admin')) {
-            //     return view('home',[
-                //         'user' => $user,
-                //         'allUser' => $user->nama,
-                //     ]);
-                // }
-                    
-        // if ($role == 'admin') {
-        // }
-        // dd($userRole);
-        // $image = QrCode::size(1280)->format('png')->errorCorrection('H')->generate('973981273h3724y24y82734y');
+        }
+        $roles = array_map(function($role) { return Utils::underscoreToNormal($role); }, $userRole->keys()->toArray());
         return view('home',[
             'authUser' => $authUser,
-            'userRoleLabels' => $userRole->keys(),
+            'userRoleLabels' => $roles,
             'proyekLabels' => $proyek->keys(),
             'labelsProyekBS' => $proyekBelumSelesai->keys(),
             'labelsProyekS' => $proyekSelesai->keys(),

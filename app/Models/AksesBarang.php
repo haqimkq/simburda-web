@@ -92,10 +92,13 @@ class AksesBarang extends Model
 
     public static function countUndefinedAkses() {
         $authUser = Auth::user();
-        if($authUser->role=='ADMIN'){
+        $proyeks_id = Menangani::getProyekIdFromUser($authUser->id);
+        if($authUser->role=='ADMIN'||$authUser->role=='PROJECT_MANAGER'){
             return self::where('disetujui_admin', NULL)->orWhere('disetujui_sm',NULL)->count();
         }else if($authUser->role=='SITE_MANAGER'){
-            return self::whereHas('peminjamanDetail.peminjaman.menangani', fn($q) => $q->where('user_id',$authUser->id))->where('disetujui_sm',NULL)->count();
+            return self::whereHas(
+                    'peminjamanDetail.peminjaman.menangani', fn($q) => $q->whereIn('proyek_id', $proyeks_id)
+                )->where('disetujui_sm',NULL)->count();
         }else if($authUser->role=='ADMIN_GUDANG'){
             return self::where('disetujui_admin',NULL)->count();
         }

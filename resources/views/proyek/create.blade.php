@@ -55,10 +55,9 @@
 								@enderror
 						</div>
 						<div class="@can('ADMIN') block @elsecan('SITE_MANAGER') hidden @endcan">
-								<label for="proyek_manager_id" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Set
-										Manager</label>
+								<label for="site_manager_id" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Site Manager</label>
 								<select id="searchSiteManager" name="site_manager_id" class="searchSiteManager block w-full"></select>
-								@error('proyek_manager_id')
+								@error('site_manager_id')
 										@include('shared.errorText')
 								@enderror
 						</div>
@@ -199,7 +198,7 @@
 				});
 				$('#searchSiteManager').select2({
 						width: null,
-						placeholder: 'Pilih Proyek Manager',
+						placeholder: 'Pilih Site Manager',
 						language: {
 								inputTooShort: function() {
 										return 'Masukkan 1 atau lebih karakter';
@@ -208,7 +207,7 @@
 										return "Tidak ditemukan";
 								},
 								noResults: function() {
-										return "Proyek Manager tidak ditemukan";
+										return "Site Manager tidak ditemukan";
 								},
 								searching: function() {
 										return "Sedang mencari...";
