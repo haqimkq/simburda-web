@@ -16,14 +16,14 @@
 				<select id="role" name="role"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 					required>
-						<option value="user">User</option>			
-						<option value="user">Set Manager</option>			
-						<option value="admin">Admin</option>
-						<option value="project manager">Project Manager</option>
-						<option value="admin gudang">Admin Gudang</option>
-						<option value="supervisor">Supervisor</option>
-						<option value="purchasing">Purchasing</option>
-						<option value="logistic">Logistic</option>
+						<option value="USER">User</option>			
+						<option value="SITE_MANAGER">Site Manager</option>			
+						<option value="ADMIN">Admin</option>
+						<option value="PROJECT_MANAGER">Project Manager</option>
+						<option value="ADMIN_GUDANG">Admin Gudang</option>
+						<option value="SUPERVISOR">Supervisor</option>
+						<option value="PURCHASING">Purchasing</option>
+						<option value="LOGISTIC">Logistic</option>
 				</select>
 				@error('role') @include('shared.errorText') @enderror
 			</div>
@@ -39,15 +39,15 @@
 				<label for="no_hp" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">No Hp<span class="text-red-700">*</span></label>
 				<textarea name="no_hp" id="no_hp" rows="1"
 				 class="block w-full resize-y min-h-[3em] rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-				 placeholder="Masukkan No HP Barang" required>{{ old('no_hp') }}</textarea>
+				 placeholder="Masukkan No HP" required>{{ old('no_hp') }}</textarea>
 				 @error('no_hp') @include('shared.errorText') @enderror
 			</div>
 			<div class="col-span-2">
-				<label class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300" for="gambar">Gambar</label>
+				<label class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300" for="foto">Foto</label>
 				<input
 					class="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
-					name="gambar" aria-describedby="gambar_help" id="gambar" type="file" accept="image/*" value="{{ old('gambar') }}">
-					@error('gambar') @include('shared.errorText') @enderror
+					name="foto" aria-describedby="foto_help" id="foto" type="file" accept="image/*" value="{{ old('foto') }}">
+					@error('foto') @include('shared.errorText') @enderror
 			</div>
 			<div class="col-span-2">
 				<label for="password" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Password<span class="text-red-700">*</span></label>

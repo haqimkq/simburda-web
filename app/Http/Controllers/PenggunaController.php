@@ -58,7 +58,9 @@ class PenggunaController extends Controller
         ]);
 
         $validate['password'] = bcrypt($validate['password']);
-
+        if($request->file('foto')){
+            $validate['foto'] = $request->file('foto')->store('assets/user', 'public');
+        }
         User::create($validate);
 
         return redirect()->route("pengguna");
@@ -124,6 +126,9 @@ class PenggunaController extends Controller
     public function destroy($id)
     {
         $user = User::find($id);
+        if($user->foto){
+            Storage::delete($user->foto);
+        }
         User::destroy($id);
         return redirect('/pengguna')->with('deletePenggunaSuccess','Berhasil Menghapus Pengguna ('.$user->nama.')');
     }
