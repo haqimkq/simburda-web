@@ -134,12 +134,15 @@ class Peminjaman extends Model
     {
         return Date::dateToMillisecond($date);
     }
-
     public function getUpdatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);
     }
     public function getTglPeminjamanAttribute($date)
+    {
+        return Date::dateToMillisecond($date);
+    }
+    public function getTglBerakhirAttribute($date)
     {
         return Date::dateToMillisecond($date);
     }

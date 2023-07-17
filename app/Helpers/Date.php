@@ -45,7 +45,7 @@ class Date{
     return $explodeDate[1];
   }
   public static function getDateTimeString($datee=null){
-    $date = Carbon::createFromTimestampMs($datee) ?? Carbon::now();
+    $date = Carbon::parse(self::parseMilliseconds($datee)) ?? Carbon::now();
     $dateTimeToString = $date->toDateTimeString();
     return $dateTimeToString;
   }

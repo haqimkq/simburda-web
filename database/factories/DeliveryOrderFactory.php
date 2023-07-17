@@ -47,7 +47,7 @@ class DeliveryOrderFactory extends Factory
         ]);
         return [
             'id' => fake()->uuid(),
-            'kode_do' => DeliveryOrder::generateKodeDO($perusahaan->nama, $tgl_pengambilan),
+            'kode_do' => DeliveryOrder::generateKodeDO($perusahaan->nama, Date::dateToMillisecond($tgl_pengambilan)),
             'status' => $status,
             'purchasing_id' => $purchasing->id,
             'perusahaan_id' => $perusahaan->id,

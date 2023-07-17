@@ -59,7 +59,7 @@ class PeminjamanFactory extends Factory
                 $status = 'SELESAI';
             }
         }
-        $kode_peminjaman = Peminjaman::generateKodePeminjaman("GUDANG_PROYEK", $proyek->client, $user->nama, $tgl_peminjaman);
+        $kode_peminjaman = Peminjaman::generateKodePeminjaman("GUDANG_PROYEK", $proyek->client, $user->nama, $proyek_created_at);
         return [
             'id' => $id,
             'menangani_id' => $menangani->id,
