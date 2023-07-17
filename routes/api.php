@@ -49,8 +49,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['role:LOGISTIC'])->group(function(){
         Route::get('kendaraan/logistic', [KendaraanController::class, 'getKendaraanByLogistic']);
     });
-    Route::middleware(['role:SET_MANAGER,SUPERVISOR'])->group(function(){
+    Route::middleware(['role:SITE_MANAGER,SUPERVISOR'])->group(function(){
         Route::get('barang/tanggung-jawab', [BarangController::class, 'getBarangTanggungJawab']);
+        Route::post('barang/scanQrCode', [BarangController::class, 'scanQrCode']);
         Route::get('barang/tidak-habis-pakai', [BarangController::class, 'getBarangTidakHabisPakai']);
         Route::get('barang/habis-pakai', [BarangController::class, 'barangHabisPakai']);
         Route::get('barang/tidak-habis-pakai/tersedia', [BarangController::class, 'barangTidakHabisPakaiTersedia']);
