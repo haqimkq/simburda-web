@@ -248,18 +248,29 @@ class SuratJalan extends Model
             else return $sj->sjPengirimanPp->peminjamanPp->peminjaman->peminjamanPp->peminjamanAsal->menangani->user;
         }
     }
+    public static function getPenanggungJawab($surat_jalan_id, $penanggung_jawab_peminjam = false){
+        $sj = self::findOrFail($surat_jalan_id);
+        if($sj->tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
+            return $sj->ttdSjPenanggungJawab->user;
+        }else if($sj->tipe == SuratJalanTipe::PENGEMBALIAN->value){
+            return $sj->ttdSjPenanggungJawab->user;
+        }else if($sj->tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value){
+            if($penanggung_jawab_peminjam == false) return $sj->sjPengirimanPp->ttdPenanggungJawab->user;
+            else return $sj->ttdSjPenanggungJawab->user;
+        }
+    }
     public static function getAllBarang($surat_jalan_id){
         $sj = self::findOrFail($surat_jalan_id);
         $result = collect();
         if($sj->tipe == SuratJalanTipe::PENGIRIMAN_GUDANG_PROYEK->value){
-            $result['barang_habis_pakai'] = Peminjaman::getAllBarang($sj->sjPengirimanGp->peminjamanGp->peminjaman->id);
-            $result['barang_tidak_habis_pakai'] = Penggunaan::getAllBarang($sj->sjPengirimanGp->penggunaanGp->penggunaan->id);
+            $result['barang_habis_pakai'] = ($sj->sjPengirimanGp->peminjamanGp) ? Peminjaman::getAllBarang($sj->sjPengirimanGp->peminjamanGp->peminjaman->id) : null;
+            $result['barang_tidak_habis_pakai'] = ($sj->sjPengirimanGp->penggunaanGp) ? Penggunaan::getAllBarang($sj->sjPengirimanGp->penggunaanGp->penggunaan->id) : null;
         }else if($sj->tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value){
-            $result['barang_habis_pakai'] = Peminjaman::getAllBarang($sj->sjPengirimanPp->peminjamanPp->peminjaman->id);
-            $result['barang_tidak_habis_pakai'] = Penggunaan::getAllBarang($sj->sjPengirimanPp->penggunaanPp->penggunaan->id);
+            $result['barang_habis_pakai'] = ($sj->sjPengirimanPp->peminjamanPp) ? Peminjaman::getAllBarang($sj->sjPengirimanPp->peminjamanPp->peminjaman->id) : null;
+            $result['barang_tidak_habis_pakai'] = ($sj->sjPengirimanPp->penggunaanPp) ? Penggunaan::getAllBarang($sj->sjPengirimanPp->penggunaanPp->penggunaan->id) : null;
         }else if($sj->tipe == SuratJalanTipe::PENGEMBALIAN->value){
-            $result['barang_habis_pakai'] = Pengembalian::getAllBarang($sj->sjPengembalian->pengembalian->id);
-            $result['barang_tidak_habis_pakai'] = PengembalianPenggunaan::getAllBarang($sj->sjPengembalian->pengembalianPenggunaan->id);
+            $result['barang_habis_pakai'] = ($sj->sjPengembalian->pengembalian) ? Pengembalian::getAllBarang($sj->sjPengembalian->pengembalian->id) : null;
+            $result['barang_tidak_habis_pakai'] = ($sj->sjPengembalian->pengembalianPenggunaan) ? PengembalianPenggunaan::getAllBarang($sj->sjPengembalian->pengembalianPenggunaan->id) : null;
         }
         return $result;
     }

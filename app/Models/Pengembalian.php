@@ -32,11 +32,11 @@ class Pengembalian extends Model
         $pengembalian = self::where('id',$pengembalian_id)->first();
         foreach($pengembalian->pengembalianDetail as $pd){
             $barang = collect();
-            $barang['id'] = $pd->barang->id;
-            $barang['gambar'] = $pd->barang->gambar;
-            $barang['nama'] = $pd->barang->nama;
-            $barang['merk'] = $pd->barang->merk;
-            $barang['nomor_seri'] = $pd->barang->barangTidakHabisPakai->nomor_seri;
+            $barang['id'] = $pd->barang->barang->id;
+            $barang['gambar'] = $pd->barang->barang->gambar;
+            $barang['nama'] = $pd->barang->barang->nama;
+            $barang['merk'] = $pd->barang->barang->merk;
+            $barang['nomor_seri'] = $pd->barang->nomor_seri;
             $result->push($barang);
         }
         return $result;

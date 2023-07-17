@@ -163,9 +163,10 @@ class SuratJalanController extends Controller
             $penanggung_jawab_peminjam = ($tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value) 
                 ? SuratJalan::getMenanganiUser($response->id, true) : null;
             $ttd_penanggung_jawab_peminjam = ($tipe == SuratJalanTipe::PENGIRIMAN_PROYEK_PROYEK->value) 
-                ? $response->sjPengirimanPp->ttd_penanggung_jawab_peminjam : null;
-            $project_manager = SuratJalan::getSetManager($response->id);
-            $penanggung_jawab = SuratJalan::getMenanganiUser($response->id);
+                ? $response->sjPengirimanPp->ttdPenanggungJawab->user->ttd : null;
+            $site_manager = SuratJalan::getSetManager($response->id);
+            $menangani_user = SuratJalan::getMenanganiUser($response->id);
+            $penanggung_jawab = SuratJalan::getPenanggungJawab($response->id);
             
             $admin_gudang = [
                 'nama' => $response->adminGudang->nama,
@@ -187,13 +188,21 @@ class SuratJalanController extends Controller
                 'foto' => $response->logistic->foto,
             ];
             
-            $sv = ($penanggung_jawab) ? [
+            $menanganiUser = ($menangani_user) ? [
+                'nama' => $menangani_user->nama,
+                'no_hp' => $menangani_user->no_hp,
+                'role' => $menangani_user->role,
+                'foto' => $menangani_user->foto,
+            ] : null;
+            
+            $penanggungJawab = ($penanggung_jawab) ? [
                 'nama' => $penanggung_jawab->nama,
                 'no_hp' => $penanggung_jawab->no_hp,
+                'role' => $penanggung_jawab->role,
                 'foto' => $penanggung_jawab->foto,
             ] : null;
             
-            $sv_p = ($penanggung_jawab_peminjam) ? [
+            $penanggungJawabPeminjam = ($penanggung_jawab_peminjam) ? [
                 'nama' => $penanggung_jawab_peminjam->nama,
                 'no_hp' => $penanggung_jawab_peminjam->no_hp,
                 'role' => $penanggung_jawab_peminjam->role,
@@ -201,17 +210,18 @@ class SuratJalanController extends Controller
             ] : null;
             
             $sm = [
-                'nama' => $project_manager->nama,
-                'foto' => $project_manager->foto,
-                'no_hp' => $project_manager->no_hp,
+                'nama' => $site_manager->nama,
+                'foto' => $site_manager->foto,
+                'role' => $site_manager->role,
+                'no_hp' => $site_manager->no_hp,
             ];
             $lokasi = SuratJalan::getLokasiAsalTujuan($response->id);
             $surat_jalan = collect([
                 'id' => $response->id,
                 'kode_surat' => $response->kode_surat,
-                'ttd_admin' => $response->ttd_admin,
-                'ttd_driver' => $response->ttd_driver,
-                'ttd_penanggung_jawab' => $response->ttd_penanggung_jawab,
+                'ttd_admin' => $response->ttdSjAdmin->user->ttd,
+                'ttd_driver' => $response->ttdSjDriver->user->ttd,
+                'ttd_penanggung_jawab' => $response->ttdSjPenanggungJawab->user->ttd,
                 'ttd_penanggung_jawab_peminjam' => $ttd_penanggung_jawab_peminjam,
                 'foto_bukti' => $response->foto_bukti,
                 'tipe' => $response->tipe,
@@ -221,9 +231,10 @@ class SuratJalanController extends Controller
                 'kendaraan' => $kendaraan,
                 'admin_gudang' => $admin_gudang,
                 'logistic' => $logistic,
-                'penanggung_jawab' => $sv,
-                'penanggung_jawab_peminjam' => $sv_p,
-                'set_manager' => $sm,
+                'menangani_user' => $menanganiUser,
+                'penanggung_jawab' => $penanggungJawab,
+                'penanggung_jawab_peminjam' => $penanggungJawabPeminjam,
+                'site_manager' => $sm,
                 'tempat_asal' => $lokasi['lokasi_asal'],
                 'tempat_tujuan' => $lokasi['lokasi_tujuan'],
                 'barang_habis_pakai' => $barang['barang_habis_pakai'],
