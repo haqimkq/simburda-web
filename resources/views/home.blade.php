@@ -33,10 +33,12 @@
 			<h2 class="text-xl font-medium text-center">Pengguna</h2>
 			<canvas id="userRoleChart" class="max-h-[40vw] md:max-h-[30vw] lg:max-h-[20vw]"></canvas>
 		</div>
+		@if($proyek)
 		<div class="text-primary relative p-4 shadow-md shadow-gray-100 rounded-lg">
 			<h2 class="text-xl font-medium text-center">Proyek</h2>
 			<canvas id="proyekChart"></canvas>
 		</div>
+		@endif
 		<div class="text-primary relative p-4 shadow-md shadow-gray-100 rounded-lg">
 			<h2 class="text-xl font-medium text-center">Barang</h2>
 			{{-- <canvas id="barangChart"></canvas> --}}

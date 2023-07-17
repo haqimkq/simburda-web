@@ -40,7 +40,9 @@ class HomeController extends Controller
         $userRole = User::select(DB::raw("COUNT(*) as count, role"))
         ->groupBy('role')
         ->pluck('count', 'role');
-
+        $proyek = null;
+        $proyekSelesai = null;
+        $proyekBelumSelesai = null;
         
         if($authUser->role=='ADMIN'||$authUser->role=='PROJECT_MANAGER'||$authUser->role=='ADMIN_GUDANG'){
             $proyek = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
@@ -57,21 +59,21 @@ class HomeController extends Controller
                 ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
                 ->orderBy('created_at')
                 ->pluck('count', 'date');
-        }else if($authUser->role=='SITE_MANAGER'){
+        }else if($authUser->role=='SITE_MANAGER'||$authUser->role=='SUPERVISOR'){
             $proyek = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
-            ->whereRelation('menangani.user','id',$authUser->id)
+            ->whereRelation('menangani','user_id',$authUser->id)
             ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
             ->orderBy('created_at')
             ->pluck('count', 'date');
             $proyekSelesai = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
             ->where('selesai', 1)
-            ->whereRelation('menangani.user','id',$authUser->id)
+            ->whereRelation('menangani','user_id',$authUser->id)
             ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
             ->orderBy('created_at')
             ->pluck('count', 'date');
             $proyekBelumSelesai = Proyek::select(DB::raw("COUNT(*) as count, DATE_FORMAT(created_at, '%b %Y') as date"))
             ->where('selesai', 0)
-            ->whereRelation('menangani.user','id',$authUser->id)
+            ->whereRelation('menangani','user_id',$authUser->id)
             ->groupBy(DB::raw("DATE_FORMAT(created_at, '%M %Y')"))
             ->orderBy('created_at')
             ->pluck('count', 'date');
@@ -80,19 +82,15 @@ class HomeController extends Controller
         return view('home',[
             'authUser' => $authUser,
             'userRoleLabels' => $roles,
-            'proyekLabels' => $proyek->keys(),
-            'labelsProyekBS' => $proyekBelumSelesai->keys(),
-            'labelsProyekS' => $proyekSelesai->keys(),
+            'proyekLabels' => ($proyek) ? $proyek->keys() : null,
+            'labelsProyekBS' => ($proyekBelumSelesai) ? $proyekBelumSelesai->keys()  : null,
+            'labelsProyekS' => ($proyekSelesai) ? $proyekSelesai->keys() : null,
             'userRole' => $userRole->values(),
-            'proyek' => $proyek->values(),
+            'proyek' => ($proyek) ? $proyek->values() : null,
             'proyekSelesai' => $proyekSelesai,
             'proyekBelumSelesai' => $proyekBelumSelesai,
             'countUndefinedAkses' => $countUndefinedAkses,
         ]);
         // return view('home');
-    }
-    public function test($imageId){
-        $filePath = asset($imageId);
-        return response()->file($filePath);
     }
 }

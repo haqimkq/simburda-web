@@ -108,6 +108,8 @@ class PeminjamanController extends Controller
         $proyek = Proyek::where('id',$request->proyek_id)->first();
         $validate['kode_peminjaman'] = Peminjaman::generateKodePeminjaman($request->tipe,$proyek->client,Auth::user()->nama);
         $menangani = Menangani::where('proyek_id',$request->proyek_id)->where('user_id',Auth::id())->first();
+        dd($validate);
+        dd($menangani);
         $validate['menangani_id'] = $menangani->id;
         $peminjaman = Peminjaman::create($validate);
         $peminjamanPP = '';
@@ -210,9 +212,9 @@ class PeminjamanController extends Controller
         $kodePeminjaman = [];
         $search = $request->q;
         $kodePeminjaman = Peminjaman::select("id", "kode_peminjaman")
-                ->whereRelation('menangani', 'proyek_id', $request->proyek_id)
-                ->where('kode_peminjaman', 'LIKE', "%$search%")
-                ->get();
+            ->whereRelation('menangani', 'proyek_id', $request->proyek_id)
+            ->where('kode_peminjaman', 'LIKE', "%$search%")
+            ->get();
         return response()->json($kodePeminjaman);
     }
 

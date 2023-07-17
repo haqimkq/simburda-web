@@ -1,6 +1,11 @@
 @extends('layouts.create')
 @push('addon-style')
 		@include('includes.jquery')
+		<style>
+				option[default] {
+						display: none;
+				}
+		</style>
 		{{-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> --}}
 		<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @endpush
@@ -41,14 +46,16 @@
 						</li>
 				</ol>
 		</nav>
+		@if ($proyeks!=null)
 		<h1 class="my-6 w-full text-center text-lg font-bold uppercase">Tambah Peminjaman</h1>
 		<form method="POST" action="{{ route('peminjaman.store') }}">
 				@csrf
 				<div class="mb-6 grid w-[80vw] gap-6 md:grid-cols-2">
 						<div class="col-span-2 flex w-full flex-col">
 								<label for="orderBy" class="mb-2 block text-sm font-normal text-gray-700">Proyek</label>
-								<select name="proyek_id" id="country"
+								<select name="proyek_id" id="country" required
 										class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green">
+										<option value="" default selected>Pilih Proyek</option>
 										@foreach ($proyeks as $proyek)
 												<option value="{{ $proyek->id }}">{{ $proyek->nama_proyek }}</option>
 										@endforeach
@@ -116,6 +123,9 @@
 								class="mt-5 w-full content-center self-center rounded-lg bg-green px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-green dark:hover:bg-green dark:focus:ring-green sm:w-auto">Submit</button>
 				</div>
 		</form>
+		@else
+		<h1 class="my-6 w-full h-full text-center text-lg font-bold uppercase text-red-700">Anda Tidak Menangani Proyek Manapun</h1>
+		@endif
 		<script>
 				$('#searchKodePeminjaman').select2({
 						width: null,
@@ -210,9 +220,9 @@
 										$('#barang').empty();
 										$.each(temp, function(key, obj) {
 												$('#barang').append(`
-																																																<div class="relative group flex flex-col rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
+																																																																																																<div class="relative group flex flex-col rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
                         <div class="flex p-2 align-items-center">
-																																																								<input id="default-checkbox" type="checkbox" name="barang[]" value="${obj.v.id}" class=" text-blue-600 bg-gray-100 rounded dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 p-3 m-3 checked:bg-green mr-2  border-green border w-5 h-5 focus:ring-green">
+																																																																																																																<input id="default-checkbox" type="checkbox" name="barang[]" value="${obj.v.id}" class=" text-blue-600 bg-gray-100 rounded dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 p-3 m-3 checked:bg-green mr-2  border-green border w-5 h-5 focus:ring-green">
                                 <div class="mr-2 h-[6em] w-[6em] rounded-xl bg-cover md:h-[5em] md:w-[5em] lg:h-[7em] lg:w-[7em]"
                                     style="background-image: url('{{ asset('') }}${obj.v.gambar}')"></div>
                             <div class="flex flex-col">
@@ -225,7 +235,7 @@
                             </div>
                         </div>
                     </div>
-																																								`);
+																																																																																`);
 										});
 								});
 				});
@@ -248,9 +258,9 @@
 								$('#barang').empty();
 								$.each(temp, function(key, obj) {
 										$('#barang').append(`
-																																																<div class="relative group flex flex-col rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
+																																																																																																<div class="relative group flex flex-col rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
                         <div class="flex p-2 align-items-center">
-																																																								<input id="default-checkbox" type="checkbox" name="barang[]" value="${obj.v.id}" class=" text-blue-600 bg-gray-100 rounded dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 p-3 m-3 checked:bg-green mr-2  border-green border w-5 h-5 focus:ring-green">
+																																																																																																																<input id="default-checkbox" type="checkbox" name="barang[]" value="${obj.v.id}" class=" text-blue-600 bg-gray-100 rounded dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 p-3 m-3 checked:bg-green mr-2  border-green border w-5 h-5 focus:ring-green">
                                 <div class="mr-2 h-[6em] w-[6em] rounded-xl bg-cover md:h-[5em] md:w-[5em] lg:h-[7em] lg:w-[7em]"
                                     style="background-image: url('{{ asset('') }}${obj.v.gambar}')"></div>
                             <div class="flex flex-col">
@@ -264,7 +274,7 @@
                             </div>
                         </div>
                     </div>
-																																								`);
+																																																																																`);
 								});
 						});
 				});

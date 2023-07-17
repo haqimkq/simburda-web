@@ -99,7 +99,7 @@ class TtdVerification extends Model
     public static function setSebagaiTtdSjVerification($user, $sj){
         if($user->role=='LOGISTIC'){
             $sebagai = "PENGIRIM";
-        }else if($user->role=='SUPERVISOR' || $user->role=='SET_MANAGER'){
+        }else if($user->role=='SUPERVISOR' || $user->role=='SITE_MANAGER'){
             if($sj->sjPengirimanGp!=null){
                 $sebagai = "PENERIMA";
             }else if($sj->sjPengembalian!=null){

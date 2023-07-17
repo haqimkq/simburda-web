@@ -17,7 +17,7 @@ class MenanganiFactory extends Factory
     public function definition()
     {
         $proyek = Proyek::get()->random();
-        $user = User::where('role','SUPERVISOR')->orWhere('role','SET_MANAGER')->whereDoesntHave('proyeks', function (Builder $query) use ($proyek){
+        $user = User::where('role','SUPERVISOR')->orWhere('role','SITE_MANAGER')->whereDoesntHave('proyeks', function (Builder $query) use ($proyek){
             $query->where('proyek_id', $proyek->id);
         })->get()->random();
         return [

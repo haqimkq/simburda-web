@@ -31,6 +31,12 @@ class Proyek extends Model
         return $this->hasMany(Menangani::class);
     }
 
+    public function isUserMenanganiProyek($user_id, $proyek_id){
+        // return $this->get();
+        $isUserMenanganiProyek = $this->whereRelation('menangani', 'proyek_id', $proyek_id)->whereRelation('menangani', 'user_id', $user_id)->exists();
+        return $isUserMenanganiProyek;
+    }
+
     public static function filterBetweenDate($start_date, $end_date){
         $dateS = new Carbon($start_date);
         $dateE = new Carbon($end_date);

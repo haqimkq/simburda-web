@@ -52,6 +52,16 @@
 				@include('shared.search')
 			</div>
 		</div>
+		<div class="mb-4 flex items-center">
+			<div class="all-status flex items-center">
+				<div class="border-green-500 mr-1 h-5 w-5 rounded-full border"></div>
+				<p class="text-sm">Ditangani</p>
+			</div>
+			<div class="borrow-status ml-2 flex items-center">
+				<div class="mr-1 h-5 w-5 rounded-full border border-red-500"></div>
+				<p class="text-sm">Tidak Ditangani</p>
+			</div>
+		</div>
 		@if (!$proyeks->isEmpty())
 				@if (request('search'))
 				<div class="flex items-center">
@@ -61,9 +71,9 @@
 				@endif
 				<div class="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-4 gap-5">
 					@foreach ($proyeks as $proyek)
-					<div class="group flex flex-col shadow-md shadow-gray-100 rounded-xl hover:rounded-b-none">
-						<a href="{{ route('proyek.show', $proyek->id) }}" class=" p-2 ">
-						<div class="flex flex-col w-full">
+					<div class="group flex flex-col shadow-md shadow-gray-100 rounded-xl hover:rounded-b-none border @if ($proyek->isUserMenanganiProyek($authUser->id,$proyek->id)) border-green-500 @else border-red-500 @endif">
+						<a href="{{ route('proyek.show', $proyek->id) }}" class="">
+						<div class="flex flex-col w-full p-2">
 							<span
 								class="self-start my-1 {{$proyek->selesai ? 'bg-green-200 text-green-600 border-green-600 ' : 'bg-yellow-200 text-yellow-600 border-yellow-600 '}} rounded-full border px-1.5 text-xs">
 								{{ $proyek->selesai ? 'Selesai' : 'Masih Berlangsung'}}
@@ -78,9 +88,9 @@
 								</p>
 							</div>
 							<div class="flex ">
-								{{-- <svg class="mr-1 h-4 w-4 fill-blue-600" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+								<svg class="mr-1 h-4 w-4 fill-blue-600" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 									<path  fill-rule="evenodd" clip-rule="evenodd" d="M9.36364 0C5.29681 0 2 3.29681 2 7.36364C2 11.4305 9.36364 18 9.36364 18C9.36364 18 16.7273 11.4305 16.7273 7.36364C16.7273 3.29681 13.4305 0 9.36364 0ZM9.36364 9.81818C10.7192 9.81818 11.8182 8.71924 11.8182 7.36364C11.8182 6.00803 10.7192 4.90909 9.36364 4.90909C8.00803 4.90909 6.90909 6.00803 6.90909 7.36364C6.90909 8.71924 8.00803 9.81818 9.36364 9.81818Z"/>
-								</svg> --}}
+								</svg>
 								<p class="font-normal text-sm mb-2 line-clamp-1 text-gray-700">{{ucfirst($proyek->alamat)}}</p>
 							</div>
 							<p class="mb-2 text-xs font-normal text-gray-500">{{ \App\Helpers\Date::parseMilliseconds($proyek->created_at) }} @if ($proyek->tgl_selesai)- {{ \App\Helpers\Date::parseMilliseconds($proyek->tgl_selesai) }}@endif</p>
