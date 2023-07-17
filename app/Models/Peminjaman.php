@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Peminjaman extends Model
 {
@@ -140,9 +141,13 @@ class Peminjaman extends Model
     {
         return Date::dateToMillisecond($date);
     }
-
-    public function getTglBerakhirAttribute($date)
-    {
-        return Date::dateToMillisecond($date);
+    public function getRemainingDaysAttribute(){
+        date_default_timezone_set('Asia/Jakarta');
+        if ($this->tgl_berakhir) {
+            $remaining_days = Carbon::now()->diffInDays(Carbon::parse($this->tgl_berakhir));
+        } else {
+            $remaining_days = 0;
+        }
+        return $remaining_days;
     }
 }

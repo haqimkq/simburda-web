@@ -35,14 +35,14 @@ class BarangController extends Controller
                 ];
                 $pinjamanA = [
                     'id' => $data->peminjaman->id,
-                    'project' => $data->peminjaman->menangani->proyek->nama_proyek,
+                    'nama_proyek' => $data->peminjaman->menangani->proyek->nama_proyek,
                     'kode_peminjaman' => $data->peminjaman->kode_peminjaman,
                     'tipe' => $data->peminjaman->tipe,
-                    'tgl_peminjaman' => $data->peminjaman->tgl_peminjaman
+                    'tgl_peminjaman' => $data->peminjaman->getRemainingDaysAttribute()
                 ];
                 $detail = [
                     'id' => $data->id,
-                    'status' => $data->id,
+                    'status' => $data->status,
                     'barang' => $barangA,
                     'penanggung_jawab' => $data->penanggungJawab,
                     'peminjaman' => $pinjamanA
@@ -140,7 +140,7 @@ class BarangController extends Controller
                 $proyek = $barang->peminjaman->menangani->proyek;
                 $menanganis = Menangani::where('proyek_id',$proyek->id)->get();
                 foreach ($menanganis as $menangani){
-                    if($menangani->user->id == $authUser->id){
+                    if($menangani->user_id == $authUser->id){
                         //update Tanggung jawab
                         PeminjamanDetail::where('barang_id',$barang->id)->where('peminjaman_id',$barang->peminjaman_id)->update(['status' =>'DIGUNAKAN','penanggung_jawab_id' => $authUser->id]);
                         //update status
