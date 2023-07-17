@@ -612,9 +612,9 @@ class DatabaseSeeder extends Seeder
         ->has(PeminjamanDetail::factory(8)->resetData()->menungguAksesGp(), 'peminjamanDetail')
         ->create();
         
-        // Peminjaman::factory(40)->aksesDitolakGp()
-        // ->has(PeminjamanDetail::factory(8)->resetData()->aksesDitolakGp(), 'peminjamanDetail')
-        // ->create();
+        Peminjaman::factory(40)->menungguAksesGp()
+        ->has(PeminjamanDetail::factory(8)->resetData()->aksesDitolakGp(), 'peminjamanDetail')
+        ->create();
         
         Peminjaman::factory(40)->menungguSuratJalanGp()
         ->has(PeminjamanDetail::factory(8)->resetData()->menungguSuratJalanGp(), 'peminjamanDetail')

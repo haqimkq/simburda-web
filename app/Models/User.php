@@ -101,14 +101,26 @@ class User extends Authenticatable
     public function aksesBarangAdminGudang(){
         return $this->hasMany(AksesBarang::class,'admin_gudang_id');
     }
-    public function aksesBarangSetManager(){
-        return $this->hasMany(AksesBarang::class,'set_manager_id');
+    public function aksesBarangSiteManager(){
+        return $this->hasMany(AksesBarang::class,'site_manager_id');
     }
     public function deliveryOrderAdminGudang(){
         return $this->hasMany(DeliveryOrder::class,'admin_gudang_id');
     }
     public function deliveryOrderLogistic(){
         return $this->hasMany(DeliveryOrder::class,'logistic_id');
+    }
+    public function activeDeliveryOrderLogistic(){
+        return $this->hasMany(DeliveryOrder::class,'logistic_id')->where('status','!=','SELESAI');
+    }
+    public function activeSJGPLogistic(){
+        return $this->hasMany(SuratJalan::class,'logistic_id')->where('tipe','PENGIRIMAN_GUDANG_PROYEK')->where('status','!=','SELESAI');
+    }
+    public function activeSJPPLogistic(){
+        return $this->hasMany(SuratJalan::class,'logistic_id')->where('tipe','PENGIRIMAN_PROYEK_PROYEK')->where('status','!=','SELESAI');
+    }
+    public function activeSJPGLogistic(){
+        return $this->hasMany(SuratJalan::class,'logistic_id')->where('tipe','PENGEMBALIAN')->where('status','!=','SELESAI');
     }
     public function deliveryOrderPurchasing(){
         return $this->hasMany(DeliveryOrder::class,'purchasing_id');

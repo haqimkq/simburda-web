@@ -32,7 +32,8 @@ class PeminjamanController extends Controller
         }else if ($authUser->role=='ADMIN_GUDANG'||$authUser->role=='ADMIN'||$authUser->role=='PROJECT_MANAGER'){
             $peminjamans = Peminjaman::filter(request(['search','orderBy','filter','datestart','dateend']))->paginate(12)->withQueryString();
         }else{
-            $peminjamans = Peminjaman::filter(request(['search','orderBy','filter','datestart','dateend']))->paginate(12)->withQueryString();
+            $proyeks_id = Menangani::getProyekIdFromUser($authUser->id);
+            $peminjamans = Peminjaman::whereHas('menangani', fn($q) => $q->whereIn('proyek_id', $proyeks_id))->filter(request(['search','orderBy','filter','datestart','dateend']))->paginate(12)->withQueryString();
         }
         return view('peminjaman.index',[
             'peminjamans' => $peminjamans,

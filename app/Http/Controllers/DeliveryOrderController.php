@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\AksesBarang;
 use App\Models\DeliveryOrder;
+use App\Models\Gudang;
 use App\Models\Kendaraan;
+use App\Models\Perusahaan;
 use App\Models\TtdVerification;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
@@ -45,8 +47,12 @@ class DeliveryOrderController extends Controller
      */
     public function create()
     {
-       return view('deliveryorder.create',[
         
+       return view('deliveryorder.create',[
+            "gudangs" => Gudang::get(),
+            "perusahaans" => Perusahaan::get(),
+            "logistics" => User::where('role','LOGISTIC')->get(),
+            "kendaraans" => Kendaraan::where('logistic_id',null)->get(),
         ]);
     }
 

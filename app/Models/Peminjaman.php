@@ -60,13 +60,15 @@ class Peminjaman extends Model
         $result = collect();
         $peminjaman = self::where('id',$peminjaman_id)->first();
         foreach($peminjaman->peminjamanDetail as $pd){
-            $barang = collect();
-            $barang['id'] = $pd->id;
-            $barang['gambar'] = $pd->barang->barang->gambar;
-            $barang['nama'] = $pd->barang->barang->nama;
-            $barang['merk'] = $pd->barang->barang->merk;
-            $barang['nomor_seri'] = $pd->barang->nomor_seri;
-            $result->push($barang);
+            if($pd->aksesBarang->disetujui_sm && $pd->aksesBarang->disetujui_admin){
+                $barang = collect();
+                $barang['id'] = $pd->id;
+                $barang['gambar'] = $pd->barang->barang->gambar;
+                $barang['nama'] = $pd->barang->barang->nama;
+                $barang['merk'] = $pd->barang->barang->merk;
+                $barang['nomor_seri'] = $pd->barang->nomor_seri;
+                $result->push($barang);
+            }
         }
         return $result;
     }

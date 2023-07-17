@@ -194,6 +194,7 @@
 				$('#reportrange').daterangepicker({
 						startDate: start,
 						endDate: end,
+						showDropdowns: true,
 						ranges: {
 								'Hari ini': [moment(), moment()],
 								'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],

@@ -1,159 +1,344 @@
 @extends('layouts.create')
 @push('addon-style')
-@include('includes.jquery')
-	{{-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> --}}
-	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+		@include('includes.jquery')
+		<style>
+			option[default] {
+				display: none;
+			}
+		</style>
+		{{-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> --}}
+		<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 @endpush
 @section('content')
-<nav class="flex mt-5" aria-label="Breadcrumb">
-		<ol class="inline-flex items-center space-x-1 md:space-x-3">
-			<li class="inline-flex items-center">
-				<a href="{{ route('home')}}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
-					<svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-					Home
-				</a>
-			</li>
-			<li>
-				<div class="flex items-center">
-					<svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-					<a href="{{ route('proyek')}}" class="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 md:ml-2 dark:text-gray-400 dark:hover:text-white">Proyek</a>
-				</div>
-			</li>
-			<li aria-current="page">
-				<div class="flex items-center">
-					<svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-					<span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Tambah</span>
-				</div>
-			</li>
-		</ol>
-	</nav>
-<h1 class="text-lg font-bold uppercase my-6 w-full text-center">Tambah Proyek</h1>
-	<form method="POST" action="{{ route('proyek.store') }}">
-		@csrf
-		<div class="mb-6 grid gap-6 md:grid-cols-2 w-[80vw]">
-			<div>
-				<label for="nama_proyek" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Nama Proyek</label>
-				<input type="text" id="nama_proyek" name="nama_proyek"
-					value="{{ old('nama_proyek') }}"
-					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
-					placeholder="Masukkan Nama Proyek" required>
-					@error('nama_proyek') @include('shared.errorText') @enderror
-			</div>
-			<div class="@can('admin') block @elsecan('project-manager') hidden @endcan">
-				<label for="proyek_manager_id" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Proyek Manager</label>
-				<select id="searchProyekManager" name="proyek_manager_id"
-					class="searchProyekManager block w-full"
-					required></select>
-				@error('proyek_manager_id') @include('shared.errorText') @enderror
-			</div>
-			<div>
-				<label for="latitude" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Latitude 
-					<a class="inline-block cursor-pointer text-green hover:text-green font-normal rounded-lg text-sm" type="button" data-modal-toggle="latitude-longitde">
-					Cara Mengambil Latitude</a>
-				</label>
-				<input type="number" id="latitude" name="latitude" step="any"
-					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
-					placeholder="-6.2501422" required value="{{ old('latitude') }}">
-				@error('latitude') @include('shared.errorText') @enderror
-			</div>
-			<div>
-				<label for="longitude" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Longitude
-					<a class="inline-block cursor-pointer text-green hover:text-green font-normal rounded-lg text-sm" type="button" data-modal-toggle="latitude-longitde">
-  				Cara Mengambil Longitude</a>
-				</label>
-				<input type="number" id="longitude" step="any" value="{{ old('longitude') }}" name="longitude"
-					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
-					placeholder="106.8543034" required>
-				@error('longitude') @include('shared.errorText') @enderror
-			</div>
-			<div class="@can('admin') block md:col-span-2 @elsecan('project-manager')  @endcan">
-				<label for="alamat" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Alamat Proyek</label>
-				<textarea name="alamat" id="alamat" @can('admin') rows="3" @elsecan('project-manager') rows="1" @endcan
-				 class="block w-full resize-y min-h-[3em] rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
-				 placeholder="Masukkan Alamat Proyek" required>{{ old('alamat') }}</textarea>
-				 @error('alamat') @include('shared.errorText') @enderror
-			</div>
-		</div>
-		<button type="submit"
-			class="w-full rounded-lg bg-green px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-green dark:hover:bg-green dark:focus:ring-green sm:w-auto">Submit</button>
-	</form>
+		<nav class="mt-5 flex" aria-label="Breadcrumb">
+				<ol class="inline-flex items-center space-x-1 md:space-x-3">
+						<li class="inline-flex items-center">
+								<a href="{{ route('home') }}"
+										class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+										<svg class="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+												<path
+														d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z">
+												</path>
+										</svg>
+										Home
+								</a>
+						</li>
+						<li>
+								<div class="flex items-center">
+										<svg class="h-6 w-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+												<path fill-rule="evenodd"
+														d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+														clip-rule="evenodd"></path>
+										</svg>
+										<a href="{{ route('delivery-order') }}"
+												class="ml-1 text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white md:ml-2">Delivery
+												Order</a>
+								</div>
+						</li>
+						<li aria-current="page">
+								<div class="flex items-center">
+										<svg class="h-6 w-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+												<path fill-rule="evenodd"
+														d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+														clip-rule="evenodd"></path>
+										</svg>
+										<span class="ml-1 text-sm font-medium text-gray-500 dark:text-gray-400 md:ml-2">Tambah</span>
+								</div>
+						</li>
+				</ol>
+		</nav>
+		<h1 class="my-6 w-full text-center text-lg font-bold uppercase">Tambah Delivery Order</h1>
+		<form method="POST" action="{{ route('delivery-order.store') }}">
+				@csrf
+				<div class="mb-6 grid w-[80vw] gap-6 md:grid-cols-2">
+						<div class="flex w-full flex-col">
+								<label for="gudang" class="mb-2 block text-sm font-normal text-gray-700">Gudang</label>
+								<select name="gudang_id" id="gudang" required
+										class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green">
+											<option value="" default selected>Pilih Gudang</option>
+										@foreach ($gudangs as $gudang)
+												<option value="{{ $gudang->id }}">{{ $gudang->nama }}</option>
+										@endforeach
+								</select>
+								@error('gudang_id')
+										@include('shared.errorText')
+								@enderror
+						</div>
+						@can('ADMIN')
+								<div class="flex w-full flex-col">
+										<label for="logistic" class="mb-2 block text-sm font-normal text-gray-700">Driver</label>
+										<select name="logistic_id" id="logistic" required
+												class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green">
+												<option value="" default selected>Pilih Driver</option>
+												@foreach ($logistics as $logistic)
+														<option value="{{ $logistic->id }}">{{ $logistic->nama }}
+																[{{ count($logistic->activeDeliveryOrderLogistic) }} DO]
+																[{{ count($logistic->activeSJGPLogistic) }} SJGP]
+																[{{ count($logistic->activeSJPPLogistic) }} SJPP]
+																[{{ count($logistic->activeSJPGLogistic) }} SJPG]
+														</option>
+												@endforeach
+										</select>
+										@error('logistic_id')
+												@include('shared.errorText')
+										@enderror
+								</div>
+								<div class="flex w-full flex-col">
+										<label for="kendaraan" class="mb-2 block text-sm font-normal text-gray-700">Driver</label>
+										<select name="kendaraan_id" id="kendaraan" required
+												class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green">
+												<option value="" default selected>Pilih Kendaraan</option>
+												@foreach ($kendaraans as $kendaraan)
+														<option value="{{ $kendaraan->id }}">{{ $kendaraan->merk }} [{{ $kendaraan->plat_nomor }}]</option>
+												@endforeach
+										</select>
+										@error('kendaraan_id')
+												@include('shared.errorText')
+										@enderror
+								</div>
+						@endcan
 
-<!-- Main modal -->
-<div id="latitude-longitde" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full" >
-    <div class="relative p-4 w-full max-w-5xl h-full" >
-        <!-- Modal content -->
-        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-            <!-- Modal header -->
-            <div class="flex justify-between items-start p-4 rounded-t border-b dark:border-gray-600">
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    Cara Mengambil Alamat, Latitude dan Longitude
-                </h3>
-                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="latitude-longitde">
-                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                    <span class="sr-only">Close modal</span>
-                </button>
-            </div>
-            <!-- Modal body -->
-            <div class="p-6 space-y-6">
-                <p class="text-gray-800 dark:text-gray-400">
-                   	1. Buka link <a class="text-green" href="https://maps.google.com/" target="_blank">maps.google.com</a>
-                </p>
-								<p class="text-gray-800 dark:text-gray-400">
-									2. Cari lokasi melalui search box
-									<img class="w-[50%]" src="/images/1-lat-lon.png" alt="">
-                </p>
-								<p class="text-gray-800 dark:text-gray-400">
-									3. Copy alamat berdasarkan hasil pencarian
-									<img class="w-[30%]" src="/images/3-lat-lon.png" alt="">
-                </p>
-								<p class="text-gray-800 dark:text-gray-400">
-									4. Pada bagian kanan bawah terdapat icon manusia, tahan dan tarik icon tersebut dan letakkan di marker merah dari hasil lokasi pencarian. 
-									<div class="flex"><img class="w-[30%] mr-2" src="/images/3-new-lat-lon.png" alt="">
-									<img class="w-[30%]" src="/images/4-new-lat-lon.png" alt=""></div>
-                </p>
-								<p class="text-gray-800 dark:text-gray-400">
-									5. Perhatikan url pada browser, dan copy bagian yang ditandai dengan box merah<br>box pertama merupakan latitude, box kedua merupakan longitude
-									<img class="w-full" src="/images/5-new-lat-lon.png" alt="">
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
+						<div class="flex w-full flex-col">
+								<label for="perusahaan" class="mb-2 block text-sm font-normal text-gray-700">Perusahaan</label>
+								<select name="perusahaan_id" id="perusaaan" required
+										class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green">
+										<option value="" default selected>Pilih Perusahaan</option>
+										@foreach ($perusahaans as $perusahaan)
+												<option value="{{ $perusahaan->id }}">{{ $perusahaan->nama }}</option>
+										@endforeach
+								</select>
+								@error('perusahaan_id')
+										@include('shared.errorText')
+								@enderror
+						</div>
+						<div class="flex w-full flex-col">
+								<label for="tgl_pengambilan" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Tanggal
+										Pengambilan</label>
+								<input type="text" name="tgl_pengambilan"
+										class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green" />
+										@error('tgl_pengambilan')
+												@include('shared.errorText')
+										@enderror
+						</div>
+						<div class="flex w-full flex-col">
+								<label for="perihal" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Perihal</label>
+								<input type="text" name="perihal"
+										class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green"
+										value="Delivery Order" required/>
+										@error('perihal')
+												@include('shared.errorText')
+										@enderror
+						</div>
+						<div class="flex w-full flex-col">
+								<label for="untuk_perhatian" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Untuk
+										Perhatian</label>
+								<input type="text" name="untuk_perhatian" placeholder="Ibu / Bapak"
+										class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green"
+										required/>
+										@error('untuk_perhatian')
+												@include('shared.errorText')
+										@enderror
+						</div>
+				</div>
+				<div class="flex justify-center">
+						<button type="submit"
+								class="mt-5 w-full content-center self-center rounded-lg bg-green px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-green dark:hover:bg-green dark:focus:ring-green sm:w-auto">Submit</button>
+				</div>
+		</form>
+		{{-- <script>
+				$('#searchKodePeminjaman').select2({
+						width: null,
+						placeholder: 'Pilih Kode Delivery Order',
+						language: {
+								inputTooShort: function() {
+										return 'Masukkan 1 atau lebih karakter';
+								},
+								formatNoMatches: function() {
+										return "Tidak ditemukan";
+								},
+								noResults: function() {
+										return "Kode Delivery Order tidak ditemukan";
+								},
+								searching: function() {
+										return "Sedang mencari...";
+								}
+						},
+						ajax: {
+								url: '/selectKodePeminjaman',
+								dataType: 'json',
+								delay: 100,
+								data: function(data) {
+										return {
+												gudang_id: $('#proyekAsal').val(),
+												q: data.term
+										};
+								},
+								processResults: function(data) {
+										return {
+												results: $.map(data, function(item) {
+														return {
+																text: item.kode_peminjaman,
+																id: item.id,
+														}
+												})
+										};
+								},
+								cache: true
+						}
+				});
+				$("#tipe").change(function() {
+						var tipe = $("#tipe option:selected").val();
+						var gudang = document.getElementById("gudang-field");
+						var proyekLain = document.getElementById("proyek-asal-field");
+						var kodePeminjaman = document.getElementById("kode-delivery-order-field");
+						if (tipe == "GUDANG_PROYEK") {
+								gudang.classList.remove("hidden");
+								if (!proyekLain.classList.contains('hidden')) {
+										gudang.classList.add("hidden");
+								}
+								if (!kodePeminjaman.classList.contains('hidden')) {
+										gudang.classList.add("hidden");
+								}
+
+						} else if (tipe == "PROYEK_PROYEK") {
+								proyekLain.classList.remove("hidden");
+								if (!gudang.classList.contains('hidden')) {
+										gudang.classList.add("hidden");
+								}
+						}
+				});
+				$("#gudang").change(function() {
+						$.getJSON('http://127.0.0.1:8000/' + "delivery-order/tambah/barangByGudang/" + $("#gudang option:selected")
+						.val(),
+								function(data) {
+										var temp = [];
+										//CONVERT INTO ARRAY
+										$.each(data, function(key, value) {
+												temp.push({
+														v: value,
+														k: key
+												});
+										});
+										//SORT THE ARRAY
+										temp.sort(function(a, b) {
+												if (a.v > b.v) {
+														return 1
+												}
+												if (a.v < b.v) {
+														return -1
+												}
+												return 0;
+										});
+										//APPEND INTO SELECT BOX
+										$('#barang').empty();
+										$.each(temp, function(key, obj) {
+												$('#barang').append(`
+												<div class="relative group flex flex-col rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
+                        <div class="flex p-2 align-items-center">
+														<input id="default-checkbox" type="checkbox" name="barang[]" value="${obj.v.id}" class=" text-blue-600 bg-gray-100 rounded dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 p-3 m-3 checked:bg-green mr-2  border-green border w-5 h-5 focus:ring-green">
+                                <div class="mr-2 h-[6em] w-[6em] rounded-xl bg-cover md:h-[5em] md:w-[5em] lg:h-[7em] lg:w-[7em]"
+                                    style="background-image: url('{{ asset('') }}${obj.v.gambar}')"></div>
+                            <div class="flex flex-col">
+                                <span
+                                    class="bg-green-200 text-green-600 border-green-600 mb-2 self-start rounded-full border px-1.5 text-xs">
+                                    ${obj.v.kondisi}
+                                </span>
+                                <p class="mb-2 font-medium line-clamp-1">${obj.v.nama}</p>
+                                <p class="mb-2 text-xs w-[15em] font-normal">${obj.v.detail}</p>
+                            </div>
+                        </div>
+                    </div>
+										`);
+										});
+								});
+				});
+				$("#proyekAsal").change(function() {
+						var kodePeminjaman = document.getElementById("kode-delivery-order-field");
+						kodePeminjaman.classList.remove("hidden");
+				});
+				$("#searchKodePeminjaman").change(function() {
+						$.getJSON('http://127.0.0.1:8000/' + "delivery-order/tambah/barangByKodePeminjaman/" + $(
+								"#searchKodePeminjaman option:selected").val(), function(data) {
+								var temp = [];
+								//CONVERT INTO ARRAY
+								$.each(data, function(key, value) {
+										temp.push({
+												v: value,
+												k: key
+										});
+								});
+								//APPEND INTO SELECT BOX
+								$('#barang').empty();
+								$.each(temp, function(key, obj) {
+										$('#barang').append(`
+												<div class="relative group flex flex-col rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
+                        <div class="flex p-2 align-items-center">
+														<input id="default-checkbox" type="checkbox" name="barang[]" value="${obj.v.id}" class=" text-blue-600 bg-gray-100 rounded dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 p-3 m-3 checked:bg-green mr-2  border-green border w-5 h-5 focus:ring-green">
+                                <div class="mr-2 h-[6em] w-[6em] rounded-xl bg-cover md:h-[5em] md:w-[5em] lg:h-[7em] lg:w-[7em]"
+                                    style="background-image: url('{{ asset('') }}${obj.v.gambar}')"></div>
+                            <div class="flex flex-col">
+                                <span
+                                    class="bg-gray-200 text-gray-600 border-gray-600 mb-2 self-start rounded-full border px-1.5 text-xs">
+                                    ${obj.v.kondisi}
+                                </span>
+                                <p class="mb-1 font-medium line-clamp-1">#${obj.v.nomor_seri} ${obj.v.nama}</p>
+                                <p class="mb-2 font-small line-clamp-1">${obj.v.merk}</p>
+                                <p class="mb-2 text-xs w-[15em] font-normal">${obj.v.detail}</p>
+                            </div>
+                        </div>
+                    </div>
+										`);
+								});
+						});
+				});
+		</script> --}}
 @endsection
 
 @push('prepend-script')
-	<script>
-		$('#searchProyekManager').select2({
-				width: null,
-        placeholder: 'Pilih Proyek Manager',
-				language: {
-					inputTooShort: function() {
-						return 'Masukkan 1 atau lebih karakter';
-					},
-					formatNoMatches: function () { return "Tidak ditemukan"; },
-					noResults: function(){
-        		return "Proyek Manager tidak ditemukan";
-       		},
-					searching: function(){
-        		return "Sedang mencari...";
-       		}
-				},
-        ajax: {
-            url: '/selectProyekManager',
-            dataType: 'json',
-						delay: 100,
-            processResults: function (data) {
-                return {
-                    results: $.map(data, function (item) {
-                        return {
-                            text: item.nama,
-                            id: item.id,
-                        }
-                    })
-                };
-            },
-            cache: true
-        }
-    });
-	</script>
+		@include('includes.jquery')
+		@include('includes.moment-date-range')
+		<script>
+				$(function() {
+						$('input[name="tgl_pengambilan"]').daterangepicker({
+								singleDatePicker: true,
+								showDropdowns: true,
+						}, function(start, end, label) {
+						});
+				});
+				$("#logistic").change(function() {
+						$.getJSON("{{ env('APP_URL') }}/delivery-order/tambah/barangByKodePeminjaman/" + $(
+								"#searchKodePeminjaman option:selected").val(), function(data) {
+								var temp = [];
+								//CONVERT INTO ARRAY
+								$.each(data, function(key, value) {
+										temp.push({
+												v: value,
+												k: key
+										});
+								});
+								//APPEND INTO SELECT BOX
+								$('#barang').empty();
+								$.each(temp, function(key, obj) {
+										$('#barang').append(`
+												<div class="relative group flex flex-col rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
+                        <div class="flex p-2 align-items-center">
+														<input id="default-checkbox" type="checkbox" name="barang[]" value="${obj.v.id}" class=" text-blue-600 bg-gray-100 rounded dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 p-3 m-3 checked:bg-green mr-2  border-green border w-5 h-5 focus:ring-green">
+                                <div class="mr-2 h-[6em] w-[6em] rounded-xl bg-cover md:h-[5em] md:w-[5em] lg:h-[7em] lg:w-[7em]"
+                                    style="background-image: url('{{ asset('') }}${obj.v.gambar}')"></div>
+                            <div class="flex flex-col">
+                                <span
+                                    class="bg-gray-200 text-gray-600 border-gray-600 mb-2 self-start rounded-full border px-1.5 text-xs">
+                                    ${obj.v.kondisi}
+                                </span>
+                                <p class="mb-1 font-medium line-clamp-1">#${obj.v.nomor_seri} ${obj.v.nama}</p>
+                                <p class="mb-2 font-small line-clamp-1">${obj.v.merk}</p>
+                                <p class="mb-2 text-xs w-[15em] font-normal">${obj.v.detail}</p>
+                            </div>
+                        </div>
+                    </div>
+										`);
+								});
+						});
+				});
+		</script>
 @endpush
