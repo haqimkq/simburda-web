@@ -1,4 +1,4 @@
-<div class="flex items-center justify-between mt-5 md:mt-0">
+<div class="flex items-center justify-between mt-5">
   <h1 class="text-[2em] font-bold text-primary">@yield('headerName')</h1>
   <div class="flex items-center">
     <div class="flex flex-col items-end">

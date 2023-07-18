@@ -61,7 +61,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
                 @foreach ($gudangs as $gudang)
                     <div class="group flex flex-col shadow-md shadow-gray-100 rounded-xl hover:rounded-b-none">
-                        <a href="" class="flex flex-col p-2">
+                        <a href="" class="flex flex-col">
                             <div class="mr-2 h-[15em] w-full rounded-xl bg-cover md:w-full lg:h-[10em] lg:w-full"
                                 style="background-image: url('{{ asset($gudang->gambar) }}')"></div>
                             <div class="flex flex-col">

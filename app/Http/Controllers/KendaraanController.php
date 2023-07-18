@@ -135,4 +135,7 @@ class KendaraanController extends Controller
 
         return redirect()->route('kendaraan')->with('deleteKendaraanSuccess', 'Berhasil Menghapus Kendaraan ('.$kendaraan->merk.')');
     }
+    public function getKendaraanByLogistic($logistic_id){
+        return Kendaraan::getKendaraanByLogistic($logistic_id);
+    }
 }

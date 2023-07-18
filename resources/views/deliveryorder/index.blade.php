@@ -5,7 +5,7 @@
 @endpush
 @section('content')
 		<div class="w-full md:ml-[16em]">
-				<div class="w-full pl-4">
+				<div class="w-full">
 						@if (session('createDeliveryOrderSuccess'))
 								@section('alertMessage', session('createDeliveryOrderSuccess'))
 								@include('shared.alerts.success')

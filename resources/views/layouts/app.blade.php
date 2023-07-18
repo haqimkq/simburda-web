@@ -29,9 +29,9 @@
 
   <body>
     {{-- Sidebar --}}
-    <div class="md:flex flex-col md:flex-row md:min-h-screen p-4">
-      @include('includes.sidebar')
-      {{-- Page Content --}}
+    @include('includes.sidebar')
+    {{-- Page Content --}}
+    <div class="w-full md:flex flex-col md:flex-row md:min-h-screen px-4 pb-4">
       @yield('content')
     </div>
     {{-- Footer --}}

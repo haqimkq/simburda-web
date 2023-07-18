@@ -41,7 +41,7 @@ class Kendaraan extends Model
                 "jenis" => $kendaraan->jenis,
                 "merk" => $kendaraan->merk,
                 "plat_nomor" => $kendaraan->plat_nomor,
-                "logistic_id" => $kendaraan->plat_nomor,
+                "logistic_id" => $kendaraan->logistic_id,
                 "gambar" => $kendaraan->gambar,
                 "id_gudang" => $kendaraan->gudang->id,
                 "coordinate_gudang" => $kendaraan->gudang->latitude."|".$kendaraan->gudang->longitude,

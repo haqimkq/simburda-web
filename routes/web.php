@@ -120,6 +120,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('kendaraan/edit/{kendaraan}', 'edit')->name('kendaraan.edit');
         Route::post('kendaraan/delete/{kendaraan}', 'destroy')->name('kendaraan.destroy');
         Route::post('kendaraan/update/{kendaraan}', 'update')->name('kendaraan.update');
+        Route::get('kendaraan/logistic/{logistic_id}', 'getKendaraanByLogistic')->name('kendaraan.getKendaraanByLogistic');
+        
     });
     Route::middleware(['role:ADMIN_GUDANG,PURHASING'])->controller(GudangController::class)->group(function () {
         Route::get('gudang', 'index')->name('gudang');

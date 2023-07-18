@@ -1,10 +1,10 @@
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
 <div @click.away="open = false"
-	class="md:min-h-[95.5%] bg-primary dark-mode:text-gray-200 dark-mode:bg-gray-800 flex w-full flex-col rounded-lg text-gray-700 md:fixed md:w-[16em] overflow-y-scroll top-0 bottom-0"
+	class="md:min-h-[95.5%] bg-primary dark-mode:text-gray-200 dark-mode:bg-gray-800 flex w-full flex-col text-gray-700 md:fixed md:w-[16em] top-0 bottom-0"
 	x-data="{ open: false }">
 	<div class="flex flex-shrink-0 flex-row items-center justify-between px-8 py-4">
 		<a href="/home"
-			class="dark-mode:text-white focus:shadow-outline flex flex-wrap items-center justify-center rounded-lg p-2 text-lg font-semibold uppercase tracking-widest text-gray-900 focus:outline-none">
+			class="dark-mode:text-white focus:shadow-outline flex flex-wrap items-center justify-center p-2 text-lg font-semibold uppercase tracking-widest text-gray-900 focus:outline-none">
 			<img class="w-20 self-center" src="images/logo-burda-white.png" alt="">
 		</a>
 		<button class="focus:shadow-outline rounded-lg focus:outline-none md:hidden" @click="open = !open">

@@ -2,7 +2,7 @@
 @section('role', App\Helpers\Utils::underscoreToNormal($authUser->role))
 @section('content')
     <div class="md:ml-[16em] w-full">
-        <div class="w-full pl-4">
+        <div class="w-full">
             @if (session('createPerusahaaanSuccess'))
                 @section('alertMessage', session('createPerusahaaanSuccess'))
                 @include('shared.alerts.success')

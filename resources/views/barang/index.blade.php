@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 	<div class="w-full md:ml-[16em]">
-		<div class="w-full pl-4">
+		<div class="w-full">
 			@if (session('createBarangSuccess'))
 				@section('alertMessage', session('createBarangSuccess'))
 				@include('shared.alerts.success')

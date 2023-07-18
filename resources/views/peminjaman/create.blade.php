@@ -234,8 +234,7 @@
                                 <p class="mb-2 text-xs w-[15em] font-normal">${obj.v.detail}</p>
                             </div>
                         </div>
-                    </div>
-																																																																																`);
+                    </div>																																																															`);
 										});
 								});
 				});
@@ -257,10 +256,8 @@
 								//APPEND INTO SELECT BOX
 								$('#barang').empty();
 								$.each(temp, function(key, obj) {
-										$('#barang').append(`
-																																																																																																<div class="relative group flex flex-col rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
-                        <div class="flex p-2 align-items-center">
-																																																																																																																<input id="default-checkbox" type="checkbox" name="barang[]" value="${obj.v.id}" class=" text-blue-600 bg-gray-100 rounded dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 p-3 m-3 checked:bg-green mr-2  border-green border w-5 h-5 focus:ring-green">
+										$('#barang').append(`																																																																						<div class="relative group flex flex-col rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
+                        <div class="flex p-2 align-items-center">																																																																																				<input id="default-checkbox" type="checkbox" name="barang[]" value="${obj.v.id}" class=" text-blue-600 bg-gray-100 rounded dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 p-3 m-3 checked:bg-green mr-2  border-green border w-5 h-5 focus:ring-green">
                                 <div class="mr-2 h-[6em] w-[6em] rounded-xl bg-cover md:h-[5em] md:w-[5em] lg:h-[7em] lg:w-[7em]"
                                     style="background-image: url('{{ asset('') }}${obj.v.gambar}')"></div>
                             <div class="flex flex-col">

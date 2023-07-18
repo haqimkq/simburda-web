@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="md:ml-[16em] w-full relative">
-	<div class="w-full pl-4">
+	<div class="w-full">
 		@if (session('successUpdateAkses'))
 			@section('alertMessage', session('successUpdateAkses'))
 			@include('shared.alerts.success')
