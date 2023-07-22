@@ -70,6 +70,7 @@
 														<option value="semua jenis" @if (request('filter') == 'semua jenis') selected @endif>Semua Jenis</option>
 														<option value="motor" @if (request('filter') == 'motor') selected @endif>Motor</option>
 														<option value="mobil" @if (request('filter') == 'mobil') selected @endif>Mobil</option>
+														<option value="pickup" @if (request('filter') == 'pickup') selected @endif>Pickup</option>
 														<option value="truck" @if (request('filter') == 'truck') selected @endif>Truck</option>
 														<option value="tronton" @if (request('filter') == 'tronton') selected @endif>Tronton</option>
 												</select>
@@ -82,7 +83,7 @@
 						@foreach ($allKendaraan as $kendaraan)
 								<div class="group flex w-full flex-col rounded-xl shadow-md shadow-gray-100 hover:rounded-b-none">
 										<a href="{{ route('kendaraan.show', $kendaraan->id) }}" class="pl-0">
-												<div class="flex">
+												<div class="flex flex-col p-2 items-center justify-center">
 														<div class="m-2 h-[5em] w-[8em] rounded-md bg-cover bg-center"
 																style="background-image: url('{{ asset($kendaraan->gambar) }}')"></div>
 														<div class="flex w-full flex-col">

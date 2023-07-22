@@ -140,8 +140,22 @@ class User extends Authenticatable
         });
         $query->when($filters['filter'] ?? false, function($query, $filter) {
             //    return $query->where(function($query) use ($filter) {
-                if($filter != 'semua role')
-                return $query->where('role', $filter);
+                if($filter == 'project manager')
+                    return $query->where('role', 'PROJECT_MANAGER');
+                else if($filter == 'site manager')
+                    return $query->where('role', 'SITE_MANAGER');
+                else if($filter == 'admin gudang')
+                    return $query->where('role', 'ADMIN_GUDANG');
+                else if($filter == 'admin')
+                    return $query->where('role', 'ADMIN');
+                else if($filter == 'logistic')
+                    return $query->where('role', 'LOGISTIC');
+                else if($filter == 'supervisor')
+                    return $query->where('role', 'SUPERVISOR');
+                else if($filter == 'purchasing')
+                    return $query->where('role', 'PURCHASING');
+                else if($filter == 'user')
+                    return $query->where('role', 'USER');
                 // });
             });
         $query->when(!isset($filters['orderBy']), function($query){

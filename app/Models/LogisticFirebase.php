@@ -23,6 +23,9 @@ class LogisticFirebase
         ];
         self::getDatabase()->getReference(self::$logisticFirebase.$request->user_id)->set($setData);
     }
+    public static function removeData($id){
+        self::getDatabase()->getReference(self::$logisticFirebase.$id)->remove();
+    }
     public static function updateData(Request $request){
         $updateData = [
             'latitude' => $request->latitude,

@@ -86,9 +86,9 @@ class Peminjaman extends Model
         $prefix = "$clientAcronym/$supervisorAcronym/$romanMonth/$year";
         $typePrefix = NULL;
         if($tipe == "PROYEK_PROYEK"){
-            $typePrefix = "SEND_PP";
+            $typePrefix = "SENDPP";
         }else{
-            $typePrefix = "SEND_GP";
+            $typePrefix = "SENDGP";
         }
         return IDGenerator::generateID(new static,'kode_peminjaman',5,"$typePrefix/$prefix");
     }

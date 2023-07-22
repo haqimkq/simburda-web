@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AksesBarang;
 use App\Models\Logistic;
+use App\Models\LogisticFirebase;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,13 +57,23 @@ class PenggunaController extends Controller
             'role' => 'required',
             'password' => 'required'
         ]);
-
         $validate['password'] = bcrypt($validate['password']);
         if($request->file('foto')){
             $validate['foto'] = $request->file('foto')->store('assets/user', 'public');
         }
-        User::create($validate);
-
+        $user = User::create($validate);
+        if($request->role=='LOGISTIC'){
+            Logistic::firstOrCreate(['user_id' => $user->id]);
+            $request = new Request([
+                'user_id'   => $user->id,
+                'latitude' => 0.0,
+                'longitude' => 0.0,
+                'bearing' => 0.0,
+                'speed' => 0.0,
+                'accuracy' => 0.0,
+            ]);
+            LogisticFirebase::setData($request);
+        }
         return redirect()->route("pengguna");
     }
 
@@ -108,8 +119,17 @@ class PenggunaController extends Controller
             $fileName = $user->nama.".".$extFormat;
             $user->foto = $request->file('foto')->storeAS('assets/pengguna',$fileName,'public');
         }
-        if($request->role=='logistic'){
-            Logistic::firstOrCreate(['logistic_id' => $id,]);
+        if($request->role=='LOGISTIC'){
+            Logistic::firstOrCreate(['user_id' => $id]);
+            $request = new Request([
+                'user_id'   => $id,
+                'latitude' => 0.0,
+                'longitude' => 0.0,
+                'bearing' => 0.0,
+                'speed' => 0.0,
+                'accuracy' => 0.0,
+            ]);
+            LogisticFirebase::setData($request);
         }
         $user->update();
         return redirect('/pengguna')->with(
@@ -128,6 +148,9 @@ class PenggunaController extends Controller
         $user = User::find($id);
         if($user->foto){
             Storage::delete($user->foto);
+        }
+        if($user->role == 'LOGISTIC'){
+            LogisticFirebase::removeData($id);
         }
         User::destroy($id);
         return redirect('/pengguna')->with('deletePenggunaSuccess','Berhasil Menghapus Pengguna ('.$user->nama.')');
