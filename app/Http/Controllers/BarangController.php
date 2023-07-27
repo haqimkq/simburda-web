@@ -28,10 +28,11 @@ class BarangController extends Controller
     {
         $user = Auth::user();
         $countUndefinedAkses = AksesBarang::countUndefinedAkses();
-        $barang = Barang::select(DB::raw('*, count(nama) as jumlah'))->filter(request(['search','orderBy','filter']))->groupBy('nama')->paginate(12)->withQueryString();
+        $barang = Barang::select(DB::raw('*, count(nama) as jumlah'))->filter(request(['search','orderBy','filter','filter-gudang']))->groupBy('nama')->paginate(12)->withQueryString();
         return view('barang.index',[
             'barangs' => $barang,
             'authUser' => $user,
+            'gudangs' => Gudang::get(),
             'countUndefinedAkses' => $countUndefinedAkses,
         ]);
     }
@@ -187,7 +188,6 @@ class BarangController extends Controller
         if($request->jenis == "TIDAK_HABIS_PAKAI"){
             $validate = $request->validate([
                 'nama' => 'required',
-                'jenis' => 'required',
                 'kondisi' => 'required',
                 'gudang_id' => 'required',
                 'merk' => 'required',
@@ -198,7 +198,6 @@ class BarangController extends Controller
         }else{
             $validate = $request->validate([
                 'nama' => 'required',
-                'jenis' => 'required',
                 'gudang_id' => 'required',
                 'merk' => 'required',
                 'detail' => 'required',

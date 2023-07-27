@@ -24,10 +24,10 @@ class PreOrder extends Model
         return $this->belongsTo(DeliveryOrder::class);
     }
 
-    public static function generateKodePO($nama_perusahaan){
+    public static function generateKodePO($nama_perusahaan,$date=null){
         $perusahaanAlias = IDGenerator::getAcronym($nama_perusahaan);
-        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber());
-        $prefix = "PO/BC-" . $perusahaanAlias . "/" . $romanMonth . "/" . Date::getYearNumber();
+        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber($date));
+        $prefix = "PO/BC-" . $perusahaanAlias . "/" . $romanMonth . "/" . Date::getYearNumber($date);
         return IDGenerator::generateID(new static, 'kode_po', 5, $prefix);
     }
     public function getCreatedAtAttribute($date)

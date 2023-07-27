@@ -38,13 +38,13 @@
 				<label for="jenis" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Jenis Barang</label>
 				<select id="jenis" name="jenis"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-					required> 
+					disabled>
 					<option value="TIDAK_HABIS_PAKAI" {{ ($barang->barang->jenis == "TIDAK_HABIS_PAKAI") ? 'selected' : '' }}>Tidak Habis Pakai</option>
-					<option value="HABIS_PAKAI" {{ ($barang->jenis == "HABIS_PAKAI") ? 'selected' : '' }}>Habis Pakai</option>
+					<option value="HABIS_PAKAI" {{ ($barang->barang->jenis == "HABIS_PAKAI") ? 'selected' : '' }}>Habis Pakai</option>
 				</select>
 				@error('jenis') @include('shared.errorText') @enderror
 			</div>
-			<div style="{{ ($barang->jenis == "HABIS_PAKAI") ? 'display: none' : '' }}" id="kondisi-field">
+			<div style="{{ ($barang->barang->jenis == "HABIS_PAKAI") ? 'display: none' : '' }}" id="kondisi-field">
 				<label for="kondisi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Kondisi Barang</label>
 				<select id="kondisi" name="kondisi"
 					class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
@@ -94,9 +94,9 @@
 				@error('satuan') @include('shared.errorText') @enderror
 			</div>
 			
-			<div  class="col-span-2">
+			<div  class="">
 				<label for="detail" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Detail Barang</label>
-				<textarea name="detail" id="detail" rows="1"
+				<textarea name="detail" id="detail" rows="3"
 				 class="block w-full resize-y min-h-[3em] rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
 				 placeholder="Masukkan Detail Barang" >{{ old('detail', $barang->barang->detail) }}</textarea>
 				 @error('detail') @include('shared.errorText') @enderror
@@ -112,11 +112,11 @@
 			<div class="col-span-2">
 				<label class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300" for="gambar">Gambar</label>
 				<div class="flex items-center flex-col md:flex-row">
-					<img class="border md:mr-2 border-gray-200 rounded-lg mb-2 md:mb-0 max-w-[40%]" id="preview-image" src="https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?w=740&t=st=1662267352~exp=1662267952~hmac=f0385ce0a49bd1243809578d71f8efef2a35d44a28cb49ff48186f6c1e7834a8"
+					<img class="border md:mr-2 border-gray-200 rounded-lg mb-2 md:mb-0 max-w-[40%]" id="preview-image" src="{{ ($barang->barang->gambar) ? asset($barang->barang->gambar) : 'https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?w=740&t=st=1662267352~exp=1662267952~hmac=f0385ce0a49bd1243809578d71f8efef2a35d44a28cb49ff48186f6c1e7834a8' }}"
 							alt="preview image" >
 					<input
 						class="self-center block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
-						name="gambar" aria-describedby="gambar_help" id="gambar" type="file" accept="image/*" value="{{ old('gambar') }}">
+						name="gambar" aria-describedby="gambar_help" id="gambar" type="file" accept="image/*" value="{{ $barang->barang->gambar }}">
 						@error('gambar') @include('shared.errorText') @enderror
 				</div>
 			</div>

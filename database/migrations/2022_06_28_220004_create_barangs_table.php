@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('barangs', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('gambar');
+            $table->string('gambar')->nullable();
             $table->string('nama');
             $table->enum('jenis',['HABIS_PAKAI', 'TIDAK_HABIS_PAKAI']);
             $table->string('merk')->nullable();

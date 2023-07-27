@@ -23,13 +23,15 @@
 				@include('includes.header')
 				<div class="my-5 flex w-full items-center justify-items-center">
 						<div class="flex w-full">
-								@section('last-search')
-										<a href="{{ route('delivery-order.create') }}"
-												class="button-custom !h-auto !w-auto px-5 md:col-span-2 xl:col-span-4">
-												+ Tambah DO
-										</a>
-								@endsection
-								@section('placeholderSearch', 'Cari Kode Delivery Order') @section('action', '/delivery-order')
+							@canany(['ADMIN', 'PURCHASING'])
+							@section('last-search')
+									<a href="{{ route('delivery-order.createStepOne') }}"
+											class="button-custom !h-auto !w-auto px-5 md:col-span-2 xl:col-span-4">
+											+ Tambah DO
+									</a>
+							@endsection
+							@endcanany
+							@section('placeholderSearch', 'Cari Kode Delivery Order') @section('action', '/delivery-order')
 								@section('middle-search')
 										@if (request('page'))
 												<input type="hidden" name="page" id="" value="{{ request('page') }}">
@@ -47,8 +49,6 @@
 												<select name="filter" id="filterStatus" onchange="this.form.submit()"
 														class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green">
 														<option value="semua status" @if (request('filter') == 'semua status') selected @endif>Semua Status</option>
-														<option value='menunggu konfirmasi admin gudang' @if (request('filter') == 'menunggu konfirmasi admin gudang') selected @endif>Menunggu
-																Konfirmasi Admin Gudang</option>
 														<option value='driver dalam perjalanan' @if (request('filter') == 'driver dalam perjalanan') selected @endif>Dalam Perjalanan
 														</option>
 														<option value='selesai' @if (request('filter') == 'selesai') selected @endif>Sudah Diambil</option>

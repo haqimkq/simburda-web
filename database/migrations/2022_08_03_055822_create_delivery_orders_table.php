@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('delivery_orders', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('kode_do');
-            $table->enum('status', ['MENUNGGU_KONFIRMASI_ADMIN_GUDANG', 'MENUNGGU_KONFIRMASI_DRIVER','DRIVER_DALAM_PERJALANAN', 'SELESAI'])->default('MENUNGGU_KONFIRMASI_ADMIN_GUDANG');
+            $table->enum('status', ['MENUNGGU_KONFIRMASI_DRIVER','DRIVER_DALAM_PERJALANAN', 'SELESAI'])->default('MENUNGGU_KONFIRMASI_DRIVER');
             $table->string('untuk_perhatian');
             $table->string('perihal');
             $table->string('foto_bukti')->nullable();

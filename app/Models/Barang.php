@@ -43,14 +43,16 @@ class Barang extends Model
                 return $query->where('jenis', '=', 'HABIS_PAKAI');
             // });
         });
+        $query->when($filters['filter-gudang'] ?? false, function($query, $filter) {
+                if($filter != 'semua gudang')
+                    return $query->where('gudang_id', '=', $filter);
+        });
         $query->when(!isset($filters['orderBy']), function($query){
             return $query->orderBy('created_at', 'DESC');
         });
         $query->when($filters['orderBy'] ?? false, function($query, $orderBy) {
             if($orderBy == 'terbaru') return $query->orderBy('created_at', 'DESC');
             if($orderBy == 'terlama') return $query->orderBy('created_at', 'ASC');
-            if($orderBy == 'jumlah tersedikit') return $query->orderBy('jumlah', 'ASC');
-            if($orderBy == 'jumlah terbanyak') return $query->orderBy('jumlah', 'DESC');
         });
     }
     public function getCreatedAtAttribute($date)

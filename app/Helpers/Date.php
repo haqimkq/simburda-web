@@ -12,8 +12,8 @@ class Date{
         ->setTimezone(session('timezone'))
         ->locale('id')->isoFormat($format);
   }
-  public static function parseMilliseconds($milli, $format='dddd, D MMM YYYY H:mm', $showHours = true){
-    $format = ($showHours) ? 'dddd, D MMM YYYY' : 'dddd, D MMM YYYY H:mm';
+  public static function parseMilliseconds($milli, $format='dddd, D MMM YYYY H:mm', $notShowHours = true){
+    $format = ($notShowHours) ? 'dddd, D MMM YYYY' : $format;
     return Carbon::createFromTimestampMs($milli)
     ->setTimezone(session('timezone'))
     ->locale('id')->IsoFormat($format);

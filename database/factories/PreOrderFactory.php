@@ -19,7 +19,7 @@ class PreOrderFactory extends Factory
     {
         $delivery_order = DeliveryOrder::latest()->first();
         $satuan = fake()->randomElement(['Meter', 'Kilogram', 'Box', 'Lembar', 'Karung', 'Batang']);
-        $kode_po = PreOrder::generateKodePO($delivery_order->perusahaan->nama);
+        $kode_po = PreOrder::generateKodePO($delivery_order->perusahaan->nama,$delivery_order->tgl_pengambilan);
         return [
             'id' => fake()->uuid(),
             'delivery_order_id' => $delivery_order->id,

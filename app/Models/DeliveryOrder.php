@@ -57,16 +57,12 @@ class DeliveryOrder extends Model
             return $query->where('kode_do', 'like', '%' . $search . '%');
         });
         $query->when($filters['filter'] ?? false, function($query, $filter) {
-        //    return $query->where(function($query) use ($filter) {
             if($filter == 'selesai')
                 return $query->where('status', 'SELESAI');
             if($filter == 'driver dalam perjalanan')
                 return $query->where('status', 'DRIVER_DALAM_PERJALANAN');
             if($filter == 'menunggu konfirmasi driver')
                 return $query->where('status', 'MENUNGGU_KONFIRMASI_DRIVER');
-            if($filter == 'menunggu konfirmasi admin gudang')
-                return $query->where('status', 'MENUNGGU_KONFIRMASI_ADMIN_GUDANG');
-            // });
         });
         $query->when(!isset($filters['orderBy']), function($query){
             return $query->orderBy('created_at', 'DESC');

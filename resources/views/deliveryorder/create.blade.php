@@ -48,15 +48,14 @@
 				</ol>
 		</nav>
 		<h1 class="my-6 w-full text-center text-lg font-bold uppercase">Tambah Delivery Order</h1>
-		<form method="POST" action="{{ route('delivery-order.store') }}">
+		<form method="POST" action="{{ route('delivery-order.storeCreateStepOne') }}" id="do-po-form">
 				@csrf
 				<div class="mb-6 grid w-[80vw] gap-6 md:grid-cols-2">
 						<div class="flex w-full flex-col">
 								<label for="gudang" class="mb-2 block text-sm font-normal text-gray-700">Gudang</label>
-
 								<select name="gudang_id" id="gudang" required
 										class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green">
-										<option value="" default selected>Pilih Gudang</option>
+										<option value="{{ $deliveryOrder ? $deliveryOrder->gudang->id : '' }}" default selected>{{ $deliveryOrder ? $deliveryOrder->gudang->nama : 'Pilih Gudang'}}</option>
 										@foreach ($gudangs as $gudang)
 												<option value="{{ $gudang->id }}" gudang-gambar="{{ asset($gudang->gambar) }}"
 														gudang-alamat="{{ $gudang->alamat }}" gudang-nama="{{ $gudang->nama }}"
@@ -64,63 +63,120 @@
 												</option>
 										@endforeach
 								</select>
-								<div id="gudang-preview" class="my-2 flex hidden flex-col justify-center items-center rounded-xl p-2 shadow-md shadow-gray-100">
-										
+								<div id="gudang-preview" class="my-2 flex {{ $deliveryOrder ? '' : 'hidden' }} flex-col justify-center items-center rounded-xl p-2 shadow-md shadow-gray-100">
+										@if ($deliveryOrder)
+											<div class="mr-2 h-[6em] w-[8em] rounded-xl bg-cover"
+											style="background-image: url('{{ asset($deliveryOrder->gudang->gambar) }}')"></div>
+											<div class="flex flex-col">
+												<span class="my-2 self-start rounded-full border border-gray-600 bg-gray-200 px-1.5 text-xs text-gray-600"> {{ $deliveryOrder->gudang->provinsi }} </span>
+												<p class="mb-2 font-medium line-clamp-1 md:line-clamp-2 xl:line-clamp-3">{{ $deliveryOrder->gudang->nama }}</p>
+												<p class="mb-2 text-sm font-normal text-gray-700 line-clamp-1 md:line-clamp-2 xl:line-clamp-3">
+												{{ $deliveryOrder->gudang->alamat }}</p>
+											</div>
+										@endif
 								</div>
 								@error('gudang_id')
 										@include('shared.errorText')
 								@enderror
 						</div>
-						@can('ADMIN')
-								<div class="flex w-full flex-col">
-										<label for="logistic" class="mb-2 block text-sm font-normal text-gray-700">Driver</label>
-										<select name="logistic_id" id="logistic" required
-												class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green">
-												<option value="" default selected>Pilih Driver</option>
-												@foreach ($logistics as $logistic)
-														<option value="{{ $logistic->id }}" logistic-foto="{{ asset($logistic->foto) }}"
-																logistic-noHp="{{ $logistic->no_hp }}" logistic-nama="{{ $logistic->nama }}"
-																logistic-activeDeliveryOrderLogistic="{{ count($logistic->activeDeliveryOrderLogistic) }}"
-																logistic-activeSJGPLogistic="{{ count($logistic->activeSJGPLogistic) }}"
-																logistic-activeSJPPLogistic="{{ count($logistic->activeSJPPLogistic) }}"
-																logistic-activeSJPGLogistic="{{ count($logistic->activeSJPGLogistic) }}">{{ $logistic->nama }}
-														</option>
-												@endforeach
-										</select>
-										<div id="logistic-preview" class="my-2 flex hidden flex-col rounded-xl p-2 shadow-md shadow-gray-100 justify-center items-center">
-										
-										</div>
-										@error('logistic_id')
-												@include('shared.errorText')
-										@enderror
-								</div>
-								<div class="flex w-full flex-col">
-										<label for="kendaraan" class="mb-2 block text-sm font-normal text-gray-700">Kendaraan</label>
-										<select name="kendaraan_id" id="kendaraan" required
+						<div class="flex w-full flex-col">
+								<label for="logistic" class="mb-2 block text-sm font-normal text-gray-700">Driver</label>
+								<select name="logistic_id" id="logistic" required
 										class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green">
-										<option value="" default selected>Pilih Kendaraan</option>
-										@foreach ($kendaraans as $kendaraan)
-										<option value="{{ $kendaraan->id }}" kendaraan-gambar="{{ asset($kendaraan->gambar) }}"
-											kendaraan-gudang="{{ $kendaraan->gudang->nama }}" 
-											kendaraan-merk="{{ $kendaraan->merk }}"
-											kendaraan-jenis="{{ $kendaraan->jenis }}"
-											kendaraan-platNomor="{{ $kendaraan->plat_nomor }}">
-											{{ $kendaraan->merk }} [{{ $kendaraan->plat_nomor }}]</option>
-											@endforeach
-										</select>
-										<div id="kendaraan-preview" class="hidden my-2 flex flex-col rounded-xl p-2 shadow-md shadow-gray-100 justify-center items-center">
-										</div>
-										@error('kendaraan_id')
-												@include('shared.errorText')
-										@enderror
+										<option value="{{ $deliveryOrder ? $deliveryOrder->logistic->id : '' }}" default selected>{{ $deliveryOrder ? $deliveryOrder->logistic->nama : 'Pilih Driver' }}</option>
+										@foreach ($logistics as $logistic)
+												<option value="{{ $logistic->id }}" logistic-foto="{{ asset($logistic->foto) }}"
+														logistic-noHp="{{ $logistic->no_hp }}" logistic-nama="{{ $logistic->nama }}"
+														logistic-activeDeliveryOrderLogistic="{{ count($logistic->activeDeliveryOrderLogistic) }}"
+														logistic-activeSJGPLogistic="{{ count($logistic->activeSJGPLogistic) }}"
+														logistic-activeSJPPLogistic="{{ count($logistic->activeSJPPLogistic) }}"
+														logistic-activeSJPGLogistic="{{ count($logistic->activeSJPGLogistic) }}">{{ $logistic->nama }}
+												</option>
+										@endforeach
+								</select>
+								<div id="logistic-preview" class="my-2 flex {{ $deliveryOrder ? '' : 'hidden' }} flex-col rounded-xl p-2 shadow-md shadow-gray-100 justify-center items-center">
+									@if ($deliveryOrder)
+											<div class="mb-2 rounded-full bg-cover h-[6em] w-[6em] md:h-[5em] md:w-[5em] lg:h-[7em] lg:w-[7em]"
+														style="background-image: url('{{ asset($deliveryOrder->logistic->foto) }}')"></div>
+												<div class="flex w-full flex-col">
+														<div class="flex flex-col p-2">
+																<p class="mb-1 text-sm font-normal">{{ $deliveryOrder->logistic->nama }}</p>
+																<p class="mb-1 text-xs font-normal text-gray-500">{{ $deliveryOrder->logistic->no_hp }}</p>
+																<div class="flex flex-wrap">
+																		<div class="mr-2 flex items-center md:flex-col lg:flex-row">
+																				<p class="mb-2 self-start rounded-md border border-gray-600 bg-gray-200 px-2 text-xs text-gray-600">
+																						{{ count($deliveryOrder->logistic->activeDeliveryOrderLogistic) }} DO Aktif
+																				</p>
+																		</div>
+																		<div class="mr-2 flex items-center md:flex-col lg:flex-row">
+																				<p class="mb-2 self-start rounded-md border border-gray-600 bg-gray-200 px-2 text-xs text-gray-600">
+																						{{ count($deliveryOrder->logistic->activeSJGPLogistic) }} SJGP Aktif
+																				</p>
+																		</div>
+																		<div class="mr-2 flex items-center md:flex-col lg:flex-row">
+																				<p class="mb-2 self-start rounded-md border border-gray-600 bg-gray-200 px-2 text-xs text-gray-600">
+																						{{ count($deliveryOrder->logistic->activeSJPGLogistic) }} SJPG Aktif
+																				</p>
+																		</div>
+																		<div class="mr-2 flex items-center md:flex-col lg:flex-row">
+																				<p class="mb-2 self-start rounded-md border border-gray-600 bg-gray-200 px-2 text-xs text-gray-600">
+																						{{ count($deliveryOrder->logistic->activeSJPPLogistic) }} SJPP Aktif
+																				</p>
+																		</div>
+																</div>
+														</div>
+												</div>
+									@endif
 								</div>
-						@endcan
-
+								@error('logistic_id')
+										@include('shared.errorText')
+								@enderror
+						</div>
+						<div class="flex w-full flex-col">
+								<label for="kendaraan" class="mb-2 block text-sm font-normal text-gray-700">Kendaraan</label>
+								<select name="kendaraan_id" id="kendaraan" required @if($deliveryOrder) @if($deliveryOrder->kendaraan->logistic_id!=null) disabled @endif @endif
+								class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green">
+								<option value="{{ $deliveryOrder ? $deliveryOrder->kendaraan->id : '' }}" default selected >{{ $deliveryOrder ? $deliveryOrder->kendaraan->merk.' ['.$deliveryOrder->kendaraan->plat_nomor.']'  : 'Pilih Kendaraan' }}</option>
+								@foreach ($kendaraans as $kendaraan)
+								<option value="{{ $kendaraan->id }}" kendaraan-gambar="{{ asset($kendaraan->gambar) }}"
+									kendaraan-gudang="{{ $kendaraan->gudang->nama }}" 
+									kendaraan-merk="{{ $kendaraan->merk }}"
+									kendaraan-jenis="{{ $kendaraan->jenis }}"
+									kendaraan-platNomor="{{ $kendaraan->plat_nomor }}">
+									{{ $kendaraan->merk }} [{{ $kendaraan->plat_nomor }}]</option>
+								@endforeach
+								</select>
+								<div id="kendaraan-preview" class="{{ $deliveryOrder ? '' : 'hidden' }} my-2 flex flex-col rounded-xl p-2 shadow-md shadow-gray-100 justify-center items-center">
+									@if ($deliveryOrder)
+											<div class="flex flex-col p-2">
+												<div class="m-2 h-[5em] w-[8em] rounded-md bg-cover bg-center"
+														style="background-image: url('{{ asset($deliveryOrder->kendaraan->gambar) }}')"></div>
+												<div class="flex w-full flex-col">
+														<span
+																class="mb-1 self-start rounded-full border border-gray-600 bg-gray-200 px-1.5 text-xs text-gray-600 md:mb-0 md:mr-1">
+																{{ $deliveryOrder->kendaraan->jenis }}
+														</span>
+														<div class="mt-1 flex flex-col md:flex-row md:items-center">
+																<p class="font-medium line-clamp-2">{{ $deliveryOrder->kendaraan->merk }}</p>
+														</div>
+														<p class="my-1 text-sm font-normal uppercase line-clamp-1">{{ $deliveryOrder->kendaraan->plat_nomor }}</p>
+														<div class="flex items-center overflow-x-auto">
+																<img src="/images/ic_gudang.png" alt="" class="mr-1 h-[1.1em] w-auto">
+																<p class="text-sm font-normal line-clamp-2">{{ $deliveryOrder->gudang->nama }}</p>
+														</div>
+												</div>
+										</div>
+									@endif
+								</div>
+								@error('kendaraan_id')
+										@include('shared.errorText')
+								@enderror
+						</div>
 						<div class="flex w-full flex-col">
 								<label for="perusahaan" class="mb-2 block text-sm font-normal text-gray-700">Perusahaan</label>
 								<select name="perusahaan_id" id="perusahaan" required
 										class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green">
-										<option value="" default selected>Pilih Perusahaan</option>
+										<option value="{{ $deliveryOrder ? $deliveryOrder->perusahaan->id : '' }}" default selected>{{ $deliveryOrder ? $deliveryOrder->perusahaan->nama : 'Pilih Perusahaan'}}</option>
 										@foreach ($perusahaans as $perusahaan)
 												<option value="{{ $perusahaan->id }}" perusahaan-gambar="{{ asset($perusahaan->gambar) }}"
 														perusahaan-alamat="{{ $perusahaan->alamat }}" perusahaan-nama="{{ $perusahaan->nama }}"
@@ -128,17 +184,44 @@
 														{{ $perusahaan->nama }}</option>
 										@endforeach
 								</select>
-								<div id="perusahaan-preview" class="my-2 flex hidden flex-col justify-center items-center rounded-xl p-2 shadow-md shadow-gray-100">
-										
+								<div id="perusahaan-preview" class="my-2 flex {{ $deliveryOrder ? '' : 'hidden' }} flex-col justify-center items-center rounded-xl p-2 shadow-md shadow-gray-100">
+									@if ($deliveryOrder)
+											<div class="mr-2 h-[6em] w-[8em] rounded-xl bg-cover"
+											style="background-image: url('{{ asset($deliveryOrder->perusahaan->gambar) }}')"></div>
+											<div class="flex flex-col">
+												<span class="my-2 self-start rounded-full border border-gray-600 bg-gray-200 px-1.5 text-xs text-gray-600"> {{ $deliveryOrder->perusahaan->provinsi }} </span>
+												<p class="mb-2 font-medium line-clamp-1 md:line-clamp-2 xl:line-clamp-3">{{ $deliveryOrder->perusahaan->nama }}</p>
+												<p class="mb-2 text-sm font-normal text-gray-700 line-clamp-1 md:line-clamp-2 xl:line-clamp-3">
+												{{ $deliveryOrder->perusahaan->alamat }}</p>
+											</div>
+										@endif
 								</div>
 								@error('perusahaan_id')
 										@include('shared.errorText')
 								@enderror
 						</div>
+						@can('ADMIN')
+							<div class="flex w-full flex-col">
+									<label for="purchasing" class="mb-2 block text-sm font-normal text-gray-700">Purchasing</label>
+									<select name="purchasing_id" id="purchasing" required
+											class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green">
+											<option value="{{ $deliveryOrder ? $deliveryOrder->purchasing->id : '' }}" default selected>{{ $deliveryOrder ? $deliveryOrder->purchasing->nama : 'Pilih Purchasing'}}</option>
+											@foreach ($purchasings as $purchasing)
+													<option value="{{ $purchasing->id }}">{{ $purchasing->nama }}</option>
+											@endforeach
+									</select>
+									@error('purchasing_id')
+											@include('shared.errorText')
+									@enderror
+							</div>
+						@endcan
+						@can('PURCHASING')
+							<input type="hidden" name="purchasing_id" value="{{ $purchasings->id }}"/>
+						@endcan
 						<div class="flex w-full flex-col">
 								<label for="tgl_pengambilan" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Tanggal
 										Pengambilan</label>
-								<input type="text" name="tgl_pengambilan"
+								<input type="text" name="tgl_pengambilan" value="{{ $deliveryOrder ? App\Helpers\Date::parseMilliseconds($deliveryOrder->tgl_pengambilan, 'MM/DD/YYYY', false) : '' }}"
 										class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green" />
 								@error('tgl_pengambilan')
 										@include('shared.errorText')
@@ -148,25 +231,24 @@
 								<label for="perihal" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Perihal</label>
 								<input type="text" name="perihal"
 										class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green"
-										value="Delivery Order" required />
+										value="{{ $deliveryOrder ? $deliveryOrder->perihal : 'Delivery Order' }}" required />
 								@error('perihal')
 										@include('shared.errorText')
 								@enderror
 						</div>
 						<div class="flex w-full flex-col">
-								<label for="untuk_perhatian" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Untuk
-										Perhatian</label>
-								<input type="text" name="untuk_perhatian" placeholder="Ibu / Bapak"
+								<label for="untuk_perhatian" class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-300">Untuk Perhatian</label>
+								<input type="text" name="untuk_perhatian"
 										class="dark: block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:ring-green dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:ring-green"
-										required />
+										placeholder="Kepada bapak/ibu" required value="{{ $deliveryOrder ? $deliveryOrder->untuk_perhatian : ''}}" />
 								@error('untuk_perhatian')
 										@include('shared.errorText')
 								@enderror
 						</div>
 				</div>
 				<div class="flex justify-center">
-						<button type="submit"
-								class="mt-5 w-full content-center self-center rounded-lg bg-green px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-green focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-green dark:hover:bg-green dark:focus:ring-green sm:w-auto">Submit</button>
+						<button id="btn-next"
+								class="mt-5 w-full content-center self-center rounded-lg bg-blue-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-300 sm:w-auto">Selanjutnya</button>
 				</div>
 		</form>
 @endsection
@@ -180,6 +262,9 @@
 								singleDatePicker: true,
 								showDropdowns: true,
 						}, function(start, end, label) {});
+						$('form').bind('submit', function () {
+							$("#kendaraan").prop('disabled', false);
+						});
 				});
 				$("#gudang").change(function() {
 						$("#gudang-preview").removeClass("hidden")
@@ -227,25 +312,24 @@
 						var kendaraangudang = $("#kendaraan option:selected").attr("kendaraan-gudang")
 						var kendaraanplatnomor = $("#kendaraan option:selected").attr("kendaraan-platNomor")
 						$("#kendaraan-preview").append(`
-						<div class="flex flex-col p-2">
-														<div class="m-2 h-[5em] w-[8em] rounded-md bg-cover bg-center"
-																style="background-image: url('${kendaraangambar}')"></div>
-														<div class="flex w-full flex-col">
-																<span
-																		class="mb-1 self-start rounded-full border border-gray-600 bg-gray-200 px-1.5 text-xs text-gray-600 md:mb-0 md:mr-1">
-																		${kendaraanjenis}
-																</span>
-																<div class="mt-1 flex flex-col md:flex-row md:items-center">
-																		<p class="font-medium line-clamp-2">${kendaraanmerk}</p>
-																</div>
-																<p class="my-1 text-sm font-normal uppercase line-clamp-1">${kendaraanplatnomor}</p>
-																<div class="flex items-center overflow-x-auto">
-																		<img src="/images/ic_gudang.png" alt="" class="mr-1 h-[1.1em] w-auto">
-																		<p class="text-sm font-normal line-clamp-2">${kendaraangudang}</p>
-																</div>
-														</div>
-												</div>
-										</div>
+										<div class="flex flex-col p-2">
+											<div class="m-2 h-[5em] w-[8em] rounded-md bg-cover bg-center"
+													style="background-image: url('${kendaraangambar}')"></div>
+											<div class="flex w-full flex-col">
+													<span
+															class="mb-1 self-start rounded-full border border-gray-600 bg-gray-200 px-1.5 text-xs text-gray-600 md:mb-0 md:mr-1">
+															${kendaraanjenis}
+													</span>
+													<div class="mt-1 flex flex-col md:flex-row md:items-center">
+															<p class="font-medium line-clamp-2">${kendaraanmerk}</p>
+													</div>
+													<p class="my-1 text-sm font-normal uppercase line-clamp-1">${kendaraanplatnomor}</p>
+													<div class="flex items-center overflow-x-auto">
+															<img src="/images/ic_gudang.png" alt="" class="mr-1 h-[1.1em] w-auto">
+															<p class="text-sm font-normal line-clamp-2">${kendaraangudang}</p>
+													</div>
+											</div>
+									</div>
 						`)
 				});
 				$("#logistic").change(function() {
@@ -305,11 +389,9 @@
 									$("#kendaraan option:first").attr("kendaraan-jenis", data.jenis);
 									$("#kendaraan option:first").attr("kendaraan-gudang", data.nama_gudang);
 									$("#kendaraan option:first").attr("kendaraan-platNomor", data.plat_nomor);
-									$("#kendaraan").prop("default", false);
 									$("#kendaraan").prop("disabled", true);
 									$("#kendaraan").change()
 								} else {
-										$("#kendaraan").prop("default", true);
 										$("#kendaraan").prop("disabled", false);
 										$("#kendaraan-preview").addClass("hidden")
 										$("#kendaraan option:first").html(`Pilih Kendaraan`);

@@ -145,9 +145,11 @@ Route::middleware(['auth'])->group(function () {
         Route::post('proyek/update/{id}', 'update')->name('proyek.update');
         Route::get('selectSetManager', 'selectSetManager')->name('selectSetManager');
     });
-    Route::middleware(['role:ADMIN_GUDANG,PURCHASING'])->controller(DeliveryOrderController::class)->group(function () {
-        Route::get('delivery-order/tambah', 'create')->name('delivery-order.create');
-        Route::post('delivery-order/store', 'store')->name('delivery-order.store');
+    Route::middleware(['role:PURCHASING'])->controller(DeliveryOrderController::class)->group(function () {
+        Route::get('delivery-order/tambah', 'createStepOne')->name('delivery-order.createStepOne');
+        Route::post('delivery-order/tambah', 'storeCreateStepOne')->name('delivery-order.storeCreateStepOne');
+        Route::get('delivery-order/tambah-pre-order', 'createStepTwo')->name('delivery-order.createStepTwo');
+        Route::post('delivery-order/tambah-pre-order', 'storeCreateStepTwo')->name('delivery-order.storeCreateStepTwo');
         Route::get('delivery-order/edit/{id}', 'edit')->name('delivery-order.edit');
         Route::post('delivery-order/delete/{id}', 'destroy')->name('delivery-order.destroy');
     });

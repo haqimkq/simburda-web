@@ -22,13 +22,13 @@ class DeliveryOrderFactory extends Factory
      */
     public function definition()
     {
-        $status = fake()->randomElement(['MENUNGGU_KONFIRMASI_ADMIN_GUDANG', 'MENUNGGU_KONFIRMASI_DRIVER','DRIVER_DALAM_PERJALANAN', 'SELESAI']);
-        $logistic_id = ($status!='MENUNGGU_KONFIRMASI_ADMIN_GUDANG') ? User::where('role', 'LOGISTIC')->get()->random()->id : NULL;
-        $kendaraan_id = ($status!='MENUNGGU_KONFIRMASI_ADMIN_GUDANG') ? Kendaraan::get()->random()->id : NULL;
+        $status = fake()->randomElement(['MENUNGGU_KONFIRMASI_DRIVER','DRIVER_DALAM_PERJALANAN', 'SELESAI']);
+        $logistic_id = User::where('role', 'LOGISTIC')->get()->random()->id;
+        $kendaraan_id = Kendaraan::get()->random()->id;
         $tgl_pengambilan = fake()->dateTimeBetween('-3 weeks', 'now');
         $perusahaan = Perusahaan::get()->random();
         $gudang = Gudang::get()->random();
-        $admin_gudang_id = ($status!='MENUNGGU_KONFIRMASI_ADMIN_GUDANG') ? User::where('role', 'ADMIN_GUDANG')->get()->random()->id : null;
+        $admin_gudang_id = ($status == 'SELESAI') ? User::where('role', 'ADMIN_GUDANG')->get()->random()->id : null;
         $purchasing = User::where('role', 'PURCHASING')->get()->random();
         if($status != 'SELESAI' && $kendaraan_id != NULL){
             $kendaraan = Kendaraan::where('logistic_id', $logistic_id)->first();
