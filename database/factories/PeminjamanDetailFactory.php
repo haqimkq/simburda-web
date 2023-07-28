@@ -12,6 +12,7 @@ use App\Models\Peminjaman;
 use App\Models\PeminjamanDetail;
 use App\Models\Pengembalian;
 use App\Models\PengembalianDetail;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -43,8 +44,8 @@ class PeminjamanDetailFactory extends Factory
     }
     public function resetData(){
         return $this->state(function (array $attributes, Peminjaman $peminjaman){
-            $peminjaman = Peminjaman::find($peminjaman->id);
-            $barang = BarangTidakHabisPakai::whereDoesntHave('peminjamanDetail', function (Builder $query) use ($peminjaman){
+            // $peminjaman = Peminjaman::find($peminjaman->id);
+            $barang = BarangTidakHabisPakai::whereRelation('barang','gudang_id',$peminjaman->peminjamanGp->gudang_id)->whereDoesntHave('peminjamanDetail', function (Builder $query) use ($peminjaman){
                 $query->where('peminjaman_id', $peminjaman->id);
             })->get()->random();
             if($peminjaman->status == "DIPINJAM"){
@@ -60,7 +61,7 @@ class PeminjamanDetailFactory extends Factory
                 'barang_id' => $barang->id,
                 'status' => $status,
                 'peminjaman_id' => $peminjaman->id,
-                // 'penanggung_jawab_id' => ($status!='MENUNGGU_AKSES') ? ,
+                'penanggung_jawab_id' => ($status!='MENUNGGU_AKSES') ? User::whereRelation('menanganiProyek','proyek_id',$peminjaman->menangani->proyek_id)->get()->random()->id : null,
             ];
         });
     }

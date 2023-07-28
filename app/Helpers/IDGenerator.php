@@ -1,21 +1,14 @@
 <?php
 namespace App\Helpers;
 
-use App\Models\AdminGudang;
 use App\Models\DeliveryOrder;
-use App\Models\Logistic;
 use App\Models\Peminjaman;
+use App\Models\Penggunaan;
 use App\Models\Pengembalian;
+use App\Models\PengembalianPenggunaan;
 use App\Models\PreOrder;
-use App\Models\ProjectManager;
-use App\Models\Purchasing;
-use App\Models\Supervisor;
 use App\Models\SuratJalan;
-use App\Models\TtdDoVerification;
-use App\Models\TtdSjVerification;
 use App\Models\TtdVerification;
-use Illuminate\Support\Facades\Schema;
-
 class IDGenerator
 {
     // public static function generateID($model, $trow, $length, $prefix){
@@ -90,7 +83,9 @@ class IDGenerator
     public static function reorderAll(){
         self::reorder_code(SuratJalan::class, 'kode_surat');
         self::reorder_code(Peminjaman::class, 'kode_peminjaman');
+        self::reorder_code(Penggunaan::class, 'kode_penggunaan');
         self::reorder_code(Pengembalian::class, 'kode_pengembalian');
+        self::reorder_code(PengembalianPenggunaan::class, 'kode_pengembalian');
         self::reorder_code(DeliveryOrder::class, 'kode_do');
         self::reorder_code(PreOrder::class, 'kode_po');
     }

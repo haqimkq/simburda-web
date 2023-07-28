@@ -6,6 +6,7 @@ use App\Helpers\IDGenerator;
 use App\Models\AdminGudang;
 use App\Models\LogisticFirebase;
 use App\Models\PengembalianPenggunaanDetail;
+use App\Models\Penggunaan;
 use App\Models\PenggunaanDetail;
 use App\Models\User;
 use App\Models\Barang;
@@ -648,6 +649,26 @@ class DatabaseSeeder extends Seeder
         ->has(PeminjamanDetail::factory(8)->resetData()->selesaiGpWithPengembalianSelesai(), 'peminjamanDetail')
         ->create();
 
+        Penggunaan::factory(40)->menungguSuratJalanGp()
+            ->has(PenggunaanDetail::factory(8)->resetData(), 'penggunaanDetail')
+            ->create();
+
+        Penggunaan::factory(40)->menungguPengirimanGp()
+        ->has(PenggunaanDetail::factory(8)->resetData(), 'penggunaanDetail')
+        ->create();
+
+        Penggunaan::factory(40)->sedangDikirimGp()
+        ->has(PenggunaanDetail::factory(8)->resetData(), 'penggunaanDetail')
+        ->create();
+
+        Penggunaan::factory(40)->dipinjamGp()
+        ->has(PenggunaanDetail::factory(8)->resetData(), 'penggunaanDetail')
+        ->create();
+        
+        Penggunaan::factory(40)->selesaiGp()
+        ->has(PenggunaanDetail::factory(8)->resetData(), 'penggunaanDetail')
+        ->create();
+
         do{
             $pengembalian = Pengembalian::doesntHave('pengembalianDetail')->first();
             $peminjaman = ($pengembalian!=NULL) ? PeminjamanDetail::where('peminjaman_id', $pengembalian->peminjaman_id)->get() : NULL;
@@ -678,7 +699,7 @@ class DatabaseSeeder extends Seeder
         //             $jumlah_satuan = "$jumlah $satuan";
         //             PengembalianPenggunaanDetail::factory()->state([
         //                 "barang_id" => $penggunaanDetail->barang_id,
-        //                 "pengembalian_id" => $pengembalian->id,
+        //                 "pengembalian_bahan_id" => $pengembalian->id,
         //                 "jumlah_satuan" => $jumlah_satuan
         //             ])->create();
         //         }

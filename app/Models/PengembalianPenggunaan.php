@@ -22,10 +22,10 @@ class PengembalianPenggunaan extends Model
         return $this->belongsTo(Penggunaan::class);
     }
     public function pengembalianPenggunaanDetail(){
-        return $this->hasMany(PengembalianPenggunaanDetail::class);
+        return $this->hasMany(PengembalianPenggunaanDetail::class,'pengembalian_bahan_id');
     }
     public function sjPengembalianPenggunaan(){
-        return $this->hasOne(SjPengembalianPenggunaan::class);
+        return $this->hasOne(SjPengembalian::class,'pengembalian_penggunaan_id');
     }
     public static function getAllBarang($pengembalianPenggunaan_id){
         $result = collect();

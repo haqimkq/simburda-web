@@ -7,6 +7,9 @@ use App\Enum\PeminjamanTipe;
 use App\Enum\SuratJalanTipe;
 use App\Models\Peminjaman;
 use App\Models\PeminjamanGp;
+use App\Models\Penggunaan;
+use App\Models\PenggunaanDetail;
+use App\Models\PenggunaanGp;
 use App\Models\SjPengembalian;
 use App\Models\SjPengirimanGp;
 use App\Models\SuratJalan;
@@ -69,9 +72,22 @@ class SjPengirimanGpFactory extends Factory
     public function selesai(){
         return $this->state(function (array $attributes, PeminjamanGp $peminjamanGp){
             $sj = SuratJalan::factory()->selesaiSj()->create();
+            $withPenggunaan = fake()->boolean();
+            $penggunaanGp = null;
+            if ($withPenggunaan){
+                if($peminjamanGp->peminjaman->status=='DIPINJAM')
+                $penggunaanGp = Penggunaan::factory()->dipinjamGpNoSj()
+                        ->has(PenggunaanDetail::factory(rand(3,10))->resetData(), 'penggunaanDetail')
+                        ->create()->penggunaanGp->id;
+                else
+                $penggunaanGp = Penggunaan::factory()->selesaiGpNoSj()
+                        ->has(PenggunaanDetail::factory(rand(3,10))->resetData(), 'penggunaanDetail')
+                        ->create()->penggunaanGp->id;
+            }
             return [
                 'id' => fake()->uuid(),
                 'peminjaman_id' => $peminjamanGp->id,
+                'penggunaan_id' => $penggunaanGp,
                 'surat_jalan_id' => $sj->id
             ];
         });
@@ -79,9 +95,17 @@ class SjPengirimanGpFactory extends Factory
     public function dalamPerjalanan(){
         return $this->state(function (array $attributes, PeminjamanGp $peminjamanGp){
             $sj = SuratJalan::factory()->dalamPerjalananSj()->create();
+            $withPenggunaan = fake()->boolean();
+            $penggunaanGp = null;
+            if ($withPenggunaan){
+                $penggunaanGp = Penggunaan::factory()->sedangDikirimGpNoSj()
+                        ->has(PenggunaanDetail::factory(rand(3,10))->resetData(), 'penggunaanDetail')
+                        ->create()->penggunaanGp->id;
+            }
             return [
                 'id' => fake()->uuid(),
                 'peminjaman_id' => $peminjamanGp->id,
+                'penggunaan_id' => $penggunaanGp,
                 'surat_jalan_id' => $sj->id,
             ];
         });
@@ -89,9 +113,47 @@ class SjPengirimanGpFactory extends Factory
     public function menunggu(){
         return $this->state(function (array $attributes, PeminjamanGp $peminjamanGp){
             $sj = SuratJalan::factory()->menungguSj()->create();
+            $withPenggunaan = fake()->boolean();
+            $penggunaanGp = null;
+            if ($withPenggunaan){
+                $penggunaanGp = Penggunaan::factory()->menungguPengirimanGpNoSj()
+                        ->has(PenggunaanDetail::factory(rand(3,10))->resetData(), 'penggunaanDetail')
+                        ->create()->penggunaanGp->id;
+            }
             return [
                 'id' => fake()->uuid(),
                 'peminjaman_id' => $peminjamanGp->id,
+                'penggunaan_id' => $penggunaanGp,
+                'surat_jalan_id' => $sj->id
+            ];
+        });
+    }
+    public function selesaiPenggunaan(){
+        return $this->state(function (array $attributes, PenggunaanGp $penggunaanGp){
+            $sj = SuratJalan::factory()->selesaiSj()->create();
+            return [
+                'id' => fake()->uuid(),
+                'penggunaan_id' => $penggunaanGp->id,
+                'surat_jalan_id' => $sj->id
+            ];
+        });
+    }
+    public function dalamPerjalananPenggunaan(){
+        return $this->state(function (array $attributes, PenggunaanGp $penggunaanGp){
+            $sj = SuratJalan::factory()->dalamPerjalananSj()->create();
+            return [
+                'id' => fake()->uuid(),
+                'penggunaan_id' => $penggunaanGp->id,
+                'surat_jalan_id' => $sj->id,
+            ];
+        });
+    }
+    public function menungguPenggunaan(){
+        return $this->state(function (array $attributes, PenggunaanGp $penggunaanGp){
+            $sj = SuratJalan::factory()->menungguSj()->create();
+            return [
+                'id' => fake()->uuid(),
+                'penggunaan_id' => $penggunaanGp->id,
                 'surat_jalan_id' => $sj->id
             ];
         });

@@ -79,17 +79,17 @@ class Penggunaan extends Model
         self::where('id', $id)->update(['status' => $status]);
         PenggunaanDetail::where('penggunaan_id', $id)->update(['status', $penggunaan_detail_status]);
     }
-    public static function generateKodePenggunaan($tipe, $client, $supervisor, $date=null){
+    public static function generateKodePenggunaan($tipe, $client, $nama_supervisor, $dateMillis=null){
         $clientAcronym = IDGenerator::getAcronym($client);
-        $supervisorAcronym = IDGenerator::getAcronym($supervisor);
-        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber($date));
-        $year = Date::getYearNumber($date);
+        $supervisorAcronym = IDGenerator::getAcronym($nama_supervisor);
+        $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber($dateMillis));
+        $year = Date::getYearNumber($dateMillis);
         $prefix = "$clientAcronym/$supervisorAcronym/$romanMonth/$year";
         $typePrefix = NULL;
         if($tipe == "PROYEK_PROYEK"){
-            $typePrefix = "SEND_PP";
+            $typePrefix = "SENDPP";
         }else{
-            $typePrefix = "SEND_GP";
+            $typePrefix = "SENDGP";
         }
         return IDGenerator::generateID(new static,'kode_penggunaan',5,"$typePrefix/$prefix");
     }

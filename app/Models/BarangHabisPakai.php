@@ -22,10 +22,10 @@ class BarangHabisPakai extends Model
         return $this->belongsTo(Barang::class);
     }
     public function penggunaanDetail(){
-        return $this->hasMany(PenggunaanDetail::class);
+        return $this->hasMany(PenggunaanDetail::class,'barang_id');
     }
     public function pengembalianPenggunaanDetail(){
-        return $this->hasMany(PengembalianPenggunaanDetail::class);
+        return $this->hasMany(PengembalianPenggunaanDetail::class,'barang_id');
     }
     public function getCreatedAtAttribute($date)
     {

@@ -19,8 +19,8 @@ class PenggunaanGp extends Model
         'deleted_at',
     ];
 
-    public function sjPenggunaanGp(){
-        return $this->hasOne(SjPenggunaanGp::class, 'penggunaan_id');
+    public function sjPengirimanGp(){
+        return $this->hasOne(SjPengirimanGp::class, 'penggunaan_id');
     }
     public function penggunaan(){
         return $this->belongsTo(Penggunaan::class);

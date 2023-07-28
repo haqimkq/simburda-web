@@ -39,11 +39,11 @@ class PenggunaanDetailFactory extends Factory
     }
     public function resetData(){
         return $this->state(function (array $attributes, Penggunaan $penggunaan){
-            $penggunaan = Penggunaan::find($penggunaan->id);
-            $barang = BarangTidakHabisPakai::whereDoesntHave('penggunaanDetail', function (Builder $query) use ($penggunaan){
+            // $penggunaan = Penggunaan::find($penggunaan->id);
+            $barang_habis_pakai = BarangHabisPakai::whereRelation('barang','gudang_id',$penggunaan->penggunaanGp->gudang_id)->whereDoesntHave('penggunaanDetail', function (Builder $query) use ($penggunaan){
                 $query->where('penggunaan_id', $penggunaan->id);
             })->get()->random();
-            $barang_habis_pakai = BarangHabisPakai::where('id', $barang->id)->first();
+            // $barang_habis_pakai = BarangHabisPakai::where('id', $barang->id)->first();
             $satuan = $barang_habis_pakai->satuan;
             $jumlah = fake()->numberBetween(1, $barang_habis_pakai->jumlah);
             if($penggunaan->status == "DIGUNAKAN"){
@@ -55,7 +55,7 @@ class PenggunaanDetailFactory extends Factory
             }
             $jumlah_satuan = $jumlah . ' ' . $satuan;
             return [
-                'barang_id' => $barang->id,
+                'barang_id' => $barang_habis_pakai->id,
                 'status' => $status,
                 'penggunaan_id' => $penggunaan->id,
                 'jumlah_satuan' => $jumlah_satuan

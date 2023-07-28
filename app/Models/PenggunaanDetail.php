@@ -18,10 +18,10 @@ class PenggunaanDetail extends Model
         'deleted_at',
     ];
     public function barang(){
-        return $this->belongsTo(BarangHabisPakai::class);
+        return $this->belongsTo(BarangHabisPakai::class,'barang_id');
     }
     public function pengembalianPenggunaan(){
-        return $this->belongsTo(PengembalianPenggunaan::class);
+        return $this->belongsTo(PengembalianPenggunaan::class,'pengembalian_bahan_id');
     }
     public function getCreatedAtAttribute($date)
     {
