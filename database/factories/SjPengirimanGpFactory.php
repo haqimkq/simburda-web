@@ -33,8 +33,8 @@ class SjPengirimanGpFactory extends Factory
     }
     public function configure(){
         return $this->afterCreating(function (SjPengirimanGp $sjPengirimanGp) {
-            $peminjamanGp = $sjPengirimanGp->peminjamanGp;
-            $peminjaman = $sjPengirimanGp->peminjamanGp->peminjaman;
+            $peminjamanGp = ($sjPengirimanGp->peminjamanGp) ? $sjPengirimanGp->peminjamanGp : $sjPengirimanGp->penggunaanGp;
+            $peminjaman = ($sjPengirimanGp->peminjamanGp) ? $sjPengirimanGp->peminjamanGp->peminjaman : $sjPengirimanGp->penggunaanGp->penggunaan;
             $proyek = $peminjaman->menangani->proyek;
             $user = $peminjaman->menangani->user;
             if($peminjaman->tipe == PeminjamanTipe::GUDANG_PROYEK->value){
@@ -46,10 +46,18 @@ class SjPengirimanGpFactory extends Factory
                     'updated_at' => $peminjaman->created_at,
                     'created_at' => $peminjaman->created_at,
                 ]);
-                $peminjamanGp->update([
-                    'updated_at' => $peminjaman->created_at,
-                    'created_at' => $peminjaman->created_at,
-                ]);
+                if($sjPengirimanGp->peminjamanGp){
+                    $sjPengirimanGp->peminjamanGp->update([
+                        'updated_at' => $peminjaman->created_at,
+                        'created_at' => $peminjaman->created_at,
+                    ]);
+                }
+                if($sjPengirimanGp->penggunaanGp){
+                    $sjPengirimanGp->penggunaanGp->update([
+                        'updated_at' => $peminjaman->created_at,
+                        'created_at' => $peminjaman->created_at,
+                    ]);
+                }
             }
             // if($peminjaman->tipe == PeminjamanTipe::PROYEK_PROYEK->value){
             //     $peminjamanPp = PeminjamanPp::find('peminjaman_id', $peminjaman->id);
@@ -134,6 +142,7 @@ class SjPengirimanGpFactory extends Factory
             return [
                 'id' => fake()->uuid(),
                 'penggunaan_id' => $penggunaanGp->id,
+                'peminjaman_id' => null,
                 'surat_jalan_id' => $sj->id
             ];
         });
@@ -144,6 +153,7 @@ class SjPengirimanGpFactory extends Factory
             return [
                 'id' => fake()->uuid(),
                 'penggunaan_id' => $penggunaanGp->id,
+                'peminjaman_id' => null,
                 'surat_jalan_id' => $sj->id,
             ];
         });
@@ -154,6 +164,7 @@ class SjPengirimanGpFactory extends Factory
             return [
                 'id' => fake()->uuid(),
                 'penggunaan_id' => $penggunaanGp->id,
+                'peminjaman_id' => null,
                 'surat_jalan_id' => $sj->id
             ];
         });

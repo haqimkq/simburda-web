@@ -87,9 +87,9 @@ class Penggunaan extends Model
         $prefix = "$clientAcronym/$supervisorAcronym/$romanMonth/$year";
         $typePrefix = NULL;
         if($tipe == "PROYEK_PROYEK"){
-            $typePrefix = "SENDPP";
+            $typePrefix = "USEPP";
         }else{
-            $typePrefix = "SENDGP";
+            $typePrefix = "USEGP";
         }
         return IDGenerator::generateID(new static,'kode_penggunaan',5,"$typePrefix/$prefix");
     }

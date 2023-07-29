@@ -64,12 +64,12 @@ class TtdVerification extends Model
     }
     public static function updateTtdSjVerificationFromSuratJalan($sj){
         if($sj->sjPengirimanGp!=null && $sj->ttd_tgg_jwb!=null){
-            $user = $sj->sjPengirimanGp->peminjamanGp->peminjaman->menangani->user;
+            $user = ($sj->sjPengirimanGp->peminjamanGp) ? $sj->sjPengirimanGp->peminjamanGp->peminjaman->menangani->user : $sj->sjPengirimanGp->penggunaanGp->penggunaan->menangani->user;
         }else if($sj->sjPengembalian!=null){
             $user = $sj->sjPengembalian->pengembalian->peminjaman->menangani->user;
         }else if($sj->sjPengirimanPp!=null){
-            $user_peminjam = $sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->user;
-            $user = $sj->sjPengirimanPp->peminjamanPp->peminjamanAsal->menangani->user;
+            $user_peminjam = ($sj->sjPengirimanGp->peminjamanPp) ? $sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->user : $sj->sjPengirimanPp->penggunaanPp->penggunaan->menangani->user;
+            $user = ($sj->sjPengirimanGp->peminjamanPp) ? $sj->sjPengirimanPp->peminjamanPp->peminjamanAsal->menangani->user : $sj->sjPengirimanPp->penggunaanPp->penggunaanAsal->menangani->user;
         }
         if($sj->ttd_admin!=null){
             TtdVerification::find($sj->ttd_admin)->update([
@@ -105,7 +105,7 @@ class TtdVerification extends Model
             }else if($sj->sjPengembalian!=null){
                 $sebagai = "PEMBERI";
             }else if($sj->sjPengirimanPp!=null){
-                $check_user=$sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->user;
+                $check_user= ($sj->sjPengirimanPp->peminjamanPp) ? $sj->sjPengirimanPp->peminjamanPp->peminjaman->menangani->user : $sj->sjPengirimanPp->penggunaanPp->penggunaan->menangani->user;
                 if($check_user->id == $user->id) $sebagai = "PENERIMA";
                 else $sebagai = "PEMBERI";
             }

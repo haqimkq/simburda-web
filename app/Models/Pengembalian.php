@@ -47,7 +47,7 @@ class Pengembalian extends Model
         $romanMonth = IDGenerator::numberToRoman(Date::getMonthNumber());
         $year = Date::getYearNumber();
         $prefix = "$clientAcronym/$supervisorAcronym/$romanMonth/$year";
-        $typePrefix = "RETURN";
+        $typePrefix = "RTRN";
         return IDGenerator::generateID(new static,'kode_pengembalian',5,"$typePrefix/$prefix");
     }
     public static function updateStatus($id, $status){
