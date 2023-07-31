@@ -38,4 +38,12 @@ class BarangTidakHabisPakai extends Model
     {
         return Date::dateToMillisecond($date);
     }
+
+    public function scopeSearch($query, array $search){
+        $query->when($search['search'] ?? false, function($query, $search) {
+            return $query->whereHas('barang', function($query) use($search){
+                $query->where('merk', 'like', '%' . $search . '%');
+            });
+        });
+    }
 }

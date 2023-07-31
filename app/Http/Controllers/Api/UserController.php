@@ -187,6 +187,15 @@ class UserController extends Controller
         }
     }
 
+    public function getSupervisorAndSiteManager(){
+        try{
+            $users = User::where('role','SITE_MANAGER')->orWhere('role','SUPERVISOR')->orderBy('role')->get();
+            return ResponseFormatter::success('user', $users, 'Data Berhasil Didapat');
+        }catch (Exception $error) {
+            return ResponseFormatter::error("Server Error:". $error->getMessage());
+        }
+    }
+
     public function uploadTTD(Request $request){
         try{
             User::validateChangePhoto($request);

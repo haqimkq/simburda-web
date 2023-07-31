@@ -209,7 +209,7 @@ class PeminjamanController extends Controller
     }
 
     public function selectKodePeminjaman(Request $request){
-        $kodePeminjaman = [];
+        // $kodePeminjaman = [];
         $search = $request->q;
         $kodePeminjaman = Peminjaman::select("id", "kode_peminjaman")
             ->whereRelation('menangani', 'proyek_id', $request->proyek_id)
@@ -220,7 +220,7 @@ class PeminjamanController extends Controller
 
     public function getBarangByKodePeminjaman($kode_peminjaman){
         $json=[];
-        $peminjaman = Peminjaman::where('id', $kode_peminjaman)->first();
+        $peminjaman = Peminjaman::where('kode_peminjaman', $kode_peminjaman)->first();
         foreach($peminjaman->peminjamanDetail as $detailBarang){
             $barang = $detailBarang->barang;
             $detail = [

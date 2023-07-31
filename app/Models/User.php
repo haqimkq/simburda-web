@@ -87,7 +87,7 @@ class User extends Authenticatable
         return $this->hasMany(Menangani::class,'user_id');
     }
     public function proyekSetManager(){
-        return $this->hasMany(Proyek::class,'set_manager_id');
+        return $this->hasMany(Proyek::class,'site_manager_id');
     }
     public function kendaraan(){
         return $this->hasOne(Kendaraan::class,'logistic_id');
