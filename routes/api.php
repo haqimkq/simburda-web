@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\ProyekController;
 use App\Http\Controllers\Api\SuratJalanController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\Api\UserController;
 use App\Models\Proyek;
 
 /*
