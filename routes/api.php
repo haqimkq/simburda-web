@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Api\BarangController;
 use App\Http\Controllers\Api\DeliveryOrderController;
+use App\Http\Controllers\Api\GudangController;
 use App\Http\Controllers\Api\KendaraanController;
+use App\Http\Controllers\Api\PeminjamanController;
 use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\ProyekController;
 use App\Http\Controllers\Api\SuratJalanController;
@@ -39,7 +41,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('surat-jalan', [SuratJalanController::class, 'create']);
         Route::put('surat-jalan/{surat_jalan_id}', [SuratJalanController::class, 'update']);
     });
-    Route::middleware(['role:SET_MANAGER,SUPERVISOR,ADMIN_GUDANG,LOGISTIC'])->group(function(){
+    Route::middleware(['role:SITE_MANAGER,SUPERVISOR,ADMIN_GUDANG,LOGISTIC'])->group(function(){
         Route::get('surat-jalan/all', [SuratJalanController::class, 'getAllSuratJalanByUser']);
         Route::get('surat-jalan/active', [SuratJalanController::class, 'getSomeActiveSuratJalanByUser']);
         Route::get('surat-jalan/active/count', [SuratJalanController::class, 'getCountActiveSuratJalanByUser']);
@@ -49,6 +51,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['role:LOGISTIC'])->group(function(){
         Route::get('kendaraan/logistic', [KendaraanController::class, 'getKendaraanByLogistic']);
     });
+    Route::middleware(['role:SITE_MANAGER'])->group(function(){
+        Route::post('proyek/store', [ProyekController::class, 'storeProyek']);
+        Route::post('proyek/update/{id}', [ProyekController::class, 'updateProyek']);
+        Route::post('aksesBarang/giveAccess/{id}', [BarangController::class, 'giveAksesPeminjamanSm']);
+        Route::get('proyek/yang-dibuat', [ProyekController::class, 'proyekYangDibuat']);
+        Route::post('proyek/menangani/{id}', [ProyekController::class, 'addMenanganiProyek']);
+        Route::get('proyek/delete/{id}', [ProyekController::class, 'deleteProyek']);
+    });
     Route::middleware(['role:SITE_MANAGER,SUPERVISOR'])->group(function(){
         Route::get('barang/tanggung-jawab', [BarangController::class, 'getBarangTanggungJawab']);
         Route::post('barang/scanQrCode', [BarangController::class, 'scanQrCode']);
@@ -56,6 +66,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('barang/habis-pakai', [BarangController::class, 'barangHabisPakai']);
         Route::get('barang/tidak-habis-pakai/tersedia', [BarangController::class, 'barangTidakHabisPakaiTersedia']);
         Route::get('proyek/yang-dikerjakan', [ProyekController::class, 'proyekYangDiKerjakan']);
+        Route::get('proyek/all', [ProyekController::class, 'proyekYangMempunyaiPeminjaman']);
+        Route::get('barang/by-gudang/{id}', [BarangController::class, 'barangTidakHabisPakaiByGudang']);
+        Route::get('barang/by-kode-peminjaman/{id}', [BarangController::class, 'barangTidakHabisPakaiByKodePeminjaman']);
+        Route::get('proyek/{id}/kode-peminjaman', [BarangController::class, 'getKodePeminjamanByProyek']);
+        Route::post('peminjaman/store', [PeminjamanController::class, 'storePeminjaman']);
+        Route::get('peminjaman', [PeminjamanController::class, 'getPermintaanPeminjamanByUser']);
+        Route::get('gudang/all', [GudangController::class, 'allGudang']);
+        Route::get('barang/tanggung-jawab/{peminjamanDetail}', [BarangController::class, 'getDetailPeminjaman']);
+        // Route::get('barang/by-proyek/{proyek}', [BarangController::class, 'getBarangByProyek']);
+        Route::get('barang/dipesan/aksesBarang', [BarangController::class, 'getAksesBarangByUser']);
+        Route::get('barang/request/aksesBarang', [BarangController::class, 'getRequestAksesBarang']);
+        Route::get('user/supervisorAndSiteManager', [UserController::class, 'getSupervisorAndSiteManager']);
+    });
+    Route::middleware(['role:SITE_MANAGER,SUPERVISOR,ADMIN_GUDANG,LOGISTIC,PURCHASING'])->group(function(){
+        Route::get('barang/{barang}', [BarangController::class, 'getDetailBarang']);
     });
     Route::middleware(['role:PURCHASING,ADMIN_GUDANG,LOGISTIC'])->group(function(){
         Route::get('delivery-order/all', [DeliveryOrderController::class, 'getAllDeliveryOrderByUser']);

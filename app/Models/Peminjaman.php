@@ -130,6 +130,11 @@ class Peminjaman extends Model
             });
         });
     }
+    public function scopeProyek($query, array $filters){
+        $query->when($filters['search'] ?? false, function($query, $search) {
+            return $query->whereRelation('menangani.proyek','nama_proyek', 'like', '%' . $search . '%');
+        });
+    }
     public function getCreatedAtAttribute($date)
     {
         return Date::dateToMillisecond($date);
