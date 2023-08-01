@@ -180,20 +180,18 @@ class TtdVerification extends Model
     }
     public static function getFile($id){
         $filePath = public_path()."/storage/assets/ttd-verification/$id.png";
-        // if(!file_exists($filePath)){
         $ttd_verification = self::find($id);
         $ttd = public_path('storage/'.$ttd_verification->user->ttd);
         $qrValue = (env('APP_ENV') == 'local') ? env('NGROK_URL') : env('APP_URL');
         $qrcode = ($ttd_verification->tipe == 'SURAT_JALAN') 
-        ? QrCode::size(400)->format('png')->errorCorrection('H')->generate("$qrValue/signature/verified-sj/$id") 
-        : QrCode::size(400)->format('png')->errorCorrection('H')->generate("$qrValue/signature/verified-do/$id");
+        ? file_get_contents("https://api.qrserver.com/v1/create-qr-code/?size=450x450&data=$qrValue/signature/verified-sj/$id")
+        : file_get_contents("https://api.qrserver.com/v1/create-qr-code/?size=450x450&data=$qrValue/signature/verified-do/$id");
         $img_canvas = ImageManager::canvas(850,450, 'rgba(0, 0, 0, 0)');
         $output_file = "assets/ttd-verification/$id.png";
         Storage::disk('public')->put($output_file, $qrcode);
         $img_canvas->insert(ImageManager::make($filePath), 'center', 199, 0); // move second image 400 px from left
         $img_canvas->insert(ImageManager::make($ttd)->resize(400, null), 'left',);
         $img_canvas->save($filePath, 100);
-        // }
         return $filePath;
     }
 
@@ -203,8 +201,8 @@ class TtdVerification extends Model
         $ttd_verification = self::find($id);
         $qrValue = (env('APP_ENV') == 'local') ? env('NGROK_URL') : env('APP_URL');
         $qrcode = ($ttd_verification->tipe == 'SURAT_JALAN') 
-        ? QrCode::size(400)->format('png')->errorCorrection('H')->generate("$qrValue/signature/verified-sj/$id") 
-        : QrCode::size(400)->format('png')->errorCorrection('H')->generate("$qrValue/signature/verified-do/$id");
+        ? file_get_contents("https://api.qrserver.com/v1/create-qr-code/?size=450x450&data=$qrValue/signature/verified-sj/$id")
+        : file_get_contents("https://api.qrserver.com/v1/create-qr-code/?size=450x450&data=$qrValue/signature/verified-do/$id");
         $output_file = "assets/ttd-verification/$id.png";
         Storage::disk('public')->put($output_file, $qrcode);
         return $filePath;
