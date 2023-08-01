@@ -1,7 +1,8 @@
 @extends('layouts.detail')
 
 {{-- @if ($deliveryorder->logistic) --}}
-@push('prepend-script')
+@if ($deliveryorder->status != 'SELESAI')
+		@push('prepend-script')
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
 		integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
 		crossorigin="" />
@@ -121,7 +122,7 @@
 	@endpush
 
 @endpush
-{{-- @endif --}}
+@endif
 @section('content')
 	<nav class="flex" aria-label="Breadcrumb">
 		<ol class="inline-flex items-center space-x-1 md:space-x-3">
@@ -169,12 +170,12 @@
 				{{ $deliveryorder->kode_do }}</p>
 			<p class="text-lg font-semibold uppercase"><span class="text-base font-normal normal-case">Untuk Perusahaan: </span>
 				{{ $deliveryorder->perusahaan->nama }}</p>
+			<p class="text-lg font-semibold uppercase"><span class="text-base font-normal normal-case">Status: </span>
+				{{ \App\Helpers\Utils::underscoreToNormal($deliveryorder->status) }}
 		</div>
 		<a class="mb-2 self-start rounded-lg bg-green py-1 px-2 text-white"
 			href="{{ route('delivery-order.cetak', $deliveryorder->id) }}">File Delivery Order</a>
-		<h1 class="mt-2 mb-2 text-[1.5em] font-medium">
-			Delivery Order dalam perjalanan
-		</h1>
+		@if ($deliveryorder->status != 'SELESAI')
 		<div class="grid h-[70vh] gap-2 md:grid-cols-1">
 			<div class="relative rounded-md border border-green p-2">
 				@if ($deliveryorder->logistic)
@@ -187,4 +188,5 @@
 				<div class="z-0 mb-2 h-full rounded-md" id="map"></div>
 			</div>
 		</div>
+		@endif
 	@endsection

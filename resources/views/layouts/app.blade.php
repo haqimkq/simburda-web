@@ -21,6 +21,7 @@
     <link rel="icon" type="image/png" href="/images/favico.png" />
 
     {{-- Style --}}
+    
     @stack('prepend-style')
     @include('includes.style')
     @stack('addon-style')

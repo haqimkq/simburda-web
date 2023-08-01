@@ -1,4 +1,126 @@
-@extends('layouts.cetak')
+@extends('layouts.detail')
+@if ($deliveryOrder->status != 'SELESAI')
+		@push('prepend-script')
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"
+		integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ=="
+		crossorigin="" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+	<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
+		integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
+		crossorigin=""></script>
+	<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+	<script>
+		var map = L.map('map').setView([-6.2501422, 106.8564921], 14);
+		barangIcon = L.icon({
+			iconUrl: '/images/ic_barang_location.png',
+			iconSize: [24, 29.33], // size of the icon
+		});
+		driverIcon = L.icon({
+			iconUrl: '/images/ic_driver_location.png',
+			iconSize: [24, 29.33], // size of the icon
+		});
+		var markers = [
+			@if ($deliveryOrder->logistic)
+				L.marker([{{ $deliveryOrder->logistic->logistic->latitude }},
+						{{ $deliveryOrder->logistic->logistic->longitude }}
+					], {
+						icon: driverIcon
+					}).bindPopup('{{ $deliveryOrder->logistic->nama }}'),
+			@endif
+			L.marker([{{ $deliveryOrder->perusahaan->latitude }}, {{ $deliveryOrder->perusahaan->longitude }}], {
+				icon: barangIcon
+			}).bindPopup('{{ $deliveryOrder->perusahaan->nama }}'),
+		];
+		var group = L.featureGroup(markers).addTo(map);
+		setTimeout(function() {
+			map.fitBounds(group.getBounds());
+		}, 0);
+
+		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+		}).addTo(map);
+
+		L.Routing.control({
+			waypoints: [
+				L.latLng({{ $deliveryOrder->logistic->logistic->latitude }},
+					{{ $deliveryOrder->logistic->logistic->longitude }}),
+				L.latLng({{ $deliveryOrder->perusahaan->latitude }}, {{ $deliveryOrder->perusahaan->longitude }})
+			],
+			show: false,
+			createMarker: function() {
+				return null;
+			},
+			lineOptions: {
+				styles: [{
+					color: '#7000FF',
+					opacity: 1,
+					weight: 5
+				}]
+			}
+		}).addTo(map);
+	</script>
+	@extends('includes.firebase-realtime-db')
+	@push('script-rtdb')
+		const logisticRef = ref(database, "logistic/{{ $deliveryOrder->logistic_id }}");
+		// console.log(logisticRef)
+		onValue(logisticRef, (snapshot) => {
+			const data = snapshot.val();
+			updateCoordinateMap(data.latitude,data.longitude)
+		});
+
+		function updateCoordinateMap(latitude, longitude) {
+			map.remove();
+			map = L.map('map').setView([-6.2501422, 106.8564921], 14);
+			barangIcon = L.icon({
+				iconUrl: '/images/ic_barang_location.png',
+				iconSize: [24, 29.33], // size of the icon
+			});
+			driverIcon = L.icon({
+				iconUrl: '/images/ic_driver_location.png',
+				iconSize: [24, 29.33], // size of the icon
+			});
+			markers = [
+				@if ($deliveryOrder->logistic)
+					L.marker([latitude,longitude], {
+							icon: driverIcon
+						}).bindPopup('{{ $deliveryOrder->logistic->nama }}'),
+				@endif
+				L.marker([{{ $deliveryOrder->perusahaan->latitude }}, {{ $deliveryOrder->perusahaan->longitude }}], {
+					icon: barangIcon
+				}).bindPopup('{{ $deliveryOrder->perusahaan->nama }}'),
+			];
+			group = L.featureGroup(markers).addTo(map);
+			setTimeout(function() {
+				map.fitBounds(group.getBounds());
+			}, 0);
+
+			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+			}).addTo(map);
+
+			L.Routing.control({
+				waypoints: [
+					L.latLng(latitude,longitude),
+					L.latLng({{ $deliveryOrder->perusahaan->latitude }},
+						{{ $deliveryOrder->perusahaan->longitude }})
+				],
+				show: false,
+				createMarker: function() {
+					return null;
+				},
+				lineOptions: {
+					styles: [{
+						color: '#7000FF',
+						opacity: 1,
+						weight: 5
+					}]
+				}
+			}).addTo(map);
+		}
+	@endpush
+
+@endpush
+@endif
 @push('addon-style')
 	<style>
 		.text-xsm {
@@ -41,14 +163,39 @@
   </ol>
 </nav>
 
-<div class="flex justify-end">
-	<a href="{{route('signature.verifiedTTDDeliveryOrder', $deliveryOrder->ttd)}}" target="_blank" class="rounded-full py-1 px-2 mr-5 text-white self-end bg-green-400" >
+<div class="flex justify-end items-center">
+	<h1 class="mb-2 text-[1.5em] font-bold w-full">
+		Delivery Order
+	</h1>
+	<a href="{{route('signature.verifiedTTDDeliveryOrder', $deliveryOrder->ttd)}}" target="_blank" class="rounded-md py-1 px-3 mr-5 text-white bg-green-400" >
 		Verifikasi TTD
 	</a>
-	<a href="{{route('delivery-order.downloadPDF', $deliveryOrder->id)}}" target="_blank" class="rounded-full py-1 px-2 text-white self-end bg-primary" >
-		Download PDF {{ env('APP_ENV') }}
+	<a href="{{route('delivery-order.downloadPDF', $deliveryOrder->id)}}" target="_blank" class="rounded-md py-1 px-3 text-white bg-primary" >
+		Download PDF
 	</a>
 </div>
+@if ($deliveryOrder->status != 'SELESAI')
+<div class="grid gap-2 md:grid-cols-2 my-3">
+	<div class="info-barang mb-2">
+		<p class="text-lg font-semibold uppercase"><span class="text-base font-normal normal-case">Kode Delivery: </span>
+			{{ $deliveryOrder->kode_do }}</p>
+		<p class="text-lg font-semibold uppercase"><span class="text-base font-normal normal-case">Untuk Perusahaan: </span>
+			{{ $deliveryOrder->perusahaan->nama }}</p>
+		<p class="text-lg font-semibold uppercase"><span class="text-base font-normal normal-case">Status: </span>
+			{{ \App\Helpers\Utils::underscoreToNormal($deliveryOrder->status) }}
+	</div>
+	<div class="relative rounded-md border border-green p-2 h-[70vh]">
+		@if ($deliveryOrder->logistic)
+			<a target="_blank"
+				class="absolute right-5 top-5 z-50 mb-2 self-start rounded-lg border border-gray-700 bg-green py-1 px-2 text-white"
+				href="https://www.google.com/maps?saddr={{ $deliveryOrder->logistic->logistic->latitude }},{{ $deliveryOrder->logistic->logistic->longitude }}&daddr={{ $deliveryOrder->perusahaan->latitude }},{{ $deliveryOrder->perusahaan->longitude }}">
+				Arahkan ke rute antara driver dengan perusahaan
+			</a>
+		@endif
+		<div class="z-0 mb-2 h-full rounded-md" id="map"></div>
+	</div>
+</div>
+@endif
 <div class="flex flex-col text-sm page">
 	<div class="w-full mb-1 flex mt-5 justify-between">
 		<img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/logo-burda.png'))) }}" alt="" class="self-start h-10 w-auto my-5">

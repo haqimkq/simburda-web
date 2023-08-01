@@ -19,11 +19,5 @@
     const app = initializeApp(firebaseConfig);
     const database  = getDatabase(app);
 
-    // const logisticRef = ref(database, "logistic/{{ $deliveryorder->logistic_id }}");
-    // // console.log(logisticRef)
-    // onValue(logisticRef, (snapshot) => {
-    //     const data = snapshot.val();
-    //     console.log(data)
-    // });
     @stack('script-rtdb')
 </script>

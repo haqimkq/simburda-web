@@ -183,11 +183,12 @@ class DeliveryOrderController extends Controller
     public function cetak($id)
     {
         $deliveryOrder = DeliveryOrder::where('id', $id)->first();
-        if (!Gate::allows('cetak-download-do', $deliveryOrder)) {
-            abort(403);
-        }
+        // if (!Gate::allows('cetak-download-do', $deliveryOrder)) {
+        //     abort(403);
+        // }
         $ttdPath = ($deliveryOrder->ttd) ? TtdVerification::getQrCodeFile($deliveryOrder->ttd) : NULL;
         return view('deliveryorder.cetak',[
+            "authUser" => Auth::user(),
             "deliveryOrder" => $deliveryOrder,
             "ttdPath" => $ttdPath
         ]);
