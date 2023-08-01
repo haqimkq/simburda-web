@@ -107,9 +107,7 @@ Route::middleware(['auth'])->group(function () {
     Route::controller(SignatureController::class)->group(function () {
         Route::get('signature', 'index')->name('signature');
         Route::post('signature/store', 'store')->name('signature.store');
-        Route::get('signature/verified-sj/{id}', 'verifiedTTDSuratJalan')->name('signature.verifiedTTDSuratJalan');
         Route::get('signature/verified-sj/view/{id}', 'viewTTDSuratJalan')->name('signature.viewTTDSuratJalan');
-        Route::get('signature/verified-do/{id}', 'verifiedTTDDeliveryOrder')->name('signature.verifiedTTDDeliveryOrder');
         Route::get('signature/verified-do/view/{id}', 'viewTTDDeliveryOrder')->name('signature.viewTTDDeliveryOrder');
     });
     Route::middleware(['role:ADMIN_GUDANG,PURCHASING'])->controller(KendaraanController::class)->group(function () {
@@ -180,6 +178,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('surat-jalan/cetak/{id}', 'cetak')->name('surat-jalan.cetak');    
     });
 });
-
+Route::controller(SignatureController::class)->group(function () {
+    Route::get('signature/verified-sj/{id}', 'verifiedTTDSuratJalan')->name('signature.verifiedTTDSuratJalan');
+    Route::get('signature/verified-do/{id}', 'verifiedTTDDeliveryOrder')->name('signature.verifiedTTDDeliveryOrder');
+});
 Route::get('reset-password/{token}/{email}', [UserController::class, 'showResetPasswordForm'])->name('reset.password.get');
 Route::post('reset-password', [UserController::class, 'submitResetPasswordForm'])->name('reset.password.post');
