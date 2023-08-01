@@ -17,3 +17,7 @@ yarn-error.log
 .DS_Store
 config-firebase.json
 .bladeformatterrc
+.htaccess
+app.js
+public_html
+/tmp
