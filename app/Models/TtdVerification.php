@@ -197,7 +197,6 @@ class TtdVerification extends Model
 
     public static function getQrCodeFile($id){
         $filePath = public_path()."/storage/assets/ttd-verification/$id.png";
-        // if(!file_exists($filePath)){
         $ttd_verification = self::find($id);
         $qrValue = (env('APP_ENV') == 'local') ? env('NGROK_URL') : env('APP_URL');
         $qrcode = ($ttd_verification->tipe == 'SURAT_JALAN') 
