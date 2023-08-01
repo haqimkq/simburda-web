@@ -69,7 +69,8 @@ class BarangController extends Controller
                     'nama_proyek' => $data->menangani->proyek->nama_proyek,
                     'kode_peminjaman' => $data->kode_peminjaman,
                     'tipe' => $data->tipe,
-                    'tgl_peminjaman' => $data->getRemainingDaysAttribute()
+                    'tgl_peminjaman' => $data->getRemainingDaysAttribute(),
+                    'peminjaman_detail' => []
                 ];
                 array_push($json,$pinjaman);
             }

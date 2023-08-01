@@ -87,7 +87,7 @@ class PeminjamanController extends Controller
         try {
             $user = $request->user();
             $json = [];
-            $peminjamans = Peminjaman::whereRelation('menangani','user_id',$user->id)->get();
+            $peminjamans = Peminjaman::whereRelation('menangani','user_id',$user->id)->proyek(request(['search']))->groupBy('kode_peminjaman')->get();
             foreach($peminjamans as $peminjaman){
                 $peminjamanDetail = [];
                 foreach ($peminjaman->peminjamanDetail as $data){
@@ -102,22 +102,34 @@ class PeminjamanController extends Controller
                         'nomor_seri' => $data->barang->nomor_seri,
                         'keterangan' => $data->barang->keterangan
                     ];
-                    $pinjamanA = [
-                        'id' => $peminjaman->id,
-                        'nama_proyek' => $peminjaman->menangani->proyek->nama_proyek,
-                        'kode_peminjaman' => $peminjaman->kode_peminjaman,
-                        'tipe' => $peminjaman->tipe,
-                        'tgl_peminjaman' => $peminjaman->getRemainingDaysAttribute()
-                    ];
                     $detail = [
                         'id' => $data->id,
                         'status' => $data->status,
                         'barang' => $barangA,
                         'penanggung_jawab' => $data->penanggungJawab,
-                        'peminjaman' => $pinjamanA
                     ];
-                    array_push($json,$detail);
+                    $aksesBarang = $data->aksesBarang;
+                    $aksesBarang = [
+                        'id' => $aksesBarang->id,
+                        'site_manager_access' => $aksesBarang->disetujui_sm,
+                        'admin_gudang_access' => $aksesBarang->disetujui_admin,
+                        'ket_admin_gudang' => $aksesBarang->keterangan_admin,
+                        'ket_site_manager' => $aksesBarang->keterangan_sm,
+                        'site_manager' => $aksesBarang->siteManager,
+                        'admin_gudang' => $aksesBarang->adminGudang,
+                        'peminjaman' => $detail
+                    ];
+                    array_push($peminjamanDetail,$aksesBarang);
                 }
+                $pinjamanA = [
+                    'id' => $data->peminjaman->id,
+                    'nama_proyek' => $peminjaman->menangani->proyek->nama_proyek,
+                    'kode_peminjaman' => $peminjaman->kode_peminjaman,
+                    'tipe' => $peminjaman->tipe,
+                    'tgl_peminjaman' => $peminjaman->getRemainingDaysAttribute(),
+                    'peminjaman_detail' => $peminjamanDetail
+                ];
+                array_push($json,$pinjamanA);
             }
             return ResponseFormatter::success('data', $json, 'Success Get Data');
         } catch (Exception $error) {
