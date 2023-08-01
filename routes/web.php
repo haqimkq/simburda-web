@@ -154,7 +154,6 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:ADMIN_GUDANG,PURCHASING,LOGISTIC'])->controller(DeliveryOrderController::class)->group(function () {
         Route::get('delivery-order', 'index')->name('delivery-order');
         Route::get('delivery-order/detail/{id}', 'show')->name('delivery-order.show');
-        Route::get('delivery-order/cetak/{id}', 'cetak')->name('delivery-order.cetak');
         Route::get('delivery-order/download-pdf/{id}', 'downloadPDF')->name('delivery-order.downloadPDF');
     });
     Route::middleware(['role:ADMIN_GUDANG,SITE_MANAGER'])->controller(AksesBarangController::class)->group(function () {

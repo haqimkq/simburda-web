@@ -128,10 +128,6 @@
 			line-height: 1rem/* 20px */ !important;
 		}
 		.page {
-			width: 21cm;
-			min-height: 29.7cm;
-			padding: 2cm;
-			margin: 1cm auto;
 			border: 1px #D3D3D3 solid;
 			border-radius: 5px;
 			background: white;
@@ -174,16 +170,120 @@
 		Download PDF
 	</a>
 </div>
-@if ($deliveryOrder->status != 'SELESAI')
-<div class="grid gap-2 md:grid-cols-2 my-3">
-	<div class="info-barang mb-2">
-		<p class="text-lg font-semibold uppercase"><span class="text-base font-normal normal-case">Kode Delivery: </span>
-			{{ $deliveryOrder->kode_do }}</p>
-		<p class="text-lg font-semibold uppercase"><span class="text-base font-normal normal-case">Untuk Perusahaan: </span>
-			{{ $deliveryOrder->perusahaan->nama }}</p>
-		<p class="text-lg font-semibold uppercase"><span class="text-base font-normal normal-case">Status: </span>
-			{{ \App\Helpers\Utils::underscoreToNormal($deliveryOrder->status) }}
+<div class="grid gap-2 md:grid-cols-2 my-3 row-span-2">
+	<div class="flex flex-col text-sm page p-5 overflow-scroll w-full">
+		<div class="w-full mb-1 flex mt-5 justify-between">
+			<img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/logo-burda.png'))) }}" alt="" class="self-start h-10 w-auto my-5">
+			<p class=" ml-2 text-xsm text-right">
+			<span class="text-base font-bold">
+				PT.BURDA CONTRACO
+			</span>
+			<br>Wisma NH Jl. Raya Pasar Minggu Blok B-C No. 2, RT 002 RW 002, Pancoran – Jakarta Selatan
+			<br>JL. Pengadegan Selatan II No. 1 Pancoran – Jakarta Selatan
+			<br>Telp. (62-21) 7988968 – 70  Fax. (62-21) 79195987
+			<br>website: www.burdacontraco.co.id, email: info@burdacontraco.co.id / admin@burdacontraco.co.id</p>
+		</div>
+		<div class="bg-primary w-full h-auto mb-1 text-center">
+			<p class="text-white text-xsm">
+				Civil Works | Steel Construction | Infrastructure
+			</p>
+		</div>
+		<div class="bg-primary w-full">
+			<h1 class="p-1 text-base w-auto print:p-0 text-white text-center print:text-black">FORM DELIVERY ORDER</h1>
+		</div>
+		<table class="table-auto w-full my-5 border border-gray-600 text-sm">
+			<tbody>
+				<tr>
+					<td class="p-1 border border-gray-600 bg-green-200 ">Tanggal Pengambilan</td>
+					<td class="p-1 border border-gray-600">{{\App\Helpers\Date::parseMilliseconds($deliveryOrder->created_at,'dddd, D MMM YYYY')}}</td>
+				</tr>
+				<tr>
+					<td class="p-1 border border-gray-600 bg-green-200 ">No.</td>
+					<td class="p-1 border border-gray-600">{{$deliveryOrder->kode_do}}</td>
+				</tr>
+				<tr>
+					<td class="p-1 border border-gray-600 bg-green-200 ">Perihal</td>
+					<td class="p-1 border border-gray-600">{{$deliveryOrder->perihal}}</td>
+				</tr>
+				<tr>
+					<td class="p-1 border border-gray-600 bg-green-200 ">UP</td>
+					<td class="p-1 border border-gray-600">{{$deliveryOrder->untuk_perhatian}}</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="message mb-5 w-full">
+			<p>Kepada Yth,<br>{{$deliveryOrder->perusahaan->nama}}<br>
+				Melalui memo ini dari PT. Burda Contraco menyampaikan untuk memohon<br>
+				di berikan kepada pembawa memo material berupa:</p>
+		</div>
+		<table class="table-auto w-full mb-5 text-center text-sm ">
+			<thead>
+				<tr>
+					<th class="p-1 border border-gray-600 bg-green-200">No.</th>
+					<th class="p-1 border border-gray-600 bg-green-200">Nomor PO</th>
+					<th class="p-1 border border-gray-600 bg-green-200">Grade</th>
+					<th class="p-1 border border-gray-600 bg-green-200">Size</th>
+					<th class="p-1 border border-gray-600 bg-green-200">Qty</th>
+					<th class="p-1 border border-gray-600 bg-green-200">Sat</th>
+					<th class="p-1 border border-gray-600 bg-green-200">Keterangan</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach ($deliveryOrder->preOrder as $po)
+				<tr>
+					<td class="p-1 border border-gray-600">{{$loop->iteration}}</td>
+					<td class="p-1 border border-gray-600">{{$po->kode_po}}</td>
+					<td class="p-1 border border-gray-600">{{$po->nama_material}}</td>
+					<td class="p-1 border border-gray-600">{{$po->ukuran}}</td>
+					<td class="p-1 border border-gray-600">{{$po->jumlah}}</td>
+					<td class="p-1 border border-gray-600">{{$po->satuan}}</td>
+					<td class="p-1 border border-gray-600">{{$po->keterangan}}</td>
+				</tr>
+				@endforeach
+			</tbody>
+		</table>
+		<table class="table-auto mb-5">
+			<tbody>
+				<tr>
+					<td>No. Kendaraan</td>
+					@if ($deliveryOrder->kendaraan)
+						<td>: {{$deliveryOrder->kendaraan->plat_nomor}}</td>
+					@else
+						<td class="text-red-600">: Admin Gudang belum memilih kendaraan</td>
+					@endif
+				</tr>
+				<tr>
+					<td>Supir</td>
+					@if ($deliveryOrder->logistic)
+						<td>: {{$deliveryOrder->logistic->nama}}</td>
+					@else
+						<td class="text-red-600">: Admin Gudang belum memilih supir</td>
+					@endif
+				</tr>
+			</tbody>
+		</table>
+		<p class="mb-5">Atas perhatiannya kami ucapkan terimakasih <br>Mengetahui,</p>
+		<div class="flex justify-end">
+			<div class="flex flex-col">
+				<p class="text-center">Hormat Kami, <br><span class="font-bold">PT. BURDA CONTRACO</span></p>
+				<div class="flex">
+					@if ($ttdPath)
+					<div class="bg-center bg-no-repeat bg-contain" style="background-image: url('data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/stempel-burda.png'))) }}')">
+						<img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/'.$deliveryOrder->purchasing->ttd)))}}" alt="" class=" self-center w-40 my-3">
+					</div>
+					<div class="bg-center bg-no-repeat bg-contain">
+						<img src="{{ asset("assets/ttd-verification/$deliveryOrder->ttd.png") }}" alt="" class=" self-center w-28 my-3">
+					</div>
+					@else
+					<div class="bg-center bg-no-repeat bg-contain w-40 h-24" style="background-image: url('data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/stempel-burda.png'))) }}')">
+					</div>
+					@endif
+				</div>
+				<p class="text-center">{{$deliveryOrder->purchasing->nama}}<br><span>Purchasing</span><br>{{$deliveryOrder->purchasing->no_hp}}</p>
+			</div>
+		</div>
 	</div>
+	@if ($deliveryOrder->status != 'SELESAI')
 	<div class="relative rounded-md border border-green p-2 h-[70vh]">
 		@if ($deliveryOrder->logistic)
 			<a target="_blank"
@@ -194,118 +294,7 @@
 		@endif
 		<div class="z-0 mb-2 h-full rounded-md" id="map"></div>
 	</div>
-</div>
-@endif
-<div class="flex flex-col text-sm page">
-	<div class="w-full mb-1 flex mt-5 justify-between">
-		<img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/logo-burda.png'))) }}" alt="" class="self-start h-10 w-auto my-5">
-		<p class=" ml-2 text-xsm text-right">
-		<span class="text-base font-bold">
-			PT.BURDA CONTRACO
-		</span>
-		<br>Wisma NH Jl. Raya Pasar Minggu Blok B-C No. 2, RT 002 RW 002, Pancoran – Jakarta Selatan
-		<br>JL. Pengadegan Selatan II No. 1 Pancoran – Jakarta Selatan
-		<br>Telp. (62-21) 7988968 – 70  Fax. (62-21) 79195987
-		<br>website: www.burdacontraco.co.id, email: info@burdacontraco.co.id / admin@burdacontraco.co.id</p>
-	</div>
-	<div class="bg-primary w-full h-auto mb-1 text-center">
-		<p class="text-white text-xsm">
-			Civil Works | Steel Construction | Infrastructure
-		</p>
-	</div>
-	<div class="bg-primary w-full">
-		<h1 class="p-1 text-base w-auto print:p-0 text-white text-center print:text-black">FORM DELIVERY ORDER</h1>
-	</div>
-	<table class="table-auto w-full my-5 border border-gray-600 ">
-		<tbody>
-			<tr>
-				<td class="p-1 border border-gray-600 bg-green-200 w-56">Tanggal Pengambilan</td>
-				<td class="p-1 border border-gray-600">{{\App\Helpers\Date::parseMilliseconds($deliveryOrder->created_at,'dddd, D MMM YYYY')}}</td>
-			</tr>
-			<tr>
-				<td class="p-1 border border-gray-600 bg-green-200 w-56">No.</td>
-				<td class="p-1 border border-gray-600">{{$deliveryOrder->kode_do}}</td>
-			</tr>
-			<tr>
-				<td class="p-1 border border-gray-600 bg-green-200 w-56">Perihal</td>
-				<td class="p-1 border border-gray-600">{{$deliveryOrder->perihal}}</td>
-			</tr>
-			<tr>
-				<td class="p-1 border border-gray-600 bg-green-200 w-56">UP</td>
-				<td class="p-1 border border-gray-600">{{$deliveryOrder->untuk_perhatian}}</td>
-			</tr>
-		</tbody>
-	</table>
-	<div class="message mb-5 w-full">
-		<p>Kepada Yth,<br>{{$deliveryOrder->perusahaan->nama}}<br>
-			Melalui memo ini dari PT. Burda Contraco menyampaikan untuk memohon<br>
-			di berikan kepada pembawa memo material berupa:</p>
-	</div>
-	<table class="table-auto w-full mb-5 text-center ">
-		<thead>
-			<tr>
-				<th class="p-1 border border-gray-600 bg-green-200">No.</th>
-				<th class="p-1 border border-gray-600 bg-green-200">Nomor PO</th>
-				<th class="p-1 border border-gray-600 bg-green-200">Grade</th>
-				<th class="p-1 border border-gray-600 bg-green-200">Size</th>
-				<th class="p-1 border border-gray-600 bg-green-200">Qty</th>
-				<th class="p-1 border border-gray-600 bg-green-200">Sat</th>
-				<th class="p-1 border border-gray-600 bg-green-200">Keterangan</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach ($deliveryOrder->preOrder as $po)
-			<tr>
-				<td class="p-1 border border-gray-600">{{$loop->iteration}}</td>
-				<td class="p-1 border border-gray-600">{{$po->kode_po}}</td>
-				<td class="p-1 border border-gray-600">{{$po->nama_material}}</td>
-				<td class="p-1 border border-gray-600">{{$po->ukuran}}</td>
-				<td class="p-1 border border-gray-600">{{$po->jumlah}}</td>
-				<td class="p-1 border border-gray-600">{{$po->satuan}}</td>
-				<td class="p-1 border border-gray-600">{{$po->keterangan}}</td>
-			</tr>
-			@endforeach
-		</tbody>
-	</table>
-	<table class="table-auto mb-5">
-		<tbody>
-			<tr>
-				<td>No. Kendaraan</td>
-				@if ($deliveryOrder->kendaraan)
-					<td>: {{$deliveryOrder->kendaraan->plat_nomor}}</td>
-				@else
-					<td class="text-red-600">: Admin Gudang belum memilih kendaraan</td>
-				@endif
-			</tr>
-			<tr>
-				<td>Supir</td>
-				@if ($deliveryOrder->logistic)
-					<td>: {{$deliveryOrder->logistic->nama}}</td>
-				@else
-					<td class="text-red-600">: Admin Gudang belum memilih supir</td>
-				@endif
-			</tr>
-		</tbody>
-	</table>
-	<p class="mb-5">Atas perhatiannya kami ucapkan terimakasih <br>Mengetahui,</p>
-	<div class="flex justify-end">
-		<div class="flex flex-col">
-			<p class="text-center">Hormat Kami, <br><span class="font-bold">PT. BURDA CONTRACO</span></p>
-			<div class="flex">
-				@if ($ttdPath)
-				<div class="bg-center bg-no-repeat bg-contain" style="background-image: url('data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/stempel-burda.png'))) }}')">
-					<img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/'.$deliveryOrder->purchasing->ttd)))}}" alt="" class=" self-center w-40 my-3">
-				</div>
-				<div class="bg-center bg-no-repeat bg-contain">
-					<img src="{{ asset("assets/ttd-verification/$deliveryOrder->ttd.png") }}" alt="" class=" self-center w-28 my-3">
-				</div>
-				@else
-				<div class="bg-center bg-no-repeat bg-contain w-40 h-24" style="background-image: url('data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/stempel-burda.png'))) }}')">
-				</div>
-				@endif
-			</div>
-			<p class="text-center">{{$deliveryOrder->purchasing->nama}}<br><span>Purchasing</span><br>{{$deliveryOrder->purchasing->no_hp}}</p>
-		</div>
-	</div>
+	@endif
+	
 </div>
 @endsection
