@@ -142,7 +142,7 @@ class DeliveryOrderController extends Controller
         //     abort(403);
         // }
         $ttdPath = ($deliveryOrder->ttd) ? TtdVerification::getQrCodeFile($deliveryOrder->ttd) : NULL;
-        return view('deliveryorder.cetak',[
+        return view('deliveryorder.detail',[
             "authUser" => Auth::user(),
             "deliveryOrder" => $deliveryOrder,
             "ttdPath" => $ttdPath
