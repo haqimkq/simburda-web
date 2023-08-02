@@ -35,13 +35,6 @@ class RegisterController extends Controller
                 ->with('registerError', 'Gagal Daftar!')
                 ->withInput();
         }
-        $companyHash = Hash::make(env('COMPANY_CODE','SimBurdaWeb'));
-        $isSame = Hash::check($request['companycode'], $companyHash);
-        if(!$isSame){
-            return redirect('register')
-                ->with('registerError', 'Register Gagal!')
-                ->withInput();
-        }
         $request['password'] = Hash::make($request['password']);
         
         User::create($request->all());

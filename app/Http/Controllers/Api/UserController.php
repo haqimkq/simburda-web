@@ -165,8 +165,8 @@ class UserController extends Controller
                 $file = $request->file('foto');
                 $extension = $file->extension();
                 $filename ="$user->id.$extension";
-                $request->foto->storeAs('assets/users', $filename,'public');
-                $output_file = "assets/users/$filename";
+                $request->foto->storeAs('assets/pengguna', $filename,'public');
+                $output_file = "assets/pengguna/$filename";
 
                 //store your file into database
                 $user->foto = $output_file;

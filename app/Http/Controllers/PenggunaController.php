@@ -58,10 +58,16 @@ class PenggunaController extends Controller
             'password' => 'required'
         ]);
         $validate['password'] = bcrypt($validate['password']);
-        if($request->file('foto')){
-            $validate['foto'] = $request->file('foto')->store('assets/user', 'public');
-        }
+        // if($request->file('foto')){
+        //     $validate['foto'] = $request->file('foto')->store('assets/user', 'public');
+        // }
         $user = User::create($validate);
+        if($request->file('foto')){
+            $extFormat = $request->file('foto')->getClientOriginalExtension();
+            $fileName = $user->id.".".$extFormat;
+            $user->foto = $request->file('foto')->storeAS('assets/pengguna',$fileName,'public');
+            $user->update();
+        }
         if($request->role=='LOGISTIC'){
             Logistic::firstOrCreate(['user_id' => $user->id]);
             $request = new Request([
@@ -116,7 +122,7 @@ class PenggunaController extends Controller
         $user->nama = $request->nama;
         if($request->foto){
             $extFormat = $request->file('foto')->getClientOriginalExtension();
-            $fileName = $user->nama.".".$extFormat;
+            $fileName = $user->id.".".$extFormat;
             $user->foto = $request->file('foto')->storeAS('assets/pengguna',$fileName,'public');
         }
         if($request->role=='LOGISTIC'){
