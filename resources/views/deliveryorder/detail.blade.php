@@ -147,7 +147,7 @@
 		<h1 class="text-[1.5em] font-bold ">
 			Delivery Order 
 		</h1>
-		<p class="mt-1 text-sm border border-green py-1 px-3 text-green rounded-full self-start">{{ \App\Helpers\Utils::underscoreToNormal($deliveryOrder->status) }}</p>
+		<p class="mt-1 text-sm font-medium {{ ($deliveryOrder->status == "SELESAI") ? "text-green" : "text-orange-500"  }}">{{ \App\Helpers\Utils::underscoreToNormal($deliveryOrder->status) }}</p>
 	</div>
 	<a href="{{route('signature.verifiedTTDDeliveryOrder', $deliveryOrder->ttd)}}" target="_blank" class="rounded-md py-1 px-3 mr-5 text-white bg-green-400" >
 		Verifikasi TTD
@@ -323,6 +323,40 @@
 									<img src="/images/ic_gudang.png" alt="" class="mr-1 h-[1.1em] w-auto">
 									<p class="text-sm font-normal line-clamp-2">{{ $deliveryOrder->gudang->nama }}</p>
 							</div>
+					</div>
+				</div>
+		</div>
+		<div id="gudang-preview" class="flex flex-col rounded-xl p-3 shadow-md shadow-gray-100 mr-2  h-max">
+				<p class="text-md mt-2 font-bold">Gudang</p>
+				<div class="flex flex-col p-2">
+					<div class="mb-2 h-[5em] w-[8em] rounded-md bg-cover bg-center"
+							style="background-image: url('{{ asset($deliveryOrder->gudang->gambar) }}')"></div>
+					<div class="flex w-full flex-col">
+							<span
+									class="mb-1 self-start rounded-full border border-gray-600 bg-gray-200 px-1.5 text-xs text-gray-600 md:mb-0 md:mr-1">
+									{{ $deliveryOrder->gudang->provinsi }}
+							</span>
+							<div class="mt-1 flex flex-col md:flex-row md:items-center">
+									<p class="font-medium line-clamp-2">{{ $deliveryOrder->gudang->nama }}</p>
+							</div>
+							<p class="my-1 text-sm font-normal line-clamp-1 max-w-[20ch]">{{ $deliveryOrder->gudang->alamat }}</p>
+					</div>
+				</div>
+		</div>
+		<div id="perusahaan-preview" class="flex flex-col rounded-xl p-3 shadow-md shadow-gray-100 mr-2  h-max">
+				<p class="text-md mt-2 font-bold">Perusahaan</p>
+				<div class="flex flex-col p-2">
+					<div class="mb-2 h-[5em] w-[8em] rounded-md bg-cover bg-center"
+							style="background-image: url('{{ asset($deliveryOrder->perusahaan->gambar) }}')"></div>
+					<div class="flex w-full flex-col">
+							<span
+									class="mb-1 self-start rounded-full border border-gray-600 bg-gray-200 px-1.5 text-xs text-gray-600 md:mb-0 md:mr-1">
+									{{ $deliveryOrder->perusahaan->provinsi }}
+							</span>
+							<div class="mt-1 flex flex-col md:flex-row md:items-center">
+									<p class="font-medium line-clamp-2">{{ $deliveryOrder->perusahaan->nama }}</p>
+							</div>
+							<p class="my-1 text-sm font-normal line-clamp-1 max-w-[20ch]">{{ $deliveryOrder->perusahaan->alamat }}</p>
 					</div>
 				</div>
 		</div>

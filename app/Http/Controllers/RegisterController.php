@@ -17,14 +17,12 @@ class RegisterController extends Controller
                 'nama' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => 'required|string|min:8',
-                'companycode' => 'required|string',
                 'no_hp' => 'required|numeric|min:11'
             ],[
                 'email.required' => 'Email wajib diisi',
                 'nama.required' => 'Nama wajib diisi',
                 'password.required' => 'Password wajib diisi',
                 'no_hp.min' => 'Nomor hp minimal 11 digit',
-                'companycode.required' => 'Kode Perusahaan wajib diisi',
                 'email.unique' => 'Email sudah terdaftar',
                 'no_hp.numeric' => 'Nomor hp berupa angka',
             ]
