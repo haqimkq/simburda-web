@@ -158,7 +158,7 @@ class BarangController extends Controller
     public function barangTidakHabisPakaiByGudang($id){
         try {
             $json = [];
-            $datas = BarangHabisPakai::whereRelation('barang','gudang_id',$id)->get();
+            $datas = BarangTidakHabisPakai::whereRelation('barang','gudang_id',$id)->get();
             foreach($datas as $data){
                 $barang = $data->barang;
                 $detail = [
