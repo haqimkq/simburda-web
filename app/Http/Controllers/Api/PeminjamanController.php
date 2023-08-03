@@ -29,6 +29,16 @@ class PeminjamanController extends Controller
                 //delete detail peminjaman
                 PeminjamanDetail::destroy($peminjamanDetail->id);
             }
+            //delete peminjaman gudang proyek
+            if($peminjaman->tipe == "GUDANG_PROYEK"){
+                $peminjamanGp = $peminjaman->peminjamanGp;
+                PeminjamanGp::destroy($peminjamanGp->id);
+            }
+            //delete peminjaman proyek proyek
+            else{
+                $peminjamanPp = $peminjaman->peminjamanPp;
+                PeminjamanPp::destroy($peminjamanPp->id);
+            }
             //delete peminjaman
             Peminjaman::destroy($peminjaman->id);
             return ResponseFormatter::success(null, null, 'success');
