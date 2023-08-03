@@ -72,6 +72,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('proyek/{id}/kode-peminjaman', [BarangController::class, 'getKodePeminjamanByProyek']);
         Route::post('peminjaman/store', [PeminjamanController::class, 'storePeminjaman']);
         Route::get('peminjaman', [PeminjamanController::class, 'getPermintaanPeminjamanByUser']);
+        Route::get('peminjaman/destroy/{peminjaman}', [PeminjamanController::class, 'destroyPeminjaman']);
         Route::get('gudang/all', [GudangController::class, 'allGudang']);
         Route::get('barang/tanggung-jawab/{peminjamanDetail}', [BarangController::class, 'getDetailPeminjaman']);
         // Route::get('barang/by-proyek/{proyek}', [BarangController::class, 'getBarangByProyek']);
