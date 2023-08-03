@@ -260,7 +260,7 @@
 						<img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('storage/'.$deliveryOrder->purchasing->ttd)))}}" alt="" class=" self-center w-40 my-3">
 					</div>
 					<div class="bg-center bg-no-repeat bg-contain">
-						<img src="{{ asset("assets/ttd-verification/$deliveryOrder->ttd.png") }}" alt="" class=" self-center w-28 my-3">
+						<img src="{{ $ttdPath }}" alt="" class=" self-center w-28 my-3">
 					</div>
 					@else
 					<div class="bg-center bg-no-repeat bg-contain w-40 h-24" style="background-image: url('data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/stempel-burda.png'))) }}')">

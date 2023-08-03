@@ -196,14 +196,14 @@ class TtdVerification extends Model
     }
 
     public static function getQrCodeFile($id){
-        $filePath = public_path()."/storage/assets/ttd-verification/$id.png";
+        // $filePath = public_path()."/storage/assets/ttd-verification/$id.png";
         $ttd_verification = self::find($id);
         $qrValue = (env('APP_ENV') == 'local') ? env('NGROK_URL') : env('APP_URL');
         $qrcode = ($ttd_verification->tipe == 'SURAT_JALAN') 
-        ? file_get_contents("https://api.qrserver.com/v1/create-qr-code/?size=450x450&data=$qrValue/signature/verified-sj/$id")
-        : file_get_contents("https://api.qrserver.com/v1/create-qr-code/?size=450x450&data=$qrValue/signature/verified-do/$id");
-        $output_file = "assets/ttd-verification/$id.png";
-        Storage::disk('public')->put($output_file, $qrcode);
-        return $filePath;
+        ? "https://api.qrserver.com/v1/create-qr-code/?size=450x450&data=$qrValue/signature/verified-sj/$id"
+        : "https://api.qrserver.com/v1/create-qr-code/?size=450x450&data=$qrValue/signature/verified-do/$id";
+        // $output_file = "assets/ttd-verification/$id.png";
+        // Storage::disk('public')->put($output_file, $qrcode);
+        return $qrcode;
     }
 }
