@@ -162,7 +162,7 @@ class BarangController extends Controller
             foreach($datas as $data){
                 $barang = $data->barang;
                 $detail = [
-                    'id' => $barang->id,
+                    'id' => $data->id,
                     'nomor_seri' => $data->nomor_seri,
                     'kondisi' => $data->kondisi,
                     'keterangan' => $data->keterangan,
