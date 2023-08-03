@@ -51,6 +51,7 @@ class DeliveryOrderFactory extends Factory
             'status' => $status,
             'purchasing_id' => $purchasing->id,
             'perusahaan_id' => $perusahaan->id,
+            'foto_bukti' => ($status == 'SELESAI') ? 'https://picsum.photos/640/640?random='.mt_rand(1,92392) : null,
             'logistic_id' => $logistic_id,
             'kendaraan_id' => $kendaraan_id,
             'gudang_id' => $gudang->id,

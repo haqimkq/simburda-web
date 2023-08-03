@@ -143,11 +143,13 @@
 </nav>
 
 <div class="flex justify-end items-center">
-	<div class="flex flex-col w-full my-2">
+	<div class="flex flex-col w-full my-2 mr-2">
 		<h1 class="text-[1.5em] font-bold ">
 			Delivery Order 
 		</h1>
 		<p class="mt-1 text-sm font-medium {{ ($deliveryOrder->status == "SELESAI") ? "text-green" : "text-orange-500"  }}">{{ \App\Helpers\Utils::underscoreToNormal($deliveryOrder->status) }}</p>
+		<p class="mt-1 text-sm font-medium"><span class="font-normal">Tanggal Dibuat: </span>{{ \App\Helpers\Date::parseMilliseconds($deliveryOrder->created_at) }}</p>
+		<p class="mt-1 text-sm font-medium"><span class="font-normal">Terakhir diperbarui: </span>{{ \App\Helpers\Date::parseMilliseconds($deliveryOrder->updated_at) }}</p>
 	</div>
 	<a href="{{route('signature.verifiedTTDDeliveryOrder', $deliveryOrder->ttd)}}" target="_blank" class="rounded-md py-1 px-3 mr-5 text-white bg-green-400" >
 		Verifikasi TTD
@@ -157,7 +159,7 @@
 	</a>
 </div>
 <div class="grid gap-2 md:grid-cols-2 my-3">
-	<div class="flex flex-col text-sm page p-5 overflow-scroll w-full row-span-2">
+	<div class="flex flex-col text-sm page p-5 overflow-scroll w-full row-span-2 max-w-[21cm] min-h-[29cm]">
 		<div class="w-full mb-1 flex mt-5 justify-between">
 			<img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/images/logo-burda.png'))) }}" alt="" class="self-start h-10 w-auto my-5">
 			<p class=" ml-2 text-xsm text-right">
@@ -280,28 +282,6 @@
 									<p class="font-medium line-clamp-2">{{ $deliveryOrder->logistic->nama }}</p>
 							</div>
 							<p class="my-1 text-sm font-normal uppercase line-clamp-1">{{ $deliveryOrder->logistic->no_hp }}</p>
-							<div class="flex flex-wrap">
-								<div class="mr-2 flex items-center md:flex-col lg:flex-row">
-										<p class="mb-2 self-start rounded-md border border-gray-600 bg-gray-200 px-2 text-xs text-gray-600">
-												{{ count($deliveryOrder->logistic->activeDeliveryOrderLogistic) }} DO Aktif
-										</p>
-								</div>
-								<div class="mr-2 flex items-center md:flex-col lg:flex-row">
-										<p class="mb-2 self-start rounded-md border border-gray-600 bg-gray-200 px-2 text-xs text-gray-600">
-												{{ count($deliveryOrder->logistic->activeSJGPLogistic) }} SJGP Aktif
-										</p>
-								</div>
-								<div class="mr-2 flex items-center md:flex-col lg:flex-row">
-										<p class="mb-2 self-start rounded-md border border-gray-600 bg-gray-200 px-2 text-xs text-gray-600">
-												{{ count($deliveryOrder->logistic->activeSJPGLogistic) }} SJPG Aktif
-										</p>
-								</div>
-								<div class="mr-2 flex items-center md:flex-col lg:flex-row">
-										<p class="mb-2 self-start rounded-md border border-gray-600 bg-gray-200 px-2 text-xs text-gray-600">
-												{{ count($deliveryOrder->logistic->activeSJPPLogistic) }} SJPP Aktif
-										</p>
-								</div>
-						</div>
 					</div>
 			</div>
 		</div>
@@ -326,7 +306,8 @@
 					</div>
 				</div>
 		</div>
-		<div id="gudang-preview" class="flex flex-col rounded-xl p-3 shadow-md shadow-gray-100 mr-2  h-max">
+		<div class="flex flex-wrap">
+			<div id="gudang-preview" class="flex flex-col rounded-xl p-3 shadow-md shadow-gray-100 mr-2  h-max">
 				<p class="text-md mt-2 font-bold">Gudang</p>
 				<div class="flex flex-col p-2">
 					<div class="mb-2 h-[5em] w-[8em] rounded-md bg-cover bg-center"
@@ -339,7 +320,12 @@
 							<div class="mt-1 flex flex-col md:flex-row md:items-center">
 									<p class="font-medium line-clamp-2">{{ $deliveryOrder->gudang->nama }}</p>
 							</div>
-							<p class="my-1 text-sm font-normal line-clamp-1 max-w-[20ch]">{{ $deliveryOrder->gudang->alamat }}</p>
+							<p class="my-1 text-xsm font-normal max-w-[27ch]">{{ $deliveryOrder->gudang->alamat }}</p>
+							<a target="_blank"
+								class="mb-2 self-start rounded-lg border bg-green py-1 px-2 text-white text-sm"
+								href="https://www.google.com/maps/search/?api=1&query={{ $deliveryOrder->gudang->latitude }},{{ $deliveryOrder->gudang->longitude }}">
+								Telusuri gudang
+							</a>
 					</div>
 				</div>
 		</div>
@@ -356,9 +342,26 @@
 							<div class="mt-1 flex flex-col md:flex-row md:items-center">
 									<p class="font-medium line-clamp-2">{{ $deliveryOrder->perusahaan->nama }}</p>
 							</div>
-							<p class="my-1 text-sm font-normal line-clamp-1 max-w-[20ch]">{{ $deliveryOrder->perusahaan->alamat }}</p>
+							<p class="my-1 text-xsm font-normal max-w-[27ch]">{{ $deliveryOrder->perusahaan->alamat }}</p>
+							<a target="_blank"
+								class="mb-2 self-start rounded-lg border bg-green py-1 px-2 text-white text-sm"
+								href="https://www.google.com/maps/search/?api=1&query={{ $deliveryOrder->perusahaan->latitude }},{{ $deliveryOrder->perusahaan->longitude }}">
+								Telusuri perusahaan
+							</a>
 					</div>
 				</div>
+		</div>
+		</div>
+		<div id="foto-bukti-preview" class="flex flex-col rounded-xl p-3 shadow-md shadow-gray-100 mr-2  h-max">
+				<p class="text-md mt-2 font-bold">Foto Bukti</p>
+				@if ($deliveryOrder->foto_bukti)
+				<div class="flex flex-col p-2">
+					<div class="mb-2 h-[10em] w-[8em] rounded-md bg-cover bg-center"
+							style="background-image: url('{{ asset($deliveryOrder->foto_bukti) }}')"></div>
+				</div>
+				@else
+				<p class="text-sm text-red-600 mt-2">Tidak tersedia</p>
+				@endif
 		</div>
 		
 	</div>
