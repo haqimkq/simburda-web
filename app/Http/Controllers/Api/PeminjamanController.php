@@ -19,6 +19,24 @@ use Exception;
 
 class PeminjamanController extends Controller
 {
+    public function destroyPeminjaman(Peminjaman $peminjaman){
+        try {
+            $peminjamanDetails = $peminjaman->peminjamanDetail;
+            foreach($peminjamanDetails as $peminjamanDetail){
+                //delete akses barang
+                $aksesBarang = $peminjamanDetail->aksesBarang;
+                AksesBarang::destroy($aksesBarang->id);
+                //delete detail peminjaman
+                PeminjamanDetail::destroy($peminjamanDetail->id);
+            }
+            //delete peminjaman
+            Peminjaman::destroy($peminjaman->id);
+            return ResponseFormatter::success(null, null, 'success');
+        } catch (Exception $error) {
+            return ResponseFormatter::error('Masalah Server : '.$error->getMessage());
+        }
+    }
+
     public function storePeminjaman(Request $request){
         try {
             if($request->tipe == 'GUDANG_PROYEK'){
