@@ -204,7 +204,7 @@
 				});
 				$('#searchSetManager').select2({
 						width: null,
-						placeholder: "{{ $proyek->setManager->nama }}",
+						placeholder: "{{ $proyek->siteManager->nama }}",
 						language: {
 								inputTooShort: function() {
 										return 'Masukkan 1 atau lebih karakter';
