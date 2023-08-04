@@ -11,7 +11,7 @@
 		@endif
 		@include('includes.header')
 		@if($authUser->role != 'USER')
-			<div class="">
+			<div>
 					@if (!$authUser->ttd)
 							Anda Belum membuat tanda tangan
 							<a href="{{ route('signature') }}" class="rounded-lg bg-primary px-2 py-1 text-white">
