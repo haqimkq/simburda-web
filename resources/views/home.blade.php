@@ -23,6 +23,7 @@
 						</a>
 				@endif
 		</div>
+		@cannot($authUser->role == 'USER')
 		<div class="grid w-full gap-2 xl:grid-cols-2">
 				<div class="relative rounded-lg p-4 text-primary shadow-md shadow-gray-100">
 						<h2 class="text-center text-xl font-medium">Pengguna</h2>
@@ -55,6 +56,7 @@
 						{{-- <canvas id="peminjamanChart"></canvas> --}}
 				</div>
 		</div>
+		@endcannot
 </div>
 @endsection
 

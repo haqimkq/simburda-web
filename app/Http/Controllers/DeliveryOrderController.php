@@ -34,6 +34,8 @@ class DeliveryOrderController extends Controller
             $deliveryOrders = DeliveryOrder::where('purchasing_id',$authUser->id)->filter(request(['search','orderBy','filter', 'datestart','dateend']))->paginate(12)->withQueryString();
         }else if ($authUser->role=='ADMIN_GUDANG'){
             $deliveryOrders = DeliveryOrder::where('admin_gudang_id',$authUser->id)->orWhere('admin_gudang_id', null)->filter(request(['search','orderBy','filter','datestart','dateend']))->paginate(12)->withQueryString();
+        }else if ($authUser->role=='LOGISTIC'){
+            $deliveryOrders = DeliveryOrder::where('logistic_id',$authUser->id)->filter(request(['search','orderBy','filter','datestart','dateend']))->paginate(12)->withQueryString();
         }else{
             $deliveryOrders = DeliveryOrder::filter(request(['search','orderBy','filter','datestart','dateend']))->paginate(12)->withQueryString();
         }
