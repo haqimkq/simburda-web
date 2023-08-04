@@ -10,7 +10,7 @@
 				@section('foto', asset($authUser->foto))
 		@endif
 		@include('includes.header')
-		@can($authUser->role != 'USER')
+		@if($authUser->role != 'USER')
 			<div class="">
 					@if (!$authUser->ttd)
 							Anda Belum membuat tanda tangan
@@ -56,7 +56,7 @@
 							{{-- <canvas id="peminjamanChart"></canvas> --}}
 					</div>
 			</div>
-		@endcannot
+		@endif
 </div>
 @endsection
 
