@@ -10,52 +10,52 @@
 				@section('foto', asset($authUser->foto))
 		@endif
 		@include('includes.header')
-		<div class="">
-				@if (!$authUser->ttd)
-						Anda Belum membuat tanda tangan
-						<a href="{{ route('signature') }}" class="rounded-lg bg-primary px-2 py-1 text-white">
-								Tambah Tanda Tangan
-						</a>
-				@else
-						Tanda tangan sudah dibuat
-						<a href="{{ route('signature') }}" class="rounded-lg bg-primary px-2 py-1 text-white">
-								Ubah Tanda Tangan
-						</a>
-				@endif
-		</div>
-		@cannot($authUser->role == 'USER')
-		<div class="grid w-full gap-2 xl:grid-cols-2">
-				<div class="relative rounded-lg p-4 text-primary shadow-md shadow-gray-100">
-						<h2 class="text-center text-xl font-medium">Pengguna</h2>
-						<canvas id="userRoleChart" class="max-h-[40vw] md:max-h-[30vw] lg:max-h-[20vw]"></canvas>
-				</div>
-				@if ($proyek)
-						<div class="relative rounded-lg p-4 text-primary shadow-md shadow-gray-100">
-								<h2 class="text-center text-xl font-medium">Proyek</h2>
-								<canvas id="proyekChart"></canvas>
-						</div>
-				@endif
-				<div class="relative rounded-lg p-4 text-primary shadow-md shadow-gray-100">
-						<h2 class="text-center text-xl font-medium">Barang</h2>
-						{{-- <canvas id="barangChart"></canvas> --}}
-				</div>
-				<div class="relative rounded-lg p-4 text-primary shadow-md shadow-gray-100">
-						<h2 class="text-center text-xl font-medium">Peminjaman Barang</h2>
-						{{-- <canvas id="peminjamanChart"></canvas> --}}
-				</div>
-				<div class="relative rounded-lg p-4 text-primary shadow-md shadow-gray-100">
-						<h2 class="text-center text-xl font-medium">Surat Jalan</h2>
-						{{-- <canvas id="peminjamanChart"></canvas> --}}
-				</div>
-				<div class="relative rounded-lg p-4 text-primary shadow-md shadow-gray-100">
-						<h2 class="text-center text-xl font-medium">Delivery Order</h2>
-						{{-- <canvas id="peminjamanChart"></canvas> --}}
-				</div>
-				<div class="relative rounded-lg p-4 text-primary shadow-md shadow-gray-100">
-						<h2 class="text-center text-xl font-medium">Kendaraan</h2>
-						{{-- <canvas id="peminjamanChart"></canvas> --}}
-				</div>
-		</div>
+		@can($authUser->role != 'USER')
+			<div class="">
+					@if (!$authUser->ttd)
+							Anda Belum membuat tanda tangan
+							<a href="{{ route('signature') }}" class="rounded-lg bg-primary px-2 py-1 text-white">
+									Tambah Tanda Tangan
+							</a>
+					@else
+							Tanda tangan sudah dibuat
+							<a href="{{ route('signature') }}" class="rounded-lg bg-primary px-2 py-1 text-white">
+									Ubah Tanda Tangan
+							</a>
+					@endif
+			</div>
+			<div class="grid w-full gap-2 xl:grid-cols-2">
+					<div class="relative rounded-lg p-4 text-primary shadow-md shadow-gray-100">
+							<h2 class="text-center text-xl font-medium">Pengguna</h2>
+							<canvas id="userRoleChart" class="max-h-[40vw] md:max-h-[30vw] lg:max-h-[20vw]"></canvas>
+					</div>
+					@if ($proyek)
+							<div class="relative rounded-lg p-4 text-primary shadow-md shadow-gray-100">
+									<h2 class="text-center text-xl font-medium">Proyek</h2>
+									<canvas id="proyekChart"></canvas>
+							</div>
+					@endif
+					<div class="relative rounded-lg p-4 text-primary shadow-md shadow-gray-100">
+							<h2 class="text-center text-xl font-medium">Barang</h2>
+							{{-- <canvas id="barangChart"></canvas> --}}
+					</div>
+					<div class="relative rounded-lg p-4 text-primary shadow-md shadow-gray-100">
+							<h2 class="text-center text-xl font-medium">Peminjaman Barang</h2>
+							{{-- <canvas id="peminjamanChart"></canvas> --}}
+					</div>
+					<div class="relative rounded-lg p-4 text-primary shadow-md shadow-gray-100">
+							<h2 class="text-center text-xl font-medium">Surat Jalan</h2>
+							{{-- <canvas id="peminjamanChart"></canvas> --}}
+					</div>
+					<div class="relative rounded-lg p-4 text-primary shadow-md shadow-gray-100">
+							<h2 class="text-center text-xl font-medium">Delivery Order</h2>
+							{{-- <canvas id="peminjamanChart"></canvas> --}}
+					</div>
+					<div class="relative rounded-lg p-4 text-primary shadow-md shadow-gray-100">
+							<h2 class="text-center text-xl font-medium">Kendaraan</h2>
+							{{-- <canvas id="peminjamanChart"></canvas> --}}
+					</div>
+			</div>
 		@endcannot
 </div>
 @endsection
