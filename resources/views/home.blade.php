@@ -14,12 +14,12 @@
 			<div>
 					@if (!$authUser->ttd)
 							Anda Belum membuat tanda tangan
-							<a href="{{ route('signature') }}" class="rounded-lg bg-primary px-2 py-1 text-white">
+							<a href="{{ route('signature') }}" class="ml-2 rounded-lg bg-primary px-2 py-1 text-white">
 									Tambah Tanda Tangan
 							</a>
 					@else
 							Tanda tangan sudah dibuat
-							<a href="{{ route('signature') }}" class="rounded-lg bg-primary px-2 py-1 text-white">
+							<a href="{{ route('signature') }}" class="ml-2 rounded-lg bg-primary px-2 py-1 text-white">
 									Ubah Tanda Tangan
 							</a>
 					@endif

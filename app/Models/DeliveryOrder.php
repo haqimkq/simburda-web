@@ -28,6 +28,9 @@ class DeliveryOrder extends Model
     public function purchasing(){
         return $this->belongsTo(User::class,'purchasing_id');
     }
+    public function adminGudang(){
+        return $this->belongsTo(User::class,'admin_gudang_id');
+    }
     public function kendaraan(){
         return $this->belongsTo(Kendaraan::class);
     }

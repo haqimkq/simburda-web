@@ -38,7 +38,8 @@ class SuratJalanFactory extends Factory
             if($kendaraan!=null) $kendaraan_id = $kendaraan->id;
             else{
                 Kendaraan::where('id', $kendaraan_id)->update([
-                    'logistic_id' => $logistic_id
+                    'logistic_id' => $logistic_id,
+                    'status' => 'DIGUNAKAN',
                 ]);
             }
         }

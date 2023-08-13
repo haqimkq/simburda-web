@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('merk');
             $table->string('plat_nomor');
             $table->string('gambar');
+            $table->enum('status',['DIGUNAKAN','AJUKAN_PENGEMBALIAN','TERSEDIA'])->default('TERSEDIA');
             $table->timestamps();
             $table->softDeletes();
         });

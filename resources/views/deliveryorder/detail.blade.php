@@ -44,7 +44,7 @@
 								var coordinateAddress = document.getElementById("coordinate-address");
 								coordinateAddress.setAttribute("href",
 										`https://www.google.com/maps?saddr=${data.latitude},${data.longitude}&daddr={{ $deliveryOrder->perusahaan->latitude }},{{ $deliveryOrder->perusahaan->longitude }}`
-										)
+								)
 								firstTime = false;
 						});
 
@@ -182,24 +182,36 @@
 								</span>{{ \App\Helpers\Date::parseMilliseconds($deliveryOrder->updated_at) }}</p>
 				</div>
 				<div class="flex flex-wrap">
-						@if ($deliveryOrder->status=='MENUNGGU_KONFIRMASI_DRIVER' && $authUser->role == "LOGISTIC" && $authUser->id == $deliveryOrder->logistic_id)
-							<a href="{{ route('delivery-order.edit', $deliveryOrder->ttd) }}" target="_blank"
-									class="mb-2 mr-5 rounded-md bg-green-400 px-3 py-1 text-white">
-									Ambil Barang
-							</a>
+						@if (
+								$deliveryOrder->status == 'MENUNGGU_KONFIRMASI_DRIVER' &&
+										$authUser->role == 'LOGISTIC' &&
+										$authUser->id == $deliveryOrder->logistic_id)
+								<a href="{{ route('delivery-order.edit', $deliveryOrder->ttd) }}" target="_blank"
+										class="mb-2 mr-5 rounded-md bg-green-400 px-3 py-1 text-white">
+										Ambil Barang
+								</a>
 						@endif
-						<a href="{{ route('delivery-order.edit', $deliveryOrder->ttd) }}" target="_blank"
-								class="mb-2 mr-5 rounded-md bg-green-400 px-3 py-1 text-white">
-								Tandai Selesai
-						</a>
-						<a href="{{ route('delivery-order.edit', $deliveryOrder->ttd) }}" target="_blank"
-								class="mb-2 mr-5 rounded-md bg-green-400 px-3 py-1 text-white">
-								Ubah DO
-						</a>
-						<a href="{{ route('delivery-order.downloadPDF', $deliveryOrder->id) }}" target="_blank"
-								class="mb-2 mr-5 rounded-md bg-green-400 px-3 py-1 text-white">
-								Upload Foto Bukti
-						</a>
+						@if (
+								$deliveryOrder->status != 'MENUNGGU_KONFIRMASI_DRIVER' &&
+										$authUser->role == 'LOGISTIC' &&
+										$authUser->id == $deliveryOrder->logistic_id)
+								<a href="{{ route('delivery-order.edit', $deliveryOrder->ttd) }}" target="_blank"
+										class="mb-2 mr-5 rounded-md bg-green-400 px-3 py-1 text-white">
+										Upload Foto Bukti
+								</a>
+						@endif
+						@if ($deliveryOrder->status == 'DRIVER_DALAM_PERJALANAN' && $authUser->role != 'LOGISTIC')
+								<a href="{{ route('delivery-order.edit', $deliveryOrder->ttd) }}" target="_blank"
+										class="mb-2 mr-5 rounded-md bg-green-400 px-3 py-1 text-white">
+										Tandai Selesai
+								</a>
+						@endif
+						@if ($deliveryOrder->status == 'MENUNGGU_KONFIRMASI_DRIVER' && $deliveryOrder->purchasing_id == $authUser->id)
+								<a href="{{ route('delivery-order.edit', $deliveryOrder->ttd) }}" target="_blank"
+										class="mb-2 mr-5 rounded-md bg-green-400 px-3 py-1 text-white">
+										Ubah DO
+								</a>
+						@endif
 						<a href="{{ route('signature.verifiedTTDDeliveryOrder', $deliveryOrder->ttd) }}" target="_blank"
 								class="mb-2 mr-5 rounded-md bg-green-400 px-3 py-1 text-white">
 								Verifikasi TTD
@@ -422,7 +434,21 @@
 										<p class="mt-2 text-sm text-red-600">Tidak tersedia</p>
 								@endif
 						</div>
-
+						@if ($deliveryOrder->adminGudang)
+						<div id="tandai-selesai-preview" class="mr-2 flex h-max flex-col rounded-xl p-3 shadow-md shadow-gray-100">
+							<p class="text-md mt-2 font-bold">Yang Menandai Selesai</p>
+								<div class="flex flex-col p-2">
+										<div class="mb-2 h-[5em] w-[8em] rounded-md bg-cover bg-center"
+												style="background-image: url('{{ asset($deliveryOrder->adminGudang->foto) }}')"></div>
+										<div class="flex w-full flex-col">
+												<div class="mt-1 flex flex-col md:flex-row md:items-center">
+														<p class="font-medium line-clamp-2">{{ $deliveryOrder->adminGudang->nama }}</p>
+												</div>
+												<p class="my-1 text-sm font-normal uppercase line-clamp-1">{{ $deliveryOrder->adminGudang->no_hp }}</p>
+										</div>
+								</div>
+						</div>
+						@endif
 				</div>
 				@if ($deliveryOrder->status != 'SELESAI')
 						<div class="relative h-[70vh] rounded-md border border-green p-2">
