@@ -68,7 +68,7 @@ class PenggunaController extends Controller
             $user->foto = $request->file('foto')->storeAS('assets/pengguna',$fileName,'public');
             $user->update();
         }
-        if($request->role=='LOGISTIC'){
+        if($validate['role']=='LOGISTIC'){
             Logistic::firstOrCreate(['user_id' => $user->id]);
             $request = new Request([
                 'user_id'   => $user->id,
