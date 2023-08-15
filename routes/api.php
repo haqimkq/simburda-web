@@ -55,9 +55,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('proyek/store', [ProyekController::class, 'storeProyek']);
         Route::post('proyek/update/{id}', [ProyekController::class, 'updateProyek']);
         Route::post('aksesBarang/giveAccess/{id}', [BarangController::class, 'giveAksesPeminjamanSm']);
-        Route::get('proyek/yang-dibuat', [ProyekController::class, 'proyekYangDibuat']);
         Route::post('proyek/menangani/{id}', [ProyekController::class, 'addMenanganiProyek']);
         Route::get('proyek/delete/{id}', [ProyekController::class, 'deleteProyek']);
+    });
+    Route::middleware(['role:SITE_MANAGER,PROJECT_MANAGER'])->group(function(){
+        Route::get('proyek/yang-dibuat', [ProyekController::class, 'proyekYangDibuat']);
     });
     Route::middleware(['role:SITE_MANAGER,SUPERVISOR'])->group(function(){
         Route::get('barang/tanggung-jawab', [BarangController::class, 'getBarangTanggungJawab']);

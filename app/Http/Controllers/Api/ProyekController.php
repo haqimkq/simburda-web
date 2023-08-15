@@ -229,7 +229,11 @@ class ProyekController extends Controller
         try {
             $json = [];
             $user = $request->user();
-            $datas = Proyek::where('site_manager_id', $user->id)->filter(request(['search','filter']))->get();
+            if($user->role == 'PROJECT_MANAGER'){
+                $data = Proyek::filter(request(['search','filter']))->get();
+            }else{
+                $datas = Proyek::where('site_manager_id', $user->id)->filter(request(['search','filter']))->get();
+            }
             foreach($datas as $data){
                 $mengerjakan = [];
                 $pinjaman = [];
