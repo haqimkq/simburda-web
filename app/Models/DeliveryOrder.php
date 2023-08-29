@@ -71,10 +71,6 @@ class DeliveryOrder extends Model
         $query->when($filters['createdBy'] ?? false, function($query, $filter) {
             if($filter == 'self')
                 return $query->where('purchasing_id', Auth::user()->id);
-            if($filter == 'other')
-                return $query->where('status', 'DRIVER_DALAM_PERJALANAN');
-            if($filter == 'menunggu konfirmasi driver')
-                return $query->where('status', 'MENUNGGU_KONFIRMASI_DRIVER');
         });
         $query->when(!isset($filters['orderBy']), function($query){
             return $query->orderBy('created_at', 'DESC');
