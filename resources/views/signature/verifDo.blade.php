@@ -9,7 +9,6 @@
 			border-radius: 2em;
 		}
 		
-
 		.box::before,
 		.box::after {
 			content: '';
