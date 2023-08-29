@@ -25,7 +25,7 @@ use App\Models\Proyek;
     // middleware(['auth:sanctum', 'ability:check-status,place-orders']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::put('user/profile', [UserController::class, 'updateProfile']);
+    Route::post('user/profile', [UserController::class, 'updateProfile']);
     Route::post('user/photo', [UserController::class, 'uploadPhoto']);
     Route::post('user/device-token', [UserController::class, 'setDeviceToken']);
     Route::post('user/ttd', [UserController::class, 'uploadTTD']);
@@ -39,7 +39,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::middleware(['role:ADMIN_GUDANG'])->group(function () {
         Route::post('surat-jalan', [SuratJalanController::class, 'create']);
+        Route::get('peminjaman/accept-by-sm', [PeminjamanController::class, 'getPermintaanPeminjamanAcceptBySiteManager']);
         Route::put('surat-jalan/{surat_jalan_id}', [SuratJalanController::class, 'update']);
+        Route::delete('barang/tidak-habis-pakai/delete/{barang}', [BarangController::class, 'deleteBarangTidakHabisPakai']);
+        Route::put('barang/habis-pakai/delete/{barang}', [BarangController::class, 'deleteBarangHabisPakai']);
     });
     Route::middleware(['role:SITE_MANAGER,SUPERVISOR,ADMIN_GUDANG,LOGISTIC'])->group(function(){
         Route::get('surat-jalan/all', [SuratJalanController::class, 'getAllSuratJalanByUser']);
@@ -47,6 +50,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('surat-jalan/active/count', [SuratJalanController::class, 'getCountActiveSuratJalanByUser']);
         Route::get('surat-jalan/all/dalam-perjalanan', [SuratJalanController::class, 'getAllSuratJalanDalamPerjalananByUser']);
         Route::get('surat-jalan/{id}', [SuratJalanController::class, 'getSuratJalanById']);
+        Route::get('gudang/all', [GudangController::class, 'allGudang']);
     });
     Route::middleware(['role:LOGISTIC'])->group(function(){
         Route::get('kendaraan/logistic', [KendaraanController::class, 'getKendaraanByLogistic']);
@@ -61,11 +65,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['role:SITE_MANAGER,PROJECT_MANAGER'])->group(function(){
         Route::get('proyek/yang-dibuat', [ProyekController::class, 'proyekYangDibuat']);
     });
+    Route::middleware(['role:SITE_MANAGER,PROJECT_MANAGER,ADMIN_GUDANG'])->group(function(){
+        Route::get('barang/tidak-habis-pakai', [BarangController::class, 'getBarangTidakHabisPakai']);
+        Route::get('barang/habis-pakai', [BarangController::class, 'barangHabisPakai']);
+    });
     Route::middleware(['role:SITE_MANAGER,SUPERVISOR'])->group(function(){
         Route::get('barang/tanggung-jawab', [BarangController::class, 'getBarangTanggungJawab']);
         Route::post('barang/scanQrCode', [BarangController::class, 'scanQrCode']);
-        Route::get('barang/tidak-habis-pakai', [BarangController::class, 'getBarangTidakHabisPakai']);
-        Route::get('barang/habis-pakai', [BarangController::class, 'barangHabisPakai']);
         Route::get('barang/tidak-habis-pakai/tersedia', [BarangController::class, 'barangTidakHabisPakaiTersedia']);
         Route::get('proyek/yang-dikerjakan', [ProyekController::class, 'proyekYangDiKerjakan']);
         Route::get('proyek/all', [ProyekController::class, 'proyekYangMempunyaiPeminjaman']);
@@ -75,7 +81,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('peminjaman/store', [PeminjamanController::class, 'storePeminjaman']);
         Route::get('peminjaman', [PeminjamanController::class, 'getPermintaanPeminjamanByUser']);
         Route::get('peminjaman/destroy/{peminjaman}', [PeminjamanController::class, 'destroyPeminjaman']);
-        Route::get('gudang/all', [GudangController::class, 'allGudang']);
         Route::get('barang/tanggung-jawab/{peminjamanDetail}', [BarangController::class, 'getDetailPeminjaman']);
         // Route::get('barang/by-proyek/{proyek}', [BarangController::class, 'getBarangByProyek']);
         Route::get('barang/dipesan/aksesBarang', [BarangController::class, 'getAksesBarangByUser']);

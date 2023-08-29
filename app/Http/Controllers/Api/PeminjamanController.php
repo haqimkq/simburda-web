@@ -164,4 +164,63 @@ class PeminjamanController extends Controller
             return ResponseFormatter::error('Masalah Server : '.$error->getMessage());
         }
     }
+    public function getPermintaanPeminjamanAcceptBySiteManager(Request $request){
+        try {
+            $user = $request->user();
+            $available = false;
+            $json = [];
+            $peminjamans = Peminjaman::proyek(request(['search']))->groupBy('kode_peminjaman')->orderBy('created_at','DESC')->get();
+            foreach($peminjamans as $peminjaman){
+                $peminjamanDetail = [];
+                foreach ($peminjaman->peminjamanDetail as $data){
+                    if($data->aksesBarang->disetujui_sm){
+                        $available = true;
+                        $barang = $data->barang->barang;
+                        $barangA = [
+                            'id' => $barang->id,
+                            'merk' => $barang->merk,
+                            'gambar' => $barang->gambar,
+                            'detail' => $barang->detail,
+                            'gudang' => $barang->gudang->nama ?? "",
+                            'kondisi' => $data->barang->kondisi,
+                            'nomor_seri' => $data->barang->nomor_seri,
+                            'keterangan' => $data->barang->keterangan
+                        ];
+                        $detail = [
+                            'id' => $data->id,
+                            'status' => $data->status,
+                            'barang' => $barangA,
+                            'penanggung_jawab' => $data->penanggungJawab,
+                        ];
+                        $aksesBarang = $data->aksesBarang;
+                        $aksesBarang = [
+                            'id' => $aksesBarang->id,
+                            'site_manager_access' => $aksesBarang->disetujui_sm,
+                            'admin_gudang_access' => $aksesBarang->disetujui_admin,
+                            'ket_admin_gudang' => $aksesBarang->keterangan_admin,
+                            'ket_site_manager' => $aksesBarang->keterangan_sm,
+                            'site_manager' => $aksesBarang->siteManager,
+                            'admin_gudang' => $aksesBarang->adminGudang,
+                            'peminjaman' => $detail
+                        ];
+                        array_push($peminjamanDetail,$aksesBarang);
+                    }
+                }
+                if($available){
+                    $pinjamanA = [
+                        'id' => $data->peminjaman->id,
+                        'nama_proyek' => $peminjaman->menangani->proyek->nama_proyek,
+                        'kode_peminjaman' => $peminjaman->kode_peminjaman,
+                        'tipe' => $peminjaman->tipe,
+                        'tgl_peminjaman' => $peminjaman->getRemainingDaysAttribute(),
+                        'peminjaman_detail' => $peminjamanDetail
+                    ];
+                    array_push($json,$pinjamanA);
+                }
+            }
+            return ResponseFormatter::success('data', $json, 'Success Get Data');
+        } catch (Exception $error) {
+            return ResponseFormatter::error('Masalah Server : '.$error->getMessage());
+        }
+    }
 }

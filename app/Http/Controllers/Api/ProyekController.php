@@ -230,7 +230,7 @@ class ProyekController extends Controller
             $json = [];
             $user = $request->user();
             if($user->role == 'PROJECT_MANAGER'){
-                $data = Proyek::filter(request(['search','filter']))->get();
+                $datas = Proyek::filter(request(['search','filter']))->get();
             }else{
                 $datas = Proyek::where('site_manager_id', $user->id)->filter(request(['search','filter']))->get();
             }

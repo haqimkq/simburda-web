@@ -35,4 +35,17 @@ class BarangHabisPakai extends Model
     {
         return Date::dateToMillisecond($date);
     }
+    public function scopeFilter($query, array $filters){
+        $query->when($filters['search'] ?? false, function($query, $search) {
+            return $query->whereRelation('barang','merk', 'like', '%' . $search . '%');
+        });
+        $query->when($filters['filter'] ?? false, function($query, $filter) {
+        //    return $query->where(function($query) use ($filter) {
+            if($filter == 'dipinjam')
+                    return $query->where('peminjaman_id', '!=', null);
+            if($filter == 'digudang')
+                return $query->where('peminjaman_id', '=', null);
+            // });
+        });
+    }
 }

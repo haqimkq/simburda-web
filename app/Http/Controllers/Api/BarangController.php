@@ -13,7 +13,7 @@ use App\Models\Peminjaman;
 use App\Models\PeminjamanDetail;
 use Illuminate\Http\Request;
 use Exception;
-
+use Illuminate\Support\Facades\Storage;
 
 class BarangController extends Controller
 {
@@ -105,10 +105,32 @@ class BarangController extends Controller
         }
     }
 
+    public function deleteBarangTidakHabisPakai(Barang $barang){
+        $barangTidakHabisPakai = $barang->barangTidakHabisPakai;
+        //Menghapus Foto
+        if($barang->gambar){
+            Storage::delete($barang->gambar);
+        }
+        BarangTidakHabisPakai::destroy($barangTidakHabisPakai->id);
+        Barang::destroy($barang->id);
+        return ResponseFormatter::success(null,null,"Delete Data");
+    }
+
+    public function deleteBarangHabisPakai(Barang $barang){
+        $barangHabisPakai = $barang->barangHabisPakai;
+        //Menghapus Foto
+        if($barang->gambar){
+            Storage::delete($barang->gambar);
+        }
+        BarangHabisPakai::destroy($barangHabisPakai->id);
+        Barang::destroy($barang->id);
+        return ResponseFormatter::success(null,null,"Delete Data");
+    }
+
     public function getBarangTidakHabisPakai(){
         try {
             $json = [];
-            $datas = BarangTidakHabisPakai::all();
+            $datas = BarangTidakHabisPakai::filter(request(['search','filter']))->get();
             foreach($datas as $data){
                 $barang = $data->barang;
                 $detail = [
@@ -122,7 +144,12 @@ class BarangController extends Controller
                     'detail' => $barang->detail,
                     'gudang' => $barang->gudang->nama ?? ""
                 ];
-                array_push($json, $detail);
+                $status = [
+                    'status' => ($data->peminjaman_id == null) ? "Digudang" : "Dipinjam",
+                    'posisi' => ($data->peminjaman_id == null) ? '' : $data->peminjaman->menangani->proyek->nama_proyek,
+                    'barang' => $detail,
+                ];
+                array_push($json, $status);
             }
             return ResponseFormatter::success('data', $json, 'Get Data');
         } catch (Exception $error) {
@@ -147,7 +174,12 @@ class BarangController extends Controller
                     'detail' => $barang->detail,
                     'gudang' => $barang->gudang->nama ?? ""
                 ];
-                array_push($json, $detail);
+                $status = [
+                    'status' => ($data->peminjaman_id == null) ? "Digudang" : "Dipinjam",
+                    'posisi' => ($data->peminjaman_id == null) ? $data->peminjaman->menangani->proyek->nama : '',
+                    'barang' => $detail,
+                ];
+                array_push($json, $status);
             }
             return ResponseFormatter::success('data', $json, 'Get Data');
         } catch (Exception $error) {
