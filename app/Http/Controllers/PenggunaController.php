@@ -118,6 +118,9 @@ class PenggunaController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::find($id);
+        if($user->role=='LOGISTIC' && $request->role!='LOGISTIC'){
+            LogisticFirebase::removeData($id);
+        }
         $user->role = $request->role;
         $user->nama = $request->nama;
         if($request->foto){

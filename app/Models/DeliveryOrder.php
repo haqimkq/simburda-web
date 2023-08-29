@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DeliveryOrder extends Model
 {
@@ -63,6 +64,14 @@ class DeliveryOrder extends Model
             if($filter == 'selesai')
                 return $query->where('status', 'SELESAI');
             if($filter == 'driver dalam perjalanan')
+                return $query->where('status', 'DRIVER_DALAM_PERJALANAN');
+            if($filter == 'menunggu konfirmasi driver')
+                return $query->where('status', 'MENUNGGU_KONFIRMASI_DRIVER');
+        });
+        $query->when($filters['createdBy'] ?? false, function($query, $filter) {
+            if($filter == 'self')
+                return $query->where('purchasing_id', Auth::user()->id);
+            if($filter == 'other')
                 return $query->where('status', 'DRIVER_DALAM_PERJALANAN');
             if($filter == 'menunggu konfirmasi driver')
                 return $query->where('status', 'MENUNGGU_KONFIRMASI_DRIVER');
@@ -136,9 +145,6 @@ class DeliveryOrder extends Model
         $request->validate([
             'ttd' => 'required',
         ]);
-    }
-    public static function markCompleteDeliveryOrder($id){
-        self::where('id',$id);
     }
     public static function getCountActiveDeliveryOrderByUser($user_id){
         $user = User::find($user_id);

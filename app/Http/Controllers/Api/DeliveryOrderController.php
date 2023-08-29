@@ -184,12 +184,15 @@ class DeliveryOrderController extends Controller
             $request->validate([
                 'id' => 'required|exists:delivery_orders,id'
             ]);
-            $delivery_order = DeliveryOrder::find($request->id);
-            $response = collect();
-            $message = ($response->isEmpty()) ? 'Tidak ada delivery order' : 'Berhasil Mendapatkan delivery order';
+            $deliveryOrder = DeliveryOrder::find($request->id);
+            $deliveryOrder->status = 'SELESAI';
+            $deliveryOrder->admin_gudang_id = $user->id;
+            $deliveryOrder->update();
+            $response = collect($deliveryOrder);
+            $message = ($response->isEmpty()) ? 'Tidak ada delivery order' : 'Berhasil Menandai Selesai Delivery Order';
             return ResponseFormatter::success('delivery_order', $response,$message);
         }catch(Exception $e){
-            return ResponseFormatter::error("Gagal Mendapatkan delivery order: ". $e->getMessage());
+            return ResponseFormatter::error("Gagal Menandai Selesai Delivery Order: ". $e->getMessage());
         }
     }
     

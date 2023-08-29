@@ -55,7 +55,7 @@
 								map = L.map('map', {
 										doubleClickZoom: false,
 										closePopupOnClick: false,
-										dragging: false,
+										dragging: true,
 										zoomSnap: false,
 										zoomDelta: false,
 										trackResize: false,
@@ -181,12 +181,12 @@
 						<p class="mt-1 text-sm font-medium"><span class="font-normal">Terakhir diperbarui:
 								</span>{{ \App\Helpers\Date::parseMilliseconds($deliveryOrder->updated_at) }}</p>
 				</div>
-				<div class="flex flex-wrap">
+				<div class="flex flex-wrap items-center align-content-center">
 						@if (
 								$deliveryOrder->status == 'MENUNGGU_KONFIRMASI_DRIVER' &&
 										$authUser->role == 'LOGISTIC' &&
 										$authUser->id == $deliveryOrder->logistic_id)
-								<a href="{{ route('delivery-order.edit', $deliveryOrder->ttd) }}" target="_blank"
+								<a href="{{ route('delivery-order.updateStepOne', $deliveryOrder->id) }}"
 										class="mb-2 mr-5 rounded-md bg-green-400 px-3 py-1 text-white">
 										Ambil Barang
 								</a>
@@ -195,19 +195,27 @@
 								$deliveryOrder->status != 'MENUNGGU_KONFIRMASI_DRIVER' &&
 										$authUser->role == 'LOGISTIC' &&
 										$authUser->id == $deliveryOrder->logistic_id)
-								<a href="{{ route('delivery-order.edit', $deliveryOrder->ttd) }}" target="_blank"
+								<a href="{{ route('delivery-order.updateStepOne', $deliveryOrder->ttd) }}" 
 										class="mb-2 mr-5 rounded-md bg-green-400 px-3 py-1 text-white">
 										Upload Foto Bukti
 								</a>
 						@endif
 						@if ($deliveryOrder->status == 'DRIVER_DALAM_PERJALANAN' && $authUser->role != 'LOGISTIC')
-								<a href="{{ route('delivery-order.edit', $deliveryOrder->ttd) }}" target="_blank"
+								<a href="{{ route('delivery-order.tandaiSelesai', $deliveryOrder->id) }}"
 										class="mb-2 mr-5 rounded-md bg-green-400 px-3 py-1 text-white">
 										Tandai Selesai
 								</a>
 						@endif
 						@if ($deliveryOrder->status == 'MENUNGGU_KONFIRMASI_DRIVER' && $deliveryOrder->purchasing_id == $authUser->id)
-								<a href="{{ route('delivery-order.edit', $deliveryOrder->ttd) }}" target="_blank"
+						<form action="{{ route('delivery-order.destroy', $deliveryOrder->id) }}" method="POST"
+								class="destroy-do-form">
+								@csrf
+								<button type="button" data-name="{{ $deliveryOrder->kode_do }}"
+										class="mb-2 mr-5 show_delete_confirm w-auto self-end rounded-lg border-2 border-red-600 px-3 py-2.5 text-center text-sm font-medium text-red-600 hover:border-red-500 hover:text-red-500 focus:outline-none focus:ring-4 focus:ring-blue-300 sm:w-auto">
+										<img src="/images/ic_trash.png" class="w-[1.5em]">
+								</button>
+						</form>
+								<a href="{{ route('delivery-order.updateStepOne', $deliveryOrder->id) }}"
 										class="mb-2 mr-5 rounded-md bg-green-400 px-3 py-1 text-white">
 										Ubah DO
 								</a>
@@ -345,19 +353,6 @@
 						</div>
 				</div>
 				<div class="flex h-max flex-wrap">
-						<div id="driver-preview" class="mr-2 flex h-max flex-col rounded-xl p-3 shadow-md shadow-gray-100">
-								<p class="text-md mt-2 font-bold">Driver</p>
-								<div class="flex flex-col p-2">
-										<div class="mb-2 h-[5em] w-[8em] rounded-md bg-cover bg-center"
-												style="background-image: url('{{ asset($deliveryOrder->logistic->foto) }}')"></div>
-										<div class="flex w-full flex-col">
-												<div class="mt-1 flex flex-col md:flex-row md:items-center">
-														<p class="font-medium line-clamp-2">{{ $deliveryOrder->logistic->nama }}</p>
-												</div>
-												<p class="my-1 text-sm font-normal uppercase line-clamp-1">{{ $deliveryOrder->logistic->no_hp }}</p>
-										</div>
-								</div>
-						</div>
 						<div id="kendaraan-preview" class="mr-2 flex h-max flex-col rounded-xl p-3 shadow-md shadow-gray-100">
 								<p class="text-md mt-2 font-bold">Kendaraan</p>
 								<div class="flex flex-col p-2">
@@ -376,6 +371,17 @@
 														<img src="/images/ic_gudang.png" alt="" class="mr-1 h-[1.1em] w-auto">
 														<p class="text-sm font-normal line-clamp-2">{{ $deliveryOrder->gudang->nama }}</p>
 												</div>
+										</div>
+								</div>
+						</div>
+						<div id="driver-preview" class="mr-2 flex h-max flex-col rounded-xl p-3 shadow-md shadow-gray-100">
+								<p class="text-md mt-2 font-bold">Driver</p>
+								<div class="flex p-2">
+										<div class="mr-2 h-[5em] w-[5em] rounded-md bg-cover bg-center"
+												style="background-image: url('{{ asset($deliveryOrder->logistic->foto) }}')"></div>
+										<div class="flex w-full flex-col">
+												<p class="font-medium line-clamp-2">{{ $deliveryOrder->logistic->nama }}</p>
+												<p class="my-1 text-sm font-normal uppercase line-clamp-1">{{ $deliveryOrder->logistic->no_hp }}</p>
 										</div>
 								</div>
 						</div>
@@ -423,6 +429,19 @@
 										</div>
 								</div>
 						</div>
+						@if ($deliveryOrder->adminGudang)
+						<div id="tandai-selesai-preview" class="mr-2 flex h-max flex-col rounded-xl p-3 shadow-md shadow-gray-100">
+							<p class="text-md mt-2 font-bold">Yang Menandai Selesai</p>
+								<div class="flex p-2">
+										<div class="mr-2 h-[5em] w-[5em] rounded-md bg-cover bg-center"
+												style="background-image: url('{{ asset($deliveryOrder->adminGudang->foto) }}')"></div>
+										<div class="flex w-full flex-col">
+												<p class="font-medium line-clamp-2">{{ $deliveryOrder->adminGudang->nama }}</p>
+												<p class="my-1 text-sm font-normal uppercase line-clamp-1">{{ $deliveryOrder->adminGudang->no_hp }}</p>
+										</div>
+								</div>
+						</div>
+						@endif
 						<div id="foto-bukti-preview" class="mr-2 flex h-max flex-col rounded-xl p-3 shadow-md shadow-gray-100">
 								<p class="text-md mt-2 font-bold">Foto Bukti</p>
 								@if ($deliveryOrder->foto_bukti)
@@ -434,21 +453,7 @@
 										<p class="mt-2 text-sm text-red-600">Tidak tersedia</p>
 								@endif
 						</div>
-						@if ($deliveryOrder->adminGudang)
-						<div id="tandai-selesai-preview" class="mr-2 flex h-max flex-col rounded-xl p-3 shadow-md shadow-gray-100">
-							<p class="text-md mt-2 font-bold">Yang Menandai Selesai</p>
-								<div class="flex flex-col p-2">
-										<div class="mb-2 h-[5em] w-[8em] rounded-md bg-cover bg-center"
-												style="background-image: url('{{ asset($deliveryOrder->adminGudang->foto) }}')"></div>
-										<div class="flex w-full flex-col">
-												<div class="mt-1 flex flex-col md:flex-row md:items-center">
-														<p class="font-medium line-clamp-2">{{ $deliveryOrder->adminGudang->nama }}</p>
-												</div>
-												<p class="my-1 text-sm font-normal uppercase line-clamp-1">{{ $deliveryOrder->adminGudang->no_hp }}</p>
-										</div>
-								</div>
-						</div>
-						@endif
+						
 				</div>
 				@if ($deliveryOrder->status != 'SELESAI')
 						<div class="relative h-[70vh] rounded-md border border-green p-2">
@@ -464,3 +469,30 @@
 				@endif
 		</div>
 @endsection
+
+@push('prepend-script')
+	@include('includes.sweetalert')
+		@include('includes.jquery')
+		<script>
+			$('.show_delete_confirm').click(function(event) {
+						var form = $(this).parents('.destroy-po-form');
+						var nama = $(this).data("name");
+						event.preventDefault();
+						Swal.fire({
+								title: "Apakah kamu yakin?",
+								html: `Delivery Order yang dihapus tidak dapat dikembalikan, ingin menghapus delivery order <b>${nama}</b>`,
+								icon: 'warning',
+								showCancelButton: true,
+								confirmButtonText: 'Ya, Hapus Delivery Order',
+								cancelButtonText: 'Batalkan',
+								confirmButtonColor: '#3085d6',
+								cancelButtonColor: '#d33'
+						}).then((result) => {
+								if (result.isConfirmed) {
+										form.submit();
+								}
+						})
+				});
+		</script>
+		
+@endpush

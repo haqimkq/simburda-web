@@ -30,14 +30,12 @@ class DeliveryOrderController extends Controller
     {
         $authUser = Auth::user();
         $countUndefinedAkses = AksesBarang::countUndefinedAkses();
-        if($authUser->role=='PURCHASING'){
-            $deliveryOrders = DeliveryOrder::where('purchasing_id',$authUser->id)->filter(request(['search','orderBy','filter', 'datestart','dateend']))->paginate(12)->withQueryString();
+        if($authUser->role=='PURCHASING' || $authUser->role=='ADMIN'){
+            $deliveryOrders = DeliveryOrder::filter(request(['search','orderBy','filter', 'datestart','dateend']))->paginate(12)->withQueryString();
         }else if ($authUser->role=='ADMIN_GUDANG'){
             $deliveryOrders = DeliveryOrder::where('admin_gudang_id',$authUser->id)->orWhere('admin_gudang_id', null)->filter(request(['search','orderBy','filter','datestart','dateend']))->paginate(12)->withQueryString();
         }else if ($authUser->role=='LOGISTIC'){
             $deliveryOrders = DeliveryOrder::where('logistic_id',$authUser->id)->filter(request(['search','orderBy','filter','datestart','dateend']))->paginate(12)->withQueryString();
-        }else{
-            $deliveryOrders = DeliveryOrder::filter(request(['search','orderBy','filter','datestart','dateend']))->paginate(12)->withQueryString();
         }
         return view('deliveryorder.index',[
             'deliveryOrders' => $deliveryOrders,
@@ -68,6 +66,27 @@ class DeliveryOrderController extends Controller
         $deliveryOrder = $request->session()->get('deliveryOrder');
         
         return view('deliveryorder.preorder.create',[
+            "deliveryOrder" => $deliveryOrder,
+        
+        ]);
+    }
+    public function updateStepOne($id)
+    {
+        $deliveryOrder = DeliveryOrder::find($id);
+        return view('deliveryorder.edit',[
+            "gudangs" => Gudang::get(),
+            "deliveryOrder" => $deliveryOrder,
+            "purchasings" => (Auth::user()->role == 'ADMIN') ? User::where('role','PURCHASING')->get() : Auth::user(),
+            "perusahaans" => Perusahaan::get(),
+            "logistics" => User::where('role','LOGISTIC')->get(),
+            "kendaraans" => Kendaraan::where('logistic_id',null)->get(),
+        ]);
+    }
+    public function updateStepTwo($id)
+    {
+        $deliveryOrder = DeliveryOrder::find($id);
+        
+        return view('deliveryorder.preorder.edit',[
             "deliveryOrder" => $deliveryOrder,
         
         ]);
@@ -131,6 +150,59 @@ class DeliveryOrderController extends Controller
         return redirect()->route('delivery-order');
     }
 
+    public function storeUpdateStepOne($id, Request $request)
+    {
+        // dd($request);
+        // dd($request);
+        $validate = $request->validate([
+            'gudang_id' => 'required|exists:gudangs,id',
+            'perusahaan_id' => 'required|exists:perusahaans,id',
+            'logistic_id' => 'required|exists:users,id',
+            'kendaraan_id' => 'required|exists:kendaraans,id',
+            'purchasing_id' => 'required|exists:users,id',
+            'perihal' => 'required',
+            'untuk_perhatian' => 'required',
+            'tgl_pengambilan' => 'required',
+        ]);
+        $validate['tgl_pengambilan'] = Carbon::parse($validate['tgl_pengambilan']);
+        // $validate['kode_do'] = DeliveryOrder::generateKodeDO(
+        //     Perusahaan::find($validate['perusahaan_id'])->nama,
+        //     Date::dateToMillisecond($validate['tgl_pengambilan']));
+        
+        $deliveryOrder = DeliveryOrder::find($id);
+        $deliveryOrder->update($validate);
+        return redirect()->route('delivery-order.updateStepTwo', $deliveryOrder->id);
+    }
+    public function storeUpdateStepTwo($id, Request $request)
+    {
+        $validate = $request->validate([
+            'preorder.*.nama_material' => 'required',
+            'preorder.*.satuan' => 'required',
+            'preorder.*.ukuran' => 'required',
+            'preorder.*.jumlah' => 'required',
+            'preorder.*.keterangan' => 'sometimes|nullable',
+            'preorder.*.id' => 'sometimes|nullable',
+            'preorder.*.delivery_order_id' => 'sometimes|nullable',
+        ]);
+        $do = DeliveryOrder::find($id);
+        Kendaraan::where('id', $do->kendaraan_id)->update(['logistic_id'=>$do->logistic_id]);
+        foreach($validate['preorder'] as $key => $data){
+            $validate['preorder'][$key]['kode_po'] = PreOrder::generateKodePO($do->perusahaan->nama,$do->tgl_pengambilan);
+            if($validate['preorder'][$key]['delivery_order_id'] == null){
+                $validate['preorder'][$key]['delivery_order_id'] = $do->id;
+                PreOrder::create($validate['preorder'][$key]);
+            }else{
+                PreOrder::find($validate['preorder'][$key]['id'])->update($validate['preorder'][$key]);
+            }
+        }
+        return redirect()->route('delivery-order.show',$do->id);
+    }
+    public function destroyPreOrder($id)
+    {
+        PreOrder::destroy($id);
+        return redirect()->back()->with('successMessage', "Berhasil Menghapus Pre Order");
+    }
+
     /**
      * Display the specified resource.
      *
@@ -182,9 +254,22 @@ class DeliveryOrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        DeliveryOrder::destroy($id);
+        return redirect()->back()->with('successMessage', "Berhasil Menghapus Delivery Order");
     }
-
+    public function tandaiSelesai($id){
+        $deliveryOrder = DeliveryOrder::find($id);
+        $deliveryOrder->status = 'SELESAI';
+        $deliveryOrder->admin_gudang_id = Auth::user()->id;
+        $deliveryOrder->update();
+        return redirect()->back()->with('successMessage', "Berhasil Menandai Selesai");
+    }
+    public function tandaiDalamPerjalanan($id){
+        $deliveryOrder = DeliveryOrder::find($id);
+        $deliveryOrder->status = 'DRIVER_DALAM_PERJALANAN';
+        $deliveryOrder->update();
+        return redirect()->back()->with('successMessage', "Berhasil Menandai Driver Dalam Perjalanan");
+    }
     public function downloadPDF($id)
     {
         

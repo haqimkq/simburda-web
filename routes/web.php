@@ -146,10 +146,17 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:PURCHASING'])->controller(DeliveryOrderController::class)->group(function () {
         Route::get('delivery-order/tambah', 'createStepOne')->name('delivery-order.createStepOne');
         Route::post('delivery-order/tambah', 'storeCreateStepOne')->name('delivery-order.storeCreateStepOne');
-        Route::get('delivery-order/tambah-pre-order', 'createStepTwo')->name('delivery-order.createStepTwo');
-        Route::post('delivery-order/tambah-pre-order', 'storeCreateStepTwo')->name('delivery-order.storeCreateStepTwo');
-        Route::get('delivery-order/edit/{id}', 'edit')->name('delivery-order.edit');
+        Route::get('delivery-order/edit/{id}', 'updateStepOne')->name('delivery-order.updateStepOne');
+        Route::post('delivery-order/edit/{id}', 'storeUpdateStepOne')->name('delivery-order.storeUpdateStepOne');
+        Route::get('delivery-order/edit/pre-order/{id}', 'updateStepTwo')->name('delivery-order.updateStepTwo');
+        Route::post('delivery-order/edit/pre-order/{id}', 'storeUpdateStepTwo')->name('delivery-order.storeUpdateStepTwo');
+        Route::get('delivery-order/tambah/pre-order', 'createStepTwo')->name('delivery-order.createStepTwo');
+        Route::post('delivery-order/tambah/pre-order', 'storeCreateStepTwo')->name('delivery-order.storeCreateStepTwo');
+        Route::post('delivery-order/delete/pre-order/{id}', 'destroyPreOrder')->name('delivery-order.destroyPreOrder');
         Route::post('delivery-order/delete/{id}', 'destroy')->name('delivery-order.destroy');
+    });
+    Route::middleware(['role:PURCHASING,ADMIN_GUDANG'])->controller(DeliveryOrderController::class)->group(function () {
+        Route::get('delivery-order/tandai-selesai/{id}', 'tandaiSelesai')->name('delivery-order.tandaiSelesai');
     });
     Route::middleware(['role:ADMIN_GUDANG,PURCHASING,LOGISTIC'])->controller(DeliveryOrderController::class)->group(function () {
         Route::get('delivery-order', 'index')->name('delivery-order');
